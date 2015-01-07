@@ -1,0 +1,3 @@
+[default]
+storage_account_name = bob
+storage_account_key = foo
