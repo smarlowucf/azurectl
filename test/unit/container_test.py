@@ -14,6 +14,11 @@ class FakeBlobService:
         MyStruct = namedtuple("MyStruct", "name")
         return [MyStruct(name = "a"), MyStruct(name = "b")]
 
+    def list_blobs(self, container):
+        MyStruct = namedtuple("MyStruct", "name")
+        return [MyStruct(name = "a"), MyStruct(name = "b")]
+
+
 class TestContainer:
     def setup(self):
         account = StorageAccount('default', '../data/config')
@@ -24,3 +29,10 @@ class TestContainer:
             return_value=FakeBlobService()
         )
         assert self.container.list() == ['a', 'b']
+
+    def test_content(self):
+        azure_cli.container.BlobService = mock.Mock(
+            return_value=FakeBlobService()
+        )
+        assert self.container.content('some-container') == \
+            {'some-container': ['a', 'b']}

@@ -8,7 +8,7 @@ tests:
 	nosetests
 
 clean:
-	find -name *.pyc | xargs rm
+	find -name *.pyc | xargs rm -f
 	rm -rf azure_cli.egg-info
 	rm -rf build
 	rm -rf dist

@@ -2,18 +2,22 @@
 usage:
     azure-cli -h | --help
     azure-cli -v | --version
-    azure-cli [-c | --config=<file>] [-a | --account=<name>]
+    azure-cli [--config=<file>] [--account=<name>]
+              [--max-data-size=<size>] [--max-chunk-size=<size>]
               <command> [<args>...]
 
 commands:
-    help       show detailed help page for a command
-    container  list, create containers
+    help       show detailed help page for given command
+    container  list storage containers and container contents
+    disk       upload, delete disk images to/from a container
 
 global options:
     -h, --help
     -v, --version
-    -c, --config=<file>
-    -a, --account=<name>
+    --config=<file>          config file, default is: ~/.azure_cli/config
+    --account=<name>         account name in config file, default is: default
+    --max-data-size=<size>   max byte size of one blob block for disk upload
+    --max-chunk-size=<size>  max chunk byte size in a blob block for disk upload
 """
 
 import importlib
@@ -46,10 +50,7 @@ class Cli:
         result = {}
         for arg, value in self.all_args.iteritems():
             if not arg == '<command>' and not arg == '<args>':
-                if value and type(value).__name__ == 'list':
-                    result[arg] = value.pop()
-                else:
-                    result[arg] = value
+                result[arg] = value
         return result
 
     def load_command(self):

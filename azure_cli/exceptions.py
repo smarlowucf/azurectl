@@ -23,6 +23,9 @@ class AzureAccountNotFound(AzureError):
 class AzureAccountValueNotFound(AzureError):
     pass
 
+class AzureDiskImageNotFound(AzureError):
+    pass
+
 class AzureCommandNotLoaded(AzureError):
     pass
 
@@ -30,4 +33,19 @@ class AzureUnknownCommand(AzureError):
     pass
 
 class AzureUnknownContainerCommand(AzureError):
+    pass
+
+class AzureUnknownDiskCommand(AzureError):
+    pass
+
+class AzureContainerListContentError(AzureError):
+    pass
+
+class AzureContainerListError(AzureError):
+    pass
+
+class AzureDiskUploadError(AzureError):
+    pass
+
+class AzureDiskDeleteError(AzureError):
     pass

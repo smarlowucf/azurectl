@@ -18,8 +18,14 @@ class TestCli:
         assert self.cli.get_command_args() == self.command_args
 
     def test_get_global_args(self):
-        assert self.cli.get_global_args() == \
-            {'--account': [], '--config': [], '--help': False, '--version': False}
+        assert self.cli.get_global_args() == {
+            '--max-data-size': None,
+            '--version': False,
+            '--config': None,
+            '--account': None,
+            '--max-chunk-size': None,
+            '--help': False
+        }
 
     def test_load_command(self):
         assert self.cli.load_command() == self.loaded_command

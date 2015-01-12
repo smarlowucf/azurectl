@@ -1,8 +1,10 @@
 """
-usage: azure-cli container <command>
+usage: azure-cli container list
+       azure-cli container content <name>
 
 commands:
-    list   list available containers
+    list     list available containers
+    content  list content of given container
 """
 
 from exceptions import *
@@ -18,6 +20,19 @@ class Container:
     def list(self):
         result = []
         blob_service = BlobService(self.account_name, self.account_key)
-        for container in blob_service.list_containers():
-            result.append(str(container.name))
+        try:
+            for container in blob_service.list_containers():
+                result.append(str(container.name))
+        except Exception as e:
+            raise AzureContainerListError('%s (%s)' %(type(e), str(e)))
         return result
+
+    def content(self, container):
+        result = {container: []}
+        blob_service = BlobService(self.account_name, self.account_key)
+        try:
+            for blob in blob_service.list_blobs(container):
+                result[container].append(str(blob.name))
+            return result
+        except Exception as e:
+            raise AzureContainerListContentError('%s (%s)' %(type(e), str(e)))
