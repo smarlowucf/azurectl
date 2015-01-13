@@ -13,4 +13,6 @@ class Help:
        command = self.args['<command>']
        if not command:
            raise AzureNoCommandGiven('no help context')
-       Logger.info("list help for command %s" % command)
+       Logger.info(
+           "*** help page for command %s not yet available ***" % command
+       )
