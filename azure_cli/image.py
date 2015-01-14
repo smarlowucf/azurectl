@@ -9,16 +9,21 @@ from exceptions import *
 from logger import Logger
 
 from azure.servicemanagement import ServiceManagementService
+from tempfile import NamedTemporaryFile
 
 class Image:
     def __init__(self, account):
-        self.subscription_id = account.get_account_subscription_id()
-        self.cert_file = account.get_account_subscription_cert()
+        self.account = account
 
     def list(self):
         result = []
+        cert_file = NamedTemporaryFile()
+        cert_file.write(self.account.get_private_key())
+        cert_file.write(self.account.get_cert())
+        cert_file.flush()
         service = ServiceManagementService(
-            self.subscription_id, self.cert_file
+            self.account.get_subscription_id(),
+            cert_file.name
         )
         try:
             for image in service.list_os_images():

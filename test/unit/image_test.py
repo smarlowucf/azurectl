@@ -30,6 +30,8 @@ class FakeServiceManagementService:
 class TestImage:
     def setup(self):
         account = ServiceAccount('default', '../data/config')
+        account.get_private_key = mock.Mock(return_value='abc')
+        account.get_cert = mock.Mock(return_value='abc')
         self.image = Image(account)
 
     def test_list(self):

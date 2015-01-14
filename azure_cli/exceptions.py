@@ -52,3 +52,9 @@ class AzureDiskDeleteError(AzureError):
 
 class AzureOsImageListError(AzureError):
     pass
+
+class AzureSubscriptionIdNotFound(AzureError):
+    pass
+
+class AzureManagementCertificateNotFound(AzureError):
+    pass

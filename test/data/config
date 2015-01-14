@@ -1,5 +1,4 @@
 [default]
 storage_account_name = bob
 storage_account_key = foo
-subscription_id = id
-subscription_cert = /some/cert.pem
+publishsettings = ../data/publishsettings
