@@ -1,5 +1,5 @@
 <PublishData>
   <PublishProfile ManagementCertificate="dGVzdA==">
-     <Subscription Id="4711" Name="azure-rd"/>
+     <Subscription Id="4711" Name="azure"/>
   </PublishProfile>
 </PublishData>
