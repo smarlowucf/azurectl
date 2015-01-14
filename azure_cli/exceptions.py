@@ -49,3 +49,6 @@ class AzureDiskUploadError(AzureError):
 
 class AzureDiskDeleteError(AzureError):
     pass
+
+class AzureOsImageListError(AzureError):
+    pass

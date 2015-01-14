@@ -9,7 +9,8 @@ usage:
 commands:
     help       show detailed help page for given command
     container  list storage containers and container contents
-    disk       upload, delete disk images to/from a container
+    disk       upload, delete disk images to/from a storage container
+    image      list, register, deregister os images
 
 global options:
     -h, --help

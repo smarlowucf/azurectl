@@ -3,9 +3,11 @@ from logger import Logger
 
 from account import Account
 from storage_account import StorageAccount
+from service_account import ServiceAccount
 from exceptions import *
 from container import Container
 from disk import Disk
+from image import Image
 from data_collector import DataCollector
 from apscheduler.scheduler import Scheduler
 
@@ -75,6 +77,15 @@ class App:
                Logger.info('Deleted %s' % image)
            else:
                raise AzureUnknownDiskCommand(command_args)
+
+        # image
+        elif command == 'image':
+            account = ServiceAccount(account_name, config_file)
+            image = Image(account)
+            if command_args['list']:
+                result = DataCollector()
+                result.add('images', image.list())
+                Logger.info(result.get())
 
         # unknown
         else:
