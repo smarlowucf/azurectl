@@ -33,7 +33,7 @@ class ServiceAccount(Account):
 
     def __read_p12(self):
         xml = self.__read_xml()
-        profile = xml.getElementsByTagName('PublishProfile')
+        profile = xml.getElementsByTagName('Subscription')
         try:
             cert = profile[0].attributes['ManagementCertificate'].value
         except:
