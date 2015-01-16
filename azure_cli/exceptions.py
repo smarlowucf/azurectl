@@ -58,3 +58,9 @@ class AzureSubscriptionIdNotFound(AzureError):
 
 class AzureManagementCertificateNotFound(AzureError):
     pass
+
+class AzureStorageKeyError(AzureError):
+    pass
+
+class AzureInternalError(AzureError):
+    pass

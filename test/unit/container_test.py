@@ -22,6 +22,7 @@ class FakeBlobService:
 class TestContainer:
     def setup(self):
         account = StorageAccount('default', '../data/config')
+        StorageAccount.get_account_key = mock.Mock(return_value='foo')
         self.container = Container(account)
 
     def test_list(self):

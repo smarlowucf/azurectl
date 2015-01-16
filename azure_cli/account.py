@@ -15,14 +15,15 @@ class Account:
         if not config.has_section(account):
             raise AzureAccountNotFound("Account %s not found" % account)
         self.config  = config
-        self.account = account
+        self.account_name = account
+        self.config_file  = filename
 
     def read(self, option):
         result = ''
         try:
-            result = self.config.get(self.account, option)
+            result = self.config.get(self.account_name, option)
         except:
             raise AzureAccountValueNotFound(
-                "%s not defined for account %s" %(option, self.account)
+                "%s not defined for account %s" %(option, self.account_name)
             )
         return result
