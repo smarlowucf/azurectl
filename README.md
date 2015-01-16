@@ -22,14 +22,12 @@ like the following example:
 ```
 [default]
 storage_account_name = some-storage
-storage_account_key  = some-storage-key
-subscription_id      = some-id
-subscription_cert    = path-to-subscription-certificate
+publishsettings = path-to-publish-settings-file
 ```
 
 The default config file is searched in $HOME/.azure\_cli/config but can
-be changed by the --config switch. subscription and certificate credentials
-will also be added under the hood of the account name.
+be changed by the --config switch. subscription, certificate credentials
+and private keys will be imported from the publish settings file.
 
 # Usage
 
