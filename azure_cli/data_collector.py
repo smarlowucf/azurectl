@@ -1,6 +1,9 @@
 class DataCollector:
     data = {}
 
+    def __init__(self):
+        self.data = {}
+
     def add(self, name, data):
         self.data[name] = data
 

@@ -5,8 +5,8 @@ from azure_cli.exceptions import *
 
 class TestHelp:
     def setup(self):
-        self.help = Help({'<command>': ''})
+        self.help = Help()
 
     @raises(AzureNoCommandGiven)
     def test_show(self):
-        self.help.show()
+        self.help.show(None)
