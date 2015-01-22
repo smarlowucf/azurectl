@@ -20,3 +20,4 @@ class TestImageTask:
 
     def test_process(self):
         self.task.process()
+        self.task.image.list.assert_called_once_with()

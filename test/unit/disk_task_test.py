@@ -23,8 +23,14 @@ class TestDiskTask:
         self.task.command_args['delete'] = False
         self.task.command_args['upload'] = True
         self.task.process()
+        self.task.disk.upload.assert_called_once_with(
+            'some-image', None, None
+        )
 
     def test_process_delete(self):
         self.task.command_args['delete'] = True
         self.task.command_args['upload'] = False
         self.task.process()
+        self.task.disk.delete.assert_called_once_with(
+            'some-image'
+        )

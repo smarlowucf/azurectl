@@ -18,3 +18,4 @@ class TestHelpTask:
 
     def test_process(self):
         self.task.process()
+        self.task.azure.Help.assert_called_once_with()
