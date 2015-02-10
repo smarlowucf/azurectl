@@ -1,6 +1,10 @@
-import ConfigParser
+# core
 import os
 
+# extensions
+import ConfigParser
+
+# project
 from exceptions import *
 
 class Account:

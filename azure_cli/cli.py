@@ -20,10 +20,13 @@ global options:
     --max-data-size=<size>   max byte size of one blob block for disk upload
     --max-chunk-size=<size>  max chunk byte size in a blob block for disk upload
 """
-
+# core
 import importlib
+
+# extensions
 from docopt import docopt
 
+# project
 from exceptions import *
 
 class Cli:
@@ -61,7 +64,7 @@ class Cli:
         if not command:
             raise AzureLoadCommandUndefined(command)
         try:
-            loaded = importlib.import_module('azure_cli.' + command)
+            loaded = importlib.import_module('azure_cli.' + command + '_task')
         except Exception as e:
             raise AzureLoadCommandError('%s (%s)' %(type(e), str(e)))
         self.loaded = loaded

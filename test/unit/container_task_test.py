@@ -4,15 +4,11 @@ from nose.tools import *
 import azure_cli
 from azure_cli.container_task import ContainerTask
 
-class FakeContainerCommand:
-    def Container(self, account):
-        pass
-
 class TestContainerTask:
     def setup(self):
         self.task = ContainerTask()
-        self.task.azure = mock.Mock(
-            return_value=FakeContainerCommand()
+        azure_cli.container_task.Container = mock.Mock(
+            return_value=mock.Mock()
         )
         self.task.command_args = {}
         self.task.command_args['<name>'] = 'some-container-name'

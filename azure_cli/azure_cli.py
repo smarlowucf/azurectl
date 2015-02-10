@@ -1,10 +1,15 @@
 #!/usr/bin/python
 
+# core
 import sys
+
+# extensions
+import docopt
+
+# project
 from app import App
 from logger import Logger
 from exceptions import *
-import docopt
 
 def main():
     try:

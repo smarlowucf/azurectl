@@ -1,14 +1,27 @@
+"""
+usage: azure-cli disk upload <image> <container>
+       azure-cli disk delete <image> <container>
+
+commands:
+    upload   upload image to the given container
+    delete   delete image in the given container
+"""
+
+# extensions
+from apscheduler.scheduler import Scheduler
+
+# project
 from cli_task import CliTask
 from storage_account import StorageAccount
 from data_collector import DataCollector
 from logger import Logger
 from exceptions import *
-from apscheduler.scheduler import Scheduler
+from disk import Disk
 
 class DiskTask(CliTask):
     def process(self):
         account = StorageAccount(self.account_name, self.config_file)
-        self.disk = self.azure.Disk(account, self.command_args['<container>'])
+        self.disk = Disk(account, self.command_args['<container>'])
         if self.command_args['upload']:
             self.__upload()
         elif self.command_args['delete']:

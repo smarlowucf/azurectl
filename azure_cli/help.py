@@ -1,7 +1,4 @@
-"""
-usage: azure-cli help <command>
-"""
-
+# project
 from exceptions import *
 from logger import Logger
 

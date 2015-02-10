@@ -1,8 +1,10 @@
-from exceptions import *
-
-from account import Account
+# extensions
 from xml.dom import minidom
 from OpenSSL.crypto import *
+
+# project
+from exceptions import *
+from account import Account
 
 class ServiceAccount(Account):
     def get_private_key(self):

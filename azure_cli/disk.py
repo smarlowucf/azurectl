@@ -1,17 +1,12 @@
-"""
-usage: azure-cli disk upload <image> <container>
-       azure-cli disk delete <image> <container>
-
-commands:
-    upload   upload image to the given container
-    delete   delete image in the given container
-"""
-
+# core
 import os
+
+# extensions
+from azure.storage import BlobService
+
+# project
 from exceptions import *
 from logger import Logger
-
-from azure.storage import BlobService
 
 class Disk:
     def __init__(self, account, container):

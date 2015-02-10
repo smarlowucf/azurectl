@@ -1,13 +1,24 @@
+"""
+usage: azure-cli container list
+       azure-cli container content <name>
+
+commands:
+    list     list available containers
+    content  list content of given container
+"""
+
+# project
 from cli_task import CliTask
 from storage_account import StorageAccount
 from data_collector import DataCollector
 from logger import Logger
 from exceptions import *
+from container import Container
 
 class ContainerTask(CliTask):
     def process(self):
         account = StorageAccount(self.account_name, self.config_file)
-        self.container = self.azure.Container(account)
+        self.container = Container(account)
         if self.command_args['list']:
             self.__list()
         elif self.command_args['content']:

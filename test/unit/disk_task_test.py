@@ -4,16 +4,11 @@ from nose.tools import *
 import azure_cli
 from azure_cli.disk_task import DiskTask
 
-class FakeDiskCommand:
-    def Disk(self, account, container):
-        pass
-
-
 class TestDiskTask:
     def setup(self):
         self.task = DiskTask()
-        self.task.azure = mock.Mock(
-            return_value=FakeDiskCommand()
+        azure_cli.disk_task.Disk = mock.Mock(
+            return_value=mock.Mock()
         )
         self.task.command_args = {}
         self.task.command_args['<container>'] = 'some-container'

@@ -1,7 +1,12 @@
+# core
+from tempfile import NamedTemporaryFile
+
+# extensions
+from azure.servicemanagement import ServiceManagementService
+
+# project
 from account import Account
 from service_account import ServiceAccount
-from tempfile import NamedTemporaryFile
-from azure.servicemanagement import ServiceManagementService
 from exceptions import *
 
 class StorageAccount(Account):

@@ -1,3 +1,4 @@
+# project
 from cli import Cli
 from account import Account
 
@@ -5,8 +6,8 @@ class CliTask:
     def __init__(self):
         cli = Cli()
 
-        # load/import command module
-        self.azure = cli.load_command()
+        # load/import task module
+        self.task = cli.load_command()
 
         # get command specific args
         self.command_args = cli.get_command_args()

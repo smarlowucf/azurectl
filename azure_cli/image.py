@@ -1,15 +1,12 @@
-"""
-usage: azure-cli image list
+# core
+from tempfile import NamedTemporaryFile
 
-commands:
-    list     list available os images for account subscription
-"""
+# extensions
+from azure.servicemanagement import ServiceManagementService
 
+# project
 from exceptions import *
 from logger import Logger
-
-from azure.servicemanagement import ServiceManagementService
-from tempfile import NamedTemporaryFile
 
 class Image:
     def __init__(self, account):

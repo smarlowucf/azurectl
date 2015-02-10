@@ -1,16 +1,9 @@
-"""
-usage: azure-cli container list
-       azure-cli container content <name>
+# extensions
+from azure.storage import BlobService
 
-commands:
-    list     list available containers
-    content  list content of given container
-"""
-
+# project
 from exceptions import *
 from logger import Logger
-
-from azure.storage import BlobService
 
 class Container:
     def __init__(self, account):
