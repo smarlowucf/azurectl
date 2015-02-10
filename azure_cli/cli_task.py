@@ -5,12 +5,13 @@ class CliTask:
     def __init__(self):
         cli = Cli()
 
-        # load command module
+        # load/import command module
         self.azure = cli.load_command()
 
-        # get global and command args
-        command = cli.get_command()
+        # get command specific args
         self.command_args = cli.get_command_args()
+
+        # get global args
         self.global_args = cli.get_global_args()
         
         # get account name and config file
