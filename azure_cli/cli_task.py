@@ -4,16 +4,16 @@ from account import Account
 
 class CliTask:
     def __init__(self):
-        cli = Cli()
+        self.cli = Cli()
 
         # load/import task module
-        self.task = cli.load_command()
+        self.task = self.cli.load_command()
 
         # get command specific args
-        self.command_args = cli.get_command_args()
+        self.command_args = self.cli.get_command_args()
 
         # get global args
-        self.global_args = cli.get_global_args()
+        self.global_args = self.cli.get_global_args()
         
         # get account name and config file
         self.account_name = Account.default_account
