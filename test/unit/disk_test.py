@@ -33,7 +33,7 @@ class TestDisk:
         self.disk = Disk(account, 'some-container')
 
     @raises(AzureDiskImageNotFound)
-    def test_uppload_disk_not_found(self):
+    def test_upload_disk_not_found(self):
         self.disk.upload('some-disk-image')
 
     @raises(AzureDiskUploadError)
