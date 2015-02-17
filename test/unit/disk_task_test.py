@@ -1,3 +1,4 @@
+import sys
 import mock
 from nose.tools import *
 
@@ -6,6 +7,7 @@ from azure_cli.disk_task import DiskTask
 
 class TestDiskTask:
     def setup(self):
+        sys.argv = [sys.argv[0], 'disk', 'upload', 'image', 'container']
         self.task = DiskTask()
         azure_cli.disk_task.Disk = mock.Mock(
             return_value=mock.Mock()

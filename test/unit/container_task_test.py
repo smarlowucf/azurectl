@@ -1,3 +1,4 @@
+import sys
 import mock
 from nose.tools import *
 
@@ -6,6 +7,7 @@ from azure_cli.container_task import ContainerTask
 
 class TestContainerTask:
     def setup(self):
+        sys.argv = [sys.argv[0], 'container', 'list']
         self.task = ContainerTask()
         azure_cli.container_task.Container = mock.Mock(
             return_value=mock.Mock()

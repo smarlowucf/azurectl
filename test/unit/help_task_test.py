@@ -1,3 +1,4 @@
+import sys
 import mock
 from nose.tools import *
 
@@ -6,6 +7,7 @@ from azure_cli.help_task import HelpTask
 
 class TestHelpTask:
     def setup(self):
+        sys.argv = [sys.argv[0], 'help', 'command']
         self.task = HelpTask()
         azure_cli.help_task.Help = mock.Mock(
             return_value=mock.Mock()

@@ -1,3 +1,4 @@
+import sys
 import mock
 from nose.tools import *
 
@@ -6,6 +7,8 @@ from azure_cli.image_task import ImageTask
 
 class TestImageTask:
     def setup(self):
+        sys.argv = [sys.argv[0], 'image', 'list']
+
         self.task = ImageTask()
         azure_cli.image_task.Image = mock.Mock(
             return_value=mock.Mock()

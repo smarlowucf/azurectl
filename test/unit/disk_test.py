@@ -1,7 +1,6 @@
 import sys
 import mock
 from nose.tools import *
-from azure_cli.storage_account import StorageAccount
 from azure_cli.exceptions import *
 from azure_cli.disk import Disk
 
@@ -29,7 +28,7 @@ class FakeBlobService:
 
 class TestDisk:
     def setup(self):
-        account = StorageAccount('default', '../data/config')
+        account = mock.Mock()
         self.disk = Disk(account, 'some-container')
 
     @raises(AzureDiskImageNotFound)
