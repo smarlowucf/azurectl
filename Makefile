@@ -4,7 +4,9 @@ all:
 install:
 	python setup.py install
 
-tests:
+
+.PHONY: test
+test:
 	nosetests
 
 clean:
