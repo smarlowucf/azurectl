@@ -17,8 +17,8 @@ from container import Container
 
 class ContainerTask(CliTask):
     def process(self):
-        account = StorageAccount(self.account_name, self.config_file)
-        self.container = Container(account)
+        self.account = StorageAccount(self.account_name, self.config_file)
+        self.container = Container(self.account)
         if self.command_args['list']:
             self.__list()
         elif self.command_args['content']:
@@ -28,12 +28,16 @@ class ContainerTask(CliTask):
 
     def __list(self):
         result = DataCollector()
-        result.add('containers', self.container.list())
+        result.add(
+            'containers:' + self.account.get_name(),
+            self.container.list()
+        )
         Logger.info(result.get())
 
     def __content(self):
         result = DataCollector()
-        result.add('container_content', self.container.content(
-            self.command_args['<name>'])
+        result.add(
+            'container_content:' + self.account.get_name(),
+            self.container.content(self.command_args['<name>'])
         )
         Logger.info(result.get())
