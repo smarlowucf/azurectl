@@ -174,7 +174,8 @@ class MyCmd:
 
 azure-cli autoloads all task classes it can find which results in a little
 naming convention one has to follow. The name of the file must end with
-__*_task__
+__*_task__. In Addition there must be one method called __process()__ which
+is called to run the processing of the command and its arguments
 
 ```python
 
