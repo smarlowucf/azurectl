@@ -9,8 +9,8 @@ from exceptions import *
 from logger import Logger
 
 class Image:
-    def __init__(self, account):
-        self.account = account
+    def __init__(self, service_account):
+        self.account = service_account
 
     def list(self):
         result = []

@@ -26,6 +26,12 @@ class FakeStorageService:
         MyKeys = namedtuple('MyKeys', 'storage_service_keys')
         return MyKeys(storage_service_keys = MyPrimary(primary = 'foo'))
 
+    def list_storage_accounts(self):
+        result = []
+        MyKeys = namedtuple('MyKeys', 'service_name')
+        result.append(MyKeys(service_name = 'foo'))
+        return result
+
 
 class TestStorageAccount:
     def setup(self):
@@ -38,8 +44,11 @@ class TestStorageAccount:
             return_value=FakeStorageService()
         )
 
-    def test_get_account_name(self):
-        assert self.storage.get_account_name() == 'bob'
+    def test_get_name(self):
+        assert self.storage.get_name() == 'bob'
 
-    def test_get_account_key(self):
-        assert self.storage.get_account_key() == 'foo'
+    def test_get_key(self):
+        assert self.storage.get_key() == 'foo'
+
+    def test_list(self):
+        assert self.storage.list() == ['foo']

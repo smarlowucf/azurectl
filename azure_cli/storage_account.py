@@ -10,17 +10,27 @@ from service_account import ServiceAccount
 from exceptions import *
 
 class StorageAccount(Account):
-    def get_account_name(self):
+    def get_name(self):
         return self.read('storage_account_name')
 
-    def get_account_key(self):
+    def list(self):
         try:
-            storage_service = self.__query_service_account_for('storage_key')
+            return self.__query_service_account_for('storage_names')
+        except Exception as e:
+            raise AzureStorageListError('%s (%s)' %(type(e), str(e)))
+
+    def get_key(self, name = None):
+        try:
+            storage_service = self.__query_service_account_for(
+                'storage_key', name
+            )
             return storage_service.storage_service_keys.primary
         except Exception as e:
             raise AzureStorageKeyError('%s (%s)' %(type(e), str(e)))
 
-    def __query_service_account_for(self, topic):
+    def __query_service_account_for(self, topic, name = None):
+        if not name:
+            name = self.get_name()
         service_account = ServiceAccount(self.account_name, self.config_file)
         cert_file = NamedTemporaryFile()
         cert_file.write(service_account.get_private_key())
@@ -30,10 +40,13 @@ class StorageAccount(Account):
             service_account.get_subscription_id(),
             cert_file.name
         )
-        if topic == 'storage_accounts':
-            return service.list_storage_accounts()
+        if topic == 'storage_names':
+            result = []
+            for storage in service.list_storage_accounts():
+                result.append(storage.service_name)
+            return result
         elif topic == 'storage_key':
-            return service.get_storage_account_keys(self.get_account_name())
+            return service.get_storage_account_keys(name)
         else:
             raise AzureInternalError(
                 'StorageAccount::__query_service_account_for(invalid topic)'

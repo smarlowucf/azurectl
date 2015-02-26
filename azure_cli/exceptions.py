@@ -64,3 +64,6 @@ class AzureStorageKeyError(AzureError):
 
 class AzureInternalError(AzureError):
     pass
+
+class AzureStorageListError(AzureError):
+    pass
