@@ -19,6 +19,8 @@ class App:
            command = app.task.DiskTask()
         elif action == 'image':
             command = app.task.ImageTask()
+        elif action == 'storage':
+            command = app.task.StorageTask()
         else:
             raise AzureUnknownCommand(action)
         
