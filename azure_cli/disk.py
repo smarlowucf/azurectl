@@ -44,6 +44,10 @@ class Disk:
         self.__upload_status(0, image_size)
 
         try:
+            zero_page = None
+            with open('/dev/zero', 'rb') as zero_stream:
+                zero_page = zero_stream.read(max_chunk_size)
+
             blob_service.put_blob(
                 self.container,
                 blob_name,
@@ -75,14 +79,15 @@ class Disk:
                         length = len(data)
                         rest_bytes -= length
                         page_end = page_start + length - 1
-                        blob_service.put_page(
-                            self.container,
-                            blob_name,
-                            data,
-                            'bytes={0}-{1}'.format(page_start, page_end),
-                            'update',
-                            x_ms_lease_id=None
-                        )
+                        if not data == zero_page:
+                            blob_service.put_page(
+                                self.container,
+                                blob_name,
+                                data,
+                                'bytes={0}-{1}'.format(page_start, page_end),
+                                'update',
+                                x_ms_lease_id=None
+                            )
                         page_start += length
                         self.__upload_status(
                             page_start, image_size
