@@ -69,7 +69,7 @@ class Disk:
             )
             with open(image, 'rb') as stream:
                 rest_bytes = image_size
-                page_start      = 0
+                page_start = 0
                 while True:
                     requested_bytes = min(
                         rest_bytes, max_chunk_size
