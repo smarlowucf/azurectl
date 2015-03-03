@@ -19,7 +19,6 @@ class TestCli:
 
     def test_get_global_args(self):
         assert self.cli.get_global_args() == {
-            '--max-data-size': None,
             '--version': False,
             '--config': None,
             '--account': None,

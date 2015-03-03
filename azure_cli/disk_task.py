@@ -39,7 +39,6 @@ class DiskTask(CliTask):
         image = self.command_args['<image>']
         self.disk.upload(
             image,
-            self.global_args['--max-data-size'],
             self.global_args['--max-chunk-size']
         )
         progress.shutdown()

@@ -9,20 +9,6 @@ import azure_cli
 from collections import namedtuple
 
 class FakeBlobService:
-    def put_block_blob_from_path(
-        self, container_name, blob_name, file_path,
-        content_encoding=None, content_language=None,
-        content_md5=None, cache_control=None,
-        x_ms_blob_content_type=None,
-        x_ms_blob_content_encoding=None,
-        x_ms_blob_content_language=None,
-        x_ms_blob_content_md5=None,
-        x_ms_blob_cache_control=None,
-        x_ms_meta_name_values=None,
-        x_ms_lease_id=None, progress_callback=None
-    ):
-        raise azure.WindowsAzureMissingResourceError("fake-raise")
-
     def delete_blob(self, container, blob):
         raise azure.WindowsAzureMissingResourceError("fake-raise")
 
@@ -40,7 +26,7 @@ class TestDisk:
         azure_cli.disk.BlobService = mock.Mock(
             return_value=FakeBlobService()
         )
-        self.disk.upload('../data/config', 4096, 512)
+        self.disk.upload('../data/config', 1024)
 
     @raises(AzureDiskDeleteError)
     def test_delete(self):

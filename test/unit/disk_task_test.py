@@ -21,7 +21,7 @@ class TestDiskTask:
         self.task.command_args['upload'] = True
         self.task.process()
         self.task.disk.upload.assert_called_once_with(
-            'some-image', None, None
+            'some-image', None
         )
 
     def test_process_delete(self):
