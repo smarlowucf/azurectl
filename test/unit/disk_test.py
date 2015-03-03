@@ -40,7 +40,7 @@ class TestDisk:
         azure_cli.disk.BlobService = mock.Mock(
             return_value=FakeBlobService()
         )
-        self.disk.upload('../data/config')
+        self.disk.upload('../data/config', 4096, 512)
 
     @raises(AzureDiskDeleteError)
     def test_delete(self):
