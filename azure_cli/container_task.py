@@ -1,10 +1,8 @@
 """
 usage: azure-cli container list
-       azure-cli container content <name>
 
 commands:
     list     list available containers
-    content  list content of given container
 """
 
 # project
@@ -31,13 +29,5 @@ class ContainerTask(CliTask):
         result.add(
             'containers:' + self.account.get_name(),
             self.container.list()
-        )
-        Logger.info(result.get())
-
-    def __content(self):
-        result = DataCollector()
-        result.add(
-            'container_content:' + self.account.get_name(),
-            self.container.content(self.command_args['<name>'])
         )
         Logger.info(result.get())

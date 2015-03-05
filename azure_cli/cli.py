@@ -10,7 +10,7 @@ commands:
     help       show detailed help page for given command
     storage    list information about storage accounts
     container  list information about containers for configured storage account
-    disk       upload, delete disk images to/from a storage container
+    disk       list, upload, delete disk images to/from a storage container
     image      list, register, deregister os images
 
 global options:

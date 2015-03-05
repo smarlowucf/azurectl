@@ -20,11 +20,3 @@ class TestContainerTask:
         self.task.command_args['content'] = False
         self.task.process()
         self.task.container.list.assert_called_once_with()
-
-    def test_process_content(self):
-        self.task.command_args['list'] = False
-        self.task.command_args['content'] = True
-        self.task.process()
-        self.task.container.content.assert_called_once_with(
-            'some-container-name'
-        )
