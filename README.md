@@ -125,18 +125,18 @@ the Publish Settings file at hand.
   $ azure-cli storage list
   ```
 
-* List available containers and their contents
+* List available containers
 
   ```
   $ azure-cli container list
-  $ azure-cli container content <container>
   ```
 
-* Upload or delete disk images to the blob storage
+* List, Upload or delete disk images to the blob storage
 
   ```
   $ azure-cli disk upload <my_image> <container>
   $ azure-cli disk delete <my_image> <container>
+  $ azure-cli disk list <container>
   ```
 
 
