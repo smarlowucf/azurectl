@@ -1,22 +1,14 @@
 import sys
 import mock
+from mock import patch
 from nose.tools import *
 from azure_cli.exceptions import *
 from azure_cli.disk import Disk
 
 import azure_cli
 
-from collections import namedtuple
-
-class FakeBlobService:
-    def delete_blob(self, container, blob):
-        raise azure.WindowsAzureMissingResourceError("fake-raise")
-
 class TestDisk:
     def setup(self):
-        azure_cli.disk.XZ = mock.Mock(
-            return_value=mock.Mock()
-        )
         account = mock.Mock()
         self.disk = Disk(account, 'some-container')
 
@@ -25,10 +17,9 @@ class TestDisk:
         self.disk.upload('some-disk-image', None)
 
     @raises(AzureDiskUploadError)
-    def test_upload(self):
-        azure_cli.disk.BlobService = mock.Mock(
-            return_value=FakeBlobService()
-        )
+    @patch('azure_cli.disk.XZ.uncompressed_size')
+    def test_upload(self, mock_uncompressed_size):
+        mock_uncompressed_size.return_value = 1024
         self.disk.upload('../data/config', None, 1024)
 
     @raises(AzureDiskDeleteError)

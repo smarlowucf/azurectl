@@ -35,7 +35,6 @@ class FakeStorageService:
 
 class TestStorageAccount:
     def setup(self):
-        MyStruct = namedtuple("MyStruct", "primary")
         self.storage = StorageAccount('default', '../data/config')
         azure_cli.storage_account.ServiceAccount = mock.Mock(
             return_value=FakeServiceAccount()
