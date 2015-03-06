@@ -46,6 +46,12 @@ class Disk:
         image_size = XZ.uncompressed_size(image)
         self.__upload_status(0, image_size)
 
+        # PageBlob must be 512 byte aligned
+        remainder = image_size % 512
+        if remainder != 0:
+            raise AzurePageBlobAlignmentViolation(
+                "Uncompressed size %d is not 512 byte aligned" % image_size
+            )
         try:
             blob_service.put_blob(
                 self.container,

@@ -67,3 +67,6 @@ class AzureInternalError(AzureError):
 
 class AzureStorageListError(AzureError):
     pass
+
+class AzurePageBlobAlignmentViolation(AzureError):
+    pass
