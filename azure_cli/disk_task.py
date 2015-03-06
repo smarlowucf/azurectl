@@ -1,12 +1,16 @@
 """
-usage: azure-cli disk upload <image> <container>
-       azure-cli disk delete <image> <container>
+usage: azure-cli disk upload <XZ-compressed-image> <container>
+           [--name=<target_name>]
+       azure-cli disk delete <name> <container>
        azure-cli disk list <container>
 
 commands:
     upload   upload image to the given container
     delete   delete image in the given container
     list     list content of given container
+
+options:
+    --name=<target_name>   set the target name for the container, if not set the target name is set to the basename of the image file
 """
 
 # extensions
@@ -42,16 +46,16 @@ class DiskTask(CliTask):
         progress.add_interval_job(
             self.disk.print_upload_status, seconds = 2
         )
-        image = self.command_args['<image>']
+        image = self.command_args['<XZ-compressed-image>']
         self.disk.upload(
-            image,
+            image, self.command_args['--name'],
             self.global_args['--max-chunk-size']
         )
         progress.shutdown()
         Logger.info('Uploaded %s' % image)
 
     def __delete(self):
-        image = self.command_args['<image>']
+        image = self.command_args['<name>']
         self.disk.delete(image)
         Logger.info('Deleted %s' % image)
 

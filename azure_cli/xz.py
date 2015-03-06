@@ -1,12 +1,8 @@
 import lzma
+import subprocess
 
 class XZ:
     lzma_stream_buffer = 8192
-
-    @classmethod
-    def open(self, file_name, buffer_size = lzma_stream_buffer):
-        self.lzma_stream = open(file_name, 'rb')
-        return XZ(self.lzma_stream, buffer_size)
 
     def __enter__(self):
         return self
@@ -16,7 +12,7 @@ class XZ:
 
     def __init__(self, lzma_stream, buffer_size = lzma_stream_buffer):
         self.lzma_stream = lzma_stream
-        self.buffer_size = buffer_size
+        self.buffer_size = int(buffer_size)
         self.lzma = lzma.LZMADecompressor()
         self.finished = False
 
@@ -52,3 +48,21 @@ class XZ:
                     # requested size unpacked
                     break
         return chunks
+
+    @classmethod
+    def open(self, file_name, buffer_size = lzma_stream_buffer):
+        self.lzma_stream = open(file_name, 'rb')
+        return XZ(self.lzma_stream, buffer_size)
+
+    @classmethod
+    def uncompressed_size(self, file_name):
+        xz_info = subprocess.Popen(
+            ['xz', '--robot', '--list', file_name],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
+        )
+        output, error = xz_info.communicate()
+        if xz_info.returncode != 0:
+            raise AssertionError
+        total = output.strip().split('\n').pop()
+        return int(total.split()[4])

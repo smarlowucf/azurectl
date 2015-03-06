@@ -5,6 +5,7 @@ import os
 from azure.storage import BlobService
 
 # project
+from xz import XZ
 from exceptions import *
 from logger import Logger
 
@@ -28,11 +29,13 @@ class Disk:
         self.container    = container
         self.upload_status = {'current_bytes': 0, 'total_bytes': 0}
 
-    def upload(self, image, max_chunk_size=None):
+    def upload(self, image, name, max_chunk_size=None):
         if not os.path.exists(image):
             raise AzureDiskImageNotFound("Image file %s not found" % image)
         blob_service = BlobService(self.account_name, self.account_key)
-        blob_name = os.path.basename(image)
+        blob_name = name
+        if not blob_name:
+            blob_name = os.path.basename(image)
 
         if not max_chunk_size:
             # BLOB_MAX_CHUNK_DATA_SIZE = 4 MB
@@ -40,14 +43,10 @@ class Disk:
 
         max_chunk_size = int(max_chunk_size)
 
-        image_size = os.path.getsize(image)
+        image_size = XZ.uncompressed_size(image)
         self.__upload_status(0, image_size)
 
         try:
-            zero_page = None
-            with open('/dev/zero', 'rb') as zero_stream:
-                zero_page = zero_stream.read(max_chunk_size)
-
             blob_service.put_blob(
                 self.container,
                 blob_name,
@@ -67,13 +66,19 @@ class Disk:
                 image_size,
                 self.x_ms_blob_sequence_number
             )
-            with open(image, 'rb') as stream:
+        except Exception as e:
+            raise AzureDiskUploadError('%s (%s)' %(type(e), str(e)))
+        try:
+            with XZ.open(image) as stream:
                 rest_bytes = image_size
                 page_start = 0
                 while True:
                     requested_bytes = min(
                         rest_bytes, max_chunk_size
                     )
+                    zero_page = None
+                    with open('/dev/zero', 'rb') as zero_stream:
+                        zero_page = zero_stream.read(requested_bytes)
                     data = stream.read(requested_bytes)
                     if data:
                         length = len(data)
@@ -93,6 +98,9 @@ class Disk:
                             page_start, image_size
                         )
                     else:
+                        self.__upload_status(
+                            image_size, image_size
+                        )
                         break
         except Exception as e:
             raise AzureDiskUploadError('%s (%s)' %(type(e), str(e)))

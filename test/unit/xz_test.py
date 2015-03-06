@@ -8,3 +8,6 @@ class TestXZ:
 
     def test_read(self):
         assert self.xz.read(128) == 'foo'
+
+    def test_uncompressed_size(self):
+        assert XZ.uncompressed_size('../data/blob.xz') == 4
