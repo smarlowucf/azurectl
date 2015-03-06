@@ -20,7 +20,7 @@ class FakeServiceAccount:
         return 'foo'
 
 
-class FakeStorageService:
+class FakeServiceManagementService:
     def get_storage_account_keys(self, account):
         MyPrimary = namedtuple('MyPrimary', 'primary')
         MyKeys = namedtuple('MyKeys', 'storage_service_keys')
@@ -40,7 +40,7 @@ class TestStorageAccount:
             return_value=FakeServiceAccount()
         )
         azure_cli.storage_account.ServiceManagementService = mock.Mock(
-            return_value=FakeStorageService()
+            return_value=FakeServiceManagementService()
         )
 
     def test_get_name(self):
