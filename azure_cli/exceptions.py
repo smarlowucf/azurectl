@@ -59,14 +59,14 @@ class AzureSubscriptionIdNotFound(AzureError):
 class AzureManagementCertificateNotFound(AzureError):
     pass
 
-class AzureStorageKeyError(AzureError):
-    pass
-
 class AzureInternalError(AzureError):
     pass
 
-class AzureStorageListError(AzureError):
+class AzurePageBlobAlignmentViolation(AzureError):
     pass
 
-class AzurePageBlobAlignmentViolation(AzureError):
+class AzureServiceManagementError(AzureError):
+    pass
+
+class AzureStorageListError(AzureError):
     pass

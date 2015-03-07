@@ -6,9 +6,9 @@ from exceptions import *
 from logger import Logger
 
 class Container:
-    def __init__(self, storage_account):
-        self.account_name = storage_account.get_name()
-        self.account_key  = storage_account.get_key()
+    def __init__(self, account):
+        self.account_name = account.storage_name()
+        self.account_key  = account.storage_key()
 
     def list(self):
         result = []

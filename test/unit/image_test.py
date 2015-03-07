@@ -2,7 +2,7 @@ import sys
 import mock
 from mock import patch
 from nose.tools import *
-from azure_cli.service_account import ServiceAccount
+from azure_cli.azure_account import AzureAccount
 from azure_cli.exceptions import *
 from azure_cli.image import Image
 
@@ -26,10 +26,14 @@ class TestImage:
             affinity_group = 'ok',
             media_link     = 'url'
         )]
-
-        account = ServiceAccount('default', '../data/config')
-        account.get_private_key = mock.Mock(return_value='abc')
-        account.get_cert = mock.Mock(return_value='abc')
+        account = AzureAccount('default', '../data/config')
+        account.publishsettings = mock.Mock(
+            return_value={
+                'private_key': 'abc',
+                'certificate': 'abc',
+                'subscription_id': 'abc'
+            }
+        )
         self.image = Image(account)
 
     @patch('azure_cli.image.ServiceManagementService.list_os_images')

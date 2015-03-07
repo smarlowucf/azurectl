@@ -10,7 +10,7 @@ from exceptions import *
 from logger import Logger
 
 class Disk:
-    def __init__(self, storage_account, container):
+    def __init__(self, account, container):
         self.content_encoding           = None
         self.content_language           = None
         self.content_md5                = None
@@ -24,8 +24,8 @@ class Disk:
         self.x_ms_lease_id              = None
         self.x_ms_blob_sequence_number  = None
 
-        self.account_name = storage_account.get_name()
-        self.account_key  = storage_account.get_key()
+        self.account_name = account.storage_name()
+        self.account_key  = account.storage_key()
         self.container    = container
         self.upload_status = {'current_bytes': 0, 'total_bytes': 0}
 

@@ -7,7 +7,7 @@ commands:
 
 # project
 from cli_task import CliTask
-from storage_account import StorageAccount
+from azure_account import AzureAccount
 from data_collector import DataCollector
 from logger import Logger
 from exceptions import *
@@ -15,7 +15,7 @@ from container import Container
 
 class ContainerTask(CliTask):
     def process(self):
-        self.account = StorageAccount(self.account_name, self.config_file)
+        self.account = AzureAccount(self.account_name, self.config_file)
         self.container = Container(self.account)
         if self.command_args['list']:
             self.__list()
@@ -27,7 +27,7 @@ class ContainerTask(CliTask):
     def __list(self):
         result = DataCollector()
         result.add(
-            'containers:' + self.account.get_name(),
+            'containers:' + self.account.storage_name(),
             self.container.list()
         )
         Logger.info(result.get())

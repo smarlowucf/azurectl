@@ -10,6 +10,13 @@ import azure_cli
 class TestDisk:
     def setup(self):
         account = mock.Mock()
+        account.publishsettings = mock.Mock(
+            return_value={
+                'private_key': 'abc',
+                'certificate': 'abc',
+                'subscription_id': 'abc'
+            }
+        )
         self.disk = Disk(account, 'some-container')
 
     @raises(AzureDiskImageNotFound)

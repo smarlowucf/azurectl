@@ -2,7 +2,6 @@ import sys
 import mock
 from mock import patch
 from nose.tools import *
-from azure_cli.storage_account import StorageAccount
 from azure_cli.exceptions import *
 from azure_cli.container import Container
 
@@ -12,21 +11,26 @@ from collections import namedtuple
 
 class TestContainer:
     def setup(self):
-        MyStruct = namedtuple("MyStruct", "name")
-        self.list_blobs = [MyStruct(name = "a"), MyStruct(name = "b")]
-        self.list_containers = [MyStruct(name = "a"), MyStruct(name = "b")]
 
-        account = StorageAccount('default', '../data/config')
-        StorageAccount.get_key = mock.Mock(return_value='foo')
+        name = namedtuple("name", "name")
+        self.name_list = [name(name = "a"), name(name = "b")]
+        account = mock.Mock()
+        account.publishsettings = mock.Mock(
+            return_value={
+                'private_key': 'abc',
+                'certificate': 'abc',
+                'subscription_id': 'abc'
+            }
+        )
         self.container = Container(account)
 
     @patch('azure_cli.container.BlobService.list_containers')
     def test_list(self, mock_list_containers):
-        mock_list_containers.return_value = self.list_containers
+        mock_list_containers.return_value = self.name_list
         assert self.container.list() == ['a', 'b']
 
     @patch('azure_cli.container.BlobService.list_blobs')
     def test_content(self, mock_list_blobs):
-        mock_list_blobs.return_value = self.list_blobs
+        mock_list_blobs.return_value = self.name_list
         assert self.container.content('some-container') == \
             {'some-container': ['a', 'b']}

@@ -9,17 +9,18 @@ from exceptions import *
 from logger import Logger
 
 class Image:
-    def __init__(self, service_account):
-        self.account = service_account
+    def __init__(self, account):
+        self.account = account
 
     def list(self):
         result = []
         cert_file = NamedTemporaryFile()
-        cert_file.write(self.account.get_private_key())
-        cert_file.write(self.account.get_cert())
+        publishsettings = self.account.publishsettings()
+        cert_file.write(publishsettings['private_key'])
+        cert_file.write(publishsettings['certificate'])
         cert_file.flush()
         service = ServiceManagementService(
-            self.account.get_subscription_id(),
+            publishsettings['subscription_id'],
             cert_file.name
         )
         try:

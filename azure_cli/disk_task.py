@@ -18,7 +18,7 @@ from apscheduler.scheduler import Scheduler
 
 # project
 from cli_task import CliTask
-from storage_account import StorageAccount
+from azure_account import AzureAccount
 from data_collector import DataCollector
 from logger import Logger
 from exceptions import *
@@ -28,7 +28,7 @@ from container import Container
 class DiskTask(CliTask):
     def process(self):
         container_name = self.command_args['<container>']
-        self.account = StorageAccount(self.account_name, self.config_file)
+        self.account = AzureAccount(self.account_name, self.config_file)
         self.disk = Disk(self.account, container_name)
         self.container = Container(self.account)
         if self.command_args['upload']:
@@ -62,7 +62,7 @@ class DiskTask(CliTask):
     def __list(self, container_name):
         result = DataCollector()
         result.add(
-            'container_content:' + self.account.get_name(),
+            'container_content:' + self.account.storage_name(),
             self.container.content(container_name)
         )
         Logger.info(result.get())
