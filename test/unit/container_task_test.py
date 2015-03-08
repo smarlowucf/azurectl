@@ -1,5 +1,6 @@
 import sys
 import mock
+from mock import patch
 from nose.tools import *
 
 import azure_cli
@@ -15,7 +16,8 @@ class TestContainerTask:
         self.task.command_args = {}
         self.task.command_args['<name>'] = 'some-container-name'
 
-    def test_process_list(self):
+    @patch('azure_cli.data_collector.json')
+    def test_process_list(self, mock_json):
         self.task.command_args['list'] = True
         self.task.command_args['content'] = False
         self.task.process()

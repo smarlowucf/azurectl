@@ -1,5 +1,6 @@
 import sys
 import mock
+from mock import patch
 from nose.tools import *
 
 import azure_cli
@@ -39,7 +40,8 @@ class TestDiskTask:
             'some-blob'
         )
 
-    def test_process_list(self):
+    @patch('azure_cli.data_collector.json')
+    def test_process_list(self, mock_json):
         self.task.command_args['delete'] = False
         self.task.command_args['upload'] = False
         self.task.command_args['list']   = True

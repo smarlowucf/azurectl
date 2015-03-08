@@ -65,4 +65,4 @@ class DiskTask(CliTask):
             self.account.storage_name() + ':container_content',
             self.container.content(container_name)
         )
-        Logger.info(result.get())
+        Logger.info(result.json(), 'Disk')

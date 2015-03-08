@@ -1,5 +1,6 @@
 import sys
 import mock
+from mock import patch
 from nose.tools import *
 
 import azure_cli
@@ -13,7 +14,8 @@ class TestStorageTask:
             return_value=mock.Mock()
         )
 
-    def test_process_list(self):
+    @patch('azure_cli.data_collector.json')
+    def test_process_list(self, mock_json):
         self.task.command_args['list'] = True
         self.task.process()
         self.task.storage.list.assert_called_once_with()

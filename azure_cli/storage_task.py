@@ -25,4 +25,4 @@ class StorageTask(CliTask):
     def __list(self):
         result = DataCollector()
         result.add('storage_names', self.storage.list())
-        Logger.info(result.get())
+        Logger.info(result.json(), 'Storage')

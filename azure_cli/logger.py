@@ -1,12 +1,12 @@
 class Logger:
     @classmethod
-    def info(self, message):
-        print Logger._print(message)
+    def info(self, message, message_type='INFO'):
+        print Logger._print(message, message_type)
 
     @classmethod
-    def error(self, message):
-        print Logger._print(message, 'ERROR')
+    def error(self, message, message_type='ERROR'):
+        print Logger._print(message, message_type)
 
     @classmethod
-    def _print(self, message, type='INFO'):
-        return type + ': ' + str(message)
+    def _print(self, message, message_type):
+        return message_type + ': ' + str(message)

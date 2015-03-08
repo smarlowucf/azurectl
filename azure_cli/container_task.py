@@ -30,4 +30,4 @@ class ContainerTask(CliTask):
             self.account.storage_name() + ':containers',
             self.container.list()
         )
-        Logger.info(result.get())
+        Logger.info(result.json(), 'Container')

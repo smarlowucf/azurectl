@@ -23,4 +23,4 @@ class ImageTask(CliTask):
     def __list(self):
         result = DataCollector()
         result.add('images', self.image.list())
-        Logger.info(result.get())
+        Logger.info(result.json(), 'Image')

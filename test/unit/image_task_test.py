@@ -1,5 +1,6 @@
 import sys
 import mock
+from mock import patch
 from nose.tools import *
 
 import azure_cli
@@ -16,6 +17,7 @@ class TestImageTask:
         self.task.command_args = {}
         self.task.command_args['list'] = True
 
-    def test_process(self):
+    @patch('azure_cli.data_collector.json')
+    def test_process(self, mock_json):
         self.task.process()
         self.task.image.list.assert_called_once_with()
