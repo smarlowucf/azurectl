@@ -2,7 +2,7 @@
 usage: azure-cli container list
 
 commands:
-    list     list available containers
+    list     list available containers in configured storage account
 """
 
 # project
@@ -27,7 +27,7 @@ class ContainerTask(CliTask):
     def __list(self):
         result = DataCollector()
         result.add(
-            'containers:' + self.account.storage_name(),
+            self.account.storage_name() + ':containers',
             self.container.list()
         )
         Logger.info(result.get())

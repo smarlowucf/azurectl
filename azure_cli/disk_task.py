@@ -7,7 +7,7 @@ usage: azure-cli disk upload <XZ-compressed-image> <container>
 commands:
     upload   upload image to the given container
     delete   delete image in the given container
-    list     list content of given container
+    list     list content of given container for configured storage account
 
 options:
     --name=<target_name>   set the target name for the container, if not set the target name is set to the basename of the image file
@@ -62,7 +62,7 @@ class DiskTask(CliTask):
     def __list(self, container_name):
         result = DataCollector()
         result.add(
-            'container_content:' + self.account.storage_name(),
+            self.account.storage_name() + ':container_content',
             self.container.content(container_name)
         )
         Logger.info(result.get())
