@@ -1,5 +1,6 @@
 """
 usage: azure-cli disk upload <XZ-compressed-image> <container>
+           [--max-chunk-size=<size>]
            [--name=<target_name>]
        azure-cli disk delete <name> <container>
        azure-cli disk list <container>
@@ -10,7 +11,8 @@ commands:
     list     list content of given container for configured storage account
 
 options:
-    --name=<target_name>   set the target name for the container, if not set the target name is set to the basename of the image file
+    --max-chunk-size=<size>  max chunk byte size for disk upload
+    --name=<target_name>     set the target name for the container, if not set the target name is set to the basename of the image file
 """
 
 # extensions
@@ -49,7 +51,7 @@ class DiskTask(CliTask):
         image = self.command_args['<XZ-compressed-image>']
         self.disk.upload(
             image, self.command_args['--name'],
-            self.global_args['--max-chunk-size']
+            self.command_args['--max-chunk-size']
         )
         progress.shutdown()
         Logger.info('Uploaded %s' % image)

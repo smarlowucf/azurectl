@@ -3,7 +3,6 @@ usage:
     azure-cli -h | --help
     azure-cli -v | --version
     azure-cli [--config=<file>] [--account=<name>]
-              [--max-chunk-size=<size>]
               <command> [<args>...]
 
 commands:
@@ -18,7 +17,6 @@ global options:
     -v, --version
     --config=<file>          config file, default is: ~/.azure_cli/config
     --account=<name>         account name in config file, default is: default
-    --max-chunk-size=<size>  max chunk byte size in a blob disk upload
 """
 # core
 import importlib

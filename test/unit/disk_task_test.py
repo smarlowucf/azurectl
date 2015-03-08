@@ -19,6 +19,7 @@ class TestDiskTask:
         self.task.command_args = {}
         self.task.command_args['<container>'] = 'some-container'
         self.task.command_args['<XZ-compressed-image>'] = 'some-image'
+        self.task.command_args['--max-chunk-size'] = 1024
         self.task.command_args['<name>'] = 'some-blob'
         self.task.command_args['--name'] = None
 
@@ -28,7 +29,7 @@ class TestDiskTask:
         self.task.command_args['list']   = False
         self.task.process()
         self.task.disk.upload.assert_called_once_with(
-            'some-image', None, None
+            'some-image', None, 1024
         )
 
     def test_process_delete(self):

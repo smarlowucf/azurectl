@@ -22,7 +22,6 @@ class TestCli:
             '--version': False,
             '--config': None,
             '--account': None,
-            '--max-chunk-size': None,
             '--help': False
         }
 
