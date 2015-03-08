@@ -1,3 +1,6 @@
+# core
+from collections import namedtuple
+
 # extensions
 from xml.dom import minidom
 from OpenSSL.crypto import *
@@ -19,22 +22,26 @@ class AzureAccount(Account):
         return self.__query_account_for('storage_names')
 
     def publishsettings(self):
-        result = {}
+        credentials = namedtuple('credentials',
+            ['private_key', 'certificate', 'subscription_id']
+        )
         p12 = self.__read_p12()
-        result['private_key'] = self.__get_private_key()
-        result['certificate'] = self.__get_certificate()
-        result['subscription_id'] = self.__get_subscription_id()
+        result = credentials(
+            private_key = self.__get_private_key(),
+            certificate = self.__get_certificate(),
+            subscription_id = self.__get_subscription_id()
+        )
         return result
 
     def __query_account_for(self, topic, name=None):
         publishsettings = self.publishsettings()
         cert_file = NamedTemporaryFile()
-        cert_file.write(publishsettings['private_key'])
-        cert_file.write(publishsettings['certificate'])
+        cert_file.write(publishsettings.private_key)
+        cert_file.write(publishsettings.certificate)
         cert_file.flush()
         try:
             service = ServiceManagementService(
-                publishsettings['subscription_id'],
+                publishsettings.subscription_id,
                 cert_file.name
             )
         except Exception as e:

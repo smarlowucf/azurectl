@@ -16,11 +16,11 @@ class Image:
         result = []
         cert_file = NamedTemporaryFile()
         publishsettings = self.account.publishsettings()
-        cert_file.write(publishsettings['private_key'])
-        cert_file.write(publishsettings['certificate'])
+        cert_file.write(publishsettings.private_key)
+        cert_file.write(publishsettings.certificate)
         cert_file.flush()
         service = ServiceManagementService(
-            publishsettings['subscription_id'],
+            publishsettings.subscription_id,
             cert_file.name
         )
         try:

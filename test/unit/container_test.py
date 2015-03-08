@@ -11,16 +11,18 @@ from collections import namedtuple
 
 class TestContainer:
     def setup(self):
-
         name = namedtuple("name", "name")
         self.name_list = [name(name = "a"), name(name = "b")]
         account = mock.Mock()
+        credentials = namedtuple('credentials',
+            ['private_key', 'certificate', 'subscription_id']
+        )
         account.publishsettings = mock.Mock(
-            return_value={
-                'private_key': 'abc',
-                'certificate': 'abc',
-                'subscription_id': 'abc'
-            }
+            return_value = credentials(
+                private_key = 'abc',
+                certificate = 'abc',
+                subscription_id = '4711'
+            )
         )
         self.container = Container(account)
 

@@ -12,11 +12,14 @@ from collections import namedtuple
 class TestAzureAccount:
     def setup(self):
         self.account = AzureAccount('default', '../data/config')
-        self.publishsettings = {
-            'private_key': 'abc',
-            'certificate': 'abc',
-            'subscription_id': '4711'
-        }
+        credentials = namedtuple('credentials',
+            ['private_key', 'certificate', 'subscription_id']
+        )
+        self.publishsettings = credentials(
+            private_key = 'abc',
+            certificate = 'abc',
+            subscription_id = '4711'
+        )
         azure_cli.azure_account.load_pkcs12 = mock.Mock()
 
 

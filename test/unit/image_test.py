@@ -27,25 +27,19 @@ class TestImage:
             media_link     = 'url'
         )]
         account = AzureAccount('default', '../data/config')
+        credentials = namedtuple('credentials',
+            ['private_key', 'certificate', 'subscription_id']
+        )
         account.publishsettings = mock.Mock(
-            return_value={
-                'private_key': 'abc',
-                'certificate': 'abc',
-                'subscription_id': 'abc'
-            }
+            return_value = credentials(
+                private_key = 'abc',
+                certificate = 'abc',
+                subscription_id = '4711'
+            )
         )
         self.image = Image(account)
 
     @patch('azure_cli.image.ServiceManagementService.list_os_images')
     def test_list(self, mock_list_os_images):
         mock_list_os_images.return_value = self.list_os_images
-        assert self.image.list() == [{
-            'name': 'some-name',
-            'label': 'bob',
-            'os': 'linux',
-            'category': 'cloud',
-            'description': 'nice',
-            'location': 'here',
-            'affinity_group': 'ok',
-            'media_link': 'url'
-        }]
+        assert self.image.list() == [self.list_os_images.pop()._asdict()]
