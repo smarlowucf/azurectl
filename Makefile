@@ -3,6 +3,7 @@ all:
 
 install:
 	python setup.py install
+	cp completion/azure-cli.sh /etc/bash_completion.d
 
 
 .PHONY: test
