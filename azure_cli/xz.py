@@ -1,5 +1,11 @@
-import lzma
+# core
 import subprocess
+
+# extensions
+import lzma
+
+# project
+from exceptions import *
 
 class XZ:
     lzma_stream_buffer = 8192
@@ -63,6 +69,6 @@ class XZ:
         )
         output, error = xz_info.communicate()
         if xz_info.returncode != 0:
-            raise AssertionError
+            raise AzureXZError('xz: %s' %error)
         total = output.strip().split('\n').pop()
         return int(total.split()[4])

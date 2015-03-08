@@ -70,3 +70,6 @@ class AzureServiceManagementError(AzureError):
 
 class AzureStorageListError(AzureError):
     pass
+
+class AzureXZError(AzureError):
+    pass
