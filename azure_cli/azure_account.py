@@ -9,11 +9,11 @@ from azure.servicemanagement import ServiceManagementService
 
 # project
 from exceptions import *
-from account import Account
+from config import Config
 
 class AzureAccount:
     def __init__(self, account_name=None, filename=None):
-        self.config = Account(account_name, filename)
+        self.config = Config(account_name, filename)
 
     def storage_name(self):
         return self.config.read('storage_account_name')

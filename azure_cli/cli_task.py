@@ -1,6 +1,6 @@
 # project
 from cli import Cli
-from account import Account
+from config import Config
 
 class CliTask:
     def __init__(self):
@@ -16,8 +16,8 @@ class CliTask:
         self.global_args = self.cli.get_global_args()
         
         # get account name and config file
-        self.account_name = Account.default_account
-        self.config_file = Account.default_config
+        self.account_name = Config.default_account
+        self.config_file = Config.default_config
         if self.global_args['--account']:
             self.account_name = self.global_args['--account']
         if self.global_args['--config']:

@@ -7,7 +7,7 @@ import ConfigParser
 # project
 from exceptions import *
 
-class Account:
+class Config:
     default_config  = os.environ['HOME'] + '/.azure_cli/config'
     default_account = 'default'
 
