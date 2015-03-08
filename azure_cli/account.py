@@ -11,15 +11,15 @@ class Account:
     default_config  = os.environ['HOME'] + '/.azure_cli/config'
     default_account = 'default'
 
-    def __init__(self, account=default_account, filename=default_config):
+    def __init__(self, account_name=default_account, filename=default_config):
         config = ConfigParser.ConfigParser()
         if not os.path.isfile(filename):
             raise AzureAccountLoadFailed('no such config file %s' % filename)
         config.read(filename)
-        if not config.has_section(account):
-            raise AzureAccountNotFound("Account %s not found" % account)
+        if not config.has_section(account_name):
+            raise AzureAccountNotFound("Account %s not found" % account_name)
         self.config  = config
-        self.account_name = account
+        self.account_name = account_name
         self.config_file  = filename
 
     def read(self, option):

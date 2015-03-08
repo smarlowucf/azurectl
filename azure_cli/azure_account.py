@@ -11,9 +11,12 @@ from azure.servicemanagement import ServiceManagementService
 from exceptions import *
 from account import Account
 
-class AzureAccount(Account):
+class AzureAccount:
+    def __init__(self, account_name=None, filename=None):
+        self.config = Account(account_name, filename)
+
     def storage_name(self):
-        return self.read('storage_account_name')
+        return self.config.read('storage_account_name')
 
     def storage_key(self, name = None):
         return self.__query_account_for('storage_key', name)
@@ -86,7 +89,7 @@ class AzureAccount(Account):
             )
 
     def __read_xml(self):
-        self.settings = self.read('publishsettings')
+        self.settings = self.config.read('publishsettings')
         return minidom.parse(self.settings)
 
     def __read_p12(self):
