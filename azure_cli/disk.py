@@ -52,7 +52,10 @@ class Disk:
             raise AzurePageBlobAlignmentViolation(
                 "Uncompressed size %d is not 512 byte aligned" % image_size
             )
+        zero_page = None
         try:
+            with open('/dev/zero', 'rb') as zero_stream:
+                zero_page = zero_stream.read(max_chunk_size)
             blob_service.put_blob(
                 self.container,
                 blob_name,
@@ -82,9 +85,9 @@ class Disk:
                     requested_bytes = min(
                         rest_bytes, max_chunk_size
                     )
-                    zero_page = None
-                    with open('/dev/zero', 'rb') as zero_stream:
-                        zero_page = zero_stream.read(requested_bytes)
+                    if requested_bytes != max_chunk_size:
+                        with open('/dev/zero', 'rb') as zero_stream:
+                            zero_page = zero_stream.read(requested_bytes)
                     data = stream.read(requested_bytes)
                     if data:
                         length = len(data)
