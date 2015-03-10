@@ -16,7 +16,7 @@ options:
 """
 
 # extensions
-from apscheduler.scheduler import Scheduler
+from apscheduler.schedulers.background import BackgroundScheduler
 
 # project
 from cli_task import CliTask
@@ -43,17 +43,20 @@ class DiskTask(CliTask):
             raise AzureUnknownDiskCommand(self.command_args)
 
     def __upload(self):
-        progress = Scheduler()
+        progress = BackgroundScheduler()
+        progress.add_job(
+            self.disk.print_upload_status, 'interval', seconds=3
+        )
         progress.start()
-        progress.add_interval_job(
-            self.disk.print_upload_status, seconds = 2
-        )
-        image = self.command_args['<XZ-compressed-image>']
-        self.disk.upload(
-            image, self.command_args['--name'],
-            self.command_args['--max-chunk-size']
-        )
-        progress.shutdown()
+        try:
+            image = self.command_args['<XZ-compressed-image>']
+            self.disk.upload(
+                image, self.command_args['--name'],
+                self.command_args['--max-chunk-size']
+            )
+            progress.shutdown()
+        except (KeyboardInterrupt):
+            progress.shutdown()
         Logger.info('Uploaded %s' % image)
 
     def __delete(self):
