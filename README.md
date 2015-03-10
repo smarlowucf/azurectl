@@ -158,8 +158,8 @@ The following is a simple template to illustrate the coding process
 from exceptions import *
 
 class MyCmd:
-    def __init__(self, storage_account):
-        self.account = storage_account
+    def __init__(self, account):
+        self.account = account
 
     def dig_for_gold(self):
         try:
@@ -187,7 +187,7 @@ commands:
 """
 
 from cli_task import CliTask
-from storage_account import StorageAccount
+from azure_account import AzureAccount
 from data_collector import DataCollector
 from logger import Logger
 from exceptions import *
@@ -195,12 +195,12 @@ from mycmd import MyCmd
 
 class MyCmdTask(CliTask):
     def process(self):
-        account = StorageAccount(self.account_name, self.config_file)
-        self.mycmd = MyCmd(account)
+        self.account = AzureAccount(self.account_name, self.config_file)
+        self.mycmd = MyCmd(self.account)
         if self.command_args['dig-for-gold']:
             result = DataCollector()
             result.add('nuggets', self.mycmd.dig_for_gold())
-            Logger.info(result.get())
+            Logger.info(result.json(), 'GoldDigger')
         else
             raise AzureUnknownCommand(self.command_args)
 
@@ -215,48 +215,7 @@ elif action == 'mycmd':
     command = app.task.MyCmdTask()
 ```
 
-## Write up test: mycmd_test.py
+## Write tests: mycmd_test.py, mycmd_task_test.py
 
-```python
-import mock
-from nose.tools import *
-from azure_cli.storage_account import StorageAccount
-from azure_cli.exceptions import *
-from azure_cli.mycmd import MyCmd
-
-import azure_cli
-
-class TestMyCmd:
-    def setup(self):
-        account = StorageAccount('default', '../data/config')
-        account.default_account = 'Kansas'
-        self.mycmd = MyCmd(account)
-
-    def test_dig_for_gold(self):
-        assert self.mycmd.dig_for_gold() == "no gold found in: Kansas"
-```
-
-## Write up test: mycmd_task_test.py
-
-```python
-import sys
-import mock
-from nose.tools import *
-
-import azure_cli
-from azure_cli.mycmd_task import MyCmdTask
-
-class TestMyCmdTask:
-    def setup(self):
-        sys.argv = [sys.argv[0], 'mycmd', 'dig-for-gold']
-        self.task = MyCmdTask()
-        azure_cli.mycmd_task.MyCmd = mock.Mock(
-            return_value=mock.Mock()
-        )
-
-    def test_process_dig_for_gold(self):
-        self.task.command_args['dig-for-gold'] = True
-        self.task.process()
-        self.task.mycmd.dig_for_gold.assert_called_once_with()
-```
-
+Tests are written using the nose testing framework. Please refer to
+the `test/unit` directory to see current implementations
