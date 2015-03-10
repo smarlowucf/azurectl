@@ -17,6 +17,7 @@ options:
 
 # extensions
 from apscheduler.schedulers.background import BackgroundScheduler
+from pytz import utc
 
 # project
 from cli_task import CliTask
@@ -43,7 +44,7 @@ class DiskTask(CliTask):
             raise AzureUnknownDiskCommand(self.command_args)
 
     def __upload(self):
-        progress = BackgroundScheduler()
+        progress = BackgroundScheduler(timezone=utc)
         progress.add_job(
             self.disk.print_upload_status, 'interval', seconds=3
         )
