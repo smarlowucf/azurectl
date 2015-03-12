@@ -99,6 +99,17 @@ files. Such a file contains all keys and the subscription id for a specific
 account in Azure. Before you can use azure-cli you need to make sure to have
 the Publish Settings file at hand.
 
+To download the publishsettings file for your account visit
+https://manage.windowsazure.com/publishsettings If you are already
+logged in, the publishsettings file for the corresponding account
+will be offered as download, otherwise you will be redirected to
+the login page and need to login with your azure account.
+
+Please note if you have multiple accounts for Azure and you're already logged
+in, check if you're logged in with the correct account (the one you want
+to download the publishsettings file for). If you're logged in with
+another account, log out first.
+
 #### Examples
 
 * Get short help
