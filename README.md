@@ -27,17 +27,17 @@ packaging and maintenance work
 According to that we were searching for alternative solutions and
 found that Microsoft provides and maintains an
 [SDK for python](https://github.com/Azure/azure-sdk-for-python)
-for their service. Providing the azure-cli commandline utility based
+for their service. Providing the azure-cli command line utility based
 on the SDK and written in python seemed to be a more
 maintainable solution.
 
 In order to provide an easy to maintain and extensible utility the
-following basic concepts applies:
+following basic concepts apply:
 
 * Code is covered by tests using the
   [nose](https://nose.readthedocs.org/en/latest) framework
 
-* Commandline parsing is done as stacked solution. Each command
+* Command line parsing is done as stacked solution. Each command
   defines its usage and hooks into the global program by using the
   [docopt](http://docopt.org) module. Adding new commands is made
   easy by simple interfaces and loosely coupled objects
@@ -89,8 +89,8 @@ storage_account_name = some-storage
 publishsettings = path-to-publish-settings-file
 ```
 
-* Selecting the account is done by the __--account__ switch
-* Selecting the config file is done by the __--config__ switch
+* Selecting the account is done by the `--account` switch
+* Selecting the config file is done by the `--config` switch
 
 #### Credentials
 
@@ -142,12 +142,22 @@ another account, log out first.
   $ azure-cli container list
   ```
 
-* List, Upload or delete disk images to the blob storage
+* List disk images of the blob storage
+
+  ```
+  $ azure-cli disk list <container>
+  ```
+
+* Upload disk images to the blob storage
 
   ```
   $ azure-cli disk upload <my_image> <container>
+  ```
+
+* Delete disk images from the blob storage
+
+  ```
   $ azure-cli disk delete <my_image> <container>
-  $ azure-cli disk list <container>
   ```
 
 
@@ -156,7 +166,7 @@ another account, log out first.
 Adding new commands to the project consists of basically four steps
 
 1. Write up implementation classes providing the functionality you need
-2. Write up a task class providing the commandline processing and output
+2. Write up a task class providing the command line processing and output
    using the implementation classes
 3. Activating the command in the App class
 4. Write tests for the code
@@ -185,7 +195,7 @@ class MyCmd:
 
 azure-cli autoloads all task classes it can find which results in a little
 naming convention one has to follow. The name of the file must end with
-__*_task__. In Addition there must be one method called __process()__ which
+`_task`. In Addition there must be one method called `process()` which
 is called to run the processing of the command and its arguments
 
 ```python
@@ -219,7 +229,7 @@ class MyCmdTask(CliTask):
 
 ## Add new command to app.py
 
-Edit app.py and add mycmd to the list
+Edit `app.py` and add `mycmd` to the list
 
 ```python
 elif action == 'mycmd':
