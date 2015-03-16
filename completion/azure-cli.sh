@@ -1,8 +1,26 @@
-# azure-cli bash completion script
+#========================================
+# import_metadata
+#----------------------------------------
+function import_metadata {
+    azurecli_words="help storage container disk image --help --version --config --account"
+    help_words="--help"
+    storage_words="--help list"
+    container_words="--help list"
+    disk_words="--help upload delete list --max-chunk-size --name"
+    image_words="--help list"
+}
 
+#========================================
+# _azure_cli
+#----------------------------------------
 function _azure_cli {
     local cur prev opts
     _get_comp_words_by_ref cur prev
+
+    #========================================
+    # Import auto generated metadata
+    #----------------------------------------
+    import_metadata
 
     #========================================
     # Current base mode
@@ -10,21 +28,13 @@ function _azure_cli {
     local cmd=$(echo $COMP_LINE | cut -f2 -d " " | tr -d -)
 
     #========================================
-    # main commands
+    # Complete word list
     #----------------------------------------
-    local commands=$(__azure_cli_commands)
-    local options=$(__azure_cli_command_opts)
-
-    #========================================
-    # sub commands
-    #----------------------------------------
-    local sub_commands=$(__azure_cli_commands $cmd)
-    if [ ! -z "$sub_commands" ];then
-        commands=$sub_commands
-        options="--help $(__azure_cli_command_opts $cmd)"
+    eval cmd_options=\$${cmd}_words
+    if [ -z "$cmd_options" ]; then
+        cmd_options=$azurecli_words
     fi
-
-    __comp_reply "$commands $options"
+    __comp_reply "$cmd_options"
     return 0
 }
 
@@ -34,51 +44,6 @@ function _azure_cli {
 function __comp_reply {
     word_list=$@
     COMPREPLY=($(compgen -W "$word_list" -- ${cur}))
-}
-
-#========================================
-# __azure_cli_command_opts
-#----------------------------------------
-function __azure_cli_command_opts {
-    local begin=0
-    local mode
-    local search="global options:"
-    if [ ! $1 = "azurecli" ]; then
-        mode=$1
-        search="options:"
-    fi
-    azure-cli $mode --help | while read line; do
-        if [[ "$line" =~ ^$search ]];then
-            begin=1
-        elif [ $begin -eq 1 ];then
-            opt=$(echo $line | cut -f1-2 -d' ' | cut -f2 -d, | cut -f1 -d=)
-            echo -n "$opt "
-        fi
-    done
-}
-
-#========================================
-# __azure_cli_commands
-#----------------------------------------
-function __azure_cli_commands {
-    local begin=0
-    local commands
-    local mode
-    if [ ! $1 = "azurecli" ]; then
-        mode=$1
-    fi
-    azure-cli $mode --help | while read line; do
-        if [[ "$line" =~ ^commands: ]];then
-            begin=1
-        elif [ $begin -eq 1 ];then
-            if [ -z "$line" ]; then
-                begin=0
-            else
-                cmd=$(echo $line | cut -f1 -d' ')
-                echo -n "$cmd "
-            fi
-        fi
-    done
 }
 
 complete -F _azure_cli -o default azure-cli

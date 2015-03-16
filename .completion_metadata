@@ -1,0 +1,114 @@
+#!/bin/bash
+
+#========================================
+# __azure_cli_command_opts
+#----------------------------------------
+function __azure_cli_command_opts {
+    local begin=0
+    local mode
+    local search="global options:"
+    if [ ! $1 = "azurecli" ]; then
+        mode=$1
+        search="options:"
+    fi
+    ./azure-cli $mode --help | while read line; do
+        if [[ "$line" =~ ^$search ]];then
+            begin=1
+        elif [ $begin -eq 1 ];then
+            opt=$(echo $line | cut -f1-2 -d' ' | cut -f2 -d, | cut -f1 -d=)
+            echo -n "$opt "
+        fi
+    done
+}
+
+#========================================
+# __azure_cli_commands
+#----------------------------------------
+function __azure_cli_commands {
+    local begin=0
+    local commands
+    local mode
+    if [ ! $1 = "azurecli" ]; then
+        mode=$1
+    fi
+    ./azure-cli $mode --help | while read line; do
+        if [[ "$line" =~ ^commands: ]];then
+            begin=1
+        elif [ $begin -eq 1 ];then
+            if [ -z "$line" ]; then
+                begin=0
+            else
+                cmd=$(echo $line | cut -f1 -d' ')
+                echo -n "$cmd "
+            fi
+        fi
+    done
+}
+
+#========================================
+# Create completion profile
+#----------------------------------------
+echo '#========================================'
+echo '# import_metadata'
+echo '#----------------------------------------'
+echo 'function import_metadata {'
+pushd bin &>/dev/null
+
+cmds=$(__azure_cli_commands)
+opts=$(__azure_cli_command_opts)
+cmds=$(echo $cmds)
+opts=$(echo $opts)
+
+echo "    azurecli_words=\"$cmds $opts\""
+
+for cmd in $cmds; do
+    words="--help"
+    words="${words} $(__azure_cli_commands $cmd)"
+    words="$(echo $words)"
+    words="${words} $(__azure_cli_command_opts $cmd)"
+    words="$(echo $words)"
+    echo "    ${cmd}_words=\"$words\""
+done
+
+popd &>/dev/null
+echo '}'
+echo
+cat << EOF
+#========================================
+# _azure_cli
+#----------------------------------------
+function _azure_cli {
+    local cur prev opts
+    _get_comp_words_by_ref cur prev
+
+    #========================================
+    # Import auto generated metadata
+    #----------------------------------------
+    import_metadata
+
+    #========================================
+    # Current base mode
+    #----------------------------------------
+    local cmd=\$(echo \$COMP_LINE | cut -f2 -d " " | tr -d -)
+
+    #========================================
+    # Complete word list
+    #----------------------------------------
+    eval cmd_options=\\$\${cmd}_words
+    if [ -z "\$cmd_options" ]; then
+        cmd_options=\$azurecli_words
+    fi
+    __comp_reply "\$cmd_options"
+    return 0
+}
+
+#========================================
+# comp_reply
+#----------------------------------------
+function __comp_reply {
+    word_list=\$@
+    COMPREPLY=(\$(compgen -W "\$word_list" -- \${cur}))
+}
+
+complete -F _azure_cli -o default azure-cli
+EOF

@@ -1,6 +1,10 @@
 version := $(shell python -c 'from azure_cli.version import __version__; print __version__')
 
-all:
+.PHONY: completion
+completion:
+	./.completion_metadata > completion/azure-cli.sh
+
+all: completion
 	python setup.py build
 
 install:
@@ -18,7 +22,7 @@ list_tests:
 %.py:
 	nosetests $@
 
-build:
+build: completion
 	python setup.py sdist
 	git log | ./.changelog > dist/azure-cli.changes
 	cat ./.spec-template | sed -e s'@%%VERSION@${version}@' > dist/azure-cli.spec
