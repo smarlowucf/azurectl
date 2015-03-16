@@ -81,4 +81,4 @@ function __azure_cli_commands {
     done
 }
 
-complete -F _azure_cli azure-cli
+complete -F _azure_cli -o default azure-cli
