@@ -9,6 +9,7 @@ Summary:        Command Line Interface to manage Microsoft Azure services
 License:        GPL-2.0
 Group:          Development/Languages/Python
 Source:         azure_cli-%{version}.tar.gz
+Source1:        azure_cli-completion-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 # Tool runtime requirements
 BuildRequires:  python-devel
@@ -45,5 +46,6 @@ nosetests
 %{_bindir}/azure-cli
 %{python_sitelib}/azure_cli-%{version}-py%{py_ver}.egg-info/
 %{python_sitelib}/azure_cli
+%config /etc/bash_completion.d/azure-cli.sh
 
 %changelog

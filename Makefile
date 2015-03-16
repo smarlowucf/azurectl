@@ -26,6 +26,10 @@ build: completion
 	python setup.py sdist
 	git log | ./.changelog > dist/azure-cli.changes
 	cat ./.spec-template | sed -e s'@%%VERSION@${version}@' > dist/azure-cli.spec
+	mkdir dist/azure_cli-${version}
+	cp -a completion dist/azure_cli-${version}
+	tar -C dist -czf dist/azure_cli-completion-${version}.tar.gz azure_cli-${version}
+	rm -rf dist/azure_cli-${version}
 
 clean:
 	find -name *.pyc | xargs rm -f
