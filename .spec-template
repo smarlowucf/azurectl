@@ -1,0 +1,49 @@
+#
+# spec file for package python-azure-cli
+#
+Name:           python-azure-cli
+Version:        %%VERSION
+Release:        0
+Url:            https://github.com/SUSE/azure-cli
+Summary:        Command Line Interface to manage Microsoft Azure services
+License:        GPL-2.0
+Group:          Development/Languages/Python
+Source:         azure_cli-%{version}.tar.gz
+BuildRoot:      %{_tmppath}/%{name}-%{version}-build
+# Tool runtime requirements
+BuildRequires:  python-devel
+BuildRequires:  python-docopt
+BuildRequires:  python-APScheduler
+BuildRequires:  python-pyliblzma
+# Testsuite build requirements:
+BuildRequires:  python-nose
+Requires:       python-docopt
+Requires:       python-APScheduler
+Requires:       python-pyliblzma
+BuildArch:      noarch
+
+%description
+Command Line Interface to manage Microsoft Azure services.
+
+%prep
+%setup -q -n azure_cli-%{version}
+
+%build
+python setup.py build
+
+%install
+python setup.py install --prefix=%{_prefix} --root=%{buildroot}
+mkdir -p %{buildroot}/etc/bash_completion.d
+cp completion/azure-cli.sh %{buildroot}/etc/bash_completion.d
+
+%check
+nosetests
+
+%files
+%defattr(-,root,root,-)
+%doc NEWS README.txt lgpl.txt
+%{_bindir}/azure-cli
+%{python_sitelib}/azure_cli-%{version}-py%{py_ver}.egg-info/
+%{python_sitelib}/azure_cli
+
+%changelog

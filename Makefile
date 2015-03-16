@@ -1,3 +1,5 @@
+version := $(shell cat setup.py | grep version | cut -f4 -d\')
+
 all:
 	python setup.py build
 
@@ -15,6 +17,11 @@ list_tests:
 
 %.py:
 	nosetests $@
+
+build:
+	python setup.py sdist
+	git log | ./.changelog > dist/azure-cli.changes
+	cat ./.spec-template | sed -e s'@%%VERSION@${version}@' > dist/azure-cli.spec
 
 clean:
 	find -name *.pyc | xargs rm -f
