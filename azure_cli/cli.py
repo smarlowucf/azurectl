@@ -26,13 +26,14 @@ from docopt import docopt
 
 # project
 from exceptions import *
+from version import __version__
 
 class Cli:
     """Commandline interface"""
 
     def __init__(self):
         self.all_args = docopt(__doc__,
-            version='azure version 0.8.1.5',
+            version='azure version ' + __version__,
             options_first=True
         )
         self.loaded = False

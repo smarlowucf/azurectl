@@ -1,4 +1,4 @@
-version := $(shell cat setup.py | grep version | cut -f4 -d\')
+version := $(shell python -c 'from azure_cli.version import __version__; print __version__')
 
 all:
 	python setup.py build
