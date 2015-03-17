@@ -22,13 +22,16 @@ list_tests:
 %.py:
 	nosetests $@
 
-build: completion
+build: test completion
 	python setup.py sdist
-	git log | ./.changelog > dist/azure-cli.changes
-	cat ./.spec-template | sed -e s'@%%VERSION@${version}@' > dist/azure-cli.spec
+	mv dist/azure_cli-${version}.tar.gz dist/python-azure-cli.tar.gz
+	git log | ./.changelog | ./.descending > dist/python-azure-cli.changes
+	cat ./.spec-template | sed -e s'@%%VERSION@${version}@' \
+		> dist/python-azure-cli.spec
 	mkdir dist/azure_cli-${version}
 	cp -a completion dist/azure_cli-${version}
-	tar -C dist -czf dist/azure_cli-completion-${version}.tar.gz azure_cli-${version}
+	tar -C dist -czf dist/python-azure-cli-completion.tar.gz \
+		azure_cli-${version}
 	rm -rf dist/azure_cli-${version}
 
 clean:
