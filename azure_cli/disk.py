@@ -123,7 +123,11 @@ class Disk:
             raise AzureDiskDeleteError('%s (%s)' %(type(e), str(e)))
 
     def print_upload_status(self):
-        Logger.info(self.upload_status)
+        Logger.progress(
+            self.upload_status['current_bytes'],
+            self.upload_status['total_bytes'],
+            'Uploading'
+        )
 
     def __upload_status(self, current, total):
         self.upload_status['current_bytes'] = current
