@@ -55,9 +55,11 @@ class DiskTask(CliTask):
                 image, self.command_args['--name'],
                 self.command_args['--max-chunk-size']
             )
+            self.disk.print_upload_status()
             progress.shutdown()
         except (KeyboardInterrupt):
             progress.shutdown()
+        print
         Logger.info('Uploaded %s' % image)
 
     def __delete(self):
