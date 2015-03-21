@@ -1,9 +1,11 @@
 """
-usage: azure-cli disk upload <XZ-compressed-image> <container>
+usage: azure-cli disk upload <XZ-compressed-image> <name>
            [--max-chunk-size=<size>]
-           [--name=<target_name>]
-       azure-cli disk delete <name> <container>
-       azure-cli disk list <container>
+           [--container=<container>]
+       azure-cli disk delete <name>
+           [--container=<container>]
+       azure-cli disk list
+           [--container=<container>]
 
 commands:
     upload   upload image to the given container
@@ -12,7 +14,7 @@ commands:
 
 options:
     --max-chunk-size=<size>  max chunk byte size for disk upload
-    --name=<target_name>     set the target name for the container, if not set the target name is set to the basename of the image file
+    --container=<container>  set container name to use for the operation
 """
 
 # extensions
@@ -30,8 +32,12 @@ from container import Container
 
 class DiskTask(CliTask):
     def process(self):
-        container_name = self.command_args['<container>']
         self.account = AzureAccount(self.account_name, self.config_file)
+        container_name = None
+        if self.command_args['--container']:
+            container_name = self.command_args['--container']
+        else:
+            container_name = self.account.storage_container()
         self.disk = Disk(self.account, container_name)
         self.container = Container(self.account)
         if self.command_args['upload']:
@@ -52,7 +58,7 @@ class DiskTask(CliTask):
         try:
             image = self.command_args['<XZ-compressed-image>']
             self.disk.upload(
-                image, self.command_args['--name'],
+                image, self.command_args['<name>'],
                 self.command_args['--max-chunk-size']
             )
             self.disk.print_upload_status()

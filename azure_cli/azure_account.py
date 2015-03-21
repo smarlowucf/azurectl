@@ -18,6 +18,9 @@ class AzureAccount:
     def storage_name(self):
         return self.config.read('storage_account_name')
 
+    def storage_container(self):
+        return self.config.read('storage_container_name')
+
     def storage_key(self, name = None):
         return self.__query_account_for('storage_key', name)
 

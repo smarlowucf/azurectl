@@ -8,7 +8,7 @@ from azure_cli.disk_task import DiskTask
 
 class TestDiskTask:
     def setup(self):
-        sys.argv = [sys.argv[0], 'disk', 'upload', 'image', 'container']
+        sys.argv = [sys.argv[0], 'disk', 'upload', 'image', 'name']
         self.task = DiskTask()
         azure_cli.disk_task.Disk = mock.Mock(
             return_value=mock.Mock()
@@ -17,11 +17,10 @@ class TestDiskTask:
             return_value=mock.Mock()
         )
         self.task.command_args = {}
-        self.task.command_args['<container>'] = 'some-container'
+        self.task.command_args['--container'] = 'some-container'
         self.task.command_args['<XZ-compressed-image>'] = 'some-image'
         self.task.command_args['--max-chunk-size'] = 1024
         self.task.command_args['<name>'] = 'some-blob'
-        self.task.command_args['--name'] = None
 
     def test_process_upload(self):
         self.task.command_args['delete'] = False
@@ -29,7 +28,7 @@ class TestDiskTask:
         self.task.command_args['list']   = False
         self.task.process()
         self.task.disk.upload.assert_called_once_with(
-            'some-image', None, 1024
+            'some-image', 'some-blob', 1024
         )
 
     def test_process_delete(self):
