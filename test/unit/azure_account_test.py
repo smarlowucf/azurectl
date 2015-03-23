@@ -26,6 +26,8 @@ class TestAzureAccount:
     def test_storage_name(self):
         assert self.account.storage_name() == 'bob'
 
+    def test_storage_container(self):
+        assert self.account.storage_container() == 'foo'
 
     @patch('azure_cli.azure_account.dump_privatekey')
     @patch('azure_cli.azure_account.dump_certificate')
