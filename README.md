@@ -151,13 +151,13 @@ another account, log out first.
 * Upload disk images to the blob storage
 
   ```
-  $ azure-cli disk upload <my_image> <container>
+  $ azure-cli disk upload <my_image> <blob_name>
   ```
 
 * Delete disk images from the blob storage
 
   ```
-  $ azure-cli disk delete <my_image> <container>
+  $ azure-cli disk delete <blob_name>
   ```
 
 
