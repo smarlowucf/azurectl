@@ -6,7 +6,7 @@ function import_metadata {
     help_words="--help"
     storage_words="--help list"
     container_words="--help list"
-    disk_words="--help upload delete list --max-chunk-size --name"
+    disk_words="--help upload delete list --max-chunk-size --container"
     image_words="--help list"
 }
 
