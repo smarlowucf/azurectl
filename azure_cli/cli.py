@@ -33,7 +33,7 @@ class Cli:
 
     def __init__(self):
         self.all_args = docopt(__doc__,
-            version='azure version ' + __version__,
+            version='azure-cli version ' + __version__,
             options_first=True
         )
         self.loaded = False
