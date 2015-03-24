@@ -19,8 +19,6 @@ class ContainerTask(CliTask):
         self.container = Container(self.account)
         if self.command_args['list']:
             self.__list()
-        elif self.command_args['content']:
-            self.__content()
         else:
             raise AzureUnknownContainerCommand(self.command_args)
 
