@@ -1,9 +1,8 @@
 # core
 import json
 
-class DataCollector:
-    data = {}
 
+class DataCollector:
     def __init__(self):
         self.data = {}
 

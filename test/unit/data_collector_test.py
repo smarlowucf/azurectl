@@ -2,6 +2,7 @@ import sys
 from nose.tools import *
 from azure_cli.data_collector import DataCollector
 
+
 class TestDataCollector:
     def setup(self):
         self.collector = DataCollector()

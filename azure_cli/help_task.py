@@ -6,6 +6,7 @@ usage: azure-cli help <command>
 from cli_task import CliTask
 from help import Help
 
+
 class HelpTask(CliTask):
     def process(self):
         self.help = Help()

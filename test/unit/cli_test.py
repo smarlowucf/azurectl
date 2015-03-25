@@ -3,6 +3,7 @@ from nose.tools import *
 from azure_cli.cli import Cli
 from azure_cli.exceptions import *
 
+
 class TestCli:
     def setup(self):
         self.command = 'help'

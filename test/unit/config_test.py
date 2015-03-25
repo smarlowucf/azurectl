@@ -3,6 +3,7 @@ from nose.tools import *
 
 from azure_cli.config import Config
 
+
 class TestConfig:
     def setup(self):
         self.config = Config('default', '../data/config')

@@ -7,6 +7,7 @@ from azure_cli.storage import Storage
 
 import azure_cli
 
+
 class TestStorage:
     def setup(self):
         account = AzureAccount('default', '../data/config')

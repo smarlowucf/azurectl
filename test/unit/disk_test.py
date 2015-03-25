@@ -9,17 +9,19 @@ import azure_cli
 
 from collections import namedtuple
 
+
 class TestDisk:
     def setup(self):
         account = mock.Mock()
-        credentials = namedtuple('credentials',
+        credentials = namedtuple(
+            'credentials',
             ['private_key', 'certificate', 'subscription_id']
         )
         account.publishsettings = mock.Mock(
-            return_value = credentials(
-                private_key = 'abc',
-                certificate = 'abc',
-                subscription_id = '4711'
+            return_value=credentials(
+                private_key='abc',
+                certificate='abc',
+                subscription_id='4711'
             )
         )
         self.disk = Disk(account, 'some-container')

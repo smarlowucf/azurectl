@@ -6,6 +6,7 @@ from nose.tools import *
 import azure_cli
 from azure_cli.disk_task import DiskTask
 
+
 class TestDiskTask:
     def setup(self):
         sys.argv = [sys.argv[0], 'disk', 'upload', 'image', 'name']
@@ -25,7 +26,7 @@ class TestDiskTask:
     def test_process_upload(self):
         self.task.command_args['delete'] = False
         self.task.command_args['upload'] = True
-        self.task.command_args['list']   = False
+        self.task.command_args['list'] = False
         self.task.process()
         self.task.disk.upload.assert_called_once_with(
             'some-image', 'some-blob', 1024
@@ -34,7 +35,7 @@ class TestDiskTask:
     def test_process_delete(self):
         self.task.command_args['delete'] = True
         self.task.command_args['upload'] = False
-        self.task.command_args['list']   = False
+        self.task.command_args['list'] = False
         self.task.process()
         self.task.disk.delete.assert_called_once_with(
             'some-blob'
@@ -44,7 +45,7 @@ class TestDiskTask:
     def test_process_list(self, mock_json):
         self.task.command_args['delete'] = False
         self.task.command_args['upload'] = False
-        self.task.command_args['list']   = True
+        self.task.command_args['list'] = True
         self.task.process()
         self.task.container.content.assert_called_once_with(
             'some-container'

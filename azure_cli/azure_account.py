@@ -11,6 +11,7 @@ from azure.servicemanagement import ServiceManagementService
 from exceptions import *
 from config import Config
 
+
 class AzureAccount:
     def __init__(self, account_name=None, filename=None):
         self.config = Config(account_name, filename)
@@ -21,21 +22,22 @@ class AzureAccount:
     def storage_container(self):
         return self.config.read('storage_container_name')
 
-    def storage_key(self, name = None):
+    def storage_key(self, name=None):
         return self.__query_account_for('storage_key', name)
 
     def storage_names(self):
         return self.__query_account_for('storage_names')
 
     def publishsettings(self):
-        credentials = namedtuple('credentials',
+        credentials = namedtuple(
+            'credentials',
             ['private_key', 'certificate', 'subscription_id']
         )
         p12 = self.__read_p12()
         result = credentials(
-            private_key = self.__get_private_key(),
-            certificate = self.__get_certificate(),
-            subscription_id = self.__get_subscription_id()
+            private_key=self.__get_private_key(),
+            certificate=self.__get_certificate(),
+            subscription_id=self.__get_subscription_id()
         )
         return result
 
@@ -51,7 +53,7 @@ class AzureAccount:
                 cert_file.name
             )
         except Exception as e:
-            raise AzureServiceManagementError('%s (%s)' %(type(e), str(e)))
+            raise AzureServiceManagementError('%s (%s)' % (type(e), str(e)))
 
         if topic == 'storage_names':
             result = []
@@ -102,7 +104,7 @@ class AzureAccount:
             cert = profile[0].attributes['ManagementCertificate'].value
         except:
             raise AzureManagementCertificateNotFound(
-                "No PublishProfile.ManagementCertificate found in %s" % \
+                "No PublishProfile.ManagementCertificate found in %s" %
                 self.settings
             )
         return load_pkcs12(cert.decode("base64"), '')

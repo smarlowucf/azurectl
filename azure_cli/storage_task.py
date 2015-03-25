@@ -13,6 +13,7 @@ from logger import Logger
 from exceptions import *
 from storage import Storage
 
+
 class StorageTask(CliTask):
     def process(self):
         account = AzureAccount(self.account_name, self.config_file)

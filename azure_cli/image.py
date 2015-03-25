@@ -8,6 +8,7 @@ from azure.servicemanagement import ServiceManagementService
 from exceptions import *
 from logger import Logger
 
+
 class Image:
     def __init__(self, account):
         self.account = account
@@ -36,5 +37,5 @@ class Image:
                     'media_link': image.media_link
                 })
         except Exception as e:
-            raise AzureOsImageListError('%s (%s)' %(type(e), str(e)))
+            raise AzureOsImageListError('%s (%s)' % (type(e), str(e)))
         return result

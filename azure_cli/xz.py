@@ -7,8 +7,9 @@ import lzma
 # project
 from exceptions import *
 
+
 class XZ:
-    lzma_stream_buffer = 8192
+    LZMA_STREAM_BUFFER_SIZE = 8192
 
     def __enter__(self):
         return self
@@ -16,7 +17,7 @@ class XZ:
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.lzma_stream.close()
 
-    def __init__(self, lzma_stream, buffer_size = lzma_stream_buffer):
+    def __init__(self, lzma_stream, buffer_size=LZMA_STREAM_BUFFER_SIZE):
         self.lzma_stream = lzma_stream
         self.buffer_size = int(buffer_size)
         self.lzma = lzma.LZMADecompressor()
@@ -56,7 +57,7 @@ class XZ:
         return chunks
 
     @classmethod
-    def open(self, file_name, buffer_size = lzma_stream_buffer):
+    def open(self, file_name, buffer_size=LZMA_STREAM_BUFFER_SIZE):
         self.lzma_stream = open(file_name, 'rb')
         return XZ(self.lzma_stream, buffer_size)
 
@@ -69,6 +70,6 @@ class XZ:
         )
         output, error = xz_info.communicate()
         if xz_info.returncode != 0:
-            raise AzureXZError('xz: %s' %error)
+            raise AzureXZError('xz: %s' % error)
         total = output.strip().split('\n').pop()
         return int(total.split()[4])

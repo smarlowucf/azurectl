@@ -6,6 +6,7 @@ from nose.tools import *
 import azure_cli
 from azure_cli.container_task import ContainerTask
 
+
 class TestContainerTask:
     def setup(self):
         sys.argv = [sys.argv[0], 'container', 'list']

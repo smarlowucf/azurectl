@@ -26,14 +26,16 @@ from docopt import docopt
 
 # project
 from exceptions import *
-from version import __version__
+from version import __VERSION__
+
 
 class Cli:
     """Commandline interface"""
 
     def __init__(self):
-        self.all_args = docopt(__doc__,
-            version='azure-cli version ' + __version__,
+        self.all_args = docopt(
+            __doc__,
+            version='azure-cli version ' + __VERSION__,
             options_first=True
         )
         self.loaded = False
@@ -65,7 +67,7 @@ class Cli:
         try:
             loaded = importlib.import_module('azure_cli.' + command + '_task')
         except Exception as e:
-            raise AzureLoadCommandError('%s (%s)' %(type(e), str(e)))
+            raise AzureLoadCommandError('%s (%s)' % (type(e), str(e)))
         self.loaded = loaded
         return self.loaded
 

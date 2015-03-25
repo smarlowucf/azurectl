@@ -9,24 +9,25 @@ from xz import XZ
 from exceptions import *
 from logger import Logger
 
+
 class Disk:
     def __init__(self, account, container):
-        self.content_encoding           = None
-        self.content_language           = None
-        self.content_md5                = None
-        self.cache_control              = None
-        self.x_ms_blob_content_type     = None
+        self.content_encoding = None
+        self.content_language = None
+        self.content_md5 = None
+        self.cache_control = None
+        self.x_ms_blob_content_type = None
         self.x_ms_blob_content_encoding = None
         self.x_ms_blob_content_language = None
-        self.x_ms_blob_content_md5      = None
-        self.x_ms_blob_cache_control    = None
-        self.x_ms_meta_name_values      = None
-        self.x_ms_lease_id              = None
-        self.x_ms_blob_sequence_number  = None
+        self.x_ms_blob_content_md5 = None
+        self.x_ms_blob_cache_control = None
+        self.x_ms_meta_name_values = None
+        self.x_ms_lease_id = None
+        self.x_ms_blob_sequence_number = None
 
         self.account_name = account.storage_name()
-        self.account_key  = account.storage_key()
-        self.container    = container
+        self.account_key = account.storage_key()
+        self.container = container
         self.upload_status = {'current_bytes': 0, 'total_bytes': 0}
 
     def upload(self, image, name, max_chunk_size=None):
@@ -76,7 +77,7 @@ class Disk:
                 self.x_ms_blob_sequence_number
             )
         except Exception as e:
-            raise AzureDiskUploadError('%s (%s)' %(type(e), str(e)))
+            raise AzureDiskUploadError('%s (%s)' % (type(e), str(e)))
         try:
             with XZ.open(image) as stream:
                 rest_bytes = image_size
@@ -112,15 +113,14 @@ class Disk:
                         )
                         break
         except Exception as e:
-            raise AzureDiskUploadError('%s (%s)' %(type(e), str(e)))
-
+            raise AzureDiskUploadError('%s (%s)' % (type(e), str(e)))
 
     def delete(self, image):
         blob_service = BlobService(self.account_name, self.account_key)
         try:
             blob_service.delete_blob(self.container, image)
         except Exception as e:
-            raise AzureDiskDeleteError('%s (%s)' %(type(e), str(e)))
+            raise AzureDiskDeleteError('%s (%s)' % (type(e), str(e)))
 
     def print_upload_status(self):
         Logger.progress(

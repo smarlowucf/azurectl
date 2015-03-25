@@ -30,6 +30,7 @@ from exceptions import *
 from disk import Disk
 from container import Container
 
+
 class DiskTask(CliTask):
     def process(self):
         self.account = AzureAccount(self.account_name, self.config_file)

@@ -1,15 +1,14 @@
-version := $(shell python -c 'from azure_cli.version import __version__; print __version__')
+version := $(shell python -c 'from azure_cli.version import __VERSION__; print __VERSION__')
 
-.PHONY: completion
-completion:
-	./.completion_metadata > completion/azure-cli.sh
+pep8:
+	tools/run-pep8
 
 all: completion
 	python setup.py build
 
 install:
 	python setup.py install
-	cp completion/azure-cli.sh /etc/bash_completion.d
+	tools/completion_generator > /etc/bash_completion.d/azure-cli.sh
 
 
 .PHONY: test
@@ -22,14 +21,15 @@ list_tests:
 %.py:
 	nosetests $@
 
-build: test completion
+build: pep8 test
 	python setup.py sdist
 	mv dist/azure_cli-${version}.tar.gz dist/python-azure-cli.tar.gz
-	git log | ./.changelog | ./.descending > dist/python-azure-cli.changes
-	cat ./.spec-template | sed -e s'@%%VERSION@${version}@' \
+	git log | tools/changelog_generator |\
+		tools/changelog_descending > dist/python-azure-cli.changes
+	cat package/spec-template | sed -e s'@%%VERSION@${version}@' \
 		> dist/python-azure-cli.spec
 	mkdir dist/azure_cli-${version}
-	cp -a completion dist/azure_cli-${version}
+	tools/completion_generator > dist/azure_cli-${version}/azure-cli.sh
 	tar -C dist -czf dist/python-azure-cli-completion.tar.gz \
 		azure_cli-${version}
 	rm -rf dist/azure_cli-${version}

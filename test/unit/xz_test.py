@@ -2,6 +2,7 @@ from nose.tools import *
 
 from azure_cli.xz import XZ
 
+
 class TestXZ:
     def setup(self):
         self.xz = XZ.open('../data/blob.xz')

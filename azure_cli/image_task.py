@@ -13,6 +13,7 @@ from logger import Logger
 from exceptions import *
 from image import Image
 
+
 class ImageTask(CliTask):
     def process(self):
         account = AzureAccount(self.account_name, self.config_file)

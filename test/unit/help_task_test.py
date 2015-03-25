@@ -5,6 +5,7 @@ from nose.tools import *
 import azure_cli
 from azure_cli.help_task import HelpTask
 
+
 class TestHelpTask:
     def setup(self):
         sys.argv = [sys.argv[0], 'help', 'command']

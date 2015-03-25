@@ -1,6 +1,7 @@
 # core
 import sys
 
+
 class Logger:
     @classmethod
     def info(self, message, message_type='INFO'):
