@@ -12,19 +12,31 @@
 # limitations under the License.
 #
 """
-usage: azurectl help <command>
-"""
+usage: azurectl compute image list
 
+commands:
+    list     list available os images for configured account
+"""
 # project
 from cli_task import CliTask
-from help import Help
+from azure_account import AzureAccount
+from data_collector import DataCollector
+from logger import Logger
+from azurectl_exceptions import *
+from image import Image
 
 
-class HelpTask(CliTask):
+class ComputeImageTask(CliTask):
     """
-        Process help command
+        Process image commands
     """
     def process(self):
-        self.help = Help()
-        help_for_command = self.command_args['<command>']
-        self.help.show(help_for_command)
+        account = AzureAccount(self.account_name, self.config_file)
+        self.image = Image(account)
+        if self.command_args['list']:
+            self.__list()
+
+    def __list(self):
+        result = DataCollector()
+        result.add('images', self.image.list())
+        Logger.info(result.json(), 'Image')

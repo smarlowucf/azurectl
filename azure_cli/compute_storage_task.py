@@ -12,22 +12,22 @@
 # limitations under the License.
 #
 """
-usage: azurectl disk upload <XZ-compressed-image> <name>
+usage: azurectl compute storage account list
+       azurectl compute storage list
+       azurectl compute storage show
+           [--container=<container>]
+       azurectl compute storage upload <XZ-compressed-blob> <name>
            [--max-chunk-size=<size>]
            [--container=<container>]
-       azurectl disk delete <name>
-           [--container=<container>]
-       azurectl disk list
+       azurectl compute storage delete <name>
            [--container=<container>]
 
 commands:
-    upload   upload image to the given container
-    delete   delete image in the given container
-    list     list content of given container for configured storage account
-
-options:
-    --max-chunk-size=<size>  max chunk byte size for disk upload
-    --container=<container>  set container name to use for the operation
+    account list  list storage account names
+    list          list container names for configured account
+    show          show container content for configured account and container
+    upload        upload xz compressed blob to the given container
+    delete        delete blob from the given container
 """
 from apscheduler.schedulers.background import BackgroundScheduler
 from pytz import utc
@@ -38,45 +38,51 @@ from azure_account import AzureAccount
 from data_collector import DataCollector
 from logger import Logger
 from azurectl_exceptions import *
-from disk import Disk
+from storage import Storage
 from container import Container
 
 
-class DiskTask(CliTask):
+class ComputeStorageTask(CliTask):
     """
-        Process disk command
+        Process storage commands
     """
     def process(self):
         self.account = AzureAccount(self.account_name, self.config_file)
-        container_name = None
+
         if self.command_args['--container']:
             container_name = self.command_args['--container']
         else:
             container_name = self.account.storage_container()
-        self.disk = Disk(self.account, container_name)
+
+        self.storage = Storage(self.account, container_name)
         self.container = Container(self.account)
-        if self.command_args['upload']:
+
+        if self.command_args['account'] and self.command_args['list']:
+            self.__account_list()
+        elif self.command_args['list']:
+            self.__container_list()
+        elif self.command_args['show']:
+            self.__container_content(container_name)
+        elif self.command_args['upload']:
             self.__upload()
         elif self.command_args['delete']:
             self.__delete()
-        elif self.command_args['list']:
-            self.__list(container_name)
         else:
-            raise AzureUnknownDiskCommand(self.command_args)
+            raise AzureUnknownStorageCommand(self.command_args)
 
     def __upload(self):
         progress = BackgroundScheduler(timezone=utc)
         progress.add_job(
-            self.disk.print_upload_status, 'interval', seconds=3
+            self.storage.print_upload_status, 'interval', seconds=3
         )
         progress.start()
         try:
-            image = self.command_args['<XZ-compressed-image>']
-            self.disk.upload(
+            image = self.command_args['<XZ-compressed-blob>']
+            self.storage.upload(
                 image, self.command_args['<name>'],
                 self.command_args['--max-chunk-size']
             )
-            self.disk.print_upload_status()
+            self.storage.print_upload_status()
             progress.shutdown()
         except (KeyboardInterrupt):
             progress.shutdown()
@@ -85,13 +91,26 @@ class DiskTask(CliTask):
 
     def __delete(self):
         image = self.command_args['<name>']
-        self.disk.delete(image)
+        self.storage.delete(image)
         Logger.info('Deleted %s' % image)
 
-    def __list(self, container_name):
+    def __container_content(self, container_name):
         result = DataCollector()
         result.add(
             self.account.storage_name() + ':container_content',
             self.container.content(container_name)
         )
-        Logger.info(result.json(), 'Disk')
+        Logger.info(result.json(), 'Storage')
+
+    def __container_list(self):
+        result = DataCollector()
+        result.add(
+            self.account.storage_name() + ':containers',
+            self.container.list()
+        )
+        Logger.info(result.json(), 'Storage')
+
+    def __account_list(self):
+        result = DataCollector()
+        result.add('storage_names', self.account.storage_names())
+        Logger.info(result.json(), 'Storage')

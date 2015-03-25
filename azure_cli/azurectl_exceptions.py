@@ -29,7 +29,7 @@ class AzureLoadCommandUndefined(AzureError):
     pass
 
 
-class AzureNoCommandGiven(AzureError):
+class AzureLoadServiceNameUndefined(AzureError):
     pass
 
 
@@ -45,7 +45,7 @@ class AzureAccountValueNotFound(AzureError):
     pass
 
 
-class AzureDiskImageNotFound(AzureError):
+class AzureStorageFileNotFound(AzureError):
     pass
 
 
@@ -57,14 +57,6 @@ class AzureUnknownCommand(AzureError):
     pass
 
 
-class AzureUnknownContainerCommand(AzureError):
-    pass
-
-
-class AzureUnknownDiskCommand(AzureError):
-    pass
-
-
 class AzureContainerListContentError(AzureError):
     pass
 
@@ -73,11 +65,11 @@ class AzureContainerListError(AzureError):
     pass
 
 
-class AzureDiskUploadError(AzureError):
+class AzureStorageUploadError(AzureError):
     pass
 
 
-class AzureDiskDeleteError(AzureError):
+class AzureStorageDeleteError(AzureError):
     pass
 
 
