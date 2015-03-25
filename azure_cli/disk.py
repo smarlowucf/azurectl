@@ -16,7 +16,7 @@ from azure.storage import BlobService
 
 # project
 from xz import XZ
-from exceptions import *
+from azurectl_exceptions import *
 from logger import Logger
 
 

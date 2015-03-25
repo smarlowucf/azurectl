@@ -18,7 +18,7 @@ from tempfile import NamedTemporaryFile
 from azure.servicemanagement import ServiceManagementService
 
 # project
-from exceptions import *
+from azurectl_exceptions import *
 from config import Config
 
 

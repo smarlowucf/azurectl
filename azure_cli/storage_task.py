@@ -22,7 +22,7 @@ from cli_task import CliTask
 from azure_account import AzureAccount
 from data_collector import DataCollector
 from logger import Logger
-from exceptions import *
+from azurectl_exceptions import *
 from storage import Storage
 
 

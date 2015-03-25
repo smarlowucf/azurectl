@@ -35,7 +35,7 @@ import importlib
 from docopt import docopt
 
 # project
-from exceptions import *
+from azurectl_exceptions import *
 from version import __VERSION__
 
 

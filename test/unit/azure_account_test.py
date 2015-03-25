@@ -1,7 +1,7 @@
 import mock
 from mock import patch
 from nose.tools import *
-from azure_cli.exceptions import *
+from azure_cli.azurectl_exceptions import *
 
 import azure_cli
 

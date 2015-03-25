@@ -2,7 +2,7 @@ import sys
 import mock
 from nose.tools import *
 from azure_cli.azure_account import AzureAccount
-from azure_cli.exceptions import *
+from azure_cli.azurectl_exceptions import *
 from azure_cli.storage import Storage
 
 import azure_cli

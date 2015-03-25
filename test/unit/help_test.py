@@ -1,7 +1,7 @@
 import sys
 from nose.tools import *
 from azure_cli.help import Help
-from azure_cli.exceptions import *
+from azure_cli.azurectl_exceptions import *
 
 
 class TestHelp:

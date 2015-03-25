@@ -2,7 +2,7 @@ import sys
 import mock
 from mock import patch
 from nose.tools import *
-from azure_cli.exceptions import *
+from azure_cli.azurectl_exceptions import *
 from azure_cli.disk import Disk
 
 import azure_cli

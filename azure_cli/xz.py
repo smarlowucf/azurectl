@@ -15,7 +15,7 @@ import subprocess
 import lzma
 
 # project
-from exceptions import *
+from azurectl_exceptions import *
 
 
 class XZ:

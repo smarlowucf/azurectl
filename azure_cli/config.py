@@ -15,7 +15,7 @@ import os
 import ConfigParser
 
 # project
-from exceptions import *
+from azurectl_exceptions import *
 
 
 class Config:

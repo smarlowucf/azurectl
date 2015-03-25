@@ -12,7 +12,7 @@
 # limitations under the License.
 #
 # project
-from exceptions import *
+from azurectl_exceptions import *
 from logger import Logger
 
 

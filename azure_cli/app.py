@@ -14,7 +14,7 @@
 from cli import Cli
 
 # project
-from exceptions import *
+from azurectl_exceptions import *
 from cli_task import CliTask
 
 
