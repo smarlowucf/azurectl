@@ -1,7 +1,7 @@
 import mock
 from mock import patch
 from nose.tools import *
-from azure_cli.exceptions import *
+from azure_cli.azurectl_exceptions import *
 
 import azure_cli
 
@@ -9,19 +9,20 @@ from azure_cli.azure_account import AzureAccount
 
 from collections import namedtuple
 
+
 class TestAzureAccount:
     def setup(self):
         self.account = AzureAccount('default', '../data/config')
-        credentials = namedtuple('credentials',
+        credentials = namedtuple(
+            'credentials',
             ['private_key', 'certificate', 'subscription_id']
         )
         self.publishsettings = credentials(
-            private_key = 'abc',
-            certificate = 'abc',
-            subscription_id = '4711'
+            private_key='abc',
+            certificate='abc',
+            subscription_id='4711'
         )
         azure_cli.azure_account.load_pkcs12 = mock.Mock()
-
 
     def test_storage_name(self):
         assert self.account.storage_name() == 'bob'
@@ -31,11 +32,10 @@ class TestAzureAccount:
 
     @patch('azure_cli.azure_account.dump_privatekey')
     @patch('azure_cli.azure_account.dump_certificate')
-    def test_publishsettings(self, mock_dump_privatekey, mock_dump_certificate):
-        mock_dump_privatekey.return_value = 'abc'
+    def test_publishsettings(self, mock_dump_pkey, mock_dump_certificate):
+        mock_dump_pkey.return_value = 'abc'
         mock_dump_certificate.return_value = 'abc'
         assert self.account.publishsettings() == self.publishsettings
-
 
     @patch(
         'azure_cli.azure_account.ServiceManagementService' +
@@ -51,10 +51,9 @@ class TestAzureAccount:
         keys = namedtuple(
             'storage_service_keys', 'storage_service_keys'
         )
-        service_result = keys(storage_service_keys = primary(primary = 'foo'))
+        service_result = keys(storage_service_keys=primary(primary='foo'))
         mock_service.return_value = service_result
         assert self.account.storage_key() == 'foo'
-
 
     @patch(
         'azure_cli.azure_account.ServiceManagementService' +
@@ -68,6 +67,6 @@ class TestAzureAccount:
         names = namedtuple(
             'service_name', 'service_name'
         )
-        service_result.append(names(service_name = 'foo'))
+        service_result.append(names(service_name='foo'))
         mock_service.return_value = service_result
         assert self.account.storage_names() == ['foo']

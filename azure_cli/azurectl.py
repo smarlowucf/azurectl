@@ -11,32 +11,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-"""
-usage: azurectl image list
+import sys
+import docopt
 
-commands:
-    list     list available os images for account subscription
-"""
 # project
-from cli_task import CliTask
-from azure_account import AzureAccount
-from data_collector import DataCollector
+from app import App
 from logger import Logger
 from azurectl_exceptions import *
-from image import Image
 
 
-class ImageTask(CliTask):
+def main():
     """
-        Process image command
+        azurectl - invoke the Application
     """
-    def process(self):
-        account = AzureAccount(self.account_name, self.config_file)
-        self.image = Image(account)
-        if self.command_args['list']:
-            self.__list()
-
-    def __list(self):
-        result = DataCollector()
-        result.add('images', self.image.list())
-        Logger.info(result.json(), 'Image')
+    try:
+        App()
+    except AzureError as e:
+        # known exception, log information and exit
+        Logger.error('%s (%s)' % (type(e), str(e)))
+        sys.exit(1)
+    except docopt.DocoptExit:
+        # exception caught by docopt, results in usage message
+        raise
+    except SystemExit:
+        # user exception, program aborted by user
+        sys.exit(1)
+    except:
+        # exception we did no expect, show python backtrace
+        Logger.error("Unexpected error:")
+        raise

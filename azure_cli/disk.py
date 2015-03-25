@@ -1,32 +1,46 @@
-# core
+# Copyright (c) SUSE Linux GmbH.  All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 import os
-
-# extensions
 from azure.storage import BlobService
 
 # project
 from xz import XZ
-from exceptions import *
+from azurectl_exceptions import *
 from logger import Logger
 
+
 class Disk:
+    """
+        Implements upload/deletion of data to Azure storage containers
+    """
     def __init__(self, account, container):
-        self.content_encoding           = None
-        self.content_language           = None
-        self.content_md5                = None
-        self.cache_control              = None
-        self.x_ms_blob_content_type     = None
+        self.content_encoding = None
+        self.content_language = None
+        self.content_md5 = None
+        self.cache_control = None
+        self.x_ms_blob_content_type = None
         self.x_ms_blob_content_encoding = None
         self.x_ms_blob_content_language = None
-        self.x_ms_blob_content_md5      = None
-        self.x_ms_blob_cache_control    = None
-        self.x_ms_meta_name_values      = None
-        self.x_ms_lease_id              = None
-        self.x_ms_blob_sequence_number  = None
+        self.x_ms_blob_content_md5 = None
+        self.x_ms_blob_cache_control = None
+        self.x_ms_meta_name_values = None
+        self.x_ms_lease_id = None
+        self.x_ms_blob_sequence_number = None
 
         self.account_name = account.storage_name()
-        self.account_key  = account.storage_key()
-        self.container    = container
+        self.account_key = account.storage_key()
+        self.container = container
         self.upload_status = {'current_bytes': 0, 'total_bytes': 0}
 
     def upload(self, image, name, max_chunk_size=None):
@@ -40,11 +54,9 @@ class Disk:
         if not max_chunk_size:
             # BLOB_MAX_CHUNK_DATA_SIZE = 4 MB
             max_chunk_size = blob_service._BLOB_MAX_CHUNK_DATA_SIZE
-
         max_chunk_size = int(max_chunk_size)
 
         image_size = XZ.uncompressed_size(image)
-        self.__upload_status(0, image_size)
 
         # PageBlob must be 512 byte aligned
         remainder = image_size % 512
@@ -52,7 +64,9 @@ class Disk:
             raise AzurePageBlobAlignmentViolation(
                 "Uncompressed size %d is not 512 byte aligned" % image_size
             )
+
         zero_page = None
+        self.__upload_status(0, image_size)
         try:
             with open('/dev/zero', 'rb') as zero_stream:
                 zero_page = zero_stream.read(max_chunk_size)
@@ -76,7 +90,7 @@ class Disk:
                 self.x_ms_blob_sequence_number
             )
         except Exception as e:
-            raise AzureDiskUploadError('%s (%s)' %(type(e), str(e)))
+            raise AzureDiskUploadError('%s (%s)' % (type(e), str(e)))
         try:
             with XZ.open(image) as stream:
                 rest_bytes = image_size
@@ -112,15 +126,14 @@ class Disk:
                         )
                         break
         except Exception as e:
-            raise AzureDiskUploadError('%s (%s)' %(type(e), str(e)))
-
+            raise AzureDiskUploadError('%s (%s)' % (type(e), str(e)))
 
     def delete(self, image):
         blob_service = BlobService(self.account_name, self.account_key)
         try:
             blob_service.delete_blob(self.container, image)
         except Exception as e:
-            raise AzureDiskDeleteError('%s (%s)' %(type(e), str(e)))
+            raise AzureDiskDeleteError('%s (%s)' % (type(e), str(e)))
 
     def print_upload_status(self):
         Logger.progress(

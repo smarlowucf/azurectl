@@ -1,8 +1,21 @@
+# Copyright (c) SUSE Linux GmbH.  All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 """
 usage:
-    azure-cli -h | --help
-    azure-cli -v | --version
-    azure-cli [--config=<file>] [--account=<name>]
+    azurectl -h | --help
+    azurectl -v | --version
+    azurectl [--config=<file>] [--account=<name>]
               <command> [<args>...]
 
 commands:
@@ -15,25 +28,26 @@ commands:
 global options:
     -h, --help
     -v, --version
-    --config=<file>          config file, default is: ~/.azure_cli/config
+    --config=<file>          config file, default is: ~/.azurectl/config
     --account=<name>         account name in config file, default is: default
 """
-# core
 import importlib
-
-# extensions
 from docopt import docopt
 
 # project
-from exceptions import *
-from version import __version__
+from azurectl_exceptions import *
+from version import __VERSION__
+
 
 class Cli:
-    """Commandline interface"""
+    """
+        Commandline interface, global and command specific option handling
+    """
 
     def __init__(self):
-        self.all_args = docopt(__doc__,
-            version='azure-cli version ' + __version__,
+        self.all_args = docopt(
+            __doc__,
+            version='azurectl version ' + __VERSION__,
             options_first=True
         )
         self.loaded = False
@@ -65,7 +79,7 @@ class Cli:
         try:
             loaded = importlib.import_module('azure_cli.' + command + '_task')
         except Exception as e:
-            raise AzureLoadCommandError('%s (%s)' %(type(e), str(e)))
+            raise AzureUnknownCommand(command)
         self.loaded = loaded
         return self.loaded
 

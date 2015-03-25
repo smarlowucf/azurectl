@@ -6,6 +6,7 @@ from nose.tools import *
 import azure_cli
 from azure_cli.image_task import ImageTask
 
+
 class TestImageTask:
     def setup(self):
         sys.argv = [sys.argv[0], 'image', 'list']

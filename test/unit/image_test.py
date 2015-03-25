@@ -3,38 +3,41 @@ import mock
 from mock import patch
 from nose.tools import *
 from azure_cli.azure_account import AzureAccount
-from azure_cli.exceptions import *
+from azure_cli.azurectl_exceptions import *
 from azure_cli.image import Image
 
 import azure_cli
 
 from collections import namedtuple
 
+
 class TestImage:
     def setup(self):
-        MyStruct = namedtuple('MyStruct',
+        MyStruct = namedtuple(
+            'MyStruct',
             'name label os category description location \
              affinity_group media_link'
         )
         self.list_os_images = [MyStruct(
-            name           = 'some-name',
-            label          = 'bob',
-            os             = 'linux',
-            category       = 'cloud',
-            description    = 'nice',
-            location       = 'here',
-            affinity_group = 'ok',
-            media_link     = 'url'
+            name='some-name',
+            label='bob',
+            os='linux',
+            category='cloud',
+            description='nice',
+            location='here',
+            affinity_group='ok',
+            media_link='url'
         )]
         account = AzureAccount('default', '../data/config')
-        credentials = namedtuple('credentials',
+        credentials = namedtuple(
+            'credentials',
             ['private_key', 'certificate', 'subscription_id']
         )
         account.publishsettings = mock.Mock(
-            return_value = credentials(
-                private_key = 'abc',
-                certificate = 'abc',
-                subscription_id = '4711'
+            return_value=credentials(
+                private_key='abc',
+                certificate='abc',
+                subscription_id='4711'
             )
         )
         self.image = Image(account)

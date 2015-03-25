@@ -1,17 +1,17 @@
 #!/bin/bash
 
 #========================================
-# __azure_cli_command_opts
+# __azurectl_command_opts
 #----------------------------------------
-function __azure_cli_command_opts {
+function __azurectl_command_opts {
     local begin=0
     local mode
     local search="global options:"
-    if [ ! $1 = "azurecli" ]; then
+    if [ ! $1 = "azurectl" ]; then
         mode=$1
         search="options:"
     fi
-    ./azure-cli $mode --help | while read line; do
+    ./azurectl $mode --help | while read line; do
         if [[ "$line" =~ ^$search ]];then
             begin=1
         elif [ $begin -eq 1 ];then
@@ -22,16 +22,16 @@ function __azure_cli_command_opts {
 }
 
 #========================================
-# __azure_cli_commands
+# __azurectl_commands
 #----------------------------------------
-function __azure_cli_commands {
+function __azurectl_commands {
     local begin=0
     local commands
     local mode
-    if [ ! $1 = "azurecli" ]; then
+    if [ ! $1 = "azurectl" ]; then
         mode=$1
     fi
-    ./azure-cli $mode --help | while read line; do
+    ./azurectl $mode --help | while read line; do
         if [[ "$line" =~ ^commands: ]];then
             begin=1
         elif [ $begin -eq 1 ];then
@@ -54,18 +54,18 @@ echo '#----------------------------------------'
 echo 'function import_metadata {'
 pushd bin &>/dev/null
 
-cmds=$(__azure_cli_commands)
-opts=$(__azure_cli_command_opts)
+cmds=$(__azurectl_commands)
+opts=$(__azurectl_command_opts)
 cmds=$(echo $cmds)
 opts=$(echo $opts)
 
-echo "    azurecli_words=\"$cmds $opts\""
+echo "    azurectl_words=\"$cmds $opts\""
 
 for cmd in $cmds; do
     words="--help"
-    words="${words} $(__azure_cli_commands $cmd)"
+    words="${words} $(__azurectl_commands $cmd)"
     words="$(echo $words)"
-    words="${words} $(__azure_cli_command_opts $cmd)"
+    words="${words} $(__azurectl_command_opts $cmd)"
     words="$(echo $words)"
     echo "    ${cmd}_words=\"$words\""
 done
@@ -75,9 +75,9 @@ echo '}'
 echo
 cat << EOF
 #========================================
-# _azure_cli
+# _azurectl
 #----------------------------------------
-function _azure_cli {
+function _azurectl {
     local cur prev opts
     _get_comp_words_by_ref cur prev
 
@@ -96,7 +96,7 @@ function _azure_cli {
     #----------------------------------------
     eval cmd_options=\\$\${cmd}_words
     if [ -z "\$cmd_options" ]; then
-        cmd_options=\$azurecli_words
+        cmd_options=\$azurectl_words
     fi
     __comp_reply "\$cmd_options"
     return 0
@@ -110,5 +110,5 @@ function __comp_reply {
     COMPREPLY=(\$(compgen -W "\$word_list" -- \${cur}))
 }
 
-complete -F _azure_cli -o default azure-cli
+complete -F _azurectl -o default azurectl
 EOF

@@ -1,10 +1,23 @@
+# Copyright (c) SUSE Linux GmbH.  All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 """
-usage: azure-cli disk upload <XZ-compressed-image> <name>
+usage: azurectl disk upload <XZ-compressed-image> <name>
            [--max-chunk-size=<size>]
            [--container=<container>]
-       azure-cli disk delete <name>
+       azurectl disk delete <name>
            [--container=<container>]
-       azure-cli disk list
+       azurectl disk list
            [--container=<container>]
 
 commands:
@@ -16,8 +29,6 @@ options:
     --max-chunk-size=<size>  max chunk byte size for disk upload
     --container=<container>  set container name to use for the operation
 """
-
-# extensions
 from apscheduler.schedulers.background import BackgroundScheduler
 from pytz import utc
 
@@ -26,11 +37,15 @@ from cli_task import CliTask
 from azure_account import AzureAccount
 from data_collector import DataCollector
 from logger import Logger
-from exceptions import *
+from azurectl_exceptions import *
 from disk import Disk
 from container import Container
 
+
 class DiskTask(CliTask):
+    """
+        Process disk command
+    """
     def process(self):
         self.account = AzureAccount(self.account_name, self.config_file)
         container_name = None

@@ -2,6 +2,7 @@ from azure_cli.logger import Logger
 
 from mock import patch
 
+
 class TestLogger:
     @patch('sys.stdout')
     def test_info(self, mock_stdout):

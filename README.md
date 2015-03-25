@@ -163,13 +163,12 @@ another account, log out first.
 
 # Implementing commands
 
-Adding new commands to the project consists of basically four steps
+Adding new commands to the project consists of basically three steps
 
 1. Write up implementation classes providing the functionality you need
 2. Write up a task class providing the command line processing and output
    using the implementation classes
-3. Activating the command in the App class
-4. Write tests for the code
+3. Write tests for the code
 
 The following is a simple template to illustrate the coding process
 
@@ -225,15 +224,6 @@ class MyCmdTask(CliTask):
         else
             raise AzureUnknownCommand(self.command_args)
 
-```
-
-## Add new command to app.py
-
-Edit `app.py` and add `mycmd` to the list
-
-```python
-elif action == 'mycmd':
-    command = app.task.MyCmdTask()
 ```
 
 ## Write tests: mycmd_test.py, mycmd_task_test.py
