@@ -12,7 +12,7 @@
 # limitations under the License.
 #
 """
-usage: azure-cli storage list
+usage: azurectl storage list
 
 commands:
     list     list available storage account names

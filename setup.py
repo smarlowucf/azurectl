@@ -15,7 +15,7 @@ config = {
     'install_requires': ['docopt', 'APScheduler', 'pyliblzma'],
     'packages': ['azure_cli'],
     'entry_points': {
-        'console_scripts': ['azure-cli=azure_cli.azure_cli:main'],
+        'console_scripts': ['azurectl=azure_cli.azurectl:main'],
     },
     'name': 'azure_cli'
 }

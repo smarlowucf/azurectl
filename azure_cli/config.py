@@ -19,7 +19,7 @@ from exceptions import *
 
 
 class Config:
-    DEFAULT_CONFIG = os.environ['HOME'] + '/.azure_cli/config'
+    DEFAULT_CONFIG = os.environ['HOME'] + '/.azurectl/config'
     DEFAULT_ACCOUNT = 'default'
 
     def __init__(self, account_name=DEFAULT_ACCOUNT, filename=DEFAULT_CONFIG):

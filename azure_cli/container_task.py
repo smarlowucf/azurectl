@@ -12,7 +12,7 @@
 # limitations under the License.
 #
 """
-usage: azure-cli container list
+usage: azurectl container list
 
 commands:
     list     list available containers in configured storage account

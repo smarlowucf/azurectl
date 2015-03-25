@@ -12,7 +12,7 @@
 # limitations under the License.
 #
 """
-usage: azure-cli image list
+usage: azurectl image list
 
 commands:
     list     list available os images for account subscription

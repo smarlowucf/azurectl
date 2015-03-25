@@ -12,7 +12,7 @@
 # limitations under the License.
 #
 """
-usage: azure-cli help <command>
+usage: azurectl help <command>
 """
 
 # project

@@ -13,9 +13,9 @@
 #
 """
 usage:
-    azure-cli -h | --help
-    azure-cli -v | --version
-    azure-cli [--config=<file>] [--account=<name>]
+    azurectl -h | --help
+    azurectl -v | --version
+    azurectl [--config=<file>] [--account=<name>]
               <command> [<args>...]
 
 commands:
@@ -28,7 +28,7 @@ commands:
 global options:
     -h, --help
     -v, --version
-    --config=<file>          config file, default is: ~/.azure_cli/config
+    --config=<file>          config file, default is: ~/.azurectl/config
     --account=<name>         account name in config file, default is: default
 """
 import importlib
@@ -45,7 +45,7 @@ class Cli:
     def __init__(self):
         self.all_args = docopt(
             __doc__,
-            version='azure-cli version ' + __VERSION__,
+            version='azurectl version ' + __VERSION__,
             options_first=True
         )
         self.loaded = False

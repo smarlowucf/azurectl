@@ -12,12 +12,12 @@
 # limitations under the License.
 #
 """
-usage: azure-cli disk upload <XZ-compressed-image> <name>
+usage: azurectl disk upload <XZ-compressed-image> <name>
            [--max-chunk-size=<size>]
            [--container=<container>]
-       azure-cli disk delete <name>
+       azurectl disk delete <name>
            [--container=<container>]
-       azure-cli disk list
+       azurectl disk list
            [--container=<container>]
 
 commands:
