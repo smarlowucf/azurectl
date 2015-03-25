@@ -10,19 +10,6 @@ class App:
     def __init__(self):
         app = CliTask()
         action = app.cli.get_command()
-        command = None
-
-        if action == 'help':
-            command = app.task.HelpTask()
-        elif action == 'container':
-            command = app.task.ContainerTask()
-        elif action == 'disk':
-            command = app.task.DiskTask()
-        elif action == 'image':
-            command = app.task.ImageTask()
-        elif action == 'storage':
-            command = app.task.StorageTask()
-        else:
-            raise AzureUnknownCommand(action)
-
-        command.process()
+        task_class_name = action.title() + 'Task'
+        task_class = app.task.__dict__[task_class_name]
+        task_class().process()

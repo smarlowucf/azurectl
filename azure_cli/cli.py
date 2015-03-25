@@ -67,7 +67,7 @@ class Cli:
         try:
             loaded = importlib.import_module('azure_cli.' + command + '_task')
         except Exception as e:
-            raise AzureLoadCommandError('%s (%s)' % (type(e), str(e)))
+            raise AzureUnknownCommand(command)
         self.loaded = loaded
         return self.loaded
 
