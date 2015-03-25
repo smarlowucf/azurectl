@@ -54,11 +54,9 @@ class Disk:
         if not max_chunk_size:
             # BLOB_MAX_CHUNK_DATA_SIZE = 4 MB
             max_chunk_size = blob_service._BLOB_MAX_CHUNK_DATA_SIZE
-
         max_chunk_size = int(max_chunk_size)
 
         image_size = XZ.uncompressed_size(image)
-        self.__upload_status(0, image_size)
 
         # PageBlob must be 512 byte aligned
         remainder = image_size % 512
@@ -66,7 +64,9 @@ class Disk:
             raise AzurePageBlobAlignmentViolation(
                 "Uncompressed size %d is not 512 byte aligned" % image_size
             )
+
         zero_page = None
+        self.__upload_status(0, image_size)
         try:
             with open('/dev/zero', 'rb') as zero_stream:
                 zero_page = zero_stream.read(max_chunk_size)
