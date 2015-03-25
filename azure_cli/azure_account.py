@@ -54,7 +54,7 @@ class AzureAccount:
         )
         return result
 
-    def __query_account_for(self, topic, name=None):
+    def __query_account_for(self, information_type, name=None):
         publishsettings = self.publishsettings()
         cert_file = NamedTemporaryFile()
         cert_file.write(publishsettings.private_key)
@@ -68,12 +68,12 @@ class AzureAccount:
         except Exception as e:
             raise AzureServiceManagementError('%s (%s)' % (type(e), str(e)))
 
-        if topic == 'storage_names':
+        if information_type == 'storage_names':
             result = []
             for storage in service.list_storage_accounts():
                 result.append(storage.service_name)
             return result
-        elif topic == 'storage_key':
+        elif information_type == 'storage_key':
             if not name:
                 name = self.storage_name()
             return service.get_storage_account_keys(
@@ -81,7 +81,7 @@ class AzureAccount:
             ).storage_service_keys.primary
         else:
             raise AzureInternalError(
-                'AzureAccount::__query_account_for(invalid topic)'
+                'AzureAccount::__query_account_for(invalid information type)'
             )
 
     def __get_private_key(self):
