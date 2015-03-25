@@ -14,6 +14,10 @@
 
 
 class AzureError(Exception):
+    """
+        Base class to handle all known exceptions. Specific exceptions
+        are sub classes of this base class
+    """
     def __init__(self, message):
         self.message = message
 

@@ -27,6 +27,9 @@ from storage import Storage
 
 
 class StorageTask(CliTask):
+    """
+        Process storage command
+    """
     def process(self):
         account = AzureAccount(self.account_name, self.config_file)
         self.storage = Storage(account)

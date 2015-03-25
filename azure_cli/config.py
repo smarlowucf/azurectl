@@ -19,6 +19,9 @@ from azurectl_exceptions import *
 
 
 class Config:
+    """
+        Reading of INI style config file attributes
+    """
     DEFAULT_CONFIG = os.environ['HOME'] + '/.azurectl/config'
     DEFAULT_ACCOUNT = 'default'
 

@@ -27,6 +27,9 @@ from image import Image
 
 
 class ImageTask(CliTask):
+    """
+        Process image command
+    """
     def process(self):
         account = AzureAccount(self.account_name, self.config_file)
         self.image = Image(account)

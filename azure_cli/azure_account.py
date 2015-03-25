@@ -23,6 +23,9 @@ from config import Config
 
 
 class AzureAccount:
+    """
+        Azure Service and Storage account handling
+    """
     def __init__(self, account_name=None, filename=None):
         self.config = Config(account_name, filename)
 

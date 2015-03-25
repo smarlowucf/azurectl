@@ -19,6 +19,9 @@ from azurectl_exceptions import *
 
 
 class XZ:
+    """
+        Implements decompression of lzma compressed files
+    """
     LZMA_STREAM_BUFFER_SIZE = 8192
 
     def __enter__(self):

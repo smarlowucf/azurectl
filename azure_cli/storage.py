@@ -16,6 +16,9 @@ from azurectl_exceptions import *
 
 
 class Storage:
+    """
+        Implements query information from Azure storage accounts
+    """
     def __init__(self, account):
         self.account = account
 

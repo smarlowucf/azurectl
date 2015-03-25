@@ -17,6 +17,9 @@ from logger import Logger
 
 
 class Help:
+    """
+        Implements man page help for azurectl commands
+    """
     def show(self, command):
         if not command:
             raise AzureNoCommandGiven('no help context')

@@ -15,6 +15,9 @@ import sys
 
 
 class Logger:
+    """
+        Implements logging functions for azurectl
+    """
     @classmethod
     def info(self, message, message_type='INFO'):
         sys.stdout.write("{0}: {1}\n".format(message_type, message))

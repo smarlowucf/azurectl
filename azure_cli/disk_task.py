@@ -43,6 +43,9 @@ from container import Container
 
 
 class DiskTask(CliTask):
+    """
+        Process disk command
+    """
     def process(self):
         self.account = AzureAccount(self.account_name, self.config_file)
         container_name = None

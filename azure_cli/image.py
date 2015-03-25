@@ -20,6 +20,10 @@ from logger import Logger
 
 
 class Image:
+    """
+        Implements showing and creation of Azure images from a previously
+        uploaded vhd disk image file
+    """
     def __init__(self, account):
         self.account = account
 

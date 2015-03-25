@@ -19,6 +19,9 @@ from logger import Logger
 
 
 class Container:
+    """
+        Information from Azure storage containers
+    """
     def __init__(self, account):
         self.account_name = account.storage_name()
         self.account_key = account.storage_key()

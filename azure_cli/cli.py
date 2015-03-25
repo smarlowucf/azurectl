@@ -40,7 +40,9 @@ from version import __VERSION__
 
 
 class Cli:
-    """Commandline interface"""
+    """
+        Commandline interface, global and command specific option handling
+    """
 
     def __init__(self):
         self.all_args = docopt(

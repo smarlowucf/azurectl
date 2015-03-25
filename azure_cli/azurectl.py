@@ -21,6 +21,9 @@ from azurectl_exceptions import *
 
 
 def main():
+    """
+        azurectl - invoke the Application
+    """
     try:
         App()
     except AzureError as e:

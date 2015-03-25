@@ -21,6 +21,9 @@ from help import Help
 
 
 class HelpTask(CliTask):
+    """
+        Process help command
+    """
     def process(self):
         self.help = Help()
         help_for_command = self.command_args['<command>']

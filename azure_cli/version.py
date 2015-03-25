@@ -11,4 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+"""
+    Global version information used in azurectl and the package
+"""
 __VERSION__ = '0.8.2'

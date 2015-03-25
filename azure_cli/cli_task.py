@@ -17,6 +17,11 @@ from config import Config
 
 
 class CliTask:
+    """
+        Base class for all task classes, loads the task and provides
+        the interface to the command options and the account to use
+        for the task
+    """
     def __init__(self):
         self.cli = Cli()
 

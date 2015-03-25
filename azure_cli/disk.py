@@ -21,6 +21,9 @@ from logger import Logger
 
 
 class Disk:
+    """
+        Implements upload/deletion of data to Azure storage containers
+    """
     def __init__(self, account, container):
         self.content_encoding = None
         self.content_language = None

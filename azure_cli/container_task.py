@@ -27,6 +27,9 @@ from container import Container
 
 
 class ContainerTask(CliTask):
+    """
+        Process container command
+    """
     def process(self):
         self.account = AzureAccount(self.account_name, self.config_file)
         self.container = Container(self.account)

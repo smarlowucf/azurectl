@@ -19,6 +19,9 @@ from cli_task import CliTask
 
 
 class App:
+    """
+        Application class to create task instances and process them
+    """
     def __init__(self):
         app = CliTask()
         action = app.cli.get_command()
