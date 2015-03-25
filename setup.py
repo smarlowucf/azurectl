@@ -10,7 +10,7 @@ config = {
     'author': 'PubCloud Development team',
     'url': 'https://github.com/SUSE/azure-cli',
     'download_url': 'https://github.com/SUSE/azure-cli',
-    'author_email': 'public-cloud-dev@suse.de',
+    'author_email': 'public-cloud-dev@susecloud.net',
     'version': __VERSION__,
     'install_requires': ['docopt', 'APScheduler', 'pyliblzma'],
     'packages': ['azure_cli'],
