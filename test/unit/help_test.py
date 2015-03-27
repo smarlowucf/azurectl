@@ -8,6 +8,6 @@ class TestHelp:
     def setup(self):
         self.help = Help()
 
-    @raises(AzureNoCommandGiven)
+    @raises(AzureHelpNoCommandGiven)
     def test_show(self):
         self.help.show(None)

@@ -13,8 +13,8 @@
 #
 """
 usage: azurectl compute storage account list
-       azurectl compute storage list
-       azurectl compute storage show
+       azurectl compute storage container list
+       azurectl compute storage container show
            [--container=<container>]
        azurectl compute storage upload <XZ-compressed-blob> <name>
            [--max-chunk-size=<size>]
@@ -23,11 +23,11 @@ usage: azurectl compute storage account list
            [--container=<container>]
 
 commands:
-    account list  list storage account names
-    list          list container names for configured account
-    show          show container content for configured account and container
-    upload        upload xz compressed blob to the given container
-    delete        delete blob from the given container
+    account list    list storage account names
+    container list  list container names for configured account
+    container show  show container content for configured account and container
+    upload          upload xz compressed blob to the given container
+    delete          delete blob from the given container
 """
 from apscheduler.schedulers.background import BackgroundScheduler
 from pytz import utc
@@ -59,9 +59,9 @@ class ComputeStorageTask(CliTask):
 
         if self.command_args['account'] and self.command_args['list']:
             self.__account_list()
-        elif self.command_args['list']:
+        elif self.command_args['container'] and self.command_args['list']:
             self.__container_list()
-        elif self.command_args['show']:
+        elif self.command_args['container'] and self.command_args['show']:
             self.__container_content(container_name)
         elif self.command_args['upload']:
             self.__upload()

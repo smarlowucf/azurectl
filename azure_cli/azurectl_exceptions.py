@@ -25,6 +25,10 @@ class AzureError(Exception):
         return repr(self.message)
 
 
+class AzureHelpNoCommandGiven(AzureError):
+    pass
+
+
 class AzureLoadCommandUndefined(AzureError):
     pass
 

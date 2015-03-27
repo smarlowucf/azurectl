@@ -22,7 +22,7 @@ class Help:
     """
     def show(self, command=None):
         if not command:
-            command = 'help'
+            raise AzureHelpNoCommandGiven("No help context specified")
         Logger.info(
             "*** help page for command %s not yet available ***" % command
         )
