@@ -12,10 +12,11 @@
 # limitations under the License.
 #
 """
-usage: azurectl storage list
+usage: azurectl compute image -h | --help
+       azurectl compute image list
 
 commands:
-    list     list available storage account names
+    list  list available os images for configured account
 """
 # project
 from cli_task import CliTask
@@ -23,22 +24,20 @@ from azure_account import AzureAccount
 from data_collector import DataCollector
 from logger import Logger
 from azurectl_exceptions import *
-from storage import Storage
+from image import Image
 
 
-class StorageTask(CliTask):
+class ComputeImageTask(CliTask):
     """
-        Process storage command
+        Process image commands
     """
     def process(self):
         account = AzureAccount(self.account_name, self.config_file)
-        self.storage = Storage(account)
+        self.image = Image(account)
         if self.command_args['list']:
             self.__list()
-        else:
-            raise AzureUnknownStorageCommand(self.command_args)
 
     def __list(self):
         result = DataCollector()
-        result.add('storage_names', self.storage.list())
-        Logger.info(result.json(), 'Storage')
+        result.add('images', self.image.list())
+        Logger.info(result.json(), 'Image')

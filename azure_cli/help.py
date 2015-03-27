@@ -20,9 +20,9 @@ class Help:
     """
         Implements man page help for azurectl commands
     """
-    def show(self, command):
+    def show(self, command=None):
         if not command:
-            raise AzureNoCommandGiven('no help context')
+            raise AzureHelpNoCommandGiven("No help context specified")
         Logger.info(
             "*** help page for command %s not yet available ***" % command
         )

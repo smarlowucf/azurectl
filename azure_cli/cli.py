@@ -12,24 +12,22 @@
 # limitations under the License.
 #
 """
-usage:
-    azurectl -h | --help
-    azurectl -v | --version
-    azurectl [--config=<file>] [--account=<name>]
-              <command> [<args>...]
+usage: azurectl -h | --help
+       azurectl <servicename> <command> [<args>...]
+           [--config=<file>]
+           [--account=<name>]
+       azurectl --version
+
+servicenames:
+    compute  commands for Azure storage and image processing
 
 commands:
-    help       show detailed help page for given command
-    storage    list information about storage accounts
-    container  list information about containers for configured storage account
-    disk       list, upload, delete disk images to/from a storage container
-    image      list, register, deregister os images
+    call: 'azurectl <servicename> help' for details
 
 global options:
-    -h, --help
-    -v, --version
-    --config=<file>          config file, default is: ~/.azurectl/config
-    --account=<name>         account name in config file, default is: default
+    --version         show program version
+    --config=<file>   config file, default is: ~/.azurectl/config
+    --account=<name>  account name in config file, default is: 'default'
 """
 import importlib
 from docopt import docopt
@@ -41,7 +39,8 @@ from version import __VERSION__
 
 class Cli:
     """
-        Commandline interface, global and command specific option handling
+        Commandline interface, global, servicename and command
+        specific option handling
     """
 
     def __init__(self):
@@ -52,6 +51,9 @@ class Cli:
         )
         self.loaded = False
         self.command_args = self.all_args['<args>']
+
+    def get_servicename(self):
+        return self.all_args['<servicename>']
 
     def get_command(self):
         return self.all_args['<command>']
@@ -74,15 +76,20 @@ class Cli:
         if self.loaded:
             return self.loaded
         command = self.get_command()
+        service = self.get_servicename()
         if not command:
             raise AzureLoadCommandUndefined(command)
+        if not service:
+            raise AzureLoadServiceNameUndefined(service)
         try:
-            loaded = importlib.import_module('azure_cli.' + command + '_task')
+            loaded = importlib.import_module(
+                'azure_cli.' + service + '_' + command + '_task'
+            )
         except Exception as e:
-            raise AzureUnknownCommand(command)
+            raise AzureUnknownCommand(service + ' ' + command)
         self.loaded = loaded
         return self.loaded
 
     def __load_command_args(self):
-        argv = [self.get_command()] + self.command_args
+        argv = [self.get_servicename(), self.get_command()] + self.command_args
         return docopt(self.loaded.__doc__, argv=argv)

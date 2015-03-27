@@ -1,4 +1,4 @@
-# Azure - azure-cli
+# Azure - azurectl
 
 Command Line Interface to manage
 [Microsoft Azure](https://manage.windowsazure.com) services.
@@ -27,7 +27,7 @@ packaging and maintenance work
 According to that we were searching for alternative solutions and
 found that Microsoft provides and maintains an
 [SDK for python](https://github.com/Azure/azure-sdk-for-python)
-for their service. Providing the azure-cli command line utility based
+for their service. Providing the azurectl command line utility based
 on the SDK and written in python seemed to be a more
 maintainable solution.
 
@@ -54,17 +54,17 @@ $ sudo python setup.py install
 
 ### Usage
 
-azure-cli uses the following basic syntax
+azurectl uses the following basic syntax
 
 ```
-azure-cli [global-options] <command> [command-options]
+azurectl [global-options] <servicename> <command> [command-options]
 ```
 
-In order to call azure-cli one has to create an account configuration
-file. By default azure-cli looks up the config file in
+In order to call azurectl one has to create an account configuration
+file. By default azurectl looks up the config file in
 
 ```
-$ ~/.azure_cli/config
+$ ~/.azurectl/config
 ```
 
 The config file has to specify at least the following information
@@ -77,7 +77,7 @@ The config file has to specify at least the following information
 The structure of the config file is INI file based. It's possible to
 specify information for several accounts. Each section represents one
 account and is distinguished by a custom name. However if no account
-name is specified at invocation time, azure-cli will lookup for a
+name is specified at invocation time, azurectl will lookup for a
 section named: __default__
 
 The following example outlines all possible configuration parameters
@@ -96,7 +96,7 @@ publishsettings = path-to-publish-settings-file
 
 Access to the Azure REST interface is handled via so called Publish Settings
 files. Such a file contains all keys and the subscription id for a specific
-account in Azure. Before you can use azure-cli you need to make sure to have
+account in Azure. Before you can use azurectl you need to make sure to have
 the Publish Settings file at hand.
 
 To download the publishsettings file for your account visit
@@ -115,49 +115,49 @@ another account, log out first.
 * Get short help
 
   ```
-  $ azure-cli --help
+  $ azurectl --help
   ```
 
-* Get detailed help for a command
+* Get manual page for a command
 
   ```
-  $ azure-cli help <command>
+  $ azurectl <servicename> help <command>
   ```
 
 * Get short help for a command
 
   ```
-  $ azure-cli <command> --help
+  $ azurectl <servicename> <command> --help
   ```
 
 * List available storage account names
 
   ```
-  $ azure-cli storage list
+  $ azurectl compute storage account list
   ```
 
 * List available containers
 
   ```
-  $ azure-cli container list
+  $ azurectl compute storage container list
   ```
 
 * List disk images of the blob storage
 
   ```
-  $ azure-cli disk list <container>
+  $ azurectl compute image list
   ```
 
 * Upload disk images to the blob storage
 
   ```
-  $ azure-cli disk upload <my_image> <blob_name>
+  $ azurectl compute storage upload <my_image> <blob_name>
   ```
 
 * Delete disk images from the blob storage
 
   ```
-  $ azure-cli disk delete <blob_name>
+  $ azurectl compute storage delete <blob_name>
   ```
 
 
@@ -175,7 +175,7 @@ The following is a simple template to illustrate the coding process
 ## Write up implementation class: mycmd.py
 
 ```python
-from exceptions import *
+from azurectl_exceptions import *
 
 class MyCmd:
     def __init__(self, account):
@@ -190,9 +190,9 @@ class MyCmd:
 ```
 
 
-## Write up a task class: mycmd_task.py
+## Write up a task class for service: service_mycmd_task.py
 
-azure-cli autoloads all task classes it can find which results in a little
+azurectl autoloads all task classes it can find which results in a little
 naming convention one has to follow. The name of the file must end with
 `_task`. In Addition there must be one method called `process()` which
 is called to run the processing of the command and its arguments
@@ -200,7 +200,7 @@ is called to run the processing of the command and its arguments
 ```python
 
 """
-usage: azure-cli mycmd dig-for-gold
+usage: azurectl service mycmd dig-for-gold
 
 commands:
     dig-for-gold   digs for gold
@@ -210,10 +210,10 @@ from cli_task import CliTask
 from azure_account import AzureAccount
 from data_collector import DataCollector
 from logger import Logger
-from exceptions import *
+from azurectl_exceptions import *
 from mycmd import MyCmd
 
-class MyCmdTask(CliTask):
+class ServiceMyCmdTask(CliTask):
     def process(self):
         self.account = AzureAccount(self.account_name, self.config_file)
         self.mycmd = MyCmd(self.account)
@@ -226,7 +226,7 @@ class MyCmdTask(CliTask):
 
 ```
 
-## Write tests: mycmd_test.py, mycmd_task_test.py
+## Write tests: mycmd_test.py, service_mycmd_task_test.py
 
 Tests are written using the nose testing framework. Please refer to
 the `test/unit` directory to see current implementations
