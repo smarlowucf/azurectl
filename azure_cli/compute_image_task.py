@@ -12,10 +12,11 @@
 # limitations under the License.
 #
 """
-usage: azurectl compute image list
+usage: azurectl compute image -h | --help
+       azurectl compute image list
 
 commands:
-    list     list available os images for configured account
+    list  list available os images for configured account
 """
 # project
 from cli_task import CliTask

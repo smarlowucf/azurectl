@@ -12,12 +12,11 @@
 # limitations under the License.
 #
 """
-usage:
-    azurectl -h | --help
-    azurectl -v | --version
-    azurectl [--config=<file>]
-             [--account=<name>]
-             <servicename> <command> [<args>...]
+usage: azurectl -h | --help
+       azurectl <servicename> <command> [<args>...]
+           [--config=<file>]
+           [--account=<name>]
+       azurectl --version
 
 servicenames:
     compute  commands for Azure storage and image processing
@@ -26,10 +25,9 @@ commands:
     call: 'azurectl <servicename> help' for details
 
 global options:
-    -h, --help
-    -v, --version
-    --config=<file>          config file, default is: ~/.azurectl/config
-    --account=<name>         account name in config file, default is: default
+    --version         show program version
+    --config=<file>   config file, default is: ~/.azurectl/config
+    --account=<name>  account name in config file, default is: 'default'
 """
 import importlib
 from docopt import docopt

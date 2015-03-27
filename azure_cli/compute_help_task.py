@@ -12,14 +12,17 @@
 # limitations under the License.
 #
 """
-usage: azurectl compute help <command>
-       azurectl compute storage [--help]
-       azurectl compute image [--help]
+usage: azurectl compute help -h | --help
+       azurectl compute help <command>
+       azurectl compute storage
+           [ -h | --help]
+       azurectl compute image
+           [ -h | --help]
 
 commands:
-    storage  short help for Azure blob storage operations
-    image    short help for Azure image registration operations
-    help     man page for given command
+    storage  usage help for Azure blob storage operations
+    image    usage help for Azure image registration operations
+    help     manual page for <command>
 """
 
 # project

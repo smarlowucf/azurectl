@@ -12,7 +12,8 @@
 # limitations under the License.
 #
 """
-usage: azurectl compute storage account list
+usage: azurectl compute storage -h | --help
+       azurectl compute storage account list
        azurectl compute storage container list
        azurectl compute storage container show
            [--container=<container>]

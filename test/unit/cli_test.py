@@ -10,13 +10,14 @@ class TestCli:
         self.servicename = 'compute'
         self.help_command_args = {
             '--help': False,
-            '<command>': 'args',
+            '-h': False,
+            '<command>': 'foo',
             'compute': True,
             'help': True,
             'image': False,
             'storage': False
         }
-        sys.argv = [sys.argv[0], self.servicename, self.command, 'args']
+        sys.argv = [sys.argv[0], self.servicename, self.command, 'foo']
         self.cli = Cli()
         self.loaded_command = self.cli.load_command()
 
@@ -35,6 +36,7 @@ class TestCli:
             '--account': None,
             '--version': False,
             '--help': False,
+            '-h': False,
             '<servicename>': 'compute'
         }
 
