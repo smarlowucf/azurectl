@@ -13,9 +13,8 @@
 #
 """
 usage: azurectl -h | --help
-       azurectl <servicename> <command> [<args>...]
-           [--config=<file>]
-           [--account=<name>]
+       azurectl [--config=<file>] [--account=<name>]
+           <servicename> <command> [<args>...]
        azurectl --version
 
 servicenames:
