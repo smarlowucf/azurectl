@@ -1,78 +1,5 @@
 #!/bin/bash
 
-#========================================
-# __azurectl_command_opts
-#----------------------------------------
-function __azurectl_command_opts {
-    local begin=0
-    local mode
-    local search="global options:"
-    if [ ! $1 = "azurectl" ]; then
-        mode=$1
-        search="options:"
-    fi
-    ./azurectl $mode --help | while read line; do
-        if [[ "$line" =~ ^$search ]];then
-            begin=1
-        elif [ $begin -eq 1 ];then
-            opt=$(echo $line | cut -f1-2 -d' ' | cut -f2 -d, | cut -f1 -d=)
-            echo -n "$opt "
-        fi
-    done
-}
-
-#========================================
-# __azurectl_commands
-#----------------------------------------
-function __azurectl_commands {
-    local begin=0
-    local commands
-    local mode
-    if [ ! $1 = "azurectl" ]; then
-        mode=$1
-    fi
-    ./azurectl $mode --help | while read line; do
-        if [[ "$line" =~ ^commands: ]];then
-            begin=1
-        elif [ $begin -eq 1 ];then
-            if [ -z "$line" ]; then
-                begin=0
-            else
-                cmd=$(echo $line | cut -f1 -d' ')
-                echo -n "$cmd "
-            fi
-        fi
-    done
-}
-
-#========================================
-# Create completion profile
-#----------------------------------------
-echo '#========================================'
-echo '# import_metadata'
-echo '#----------------------------------------'
-echo 'function import_metadata {'
-pushd bin &>/dev/null
-
-cmds=$(__azurectl_commands)
-opts=$(__azurectl_command_opts)
-cmds=$(echo $cmds)
-opts=$(echo $opts)
-
-echo "    azurectl_words=\"$cmds $opts\""
-
-for cmd in $cmds; do
-    words="--help"
-    words="${words} $(__azurectl_commands $cmd)"
-    words="$(echo $words)"
-    words="${words} $(__azurectl_command_opts $cmd)"
-    words="$(echo $words)"
-    echo "    ${cmd}_words=\"$words\""
-done
-
-popd &>/dev/null
-echo '}'
-echo
 cat << EOF
 #========================================
 # _azurectl
@@ -81,24 +8,53 @@ function _azurectl {
     local cur prev opts
     _get_comp_words_by_ref cur prev
 
-    #========================================
-    # Import auto generated metadata
-    #----------------------------------------
-    import_metadata
-
-    #========================================
-    # Current base mode
-    #----------------------------------------
-    local cmd=\$(echo \$COMP_LINE | cut -f2 -d " " | tr -d -)
-
-    #========================================
-    # Complete word list
-    #----------------------------------------
-    eval cmd_options=\\$\${cmd}_words
-    if [ -z "\$cmd_options" ]; then
-        cmd_options=\$azurectl_words
+    if [ \$COMP_CWORD -eq 1 ]; then
+        __comp_reply "compute --version --help --config --account"
+    elif [ \$COMP_CWORD -eq 2 ]; then
+        case "\$prev" in
+            "compute")
+                __comp_reply "storage image"
+                ;;
+            *)
+                ;;
+        esac
+    elif [ \$COMP_CWORD -eq 3 ]; then
+        case "\$prev" in
+            "storage")
+                __comp_reply "upload delete account container"
+                ;;
+            "image")
+                __comp_reply "list"
+                ;;
+            *)
+                ;;
+        esac
+    elif [ \$COMP_CWORD -eq 4 ]; then
+        case "\$prev" in
+            "container")
+                __comp_reply "list show"
+                ;;
+            "account")
+                __comp_reply "list"
+                ;;
+            "upload")
+                __comp_reply "--max-chunk-size --container"
+                ;;
+            "delete")
+                __comp_reply "--container"
+                ;;
+            *)
+                ;;
+        esac
+    elif [ \$COMP_CWORD -eq 5 ]; then
+        case "\$prev" in
+            "show")
+                __comp_reply "--container"
+                ;;
+            *)
+                ;;
+        esac
     fi
-    __comp_reply "\$cmd_options"
     return 0
 }
 
