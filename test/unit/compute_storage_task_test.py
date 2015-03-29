@@ -10,7 +10,8 @@ from azure_cli.compute_storage_task import ComputeStorageTask
 class TestComputeStorageTask:
     def setup(self):
         sys.argv = [
-            sys.argv[0], 'compute', 'storage', 'upload', 'blob', 'name'
+            sys.argv[0], '--config', '../data/config',
+            'compute', 'storage', 'upload', 'blob', 'name'
         ]
         self.task = ComputeStorageTask()
         azure_cli.compute_storage_task.AzureAccount.storage_names = mock.Mock(

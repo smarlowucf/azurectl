@@ -9,8 +9,10 @@ from azure_cli.compute_image_task import ComputeImageTask
 
 class TestComputeImageTask:
     def setup(self):
-        sys.argv = [sys.argv[0], 'compute', 'image', 'list']
-
+        sys.argv = [
+            sys.argv[0], '--config', '../data/config',
+            'compute', 'image', 'list'
+        ]
         self.task = ComputeImageTask()
         azure_cli.compute_image_task.Image = mock.Mock(
             return_value=mock.Mock()
