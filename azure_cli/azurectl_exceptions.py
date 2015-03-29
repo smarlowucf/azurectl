@@ -25,6 +25,10 @@ class AzureError(Exception):
         return repr(self.message)
 
 
+class AzureConfigParseError(AzureError):
+    pass
+
+
 class AzureHelpNoCommandGiven(AzureError):
     pass
 

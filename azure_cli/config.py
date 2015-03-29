@@ -11,8 +11,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import os
 import ConfigParser
+import os
+
 
 # project
 from azurectl_exceptions import *
@@ -29,7 +30,13 @@ class Config:
         usr_config = ConfigParser.ConfigParser()
         if not os.path.isfile(filename):
             raise AzureAccountLoadFailed('no such config file %s' % filename)
-        usr_config.read(filename)
+        parsed = None
+        try:
+            parsed = usr_config.read(filename)
+        except Exception as e :
+            raise AzureConfigParseError(
+                'Could not parse config file: "%s"\n%s' % (filename, e.message)
+            )
         if not usr_config.has_section(account_name):
             raise AzureAccountNotFound("Account %s not found" % account_name)
         self.config = usr_config
