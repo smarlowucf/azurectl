@@ -30,10 +30,10 @@ class AzureAccount:
         self.config = Config(account_name, filename)
 
     def storage_name(self):
-        return self.config.read('storage_account_name')
+        return self.config.get_option('storage_account_name')
 
     def storage_container(self):
-        return self.config.read('storage_container_name')
+        return self.config.get_option('storage_container_name')
 
     def storage_key(self, name=None):
         return self.__query_account_for('storage_key', name)
@@ -107,7 +107,7 @@ class AzureAccount:
             )
 
     def __read_xml(self):
-        self.settings = self.config.read('publishsettings')
+        self.settings = self.config.get_option('publishsettings')
         return minidom.parse(self.settings)
 
     def __read_p12(self):

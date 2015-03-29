@@ -9,4 +9,4 @@ class TestConfig:
         self.config = Config('default', '../data/config')
 
     def test_read(self):
-        assert self.config.read('storage_account_name') == 'bob'
+        assert self.config.get_option('storage_account_name') == 'bob'

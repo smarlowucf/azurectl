@@ -26,17 +26,17 @@ class Config:
     DEFAULT_ACCOUNT = 'default'
 
     def __init__(self, account_name=DEFAULT_ACCOUNT, filename=DEFAULT_CONFIG):
-        config = ConfigParser.ConfigParser()
+        usr_config = ConfigParser.ConfigParser()
         if not os.path.isfile(filename):
             raise AzureAccountLoadFailed('no such config file %s' % filename)
-        config.read(filename)
-        if not config.has_section(account_name):
+        usr_config.read(filename)
+        if not usr_config.has_section(account_name):
             raise AzureAccountNotFound("Account %s not found" % account_name)
-        self.config = config
+        self.config = usr_config
         self.account_name = account_name
         self.config_file = filename
 
-    def read(self, option):
+    def get_option(self, option):
         result = ''
         try:
             result = self.config.get(self.account_name, option)
