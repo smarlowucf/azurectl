@@ -13,6 +13,7 @@
 #
 import ConfigParser
 import os
+import sys
 
 
 # project
@@ -23,8 +24,14 @@ class Config:
     """
         Reading of INI style config file attributes
     """
-    DEFAULT_CONFIG = os.environ['HOME'] + '/.azurectl/config'
     DEFAULT_ACCOUNT = 'default'
+    homeEnvVar = 'HOME'
+    if sys.platform[:3] == 'win':
+        if 'HOMEPATH' in os.environ.has_key:
+            homeEnvVar = 'HOMEPATH'
+        else:
+            homeEnvVar = 'UserProfile'
+    DEFAULT_CONFIG = os.environ[homeEnvVar] + '/.azurectl/config'
 
     def __init__(self, account_name=DEFAULT_ACCOUNT, filename=DEFAULT_CONFIG):
         usr_config = ConfigParser.ConfigParser()
@@ -33,7 +40,7 @@ class Config:
         parsed = None
         try:
             parsed = usr_config.read(filename)
-        except Exception as e :
+        except Exception as e:
             raise AzureConfigParseError(
                 'Could not parse config file: "%s"\n%s' % (filename, e.message)
             )
