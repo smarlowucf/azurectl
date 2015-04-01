@@ -107,17 +107,25 @@ class AzureAccount:
             )
 
     def __read_xml(self):
-        self.settings = self.config.get_option('publishsettings')
-        return minidom.parse(self.settings)
+        try:
+            self.settings = self.config.get_option('publishsettings')
+            return minidom.parse(self.settings)
+        except Exception as e:
+            raise AzureSubscriptionParseError('%s (%s)' % (type(e), str(e)))
 
     def __read_p12(self):
         xml = self.__read_xml()
-        profile = xml.getElementsByTagName('Subscription')
         try:
+            profile = xml.getElementsByTagName('Subscription')
             cert = profile[0].attributes['ManagementCertificate'].value
         except:
             raise AzureManagementCertificateNotFound(
                 "No PublishProfile.ManagementCertificate found in %s" %
                 self.settings
             )
-        return load_pkcs12(cert.decode("base64"), '')
+        try:
+            return load_pkcs12(cert.decode("base64"), '')
+        except Exception as e:
+            raise AzureSubscriptionCertDecodeError(
+                '%s (%s)' % (type(e), str(e))
+            )

@@ -29,6 +29,14 @@ class AzureConfigParseError(AzureError):
     pass
 
 
+class AzureSubscriptionParseError(AzureError):
+    pass
+
+
+class AzureSubscriptionCertDecodeError(AzureError):
+    pass
+
+
 class AzureHelpNoCommandGiven(AzureError):
     pass
 
