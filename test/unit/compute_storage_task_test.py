@@ -36,6 +36,7 @@ class TestComputeStorageTask:
         self.task.command_args['--container'] = 'some-container'
         self.task.command_args['<XZ-compressed-blob>'] = 'some-file'
         self.task.command_args['--max-chunk-size'] = 1024
+        self.task.command_args['--quiet'] = False
         self.task.command_args['<name>'] = 'some-blob'
 
     @patch('azure_cli.data_collector.json')
