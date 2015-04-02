@@ -1,4 +1,4 @@
-# Copyright (c) SUSE Linux GmbH.  All rights reserved.
+# Copyright (c) 2015 SUSE Linux GmbH.  All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,6 +23,10 @@ class AzureError(Exception):
 
     def __str__(self):
         return repr(self.message)
+
+
+class AzureConfigParseError(AzureError):
+    pass
 
 
 class AzureHelpNoCommandGiven(AzureError):
