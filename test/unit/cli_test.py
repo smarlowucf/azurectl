@@ -11,13 +11,16 @@ class TestCli:
         self.help_command_args = {
             '--help': False,
             '-h': False,
-            '<command>': 'foo',
+            '--command': 'foo',
             'compute': True,
             'help': True,
             'image': False,
             'storage': False
         }
-        sys.argv = [sys.argv[0], self.servicename, self.command, 'foo']
+        sys.argv = [
+            sys.argv[0], self.servicename,
+            self.command, '--command', 'foo'
+        ]
         self.cli = Cli()
         self.loaded_command = self.cli.load_command()
 

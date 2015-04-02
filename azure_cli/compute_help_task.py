@@ -13,16 +13,21 @@
 #
 """
 usage: azurectl compute help -h | --help
-       azurectl compute help <command>
+       azurectl compute help --command=<command>
        azurectl compute storage
            [ -h | --help]
        azurectl compute image
            [ -h | --help]
 
 commands:
-    storage  usage help for Azure blob storage operations
-    image    usage help for Azure image registration operations
-    help     manual page for <command>
+    storage
+        usage help for Azure blob storage operations
+    image
+        usage help for Azure image registration operations
+    help
+        detailed manual page for a command
+    --command=<command>
+        specify command name to show help for
 """
 
 # project
@@ -36,5 +41,5 @@ class ComputeHelpTask(CliTask):
     """
     def process(self):
         self.help = Help()
-        help_for_command = self.command_args['<command>']
+        help_for_command = self.command_args['--command']
         self.help.show(help_for_command)
