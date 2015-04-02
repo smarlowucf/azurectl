@@ -17,11 +17,11 @@ usage: azurectl compute storage -h | --help
        azurectl compute storage container list
        azurectl compute storage container show
            [--container=<container>]
-       azurectl compute storage upload <XZ-compressed-blob> <name>
+       azurectl compute storage upload --source=<xzfile> --name=<blobname>
            [--max-chunk-size=<size>]
            [--container=<container>]
            [--quiet]
-       azurectl compute storage delete <name>
+       azurectl compute storage delete --name=<blobname>
            [--container=<container>]
 
 commands:
@@ -35,6 +35,10 @@ commands:
         upload xz compressed blob to the given container
     delete
         delete blob from the given container
+    --source=<xzfile>
+        XZ compressed data file
+    --name=<name>
+        name of the file in the storage pool
     --max-chunk-size=<size>
         max chunk size in bytes for upload, default 4MB
     --container=<container>
@@ -96,7 +100,7 @@ class ComputeStorageTask(CliTask):
             progress.shutdown()
 
     def __upload_with_progress(self):
-        image = self.command_args['<XZ-compressed-blob>']
+        image = self.command_args['--source']
         progress = BackgroundScheduler(timezone=utc)
         progress.add_job(
             self.storage.print_upload_status, 'interval', seconds=3
@@ -113,13 +117,13 @@ class ComputeStorageTask(CliTask):
 
     def __process_upload(self):
         self.storage.upload(
-            self.command_args['<XZ-compressed-blob>'],
-            self.command_args['<name>'],
+            self.command_args['--source'],
+            self.command_args['--name'],
             self.command_args['--max-chunk-size']
         )
 
     def __delete(self):
-        image = self.command_args['<name>']
+        image = self.command_args['--name']
         self.storage.delete(image)
         Logger.info('Deleted %s' % image)
 
