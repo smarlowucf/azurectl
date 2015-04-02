@@ -30,6 +30,20 @@ class TestAzureAccount:
     def test_storage_container(self):
         assert self.account.storage_container() == 'foo'
 
+    @raises(AzureSubscriptionParseError)
+    def test_publishsettings_missing_subscription(self):
+        account_invalid = AzureAccount(
+            'default', '../data/config.invalid_publishsettings_subscription'
+        )
+        account_invalid.publishsettings()
+
+    @raises(AzureSubscriptionDecodeError)
+    def test_publishsettings_invalid_cert(self):
+        account_invalid = AzureAccount(
+            'default', '../data/config.invalid_publishsettings_cert'
+        )
+        account_invalid.publishsettings()
+
     @patch('azure_cli.azure_account.dump_privatekey')
     @patch('azure_cli.azure_account.dump_certificate')
     def test_publishsettings(self, mock_dump_pkey, mock_dump_certificate):

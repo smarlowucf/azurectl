@@ -33,7 +33,7 @@ class AzureSubscriptionParseError(AzureError):
     pass
 
 
-class AzureSubscriptionCertDecodeError(AzureError):
+class AzureSubscriptionDecodeError(AzureError):
     pass
 
 

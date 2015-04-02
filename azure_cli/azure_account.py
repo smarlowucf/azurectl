@@ -86,15 +86,25 @@ class AzureAccount:
 
     def __get_private_key(self):
         p12 = self.__read_p12()
-        return dump_privatekey(
-            FILETYPE_PEM, p12.get_privatekey()
-        )
+        try:
+            return dump_privatekey(
+                FILETYPE_PEM, p12.get_privatekey()
+            )
+        except Exception as e:
+            raise AzureSubscriptionDecodeError(
+                '%s (%s)' % (type(e), str(e))
+            )
 
     def __get_certificate(self):
         p12 = self.__read_p12()
-        return dump_certificate(
-            FILETYPE_PEM, p12.get_certificate()
-        )
+        try:
+            return dump_certificate(
+                FILETYPE_PEM, p12.get_certificate()
+            )
+        except Exception as e:
+            raise AzureSubscriptionDecodeError(
+                '%s (%s)' % (type(e), str(e))
+            )
 
     def __get_subscription_id(self):
         xml = self.__read_xml()
@@ -126,6 +136,6 @@ class AzureAccount:
         try:
             return load_pkcs12(cert.decode("base64"), '')
         except Exception as e:
-            raise AzureSubscriptionCertDecodeError(
+            raise AzureSubscriptionDecodeError(
                 '%s (%s)' % (type(e), str(e))
             )
