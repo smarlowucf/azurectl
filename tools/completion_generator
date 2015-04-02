@@ -53,9 +53,20 @@ class AppHash:
                             )
                             cur_path = self.merge(result_keys, self.result)
                     elif re.match('.*azurectl', line):
+                        mandatory_options = re.search(
+                            '(.*azurectl.*?) (--.*)', line
+                        )
+                        if mandatory_options:
+                            line = mandatory_options.group(1)
                         key_list = line.split()
                         result_keys = self.validate(key_list)
                         cur_path = self.merge(result_keys, self.result)
+                        if mandatory_options:
+                            for option in mandatory_options.group(2).split():
+                                mod_line = cur_path + ' ' + option
+                                key_list = mod_line.split()
+                                result_keys = self.validate(key_list)
+                                self.merge(result_keys, self.result)
                     else:
                         mod_line = cur_path + ' ' + line.strip()
                         mod_line = re.sub('[\[\]\|]', '', mod_line)
@@ -76,12 +87,14 @@ class AppHash:
     def validate(self, key_list):
         result_keys = []
         for key in key_list:
-            option = re.search('(--.*)=', key)
+            option = re.search('^\[(--.*)=|^\[(.*)\]', key)
+            mandatory = re.search('^(--.*)=', key)
             if option:
                 if option.group(1):
                     result_keys.append(option.group(1))
-                elif option.group(2):
-                    result_keys.append(option.group(2))
+            elif mandatory:
+                if mandatory.group(1):
+                    result_keys.append(mandatory.group(1))
             elif re.search('<servicename>|<command>|<args>...', key):
                 pass
             else:
@@ -138,26 +151,26 @@ function _azurectl {
     _get_comp_words_by_ref cur prev
 ''').strip()
 
+print '    case "$prev" in'
 for level in sorted(tree.level_dict):
     if level == '0':
-        print '    if [ $COMP_CWORD -eq 1 ]; then'
-        print '        __comp_reply "%s"' % \
-            (" ".join(tree.level_dict[level]['azurectl']))
-    else:
-        print '    elif [ $COMP_CWORD -eq %d ]; then' % (int(level) + 1)
-        print '        case "$prev" in'
-        for sub in tree.level_dict[level]:
-            print '            "%s")' % (sub)
-            print '                __comp_reply "%s"' % \
-                (" ".join(tree.level_dict[level][sub]))
-            print '                ;;'
-        print '            *)'
+        continue
+    for sub in tree.level_dict[level]:
+        print '            "%s")' % (sub)
+        print '                __comp_reply "%s"' % \
+            (" ".join(tree.level_dict[level][sub]))
         print '                ;;'
-        print '        esac'
-print '    fi'
+print '            *)'
+print '                if [[ $COMP_LINE =~ compute ]];then'
+print '                    __comp_reply "--help"'
+print '                else'
+print '                    __comp_reply "%s"' % \
+    (" ".join(tree.level_dict['0']['azurectl']))
+print '                fi'
+print '                ;;'
+print '    esac'
 print '    return 0'
 print '}'
-
 print dedent('''
 #========================================
 # comp_reply
