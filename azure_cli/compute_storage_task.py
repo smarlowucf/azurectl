@@ -17,18 +17,34 @@ usage: azurectl compute storage -h | --help
        azurectl compute storage container list
        azurectl compute storage container show
            [--container=<container>]
-       azurectl compute storage upload <XZ-compressed-blob> <name>
+       azurectl compute storage upload --source=<xzfile> --name=<blobname>
            [--max-chunk-size=<size>]
            [--container=<container>]
-       azurectl compute storage delete <name>
+           [--quiet]
+       azurectl compute storage delete --name=<blobname>
            [--container=<container>]
 
 commands:
-    account list    list storage account names
-    container list  list container names for configured account
-    container show  show container content for configured account and container
-    upload          upload xz compressed blob to the given container
-    delete          delete blob from the given container
+    account list
+        list storage account names
+    container list
+        list container names for configured account
+    container show
+        show container content for configured account and container
+    upload
+        upload xz compressed blob to the given container
+    delete
+        delete blob from the given container
+    --source=<xzfile>
+        XZ compressed data file
+    --name=<name>
+        name of the file in the storage pool
+    --max-chunk-size=<size>
+        max chunk size in bytes for upload, default 4MB
+    --container=<container>
+        container name, overwrites configuration value
+    --quiet
+        suppress progress information on upload
 """
 from apscheduler.schedulers.background import BackgroundScheduler
 from pytz import utc
@@ -72,17 +88,26 @@ class ComputeStorageTask(CliTask):
             raise AzureUnknownStorageCommand(self.command_args)
 
     def __upload(self):
+        if self.command_args['--quiet']:
+            self.__upload_no_progress()
+        else:
+            self.__upload_with_progress()
+
+    def __upload_no_progress(self):
+        try:
+            self.__process_upload()
+        except (KeyboardInterrupt):
+            progress.shutdown()
+
+    def __upload_with_progress(self):
+        image = self.command_args['--source']
         progress = BackgroundScheduler(timezone=utc)
         progress.add_job(
             self.storage.print_upload_status, 'interval', seconds=3
         )
         progress.start()
         try:
-            image = self.command_args['<XZ-compressed-blob>']
-            self.storage.upload(
-                image, self.command_args['<name>'],
-                self.command_args['--max-chunk-size']
-            )
+            self.__process_upload()
             self.storage.print_upload_status()
             progress.shutdown()
         except (KeyboardInterrupt):
@@ -90,8 +115,15 @@ class ComputeStorageTask(CliTask):
         print
         Logger.info('Uploaded %s' % image)
 
+    def __process_upload(self):
+        self.storage.upload(
+            self.command_args['--source'],
+            self.command_args['--name'],
+            self.command_args['--max-chunk-size']
+        )
+
     def __delete(self):
-        image = self.command_args['<name>']
+        image = self.command_args['--name']
         self.storage.delete(image)
         Logger.info('Deleted %s' % image)
 

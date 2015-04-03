@@ -11,7 +11,9 @@ class TestComputeStorageTask:
     def setup(self):
         sys.argv = [
             sys.argv[0], '--config', '../data/config',
-            'compute', 'storage', 'upload', 'blob', 'name'
+            'compute', 'storage', 'upload',
+            '--source', 'blob',
+            '--name', 'name'
         ]
         self.task = ComputeStorageTask()
         azure_cli.compute_storage_task.AzureAccount.storage_names = mock.Mock(
@@ -34,9 +36,10 @@ class TestComputeStorageTask:
         self.task.command_args['list'] = False
         self.task.command_args['show'] = False
         self.task.command_args['--container'] = 'some-container'
-        self.task.command_args['<XZ-compressed-blob>'] = 'some-file'
+        self.task.command_args['--source'] = 'some-file'
         self.task.command_args['--max-chunk-size'] = 1024
-        self.task.command_args['<name>'] = 'some-blob'
+        self.task.command_args['--quiet'] = False
+        self.task.command_args['--name'] = 'some-blob'
 
     @patch('azure_cli.data_collector.json')
     def test_process_compute_storage_account_list(self, mock_json):
