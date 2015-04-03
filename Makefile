@@ -8,7 +8,7 @@ all: completion
 
 install:
 	python setup.py install
-	tools/completion_generator > /etc/bash_completion.d/azure-cli.sh
+	tools/completion_generator > /etc/bash_completion.d/azurectl.sh
 
 
 .PHONY: test
@@ -29,7 +29,7 @@ build: pep8 test
 	cat package/spec-template | sed -e s'@%%VERSION@${version}@' \
 		> dist/python-azure-cli.spec
 	mkdir dist/azure_cli-${version}
-	tools/completion_generator > dist/azure_cli-${version}/azure-cli.sh
+	tools/completion_generator > dist/azure_cli-${version}/azurectl.sh
 	tar -C dist -czf dist/python-azure-cli-completion.tar.gz \
 		azure_cli-${version}
 	rm -rf dist/azure_cli-${version}
