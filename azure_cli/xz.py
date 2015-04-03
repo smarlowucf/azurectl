@@ -83,6 +83,6 @@ class XZ:
         )
         output, error = xz_info.communicate()
         if xz_info.returncode != 0:
-            raise AzureXZError('xz: %s' % error)
+            raise AzureXZError('%s' % error)
         total = output.strip().split('\n').pop()
         return int(total.split()[4])
