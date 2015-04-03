@@ -28,8 +28,9 @@ build: pep8 test
 		tools/changelog_descending > dist/python-azure-cli.changes
 	cat package/spec-template | sed -e s'@%%VERSION@${version}@' \
 		> dist/python-azure-cli.spec
-	mkdir dist/azure_cli-${version}
-	tools/completion_generator > dist/azure_cli-${version}/azurectl.sh
+	mkdir -p dist/azure_cli-${version}/completion
+	tools/completion_generator \
+		> dist/azure_cli-${version}/completion/azurectl.sh
 	tar -C dist -czf dist/python-azure-cli-completion.tar.gz \
 		azure_cli-${version}
 	rm -rf dist/azure_cli-${version}
