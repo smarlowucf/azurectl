@@ -33,16 +33,16 @@ python setup.py build
 %install
 python setup.py install --prefix=%{_prefix} --root=%{buildroot}
 mkdir -p %{buildroot}/etc/bash_completion.d
-cp completion/azure-cli.sh %{buildroot}/etc/bash_completion.d
+cp completion/azurectl.sh %{buildroot}/etc/bash_completion.d
 
 # make rpmlint happy
 chmod 755 %{buildroot}/%{python_sitelib}/azure_cli/azure_cli.py
 
 %files
 %defattr(-,root,root,-)
-%{_bindir}/azure-cli
+%{_bindir}/azurectl
 %{python_sitelib}/azure_cli-%{version}-py%{py_ver}.egg-info
 %{python_sitelib}/azure_cli
-%config /etc/bash_completion.d/azure-cli.sh
+%config /etc/bash_completion.d/azurectl.sh
 
 %changelog
