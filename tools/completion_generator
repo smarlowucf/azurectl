@@ -149,9 +149,11 @@ print dedent('''
 function _azurectl {
     local cur prev opts
     _get_comp_words_by_ref cur prev
+    local cmd=$(echo $COMP_LINE | sed -e 's@-.*@@'| awk -F ' ' '{ print $NF }')
 ''').strip()
 
-print '    case "$prev" in'
+print '    for comp in $prev $cmd;do'
+print '        case "$comp" in'
 for level in sorted(tree.level_dict):
     if level == '0':
         continue
@@ -159,16 +161,16 @@ for level in sorted(tree.level_dict):
         print '            "%s")' % (sub)
         print '                __comp_reply "%s"' % \
             (" ".join(tree.level_dict[level][sub]))
+        print '                return 0'
         print '                ;;'
-print '            *)'
-print '                if [[ $COMP_LINE =~ compute ]];then'
-print '                    __comp_reply "--help"'
-print '                else'
-print '                    __comp_reply "%s"' % \
+print '        esac'
+print '    done'
+print '    if [[ $COMP_LINE =~ compute ]];then'
+print '        __comp_reply "--help"'
+print '    else'
+print '       __comp_reply "%s"' % \
     (" ".join(tree.level_dict['0']['azurectl']))
-print '                fi'
-print '                ;;'
-print '    esac'
+print '    fi'
 print '    return 0'
 print '}'
 print dedent('''
