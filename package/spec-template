@@ -35,9 +35,6 @@ python setup.py install --prefix=%{_prefix} --root=%{buildroot}
 mkdir -p %{buildroot}/etc/bash_completion.d
 cp completion/azurectl.sh %{buildroot}/etc/bash_completion.d
 
-# make rpmlint happy
-chmod 755 %{buildroot}/%{python_sitelib}/azure_cli/azurectl.py
-
 %files
 %defattr(-,root,root,-)
 %{_bindir}/azurectl

@@ -142,7 +142,6 @@ tree.traverse()
 # pp.pprint(tree.completion.result)
 
 print dedent('''
-#!/bin/bash
 #========================================
 # _azurectl
 #----------------------------------------
