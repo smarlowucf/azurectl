@@ -52,3 +52,6 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# man pages
+*.1.gz
