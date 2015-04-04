@@ -16,17 +16,17 @@ usage: azurectl -h | --help
        azurectl [--config=<file>] [--account=<name>]
            <servicename> <command> [<args>...]
        azurectl --version
-
-servicenames:
-    compute  commands for Azure storage and image processing
-
-commands:
-    call: 'azurectl <servicename> help' for details
+       azurectl help
 
 global options:
-    --version         show program version
-    --config=<file>   config file, default is: ~/.azurectl/config
-    --account=<name>  account name in config file, default is: 'default'
+    --version
+        show program version
+    --config=<file>
+        config file, default is: ~/.azurectl/config
+    --account=<name>
+        account name in config file, default is: 'default'
+    help
+        show manual page
 """
 import importlib
 from docopt import docopt
@@ -50,6 +50,9 @@ class Cli:
         )
         self.loaded = False
         self.command_args = self.all_args['<args>']
+
+    def show_help(self):
+        return self.all_args['help']
 
     def get_servicename(self):
         return self.all_args['<servicename>']

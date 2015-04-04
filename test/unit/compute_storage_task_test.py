@@ -25,6 +25,9 @@ class TestComputeStorageTask:
         azure_cli.compute_storage_task.Container = mock.Mock(
             return_value=mock.Mock()
         )
+        azure_cli.compute_storage_task.Help = mock.Mock(
+            return_value=mock.Mock()
+        )
         self.__init_command_args()
 
     def __init_command_args(self):
@@ -40,6 +43,7 @@ class TestComputeStorageTask:
         self.task.command_args['--max-chunk-size'] = 1024
         self.task.command_args['--quiet'] = False
         self.task.command_args['--name'] = 'some-blob'
+        self.task.command_args['help'] = False
 
     @patch('azure_cli.data_collector.json')
     def test_process_compute_storage_account_list(self, mock_json):
@@ -81,4 +85,30 @@ class TestComputeStorageTask:
         self.task.process()
         self.task.storage.delete.assert_called_once_with(
             'some-blob'
+        )
+
+    def test_process_compute_storage_help(self):
+        self.__init_command_args()
+        self.task.command_args['help'] = True
+        self.task.process()
+        self.task.manual.show.assert_called_once_with(
+            'azurectl::compute::storage'
+        )
+
+    def test_process_compute_storage_account_help(self):
+        self.__init_command_args()
+        self.task.command_args['help'] = True
+        self.task.command_args['account'] = True
+        self.task.process()
+        self.task.manual.show.assert_called_once_with(
+            'azurectl::compute::storage::account'
+        )
+
+    def test_process_compute_storage_container_help(self):
+        self.__init_command_args()
+        self.task.command_args['help'] = True
+        self.task.command_args['container'] = True
+        self.task.process()
+        self.task.manual.show.assert_called_once_with(
+            'azurectl::compute::storage::container'
         )

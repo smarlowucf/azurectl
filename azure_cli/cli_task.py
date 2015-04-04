@@ -11,9 +11,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import sys
+
 # project
 from cli import Cli
 from config import Config
+from help import Help
 
 
 class CliTask:
@@ -24,6 +27,12 @@ class CliTask:
     """
     def __init__(self):
         self.cli = Cli()
+
+        # show main help man page if requested
+        if self.cli.show_help():
+            manual = Help()
+            manual.show('azurectl')
+            sys.exit(0)
 
         # load/import task module
         self.task = self.cli.load_command()

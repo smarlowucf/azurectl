@@ -14,9 +14,13 @@
 """
 usage: azurectl compute image -h | --help
        azurectl compute image list
+       azurectl compute image help
 
 commands:
-    list  list available os images for configured account
+    list
+        list available os images for configured account
+    help
+        show manual page for image command
 """
 # project
 from cli_task import CliTask
@@ -25,6 +29,7 @@ from data_collector import DataCollector
 from logger import Logger
 from azurectl_exceptions import *
 from image import Image
+from help import Help
 
 
 class ComputeImageTask(CliTask):
@@ -32,10 +37,21 @@ class ComputeImageTask(CliTask):
         Process image commands
     """
     def process(self):
+        self.manual = Help()
+        if self.__help():
+            return
+
         account = AzureAccount(self.account_name, self.config_file)
         self.image = Image(account)
         if self.command_args['list']:
             self.__list()
+
+    def __help(self):
+        if self.command_args['help']:
+            self.manual.show('azurectl::compute::image')
+        else:
+            return False
+        return self.manual
 
     def __list(self):
         result = DataCollector()

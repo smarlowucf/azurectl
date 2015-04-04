@@ -11,6 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import subprocess
 # project
 from azurectl_exceptions import *
 from logger import Logger
@@ -23,6 +24,4 @@ class Help:
     def show(self, command=None):
         if not command:
             raise AzureHelpNoCommandGiven("No help context specified")
-        Logger.info(
-            "*** help page for command %s not yet available ***" % command
-        )
+        subprocess.call('man ' + command, shell=True)

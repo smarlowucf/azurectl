@@ -23,12 +23,15 @@ usage: azurectl compute storage -h | --help
            [--quiet]
        azurectl compute storage delete --name=<blobname>
            [--container=<container>]
+       azurectl compute storage account help
+       azurectl compute storage container help
+       azurectl compute storage help
 
 commands:
     account list
         list storage account names
     container list
-        list container names for configured account
+        list storage container names for configured account
     container show
         show container content for configured account and container
     upload
@@ -45,6 +48,12 @@ commands:
         container name, overwrites configuration value
     --quiet
         suppress progress information on upload
+    account help
+        show manual page for account sub command
+    container help
+        show manual page for container sub command
+    help
+        show manual page for storage command
 """
 from apscheduler.schedulers.background import BackgroundScheduler
 from pytz import utc
@@ -57,6 +66,7 @@ from logger import Logger
 from azurectl_exceptions import *
 from storage import Storage
 from container import Container
+from help import Help
 
 
 class ComputeStorageTask(CliTask):
@@ -64,6 +74,10 @@ class ComputeStorageTask(CliTask):
         Process storage commands
     """
     def process(self):
+        self.manual = Help()
+        if self.__help():
+            return
+
         self.account = AzureAccount(self.account_name, self.config_file)
 
         if self.command_args['--container']:
@@ -86,6 +100,17 @@ class ComputeStorageTask(CliTask):
             self.__delete()
         else:
             raise AzureUnknownStorageCommand(self.command_args)
+
+    def __help(self):
+        if self.command_args['account'] and self.command_args['help']:
+            self.manual.show('azurectl::compute::storage::account')
+        elif self.command_args['container'] and self.command_args['help']:
+            self.manual.show('azurectl::compute::storage::container')
+        elif self.command_args['help']:
+            self.manual.show('azurectl::compute::storage')
+        else:
+            return False
+        return self.manual
 
     def __upload(self):
         if self.command_args['--quiet']:
