@@ -5,11 +5,12 @@ pep8:
 
 all: completion
 	python setup.py build
+	${MAKE} -C doc/man all
 
 install:
 	python setup.py install
 	tools/completion_generator > /etc/bash_completion.d/azurectl.sh
-
+	${MAKE} -C doc/man install
 
 .PHONY: test
 test:
@@ -22,6 +23,7 @@ list_tests:
 	nosetests $@
 
 build: pep8 test
+	${MAKE} -C doc/man all
 	python setup.py sdist
 	mv dist/azure_cli-${version}.tar.gz dist/python-azure-cli.tar.gz
 	git log | tools/changelog_generator |\
@@ -32,8 +34,13 @@ build: pep8 test
 	tools/completion_generator \
 		> dist/azure_cli-${version}/completion/azurectl.sh
 	tar -C dist -czf dist/python-azure-cli-completion.tar.gz \
-		azure_cli-${version}
+		azure_cli-${version}/completion
+	mkdir -p dist/azure_cli-${version}/doc/man
+	cp -a doc/man/*.1.gz dist/azure_cli-${version}/doc/man
+	tar -C dist -czf dist/python-azure-cli-man.tar.gz \
+		azure_cli-${version}/doc/man
 	rm -rf dist/azure_cli-${version}
+	${MAKE} -C doc/man clean
 
 clean:
 	find -name *.pyc | xargs rm -f
