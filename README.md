@@ -88,6 +88,7 @@ for a default account:
 ```
 [default]
 storage_account_name = some-storage
+storage_container_name = container-name
 publishsettings = path-to-publish-settings-file
 ```
 
@@ -118,16 +119,22 @@ to download the Publish Settings file.
   $ azurectl --help
   ```
 
-* Get manual page for a command
+* Get manual page for azurectl
 
   ```
-  $ azurectl <servicename> help <command>
+  $ azurectl help
   ```
 
 * Get short help for a command
 
   ```
   $ azurectl <servicename> <command> --help
+  ```
+
+* Get manual page for a command
+
+  ```
+  $ azurectl <servicename> <command> help
   ```
 
 * List available storage account names
@@ -151,13 +158,13 @@ to download the Publish Settings file.
 * Upload disk images to the blob storage
 
   ```
-  $ azurectl compute storage upload <my_image> <blob_name>
+  $ azurectl compute storage upload --source <xz-image> --name <name>
   ```
 
 * Delete disk images from the blob storage
 
   ```
-  $ azurectl compute storage delete <blob_name>
+  $ azurectl compute storage delete --name <name>
   ```
 
 ## Contributing
@@ -173,11 +180,13 @@ azurectl is compatible with Python 2.7.x and greater
 * docopt
 * futures (for Python 2)
 * pyliblzma
+* man
 
 #### Testing
 
 * mock 
-* nose 
+* nose
+* pandoc 
 
 ### Basics
 
@@ -226,12 +235,13 @@ which region you are working in.
 
 ### Implementing commands
 
-Adding new commands to the project consists of three steps
+Adding new commands to the project consists of four steps
 
 1. Write the implementation classes providing the functionality you need
 2. Write a task class providing the command line processing and output
    using the implementation classes (file name must end with `_task`).
-3. Write tests
+3. Write a manual page
+4. Write tests
 
 The following is a simple template to illustrate the implementation
 
@@ -263,10 +273,15 @@ and its arguments.
 ```python
 
 """
-usage: azurectl service mycmd dig-for-gold
+usage: azurectl service mycmd -h | --help
+       azurectl service mycmd dig-for-gold
+       azurectl service mycmd help
 
 commands:
-    dig-for-gold   digs for gold
+    dig-for-gold
+        digs for gold
+    help
+        show manual page
 """
 
 from cli_task import CliTask
@@ -274,10 +289,16 @@ from azure_account import AzureAccount
 from data_collector import DataCollector
 from logger import Logger
 from azurectl_exceptions import *
+from help import Help
+
 from mycmd import MyCmd
 
 class ServiceMyCmdTask(CliTask):
     def process(self):
+        self.manual = Help()
+        if self.__help():
+            return
+
         self.account = AzureAccount(self.account_name, self.config_file)
         self.mycmd = MyCmd(self.account)
         if self.command_args['dig-for-gold']:
@@ -287,6 +308,38 @@ class ServiceMyCmdTask(CliTask):
         else
             raise AzureUnknownCommand(self.command_args)
 
+    def __help(self):
+        if self.command_args['help']:
+            self.manual.show('azurectl::service::mycmd')
+        else:
+            return False
+        return self.manual
+```
+
+### Write manual page
+
+Manual pages are written in github markdown and auto converted into the
+man format using the pandoc utility. The manual page for _mycmd_ needs to
+be created here:
+
+```
+touch doc/man/azurectl::service::mycmd.md
+```
+
+and should follow the basic manual page structure:
+
+```
+# NAME
+
+azurectl - Command Line Interface to manage Microsoft Azure
+
+# SYNOPSIS
+
+__azurectl__ service mycmd dig-for-gold
+
+# DESCRIPTION
+
+Digs for gold
 ```
 
 ### Write tests: mycmd_test.py, service_mycmd_task_test.py
