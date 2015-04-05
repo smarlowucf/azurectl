@@ -323,7 +323,7 @@ man format using the pandoc utility. The manual page for _mycmd_ needs to
 be created here:
 
 ```
-touch doc/man/azurectl::service::mycmd.md
+$ vi doc/man/azurectl::service::mycmd.md
 ```
 
 and should follow the basic manual page structure:
