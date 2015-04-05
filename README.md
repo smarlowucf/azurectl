@@ -199,19 +199,23 @@ $ rm -rf hooks
 $ ln -s ../.git-hooks hooks
 $ popd
 ```
+
 We maintain a hook script to do some rudimentary local checking to catch
 obvious issues that would prevent a pull request from being accepted.
-* All contributed code must conform to [PEP8](https://www.python.org/dev/peps/pep-0008/)
+* All contributed code must conform to
+  [PEP8](https://www.python.org/dev/peps/pep-0008/)
 * All code contributions must be accompanied by a test. Should you not have
   a suitable Publish Settings file to run your test you will receive help.
   However you must make a good effort in providing a test.
 * We follow the [Semantic Versioning](http://semver.org/) scheme
 
-1.) MAJOR version when you make incompatible API changes,
-2.) MINOR version when you add functionality in a backwards-compatible manner, and
-3.) PATCH version when you make backwards-compatible bug fixes.
+1. MAJOR version when you make incompatible API changes,
+2. MINOR version when you add functionality in a backwards-compatible
+   manner, and
+3. PATCH version when you make backwards-compatible bug fixes.
 
 but we do not bump the version for every change.
+
 * Command line parsing is done as stacked solution. Each command
   defines its usage and hooks into the global program by using the
   [docopt](http://docopt.org) module. Adding new commands is made
