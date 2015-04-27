@@ -1,11 +1,11 @@
 version := $(shell python -c 'from azure_cli.version import __VERSION__; print __VERSION__')
 
-pep8:
-	tools/run-pep8
-
-all: completion
+all:
 	python setup.py build
 	${MAKE} -C doc/man all
+
+pep8:
+	tools/run-pep8
 
 install:
 	python setup.py install
