@@ -88,7 +88,9 @@ class Cli:
                 'azure_cli.' + service + '_' + command + '_task'
             )
         except Exception as e:
-            raise AzureUnknownCommand(service + ' ' + command)
+            raise AzureUnknownCommand(
+                'Unknown command "' + command + '" for ' + service + ' service'
+            )
         self.loaded = loaded
         return self.loaded
 
