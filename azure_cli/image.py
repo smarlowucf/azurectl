@@ -71,20 +71,12 @@ class Image:
             raise AzureBlobServicePropertyError(
                 '%s not found in container %s' % (blob_name, container_name)
             )
-        # NOTE: The information about the media_link into the storage bucket
-        # should be provided by the BlobService SDK. By the time of writing
-        # this code the SDK did not provide the information which is the
-        # reason why we construct it in here. This code should be changed
-        # to a SDK call once the functionality exists.
-        media_link = 'https://' \
-            + self.account_name \
-            + '.blob.core.windows.net/' + container_name + '/' + blob_name
-        service = ServiceManagementService(
-            self.publishsettings.subscription_id,
-            self.cert_file.name
-        )
-        status = None
         try:
+            media_link = storage.make_blob_url(container_name, blob_name)
+            service = ServiceManagementService(
+                self.publishsettings.subscription_id,
+                self.cert_file.name
+            )
             service_call = service.add_os_image(
                 label, media_link, name, 'Linux'
             )
