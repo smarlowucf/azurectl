@@ -25,6 +25,14 @@ class AzureError(Exception):
         return repr(self.message)
 
 
+class AzureBlobServicePropertyError(AzureError):
+    pass
+
+
+class AzureOsImageCreateError(AzureError):
+    pass
+
+
 class AzureConfigParseError(AzureError):
     pass
 
