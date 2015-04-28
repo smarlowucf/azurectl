@@ -40,9 +40,32 @@ class TestImage:
                 subscription_id='4711'
             )
         )
+        account.storage_key = mock.Mock()
         self.image = Image(account)
 
     @patch('azure_cli.image.ServiceManagementService.list_os_images')
     def test_list(self, mock_list_os_images):
         mock_list_os_images.return_value = self.list_os_images
         assert self.image.list() == [self.list_os_images.pop()._asdict()]
+
+    @patch('azure_cli.image.ServiceManagementService.add_os_image')
+    @patch('azure_cli.image.BlobService.get_blob_properties')
+    def test_create(self, mock_get_blob_props, mock_add_os_image):
+        MyStatus = namedtuple(
+            'MyStatus',
+            'status'
+        )
+        mock_status = mock.Mock()
+        mock_status.get_operation_status = mock.Mock(
+            return_value=MyStatus(status='OK')
+        )
+        mock_add_os_image.return_value = mock_status
+        assert self.image.create(
+            'some-name', 'some-blob', 'some-label'
+        ) == 'OK'
+        mock_add_os_image.assert_called_once_with(
+            'some-label',
+            'https://bob.blob.core.windows.net/foo/some-blob',
+            'some-name',
+            'Linux'
+        )

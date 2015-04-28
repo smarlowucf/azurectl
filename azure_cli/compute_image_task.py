@@ -14,11 +14,24 @@
 """
 usage: azurectl compute image -h | --help
        azurectl compute image list
+       azurectl compute image create --name=<imagename> --blob=<blobname>
+           [--container=<container>]
+           [--label=<imagelabel>]
        azurectl compute image help
 
 commands:
     list
         list available os images for configured account
+    create
+        create OS image from VHD disk stored on blob storage container
+    --container=<container>
+        container name, overwrites configuration value
+    --label=<imagelabel>
+        image label on create, defaults to name if not set
+    --name=<imagename>
+        image name on create
+    --blob=<blobname>
+        filename of disk image as it is stored on the blob storage
     help
         show manual page for image command
 """
@@ -45,6 +58,8 @@ class ComputeImageTask(CliTask):
         self.image = Image(account)
         if self.command_args['list']:
             self.__list()
+        elif self.command_args['create']:
+            self.__create()
 
     def __help(self):
         if self.command_args['help']:
@@ -52,6 +67,19 @@ class ComputeImageTask(CliTask):
         else:
             return False
         return self.manual
+
+    def __create(self):
+        result = DataCollector()
+        result.add(
+            'image:' + self.command_args['--name'],
+            self.image.create(
+                self.command_args['--name'],
+                self.command_args['--blob'],
+                self.command_args['--label'],
+                self.command_args['--container']
+            )
+        )
+        Logger.info(result.json(), 'Image')
 
     def __list(self):
         result = DataCollector()

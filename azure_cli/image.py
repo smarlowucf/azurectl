@@ -13,6 +13,7 @@
 #
 from tempfile import NamedTemporaryFile
 from azure.servicemanagement import ServiceManagementService
+from azure.storage import BlobService
 
 # project
 from azurectl_exceptions import *
@@ -26,17 +27,19 @@ class Image:
     """
     def __init__(self, account):
         self.account = account
+        self.account_name = account.storage_name()
+        self.account_key = account.storage_key()
+        self.cert_file = NamedTemporaryFile()
+        self.publishsettings = self.account.publishsettings()
+        self.cert_file.write(self.publishsettings.private_key)
+        self.cert_file.write(self.publishsettings.certificate)
+        self.cert_file.flush()
 
     def list(self):
         result = []
-        cert_file = NamedTemporaryFile()
-        publishsettings = self.account.publishsettings()
-        cert_file.write(publishsettings.private_key)
-        cert_file.write(publishsettings.certificate)
-        cert_file.flush()
         service = ServiceManagementService(
-            publishsettings.subscription_id,
-            cert_file.name
+            self.publishsettings.subscription_id,
+            self.cert_file.name
         )
         try:
             for image in service.list_os_images():
@@ -53,3 +56,37 @@ class Image:
         except Exception as e:
             raise AzureOsImageListError('%s (%s)' % (type(e), str(e)))
         return result
+
+    def create(self, name, blob_name, label=None, container_name=None):
+        if not container_name:
+            container_name = self.account.storage_container()
+        if not label:
+            label = name
+        try:
+            storage = BlobService(self.account_name, self.account_key)
+            blob_properties = storage.get_blob_properties(
+                container_name, blob_name
+            )
+        except Exception as e:
+            raise AzureBlobServicePropertyError(
+                '%s not found in container %s' % (blob_name, container_name)
+            )
+        media_link = 'https://' \
+            + self.account_name \
+            + '.blob.core.windows.net/' + container_name + '/' + blob_name
+        service = ServiceManagementService(
+            self.publishsettings.subscription_id,
+            self.cert_file.name
+        )
+        status = None
+        try:
+            service_call = service.add_os_image(
+                label, media_link, name, 'Linux'
+            )
+            add_os_image_result = service_call.get_operation_status(
+                service_call.request_id
+            )
+            status = add_os_image_result.status
+        except Exception as e:
+            raise AzureOsImageCreateError('%s (%s)' % (type(e), str(e)))
+        return status
