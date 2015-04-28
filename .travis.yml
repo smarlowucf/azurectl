@@ -9,4 +9,4 @@ install:
   - "pip install APScheduler"
   - "pip install pyliblzma"
 
-script: make pep8 test
+script: make pep8
