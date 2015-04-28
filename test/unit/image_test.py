@@ -48,6 +48,15 @@ class TestImage:
         mock_list_os_images.return_value = self.list_os_images
         assert self.image.list() == [self.list_os_images.pop()._asdict()]
 
+    @raises(AzureBlobServicePropertyError)
+    def test_create_raise_blob_error(self):
+        self.image.create('some-name', 'some-blob')
+
+    @patch('azure_cli.image.BlobService.get_blob_properties')
+    @raises(AzureOsImageCreateError)
+    def test_create_raise_os_image_error(self, mock_get_blob_props):
+        self.image.create('some-name', 'some-blob')
+
     @patch('azure_cli.image.ServiceManagementService.add_os_image')
     @patch('azure_cli.image.BlobService.get_blob_properties')
     def test_create(self, mock_get_blob_props, mock_add_os_image):
