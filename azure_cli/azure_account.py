@@ -65,24 +65,22 @@ class AzureAccount:
                 publishsettings.subscription_id,
                 cert_file.name
             )
-        except Exception as e:
-            raise AzureServiceManagementError('%s (%s)' % (type(e), str(e)))
-
-        if information_type == 'storage_names':
-            result = []
-            for storage in service.list_storage_accounts():
-                result.append(storage.service_name)
-            return result
-        elif information_type == 'storage_key':
-            if not name:
-                name = self.storage_name()
-            return service.get_storage_account_keys(
-                name
-            ).storage_service_keys.primary
-        else:
+            if information_type == 'storage_names':
+                result = []
+                for storage in service.list_storage_accounts():
+                    result.append(storage.service_name)
+                return result
+            elif information_type == 'storage_key':
+                if not name:
+                    name = self.storage_name()
+                return service.get_storage_account_keys(
+                   name
+                ).storage_service_keys.primary
             raise AzureInternalError(
                 'AzureAccount::__query_account_for(invalid information type)'
             )
+        except Exception as e:
+            raise AzureServiceManagementError('%s (%s)' % (type(e), str(e)))
 
     def __get_private_key(self):
         p12 = self.__read_p12()
