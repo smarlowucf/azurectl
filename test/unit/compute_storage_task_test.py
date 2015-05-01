@@ -38,7 +38,11 @@ class TestComputeStorageTask:
         self.task.command_args['upload'] = False
         self.task.command_args['list'] = False
         self.task.command_args['show'] = False
+        self.task.command_args['sas'] = False
         self.task.command_args['--container'] = 'some-container'
+        self.task.command_args['--start-datetime'] = '2015-01-01'
+        self.task.command_args['--expiry-datetime'] = '2015-12-31'
+        self.task.command_args['--permissions'] = 'rl'
         self.task.command_args['--source'] = 'some-file'
         self.task.command_args['--max-chunk-size'] = 1024
         self.task.command_args['--quiet'] = False
@@ -61,6 +65,19 @@ class TestComputeStorageTask:
         self.task.process()
         self.task.container.content.assert_called_once_with(
             'some-container'
+        )
+
+    @patch('azure_cli.data_collector.json')
+    def test_process_compute_storage_container_sas(self, mock_json):
+        self.__init_command_args()
+        self.task.command_args['container'] = True
+        self.task.command_args['sas'] = True
+        self.task.process()
+        self.task.container.sas.assert_called_once_with(
+            'some-container',
+            start,
+            expiry,
+            'rl'
         )
 
     @patch('azure_cli.data_collector.json')
