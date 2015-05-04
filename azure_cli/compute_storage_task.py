@@ -142,7 +142,7 @@ class ComputeStorageTask(CliTask):
         elif self.command_args['delete']:
             self.__delete()
         else:
-            raise AzureUnknownStorageCommand(self.command_args)
+            raise AzureUnknownCommand(self.command_args)
 
     # argument validation
 
