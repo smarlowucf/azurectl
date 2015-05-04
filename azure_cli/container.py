@@ -11,11 +11,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from azure.storage import BlobService
+import datetime
+
+from azure.storage import (
+    AccessPolicy,
+    BlobService,
+    SharedAccessPolicy,
+    SharedAccessSignature
+)
+from azure.storage.sharedaccesssignature import (
+    RESOURCE_CONTAINER,
+    SIGNED_RESOURCE_TYPE,
+    SHARED_ACCESS_PERMISSION
+)
 
 # project
 from azurectl_exceptions import *
 from logger import Logger
+
+ISO8061_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
 
 
 class Container:
@@ -45,3 +59,23 @@ class Container:
             return result
         except Exception as e:
             raise AzureContainerListContentError('%s (%s)' % (type(e), str(e)))
+
+    def sas(self, container, start, expiry, permissions):
+
+        sap = SharedAccessPolicy(AccessPolicy(
+            start.strftime(ISO8061_FORMAT),
+            expiry.strftime(ISO8061_FORMAT),
+            permissions
+        ))
+
+        sas = SharedAccessSignature(self.account_name, self.account_key)
+        signed_query = sas.generate_signed_query_string(
+            container,
+            RESOURCE_CONTAINER,
+            sap
+        )
+        token = sas._convert_query_string(signed_query)
+
+        return 'https://{}.blob.core.windows.net/{}?{}'.format(
+            self.account_name, container, token
+        )

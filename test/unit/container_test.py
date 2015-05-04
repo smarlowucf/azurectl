@@ -1,3 +1,4 @@
+import datetime
 import sys
 import mock
 from mock import patch
@@ -19,6 +20,11 @@ class TestContainer:
             'credentials',
             ['private_key', 'certificate', 'subscription_id']
         )
+        account.storage_name = mock.Mock(return_value='mock-storage')
+        account.storage_key = mock.Mock(
+            return_value='fI8bhf6QAvgwCgR9qJyoNLHQ9F73fQ97e3/e8jMCFSiFioaB' +
+            'iAU0oSGcFACtniSY6pS3L5GKNzPCK0FF6M+O4A=='
+        )
         account.publishsettings = mock.Mock(
             return_value=credentials(
                 private_key='abc',
@@ -38,3 +44,14 @@ class TestContainer:
         mock_list_blobs.return_value = self.name_list
         assert self.container.content('some-container') == \
             {'some-container': ['a', 'b']}
+
+    def test_sas(self):
+        container = 'mock-container'
+        start = datetime.datetime(2015, 1, 1)
+        expiry = datetime.datetime(2015, 12, 31)
+        permissions = 'rl'
+        assert self.container.sas(container, start, expiry, permissions) == \
+            'https://mock-storage.blob.core.windows.net/mock-container?' + \
+            'st=2015-01-01T00%3A00%3A00Z&se=2015-12-31T00%3A00%3A00Z&' + \
+            'sp=rl&sr=c&sv=2012-02-12&' + \
+            'sig=r48rEEchZ98nLO/HTc8RbrT4Sgw70NYrfooJRIJZG2Q%3D&'
