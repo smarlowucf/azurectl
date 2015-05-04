@@ -74,6 +74,9 @@ commands:
     help
         show manual page for storage command
 """
+import datetime
+import dateutil.parser
+import re
 from apscheduler.schedulers.background import BackgroundScheduler
 from pytz import utc
 
@@ -104,6 +107,20 @@ class ComputeStorageTask(CliTask):
         else:
             container_name = self.account.storage_container()
 
+        # default to 1 minute ago (skew around 'now')
+        if self.command_args['--start-datetime'] == 'now':
+            start = datetime.datetime.utcnow() - datetime.timedelta(minutes=1)
+        else:
+            start = self.__validate_date_arg('--start-datetime')
+
+        # default to 30 days from now
+        if self.command_args['--expiry-datetime'] == '30 days from start':
+            expiry = start + datetime.timedelta(days=30)
+        else:
+            expiry = self.__validate_date_arg('--expiry-datetime')
+
+        self.__validate_permissions_arg()
+
         self.storage = Storage(self.account, container_name)
         self.container = Container(self.account)
 
@@ -126,6 +143,25 @@ class ComputeStorageTask(CliTask):
             self.__delete()
         else:
             raise AzureUnknownStorageCommand(self.command_args)
+
+    # argument validation
+
+    def __validate_date_arg(self, cmd_arg):
+        try:
+            date = dateutil.parser.parse(self.command_args[cmd_arg])
+            return date
+        except ValueError:
+            raise AzureInvalidCommand(
+                cmd_arg + '=' + self.command_args[cmd_arg]
+            )
+
+    def __validate_permissions_arg(self):
+        if (not re.match("^([rwld]+)$", self.command_args['--permissions'])):
+            raise AzureInvalidCommand(
+                '--permissions=' + self.command_args['--permissions']
+            )
+
+    # tasks
 
     def __help(self):
         if self.command_args['account'] and self.command_args['help']:

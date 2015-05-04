@@ -1,9 +1,11 @@
+import dateutil.parser
 import sys
 import mock
 from mock import patch
 from nose.tools import *
 
 import azure_cli
+from azure_cli.azurectl_exceptions import *
 from azure_cli.compute_storage_task import ComputeStorageTask
 
 
@@ -67,12 +69,34 @@ class TestComputeStorageTask:
             'some-container'
         )
 
+    def test_start_date_validation(self):
+        self.__init_command_args()
+        self.task.command_args['--start-datetime'] = 'foo'
+        assert_raises(AzureInvalidCommand, self.task.process)
+
+    def test_end_date_validation(self):
+        self.__init_command_args()
+        self.task.command_args['--expiry-datetime'] = 'foo'
+        assert_raises(AzureInvalidCommand, self.task.process)
+
+    def test_permissions_validation(self):
+        self.__init_command_args()
+        self.task.command_args['--permissions'] = 'a'
+        assert_raises(AzureInvalidCommand, self.task.process)
+
     @patch('azure_cli.data_collector.json')
     def test_process_compute_storage_container_sas(self, mock_json):
         self.__init_command_args()
         self.task.command_args['container'] = True
         self.task.command_args['sas'] = True
         self.task.process()
+        start = dateutil.parser.parse(
+            self.task.command_args['--start-datetime']
+        )
+        expiry = dateutil.parser.parse(
+            self.task.command_args['--expiry-datetime']
+        )
+
         self.task.container.sas.assert_called_once_with(
             'some-container',
             start,
