@@ -34,7 +34,7 @@ class TestStorage:
     @patch('azure_cli.storage.XZ.uncompressed_size')
     def test_upload(self, mock_uncompressed_size):
         mock_uncompressed_size.return_value = 1024
-        self.storage.upload('../data/config', None, 1024)
+        self.storage.upload('../data/blob.xz', None, 1024)
 
     @raises(AzureStorageDeleteError)
     def test_delete(self):

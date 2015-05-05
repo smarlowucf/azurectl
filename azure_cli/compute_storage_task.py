@@ -17,7 +17,7 @@ usage: azurectl compute storage -h | --help
        azurectl compute storage container list
        azurectl compute storage container show
            [--container=<container>]
-       azurectl compute storage upload --source=<xzfile> --name=<blobname>
+       azurectl compute storage upload --source=<file> --name=<blobname>
            [--max-chunk-size=<size>]
            [--container=<container>]
            [--quiet]
@@ -38,8 +38,8 @@ commands:
         upload xz compressed blob to the given container
     delete
         delete blob from the given container
-    --source=<xzfile>
-        XZ compressed data file
+    --source=<file>
+        file to upload
     --name=<name>
         name of the file in the storage pool
     --max-chunk-size=<size>
