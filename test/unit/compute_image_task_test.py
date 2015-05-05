@@ -3,6 +3,8 @@ import mock
 from mock import patch
 from nose.tools import *
 
+import nose_helper
+
 import azure_cli
 from azure_cli.compute_image_task import ComputeImageTask
 

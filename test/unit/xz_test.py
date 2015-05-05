@@ -1,5 +1,7 @@
 from nose.tools import *
 
+import nose_helper
+
 from azure_cli.xz import XZ
 
 

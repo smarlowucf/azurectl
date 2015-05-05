@@ -2,6 +2,9 @@ import sys
 import mock
 from mock import patch
 from nose.tools import *
+
+import nose_helper
+
 from azure_cli.azurectl_exceptions import *
 from azure_cli.storage import Storage
 

@@ -4,6 +4,9 @@ import mock
 from mock import patch
 from nose.tools import *
 from urlparse import urlparse
+
+import nose_helper
+
 from azure_cli.azurectl_exceptions import *
 from azure_cli.container import Container
 

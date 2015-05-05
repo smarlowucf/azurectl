@@ -39,7 +39,7 @@ commands:
 from cli_task import CliTask
 from azure_account import AzureAccount
 from data_collector import DataCollector
-from logger import Logger
+from logger import log
 from azurectl_exceptions import *
 from image import Image
 from help import Help
@@ -79,9 +79,9 @@ class ComputeImageTask(CliTask):
                 self.command_args['--container']
             )
         )
-        Logger.info(result.json(), 'Image')
+        log.info(result.json())
 
     def __list(self):
         result = DataCollector()
         result.add('images', self.image.list())
-        Logger.info(result.json(), 'Image')
+        log.info(result.json())

@@ -27,7 +27,6 @@ from azure.storage.sharedaccesssignature import (
 
 # project
 from azurectl_exceptions import *
-from logger import Logger
 
 ISO8061_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
 

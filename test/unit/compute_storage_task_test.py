@@ -4,6 +4,8 @@ import mock
 from mock import patch
 from nose.tools import *
 
+import nose_helper
+
 import azure_cli
 from azure_cli.azurectl_exceptions import *
 from azure_cli.compute_storage_task import ComputeStorageTask
@@ -112,7 +114,8 @@ class TestComputeStorageTask:
         self.task.process()
         self.task.container.list.assert_called_once_with()
 
-    def test_process_compute_storage_upload(self):
+    @patch('azure_cli.compute_storage_task.BackgroundScheduler')
+    def test_process_compute_storage_upload(self, job):
         self.__init_command_args()
         self.task.command_args['upload'] = True
         self.task.process()
