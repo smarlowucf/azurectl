@@ -12,7 +12,13 @@ config = {
     'download_url': 'https://github.com/SUSE/azure-cli',
     'author_email': 'public-cloud-dev@susecloud.net',
     'version': __VERSION__,
-    'install_requires': ['docopt', 'APScheduler', 'pyliblzma', 'azure'],
+    'install_requires': [
+        'docopt',
+        'APScheduler',
+        'pyliblzma',
+        'azure',
+        'dateutil'
+    ],
     'packages': ['azure_cli'],
     'entry_points': {
         'console_scripts': ['azurectl=azure_cli.azurectl:main'],

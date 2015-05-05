@@ -81,6 +81,10 @@ class AzureUnknownCommand(AzureError):
     pass
 
 
+class AzureInvalidCommand(AzureError):
+    pass
+
+
 class AzureContainerListContentError(AzureError):
     pass
 
