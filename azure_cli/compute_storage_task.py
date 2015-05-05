@@ -54,7 +54,7 @@ commands:
     --start-datetime=<start>
         Date (and optionally time) to grant access via a shared access
         signature. [default: now]
-    --expiry-datetime=<start>
+    --expiry-datetime=<expiry>
         Date (and optionally time) to cease access via a shared access
         signature. [default: 30 days from start]
     --permissions=<permissions>
