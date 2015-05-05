@@ -52,6 +52,13 @@ class AppHash:
                                 ['azurectl', global_opt]
                             )
                             cur_path = self.merge(result_keys, self.result)
+                    elif re.match('                \[', line):
+                        opt_val = re.search('                \[(--.*)', line)
+                        global_opt = opt_val.group(1)
+                        result_keys = self.validate(
+                            ['azurectl', global_opt]
+                        )
+                        cur_path = self.merge(result_keys, self.result)
                     elif re.match('.*azurectl', line):
                         mandatory_options = re.search(
                             '(.*azurectl.*?) (--.*)', line
