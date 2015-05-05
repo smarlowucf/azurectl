@@ -14,7 +14,6 @@
 import subprocess
 # project
 from azurectl_exceptions import *
-from logger import Logger
 
 
 class Help:

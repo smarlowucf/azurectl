@@ -15,8 +15,8 @@ import sys
 import docopt
 
 # project
+import logger
 from app import App
-from logger import Logger
 from azurectl_exceptions import *
 
 
@@ -24,11 +24,12 @@ def main():
     """
         azurectl - invoke the Application
     """
+    logger.init()
     try:
         App()
     except AzureError as e:
         # known exception, log information and exit
-        Logger.error('%s (%s)' % (type(e), str(e)))
+        logger.log.error('%s (%s)' % (type(e), str(e)))
         sys.exit(1)
     except docopt.DocoptExit:
         # exception caught by docopt, results in usage message
@@ -38,5 +39,5 @@ def main():
         sys.exit(1)
     except:
         # exception we did no expect, show python backtrace
-        Logger.error("Unexpected error:")
+        logger.log.error("Unexpected error:")
         raise

@@ -12,21 +12,21 @@
 # limitations under the License.
 #
 import sys
+import logging
 
 
-class Logger:
+class Logger(logging.Logger):
     """
-        Implements logging functions for azurectl
+        azurectl logging facility based on python logging
     """
-    @classmethod
-    def info(self, message, message_type='INFO'):
-        sys.stdout.write("{0}: {1}\n".format(message_type, message))
+    def __init__(self, name):
+        logging.Logger.__init__(self, name, logging.INFO)
+        console = logging.StreamHandler(sys.__stdout__)
+        console.setLevel(logging.INFO)
+        formatter = logging.Formatter('%(levelname)s: %(message)s')
+        console.setFormatter(formatter)
+        self.addHandler(console)
 
-    @classmethod
-    def error(self, message, message_type='ERROR'):
-        sys.stdout.write("{0}: {1}\n".format(message_type, message))
-
-    @classmethod
     def progress(self, current, total, prefix, bar_length=40):
         try:
             percent = float(current) / total
@@ -41,3 +41,9 @@ class Logger:
             prefix, hashes + spaces, int(round(percent * 100))
         ))
         sys.stdout.flush()
+
+
+def init(level=logging.INFO):
+    global log
+    logging.setLoggerClass(Logger)
+    log = logging.getLogger("azurectl")

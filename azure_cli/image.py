@@ -17,7 +17,6 @@ from azure.storage import BlobService
 
 # project
 from azurectl_exceptions import *
-from logger import Logger
 
 
 class Image:

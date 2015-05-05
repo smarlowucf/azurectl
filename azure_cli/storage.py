@@ -18,7 +18,7 @@ from azure.storage import BlobService
 from xz import XZ
 from azurectl_exceptions import *
 from filetype import FileType
-from logger import Logger
+from logger import log
 
 
 class Storage:
@@ -141,7 +141,7 @@ class Storage:
             raise AzureStorageDeleteError('%s (%s)' % (type(e), str(e)))
 
     def print_upload_status(self):
-        Logger.progress(
+        log.progress(
             self.upload_status['current_bytes'],
             self.upload_status['total_bytes'],
             'Uploading'

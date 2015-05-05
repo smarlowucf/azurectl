@@ -1,5 +1,8 @@
 import sys
 from nose.tools import *
+
+import nose_helper
+
 from azure_cli.cli import Cli
 from azure_cli.azurectl_exceptions import *
 

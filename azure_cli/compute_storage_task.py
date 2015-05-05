@@ -84,7 +84,7 @@ from pytz import utc
 from cli_task import CliTask
 from azure_account import AzureAccount
 from data_collector import DataCollector
-from logger import Logger
+from logger import log
 from azurectl_exceptions import *
 from storage import Storage
 from container import Container
@@ -200,7 +200,7 @@ class ComputeStorageTask(CliTask):
         except (KeyboardInterrupt):
             progress.shutdown()
         print
-        Logger.info('Uploaded %s' % image)
+        log.info('Uploaded %s' % image)
 
     def __process_upload(self):
         self.storage.upload(
@@ -212,7 +212,7 @@ class ComputeStorageTask(CliTask):
     def __delete(self):
         image = self.command_args['--name']
         self.storage.delete(image)
-        Logger.info('Deleted %s' % image)
+        log.info('Deleted %s' % image)
 
     def __container_sas(self, container_name, start, expiry, permissions):
         result = DataCollector()
@@ -220,7 +220,7 @@ class ComputeStorageTask(CliTask):
             self.account.storage_name() + ':container_sas_url',
             self.container.sas(container_name, start, expiry, permissions)
         )
-        Logger.info(result.json(), 'Storage')
+        log.info(result.json(), 'Storage')
 
     def __container_content(self, container_name):
         result = DataCollector()
@@ -228,7 +228,7 @@ class ComputeStorageTask(CliTask):
             self.account.storage_name() + ':container_content',
             self.container.content(container_name)
         )
-        Logger.info(result.json(), 'Storage')
+        log.info(result.json())
 
     def __container_list(self):
         result = DataCollector()
@@ -236,9 +236,9 @@ class ComputeStorageTask(CliTask):
             self.account.storage_name() + ':containers',
             self.container.list()
         )
-        Logger.info(result.json(), 'Storage')
+        log.info(result.json())
 
     def __account_list(self):
         result = DataCollector()
         result.add('storage_names', self.account.storage_names())
-        Logger.info(result.json(), 'Storage')
+        log.info(result.json())

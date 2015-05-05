@@ -291,7 +291,7 @@ commands:
 from cli_task import CliTask
 from azure_account import AzureAccount
 from data_collector import DataCollector
-from logger import Logger
+from logger import log
 from azurectl_exceptions import *
 from help import Help
 
@@ -308,7 +308,7 @@ class ServiceMyCmdTask(CliTask):
         if self.command_args['dig-for-gold']:
             result = DataCollector()
             result.add('nuggets', self.mycmd.dig_for_gold())
-            Logger.info(result.json(), 'GoldDigger')
+            log.info(result.json())
         else
             raise AzureUnknownCommand(self.command_args)
 
