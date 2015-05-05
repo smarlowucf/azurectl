@@ -1,9 +1,11 @@
+import dateutil.parser
 import sys
 import mock
 from mock import patch
 from nose.tools import *
 
 import azure_cli
+from azure_cli.azurectl_exceptions import *
 from azure_cli.compute_storage_task import ComputeStorageTask
 
 
@@ -38,7 +40,11 @@ class TestComputeStorageTask:
         self.task.command_args['upload'] = False
         self.task.command_args['list'] = False
         self.task.command_args['show'] = False
+        self.task.command_args['sas'] = False
         self.task.command_args['--container'] = 'some-container'
+        self.task.command_args['--start-datetime'] = '2015-01-01'
+        self.task.command_args['--expiry-datetime'] = '2015-12-31'
+        self.task.command_args['--permissions'] = 'rl'
         self.task.command_args['--source'] = 'some-file'
         self.task.command_args['--max-chunk-size'] = 1024
         self.task.command_args['--quiet'] = False
@@ -61,6 +67,41 @@ class TestComputeStorageTask:
         self.task.process()
         self.task.container.content.assert_called_once_with(
             'some-container'
+        )
+
+    def test_start_date_validation(self):
+        self.__init_command_args()
+        self.task.command_args['--start-datetime'] = 'foo'
+        assert_raises(AzureInvalidCommand, self.task.process)
+
+    def test_end_date_validation(self):
+        self.__init_command_args()
+        self.task.command_args['--expiry-datetime'] = 'foo'
+        assert_raises(AzureInvalidCommand, self.task.process)
+
+    def test_permissions_validation(self):
+        self.__init_command_args()
+        self.task.command_args['--permissions'] = 'a'
+        assert_raises(AzureInvalidCommand, self.task.process)
+
+    @patch('azure_cli.data_collector.json')
+    def test_process_compute_storage_container_sas(self, mock_json):
+        self.__init_command_args()
+        self.task.command_args['container'] = True
+        self.task.command_args['sas'] = True
+        self.task.process()
+        start = dateutil.parser.parse(
+            self.task.command_args['--start-datetime']
+        )
+        expiry = dateutil.parser.parse(
+            self.task.command_args['--expiry-datetime']
+        )
+
+        self.task.container.sas.assert_called_once_with(
+            'some-container',
+            start,
+            expiry,
+            'rl'
         )
 
     @patch('azure_cli.data_collector.json')

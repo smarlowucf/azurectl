@@ -18,6 +18,7 @@ Requires:       python-docopt
 Requires:       python-APScheduler
 Requires:       python-pyliblzma
 Requires:       python-azure-sdk
+Requires:       python-dateutil
 Requires:       man
 BuildArch:      noarch
 

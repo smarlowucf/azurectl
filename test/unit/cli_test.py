@@ -8,11 +8,14 @@ class TestCli:
     def setup(self):
         self.help_command_args = {
             '--container': None,
+            '--expiry-datetime': '30 days from start',
             '--help': False,
             '--max-chunk-size': None,
             '--name': None,
+            '--permissions': 'rl',
             '--quiet': False,
             '--source': None,
+            '--start-datetime': 'now',
             '-h': False,
             'account': True,
             'compute': True,
@@ -20,6 +23,7 @@ class TestCli:
             'delete': False,
             'help': False,
             'list': True,
+            'sas': False,
             'show': False,
             'storage': True,
             'upload': False
