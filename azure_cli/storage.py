@@ -17,6 +17,7 @@ from azure.storage import BlobService
 # project
 from xz import XZ
 from azurectl_exceptions import *
+from filetype import FileType
 from logger import Logger
 
 
@@ -57,7 +58,8 @@ class Storage:
             max_chunk_size = blob_service._BLOB_MAX_CHUNK_DATA_SIZE
         max_chunk_size = int(max_chunk_size)
 
-        image_size = XZ.uncompressed_size(image)
+        image_type = FileType(image)
+        image_size = self.__upload_byte_size(image, image_type)
 
         # PageBlob must be 512 byte aligned
         remainder = image_size % 512
@@ -93,7 +95,8 @@ class Storage:
         except Exception as e:
             raise AzureStorageUploadError('%s (%s)' % (type(e), str(e)))
         try:
-            with XZ.open(image) as stream:
+            stream = self.__open_upload_stream(image, image_type)
+            if stream:
                 rest_bytes = image_size
                 page_start = 0
                 while True:
@@ -126,6 +129,7 @@ class Storage:
                             image_size, image_size
                         )
                         break
+                stream.close()
         except Exception as e:
             raise AzureStorageUploadError('%s (%s)' % (type(e), str(e)))
 
@@ -146,3 +150,13 @@ class Storage:
     def __upload_status(self, current, total):
         self.upload_status['current_bytes'] = current
         self.upload_status['total_bytes'] = total
+
+    def __open_upload_stream(self, image, image_type):
+        if image_type.is_xz():
+            return XZ.open(image)
+        return open(image)
+
+    def __upload_byte_size(self, image, image_type):
+        if image_type.is_xz():
+            return XZ.uncompressed_size(image)
+        return os.path.getsize(image)

@@ -17,5 +17,8 @@ install:
 		install -m 644 $$i ${man_prefix}/man1 ;\
 	done
 
+show:
+	zcat *.gz | nroff -man | less
+
 clean:
 	rm -f *.1.gz

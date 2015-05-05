@@ -70,6 +70,10 @@ class XZ:
         return chunks
 
     @classmethod
+    def close(self):
+        self.lzma_stream.close()
+
+    @classmethod
     def open(self, file_name, buffer_size=LZMA_STREAM_BUFFER_SIZE):
         self.lzma_stream = open(file_name, 'rb')
         return XZ(self.lzma_stream, buffer_size)
