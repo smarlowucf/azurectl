@@ -220,7 +220,7 @@ class ComputeStorageTask(CliTask):
             self.account.storage_name() + ':container_sas_url',
             self.container.sas(container_name, start, expiry, permissions)
         )
-        log.info(result.json(), 'Storage')
+        log.info(result.json())
 
     def __container_content(self, container_name):
         result = DataCollector()
