@@ -29,7 +29,7 @@ def main():
         App()
     except AzureError as e:
         # known exception, log information and exit
-        logger.log.error('%s (%s)' % (type(e), str(e)))
+        logger.log.error('%s: %s' % (type(e).__name__, format(e)))
         sys.exit(1)
     except docopt.DocoptExit:
         # exception caught by docopt, results in usage message
@@ -39,5 +39,5 @@ def main():
         sys.exit(1)
     except:
         # exception we did no expect, show python backtrace
-        logger.log.error("Unexpected error:")
+        logger.log.error('Unexpected error:')
         raise

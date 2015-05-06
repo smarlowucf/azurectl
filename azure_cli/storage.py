@@ -47,7 +47,7 @@ class Storage:
 
     def upload(self, image, name, max_chunk_size=None):
         if not os.path.exists(image):
-            raise AzureStorageFileNotFound("File %s not found" % image)
+            raise AzureStorageFileNotFound('File %s not found' % image)
         blob_service = BlobService(self.account_name, self.account_key)
         blob_name = name
         if not blob_name:
@@ -65,7 +65,7 @@ class Storage:
         remainder = image_size % 512
         if remainder != 0:
             raise AzurePageBlobAlignmentViolation(
-                "Uncompressed size %d is not 512 byte aligned" % image_size
+                'Uncompressed size %d is not 512 byte aligned' % image_size
             )
 
         zero_page = None
@@ -93,7 +93,9 @@ class Storage:
                 self.x_ms_blob_sequence_number
             )
         except Exception as e:
-            raise AzureStorageUploadError('%s (%s)' % (type(e), str(e)))
+            raise AzureStorageUploadError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
         try:
             stream = self.__open_upload_stream(image, image_type)
             if stream:
@@ -131,14 +133,18 @@ class Storage:
                         break
                 stream.close()
         except Exception as e:
-            raise AzureStorageUploadError('%s (%s)' % (type(e), str(e)))
+            raise AzureStorageUploadError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
 
     def delete(self, image):
         blob_service = BlobService(self.account_name, self.account_key)
         try:
             blob_service.delete_blob(self.container, image)
         except Exception as e:
-            raise AzureStorageDeleteError('%s (%s)' % (type(e), str(e)))
+            raise AzureStorageDeleteError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
 
     def print_upload_status(self):
         log.progress(

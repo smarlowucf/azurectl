@@ -53,7 +53,9 @@ class Image:
                     'media_link': image.media_link
                 })
         except Exception as e:
-            raise AzureOsImageListError('%s (%s)' % (type(e), str(e)))
+            raise AzureOsImageListError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
         return result
 
     def create(self, name, blob_name, label=None, container_name=None):
@@ -84,5 +86,7 @@ class Image:
             )
             status = add_os_image_result.status
         except Exception as e:
-            raise AzureOsImageCreateError('%s (%s)' % (type(e), str(e)))
+            raise AzureOsImageCreateError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
         return status

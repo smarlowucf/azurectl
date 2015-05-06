@@ -80,7 +80,9 @@ class AzureAccount:
                 'AzureAccount::__query_account_for(invalid information type)'
             )
         except Exception as e:
-            raise AzureServiceManagementError('%s (%s)' % (type(e), str(e)))
+            raise AzureServiceManagementError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
 
     def __get_private_key(self):
         p12 = self.__read_p12()
@@ -90,7 +92,7 @@ class AzureAccount:
             )
         except Exception as e:
             raise AzureSubscriptionDecodeError(
-                '%s (%s)' % (type(e), str(e))
+                '%s: %s' % (type(e).__name__, format(e))
             )
 
     def __get_certificate(self):
@@ -101,7 +103,7 @@ class AzureAccount:
             )
         except Exception as e:
             raise AzureSubscriptionDecodeError(
-                '%s (%s)' % (type(e), str(e))
+                '%s: %s' % (type(e).__name__, format(e))
             )
 
     def __get_subscription_id(self):
@@ -111,7 +113,7 @@ class AzureAccount:
             return subscriptions[0].attributes['Id'].value
         except:
             raise AzureSubscriptionIdNotFound(
-                "No Subscription.Id found in %s" % self.settings
+                'No Subscription.Id found in %s' % self.settings
             )
 
     def __read_xml(self):
@@ -119,7 +121,9 @@ class AzureAccount:
             self.settings = self.config.get_option('publishsettings')
             return minidom.parse(self.settings)
         except Exception as e:
-            raise AzureSubscriptionParseError('%s (%s)' % (type(e), str(e)))
+            raise AzureSubscriptionParseError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
 
     def __read_p12(self):
         xml = self.__read_xml()
@@ -128,12 +132,12 @@ class AzureAccount:
             cert = profile[0].attributes['ManagementCertificate'].value
         except:
             raise AzureManagementCertificateNotFound(
-                "No PublishProfile.ManagementCertificate found in %s" %
+                'No PublishProfile.ManagementCertificate found in %s' %
                 self.settings
             )
         try:
             return load_pkcs12(cert.decode("base64"), '')
         except Exception as e:
             raise AzureSubscriptionDecodeError(
-                '%s (%s)' % (type(e), str(e))
+                '%s: %s' % (type(e).__name__, format(e))
             )

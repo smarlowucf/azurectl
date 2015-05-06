@@ -44,9 +44,11 @@ class Container:
         blob_service = BlobService(self.account_name, self.account_key)
         try:
             for container in blob_service.list_containers():
-                result.append(str(container.name))
+                result.append(format(container.name))
         except Exception as e:
-            raise AzureContainerListError('%s (%s)' % (type(e), str(e)))
+            raise AzureContainerListError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
         return result
 
     def content(self, container):
@@ -54,13 +56,14 @@ class Container:
         blob_service = BlobService(self.account_name, self.account_key)
         try:
             for blob in blob_service.list_blobs(container):
-                result[container].append(str(blob.name))
+                result[container].append(format(blob.name))
             return result
         except Exception as e:
-            raise AzureContainerListContentError('%s (%s)' % (type(e), str(e)))
+            raise AzureContainerListContentError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
 
     def sas(self, container, start, expiry, permissions):
-
         sap = SharedAccessPolicy(AccessPolicy(
             start.strftime(ISO8061_FORMAT),
             expiry.strftime(ISO8061_FORMAT),
