@@ -176,10 +176,11 @@ azurectl is compatible with Python 2.7.x and greater
 #### Runtime
 
 * APScheduler > version 3.0
-* azure-sdk
+* azure
 * docopt
 * futures (for Python 2)
 * pyliblzma
+* dateutil
 * man
 
 #### Testing
@@ -263,7 +264,9 @@ class MyCmd:
             return "no gold found in: " + self.account.default_account
         except Exception as e:
             # make sure AzureGoldError exception exists in exceptions.py
-            raise AzureGoldError('%s (%s)' %(type(e), str(e)))
+            raise AzureGoldError(
+                '%s: %s' %(type(e).__name__, format(e))
+            )
 ```
 
 
@@ -303,12 +306,18 @@ class ServiceMyCmdTask(CliTask):
         if self.__help():
             return
 
+        self.result = DataCollector()
+        self.out = DataOutput(
+            self.result,
+            self.global_args['--output-format'],
+            self.global_args['--output-style']
+        )
+
         self.account = AzureAccount(self.account_name, self.config_file)
         self.mycmd = MyCmd(self.account)
         if self.command_args['dig-for-gold']:
-            result = DataCollector()
-            result.add('nuggets', self.mycmd.dig_for_gold())
-            log.info(result.json())
+            self.result.add('nuggets', self.mycmd.dig_for_gold())
+            self.out.display()
         else
             raise AzureUnknownCommand(self.command_args)
 
