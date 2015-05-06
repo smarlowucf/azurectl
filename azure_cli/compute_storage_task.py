@@ -84,6 +84,7 @@ from pytz import utc
 from cli_task import CliTask
 from azure_account import AzureAccount
 from data_collector import DataCollector
+from data_output import DataOutput
 from logger import log
 from azurectl_exceptions import *
 from storage import Storage
@@ -99,6 +100,13 @@ class ComputeStorageTask(CliTask):
         self.manual = Help()
         if self.__help():
             return
+
+        self.result = DataCollector()
+        self.out = DataOutput(
+            self.result,
+            self.global_args['--output-format'],
+            self.global_args['--output-style']
+        )
 
         self.account = AzureAccount(self.account_name, self.config_file)
 
@@ -215,30 +223,26 @@ class ComputeStorageTask(CliTask):
         log.info('Deleted %s' % image)
 
     def __container_sas(self, container_name, start, expiry, permissions):
-        result = DataCollector()
-        result.add(
+        self.result.add(
             self.account.storage_name() + ':container_sas_url',
             self.container.sas(container_name, start, expiry, permissions)
         )
-        log.info(result.json())
+        self.out.display()
 
     def __container_content(self, container_name):
-        result = DataCollector()
-        result.add(
+        self.result.add(
             self.account.storage_name() + ':container_content',
             self.container.content(container_name)
         )
-        log.info(result.json())
+        self.out.display()
 
     def __container_list(self):
-        result = DataCollector()
-        result.add(
+        self.result.add(
             self.account.storage_name() + ':containers',
             self.container.list()
         )
-        log.info(result.json())
+        self.out.display()
 
     def __account_list(self):
-        result = DataCollector()
-        result.add('storage_names', self.account.storage_names())
-        log.info(result.json())
+        self.result.add('storage_names', self.account.storage_names())
+        self.out.display()

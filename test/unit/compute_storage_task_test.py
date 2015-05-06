@@ -43,6 +43,7 @@ class TestComputeStorageTask:
         self.task.command_args['list'] = False
         self.task.command_args['show'] = False
         self.task.command_args['sas'] = False
+        self.task.command_args['--color'] = False
         self.task.command_args['--container'] = 'some-container'
         self.task.command_args['--start-datetime'] = '2015-01-01'
         self.task.command_args['--expiry-datetime'] = '2015-12-31'
@@ -53,16 +54,16 @@ class TestComputeStorageTask:
         self.task.command_args['--name'] = 'some-blob'
         self.task.command_args['help'] = False
 
-    @patch('azure_cli.data_collector.json')
-    def test_process_compute_storage_account_list(self, mock_json):
+    @patch('azure_cli.compute_storage_task.DataOutput')
+    def test_process_compute_storage_account_list(self, mock_out):
         self.__init_command_args()
         self.task.command_args['account'] = True
         self.task.command_args['list'] = True
         self.task.process()
         self.task.account.storage_names.assert_called_once_with()
 
-    @patch('azure_cli.data_collector.json')
-    def test_process_compute_storage_show(self, mock_json):
+    @patch('azure_cli.compute_storage_task.DataOutput')
+    def test_process_compute_storage_show(self, mock_out):
         self.__init_command_args()
         self.task.command_args['container'] = True
         self.task.command_args['show'] = True
@@ -86,8 +87,8 @@ class TestComputeStorageTask:
         self.task.command_args['--permissions'] = 'a'
         assert_raises(AzureInvalidCommand, self.task.process)
 
-    @patch('azure_cli.data_collector.json')
-    def test_process_compute_storage_container_sas(self, mock_json):
+    @patch('azure_cli.compute_storage_task.DataOutput')
+    def test_process_compute_storage_container_sas(self, mock_out):
         self.__init_command_args()
         self.task.command_args['container'] = True
         self.task.command_args['sas'] = True
@@ -106,8 +107,8 @@ class TestComputeStorageTask:
             'rl'
         )
 
-    @patch('azure_cli.data_collector.json')
-    def test_process_compute_storage_list(self, mock_json):
+    @patch('azure_cli.compute_storage_task.DataOutput')
+    def test_process_compute_storage_list(self, mock_out):
         self.__init_command_args()
         self.task.command_args['container'] = True
         self.task.command_args['list'] = True

@@ -25,11 +25,12 @@ class TestComputeImageTask:
 
     def __init_command_args(self):
         self.task.command_args = {}
+        self.task.command_args['--color'] = False
         self.task.command_args['list'] = False
         self.task.command_args['help'] = False
 
-    @patch('azure_cli.data_collector.json')
-    def test_process_compute_image_list(self, mock_json):
+    @patch('azure_cli.compute_image_task.DataOutput')
+    def test_process_compute_image_list(self, mock_out):
         self.__init_command_args()
         self.task.command_args['list'] = True
         self.task.process()

@@ -9,6 +9,17 @@ from azure_cli.azurectl_exceptions import *
 
 class TestCli:
     def setup(self):
+        self.help_global_args = {
+            '--output-format': None,
+            'help': False,
+            '--output-style': None,
+            '--config': None,
+            '--account': None,
+            '--version': False,
+            '--help': False,
+            '-h': False,
+            '<servicename>': 'compute'
+        }
         self.help_command_args = {
             '--container': None,
             '--expiry-datetime': '30 days from start',
@@ -51,15 +62,8 @@ class TestCli:
         assert self.cli.get_command_args() == self.help_command_args
 
     def test_get_global_args(self):
-        assert self.cli.get_global_args() == {
-            'help': False,
-            '--config': None,
-            '--account': None,
-            '--version': False,
-            '--help': False,
-            '-h': False,
-            '<servicename>': 'compute'
-        }
+        print self.cli.get_global_args()
+        assert self.cli.get_global_args() == self.help_global_args
 
     def test_load_command(self):
         assert self.cli.load_command() == self.loaded_command

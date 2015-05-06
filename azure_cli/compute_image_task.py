@@ -39,6 +39,7 @@ commands:
 from cli_task import CliTask
 from azure_account import AzureAccount
 from data_collector import DataCollector
+from data_output import DataOutput
 from logger import log
 from azurectl_exceptions import *
 from image import Image
@@ -53,6 +54,13 @@ class ComputeImageTask(CliTask):
         self.manual = Help()
         if self.__help():
             return
+
+        self.result = DataCollector()
+        self.out = DataOutput(
+            self.result,
+            self.global_args['--output-format'],
+            self.global_args['--output-style']
+        )
 
         account = AzureAccount(self.account_name, self.config_file)
         self.image = Image(account)
@@ -69,8 +77,7 @@ class ComputeImageTask(CliTask):
         return self.manual
 
     def __create(self):
-        result = DataCollector()
-        result.add(
+        self.result.add(
             'image:' + self.command_args['--name'],
             self.image.create(
                 self.command_args['--name'],
@@ -79,9 +86,8 @@ class ComputeImageTask(CliTask):
                 self.command_args['--container']
             )
         )
-        log.info(result.json())
+        self.out.display()
 
     def __list(self):
-        result = DataCollector()
-        result.add('images', self.image.list())
-        log.info(result.json())
+        self.result.add('images', self.image.list())
+        self.out.display()

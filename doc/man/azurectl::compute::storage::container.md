@@ -6,7 +6,9 @@ azurectl - Command Line Interface to manage Microsoft Azure
 
 __azurectl__ compute storage container list
 
-__azurectl__ compute storage container show [--container=*container*]
+__azurectl__ compute storage container show
+
+    [--container=*container*]
 
 __azurectl__ compute storage container sas
 
@@ -42,7 +44,7 @@ Date (and optionally time) to grant access via a shared access signature. (defau
 
 Date (and optionally time) to cease access via a shared access signature. (default: 30 days from start)
 
-##__permissions=permissions__
+##__--permissions=permissions__
 
 String of permitted actions on a storage element via shared access signature. (default: rl)
 
@@ -50,4 +52,3 @@ String of permitted actions on a storage element via shared access signature. (d
 * w = Write
 * d = Delete
 * l = List
-

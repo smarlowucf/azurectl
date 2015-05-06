@@ -11,7 +11,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import json
 
 
 class DataCollector:
@@ -26,8 +25,3 @@ class DataCollector:
 
     def get(self):
         return self.data
-
-    def json(self):
-        return json.dumps(
-            self.data, sort_keys=True, indent=4, separators=(',', ': ')
-        )

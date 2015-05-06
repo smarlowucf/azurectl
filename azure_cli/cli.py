@@ -13,7 +13,10 @@
 #
 """
 usage: azurectl -h | --help
-       azurectl [--config=<file>] [--account=<name>]
+       azurectl [--config=<file>]
+                [--account=<name>]
+                [--output-format=<format>]
+                [--output-style=<style>]
            <servicename> <command> [<args>...]
        azurectl --version
        azurectl help
@@ -25,6 +28,10 @@ global options:
         config file, default is: ~/.azurectl/config
     --account=<name>
         account name in config file, default is: 'default'
+    --output-format=<format>
+        output formats, supported are: json
+    --output-style=<style>
+        output styles, supported are: standard, color
     help
         show manual page
 """
