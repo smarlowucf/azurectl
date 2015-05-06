@@ -42,11 +42,12 @@ easier to maintain for Linux distributors.
 
 ## Installation
 
-Installation from source follows the standard Python setup procedure.
+Installation from source follows the standard Python setup procedure
+which is wrapped into a Makefile.
 
 ```
-$ python setup.py build
-$ sudo python setup.py install
+$ make
+$ sudo make install
 ```
 
 ### Usage
@@ -80,6 +81,7 @@ when no account name is specified with the `--account` command line option.
 Each configured account in the configuration file must contain the 
 
 * default storage account name
+* default storage container name
 * path to the Publish Settings file
 
 The following example outlines all possible configuration parameters
@@ -143,30 +145,6 @@ to download the Publish Settings file.
   $ azurectl compute storage account list
   ```
 
-* List available containers
-
-  ```
-  $ azurectl compute storage container list
-  ```
-
-* List disk images of the blob storage
-
-  ```
-  $ azurectl compute image list
-  ```
-
-* Upload disk images to the blob storage
-
-  ```
-  $ azurectl compute storage upload --source <xz-image> --name <name>
-  ```
-
-* Delete disk images from the blob storage
-
-  ```
-  $ azurectl compute storage delete --name <name>
-  ```
-
 ## Contributing
 
 ### Dependencies
@@ -228,19 +206,44 @@ but we do not bump the version for every change.
 
 ### Testing
 
-Running the unit tests requires access to a Microsoft Azure account. If
-you are a regular contributor to the project and you do not have your own
-account we can provide access to an account that can be used for testing. The
-account is sponsored by Microsoft and may not be used to run a VM or use any
-services for more than 1 hour. Acitvity is monitored.
+Running the unit tests requires the nose test framework. The complete
+set of tests can be called as follows:
 
-You need to setup you ~/.azurectl/config with a [default] section. The
-storage_account_name is available in the web console and determines in
-which region you are working in.
+```
+$ make test
+```
+
+Calling a single test works as follows:
+
+```
+$ make storage_test.py
+```
+
+Running the syntax and style check requires the pep8 framework.
+Running the check as follows:
+
+```
+$ make pep8
+```
+
+Running the application from source without the need to install it
+can be done as follows:
+
+```
+$ cd bin
+$ ./azurectl
+```
+
+So far there are no integration tests defined. Running such implementation
+tests requires access to a Microsoft Azure account. If you are a regular
+contributor to the project and you do not have your own account we can
+provide access to an account that can be used for testing. The account
+is sponsored by Microsoft and may not be used to run a VM or use any
+services for more than 1 hour. Acitvity is monitored.
 
 ### Implementing commands
 
-Adding new commands to the project consists of four steps
+Adding new commands to the project consists out of four steps
 
 1. Write the implementation classes providing the functionality you need
 2. Write a task class providing the command line processing and output
@@ -356,7 +359,12 @@ __azurectl__ service mycmd dig-for-gold
 Digs for gold
 ```
 
-### Write tests: mycmd_test.py, service_mycmd_task_test.py
+### Write tests
+
+For a new command at least two tests needs to be written
+
+* mycmd_test.py
+* service_mycmd_task_test.py
 
 Tests are written using the nose testing framework. Please refer to
 the `test/unit` directory to see current implementations
