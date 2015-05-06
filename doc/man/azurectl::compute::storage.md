@@ -5,6 +5,7 @@ azurectl - Command Line Interface to manage Microsoft Azure
 # SYNOPSIS
 
 __azurectl__ compute storage upload --source=*file* --name=*blobname*
+
 __azurectl__ compute storage delete --name=*blobname*
 
 # DESCRIPTION

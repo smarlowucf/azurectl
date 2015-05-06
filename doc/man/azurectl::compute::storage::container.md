@@ -8,13 +8,13 @@ __azurectl__ compute storage container list
 
 __azurectl__ compute storage container show
 
-    [--container=*container*]
+    [--container=container]
 
 __azurectl__ compute storage container sas
 
-    [--container=*container*]
-    [--start-datetime=*start*] [--expiry-datetime=*expiry*]
-    [--permissions=*permissions*]
+    [--container=container]
+    [--start-datetime=start] [--expiry-datetime=expiry]
+    [--permissions=permissions]
 
 # DESCRIPTION
 
