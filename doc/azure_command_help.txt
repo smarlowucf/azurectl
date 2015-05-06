@@ -1,0 +1,3704 @@
+Information about the commands and its usage from the Microsoft
+azure nodejs based commandline utility. We keep this data as
+implementation reference and for backward compatibilty with the
+azurectl python application
+
+---------------------------------------------------
+Launch a browser to download your publishsettings file
+Usage: account download [options]
+    
+    Options:
+      -h, --help                       output usage information
+      -v, --verbose                    use verbose output
+      --json                           use json output
+      -e, --environment <environment>  the publish settings download environment
+      -r, --realm <realm>              the organization's realm
+
+---------------------------------------------------
+List the imported subscriptions
+Usage: account list [options]
+    
+    Options:
+      -h, --help     output usage information
+      -v, --verbose  use verbose output
+      --json         use json output
+
+---------------------------------------------------
+Show details about a subscription
+Usage: account show [options] [subscription]
+    
+    Options:
+      -h, --help                        output usage information
+      -v, --verbose                     use verbose output
+      --json                            use json output
+      -s --subscription <subscription>  The subscription to show
+      -d --details                      Show extra information about the subscription
+
+---------------------------------------------------
+Set the current subscription
+Usage: account set [options] <subscription>
+    
+    Options:
+      -h, --help     output usage information
+      -v, --verbose  use verbose output
+      --json         use json output
+
+---------------------------------------------------
+Import a publishsettings file or certificate for your account
+Usage: account import [options] <file>
+    
+    Options:
+      -h, --help      output usage information
+      -v, --verbose   use verbose output
+      --json          use json output
+      --skipregister  skip registering resources
+
+---------------------------------------------------
+Remove a subscription or environment, or clear all of the stored account and environment info
+Usage: account clear [options]
+    
+    Options:
+      -h, --help                                output usage information
+      -v, --verbose                             use verbose output
+      --json                                    use json output
+      -s --subscription <subscriptionNameOrId>  Subscription name or id to remove
+      -e --environment <environmentName>        Environment name to remove
+      -q --quiet                                quiet mode, do not ask for delete confirmation
+
+---------------------------------------------------
+Exports the publish settings file as a PEM file
+Usage: account cert export [options]
+    
+    Options:
+      -h, --help                               output usage information
+      -v, --verbose                            use verbose output
+      --json                                   use json output
+      -f, --file <file>                        the name of the cert file. If not specified, generate a file in pwd using the subscription ID as the file name
+      -p, --publishsettings <publishsettings>  the publish settings file
+      --subscription <subscription>            the Name or ID for the subscription whose cert you want to export. If not specified, use the current subscription
+
+---------------------------------------------------
+List the environments
+Usage: account env list [options]
+    
+    Options:
+      -h, --help     output usage information
+      -v, --verbose  use verbose output
+      --json         use json output
+
+---------------------------------------------------
+Show an environment
+Usage: account env show [options] [environment]
+    
+    Options:
+      -h, --help                   output usage information
+      -v, --verbose                use verbose output
+      --json                       use json output
+      --environment <environment>  the environment name
+
+---------------------------------------------------
+Add an environment
+Usage: account env add [options] [environment]
+    
+    Options:
+      -h, --help                                                             output usage information
+      -v, --verbose                                                          use verbose output
+      --json                                                                 use json output
+      --environment <environment>                                            the environment name
+      --portal-url <portalUrl>                                               the management portal URL
+      --active-directory-graph-api-version <activeDirectoryGraphApiVersion>  the Active Directory api version
+      --management-endpoint-url <managementEndpointUrl>                      the management service endpoint
+      --resource-manager-endpoint-url <resourceManagerEndpointUrl>           the resource management endpoint
+      --sql-management-endpoint-url <sqlManagementEndpointUrl>               the sql server management endpoint for mobile commands
+      --sql-server-hostname-suffix <sqlServerHostnameSuffix>                 the dns suffix for sql servers
+      --publishing-profile-url <publishingProfileUrl>                        the publish settings file URL
+      --active-directory-resource-id <activeDirectoryResourceId>             The resource ID to obtain AD tokens for
+      --common-tenant-name <commonTenantName>                                the Active Directory common tenant name
+      --gallery-endpoint-url <galleryEndpointUrl>                            the template gallery endpoint
+      --active-directory-graph-resource-id <activeDirectoryGraphResourceId>  the Active Directory resource ID
+      --active-directory-endpoint-url <activeDirectoryEndpointUrl>           the Active Directory login endpoint
+
+---------------------------------------------------
+Update an environment
+Usage: account env set [options] [environment]
+    
+    Options:
+      -h, --help                                                             output usage information
+      -v, --verbose                                                          use verbose output
+      --json                                                                 use json output
+      --environment <environment>                                            the environment name
+      --portal-url <portalUrl>                                               the management portal URL
+      --active-directory-endpoint-url <activeDirectoryEndpointUrl>           the Active Directory login endpoint
+      --management-endpoint-url <managementEndpointUrl>                      the management service endpoint
+      --resource-manager-endpoint-url <resourceManagerEndpointUrl>           the resource management endpoint
+      --sql-management-endpoint-url <sqlManagementEndpointUrl>               the sql server management endpoint for mobile commands
+      --sql-server-hostname-suffix <sqlServerHostnameSuffix>                 the dns suffix for sql servers
+      --active-directory-graph-api-version <activeDirectoryGraphApiVersion>  the Active Directory api version
+      --active-directory-resource-id <activeDirectoryResourceId>             The resource ID to obtain AD tokens for
+      --common-tenant-name <commonTenantName>                                the Active Directory common tenant name
+      --gallery-endpoint-url <galleryEndpointUrl>                            the template gallery endpoint
+      --active-directory-graph-resource-id <activeDirectoryGraphResourceId>  the Active Directory resource ID
+      --publishing-profile-url <publishingProfileUrl>                        the publish settings file URL
+
+---------------------------------------------------
+Delete an environment
+Usage: account env delete [options] [environment]
+    
+    Options:
+      -h, --help                   output usage information
+      -v, --verbose                use verbose output
+      --json                       use json output
+      --environment <environment>  the environment name
+
+---------------------------------------------------
+List affinity groups available for your account
+Usage: account affinity-group list [options]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Create an affinity group
+Usage: account affinity-group create [options] <name>
+    
+    Options:
+      -h, --help                       output usage information
+      -v, --verbose                    use verbose output
+      --json                           use json output
+      -s, --subscription <id>          the subscription id
+      -l, --location <name>            the data center location
+      -e, --label <label>              the affinity group label
+      -d, --description <description>  the affinity group description
+
+---------------------------------------------------
+Show details about an affinity group
+Usage: account affinity-group show [options] <name>
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Delete an affinity group
+Usage: account affinity-group delete [options] <name>
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -q, --quiet              quiet mode, do not ask for delete confirmation
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+List config settings
+Usage: config list [options]
+    
+    Options:
+      -h, --help     output usage information
+      -v, --verbose  use verbose output
+      --json         use json output
+
+---------------------------------------------------
+Delete a config setting
+Usage: config delete [options] <name>
+    
+    Options:
+      -h, --help     output usage information
+      -v, --verbose  use verbose output
+      --json         use json output
+
+---------------------------------------------------
+Update a config setting
+Usage: config set <name> <value>
+    
+    Options:
+      -h, --help     output usage information
+      -v, --verbose  use verbose output
+      --json         use json output
+
+---------------------------------------------------
+Sets the cli working mode, valid names are 'arm' for resource manager and 'asm' for service management
+Usage: config mode [options] <name>
+    
+    Options:
+      -h, --help     output usage information
+      -v, --verbose  use verbose output
+      --json         use json output
+
+---------------------------------------------------
+Create a cluster
+Usage: hdinsight cluster create [options] [config]
+    
+    Options:
+      -h, --help                                 output usage information
+      -v, --verbose                              use verbose output
+      --json                                     use json output
+      --config <config>                          the config file for cluster creation
+      --clusterName <clusterName>                the HdInsight cluster name
+      --storageAccountName <storageAccountName>  the storage account to use for HDInsight storage
+      --storageAccountKey <storageAccountKey>    the key to the storage account to use for HDInsight storage
+      --storageContainer <storageContainer>      the container in the storage account to use for HDInsight default storage
+      --nodes <nodes>                            the number of data nodes to use for the cluster
+      --location <location>                      the data center location for the cluster
+      --username <username>                      the user name to use for the cluster
+      --clusterPassword <clusterPassword>        the password to use for the cluster
+      -s, --subscription <id>                    the subscription id
+
+---------------------------------------------------
+Delete a cluster
+Usage: hdinsight cluster delete [options] <clusterName>
+    
+    Options:
+      -h, --help                   output usage information
+      -v, --verbose                use verbose output
+      --json                       use json output
+      --clusterName <clusterName>  the HdInsight cluster name
+      -s, --subscription <id>      the subscription id
+
+---------------------------------------------------
+Show cluster details
+Usage: hdinsight cluster show [options] <clusterName>
+    
+    Options:
+      -h, --help                   output usage information
+      -v, --verbose                use verbose output
+      --json                       use json output
+      --clusterName <clusterName>  the HdInsight cluster name
+      -s, --subscription <id>      the subscription id
+
+---------------------------------------------------
+List the clusters
+Usage: hdinsight cluster list [options]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Create an HDInsight configuration file
+Usage: hdinsight cluster config create [options] [file]
+    
+    Options:
+      -h, --help     output usage information
+      -v, --verbose  use verbose output
+      --json         use json output
+      --file <path>  the path to the config file for cluster creation
+
+---------------------------------------------------
+Show the contents of an HDInsight configuration file
+Usage: hdinsight cluster config show [options] [file]
+    
+    Options:
+      -h, --help     output usage information
+      -v, --verbose  use verbose output
+      --json         use json output
+      --file <path>  the path to the config file for cluster creation
+
+---------------------------------------------------
+Update the basic parameters for a cluster configuration
+Usage: hdinsight cluster config set [options] [file]
+    
+    Options:
+      -h, --help                                 output usage information
+      -v, --verbose                              use verbose output
+      --json                                     use json output
+      --file <path>                              the path to the config file for cluster creation
+      --clusterName <clusterName>                the HdInsight cluster name
+      --storageAccountName <storageAccountName>  the storage account to use for HDInsight storage
+      --storageAccountKey <storageAccountKey>    the key to the storage account to use for HDInsight storage
+      --storageContainer <storageContainer>      the container in the storage account to use for HDInsight default storage
+      --nodes <nodes>                            the number of data nodes to use for the cluster
+      --location <location>                      the data center location for the cluster
+      --username <username>                      the user name to use for the cluster
+      --clusterPassword <clusterPassword>        the password to use for the cluster
+      -s, --subscription <id>                    the subscription id
+
+---------------------------------------------------
+Add a storage account to the cluster configuration
+Usage: hdinsight cluster config storage add [options] [file] [storageAccountName] [storageAccountKey]
+    
+    Options:
+      -h, --help                                 output usage information
+      -v, --verbose                              use verbose output
+      --json                                     use json output
+      --storageAccountName <storageAccountName>  the storage account to use for HDInsight storage
+      --storageAccountKey <storageAccountKey>    the key to the storage account to use for HDInsight storage
+
+---------------------------------------------------
+Remove a storage account from the cluster configuration
+Usage: hdinsight cluster config storage remove [options] [file] [storageAccountName]
+    
+    Options:
+      -h, --help                                 output usage information
+      -v, --verbose                              use verbose output
+      --json                                     use json output
+      --storageAccountName <storageAccountName>  the storage account to use for HDInsight storage
+
+---------------------------------------------------
+Update a metastore in the cluster configuration
+Usage: hdinsight cluster config metastore set [options] [file] [metastoreType] [server] [database] [user] [metastorePassword]
+    
+    Options:
+      -h, --help                               output usage information
+      -v, --verbose                            use verbose output
+      --json                                   use json output
+      --type <metastoreType>                   the type of metastore to set (example: hive, oozie)
+      --server <server>                        the name of the sql server for the metastore
+      --database <database>                    the name of the database on the sql server
+      --user <userName>                        the user name to use when connecting to the sql server
+      --metastorePassword <metastorePassword>  the password to use when connecting to the sql server
+
+---------------------------------------------------
+Clear a metastore in the cluster configuration
+Usage: hdinsight cluster config metastore clear [options] [file] [metastoreType]
+    
+    Options:
+      -h, --help              output usage information
+      -v, --verbose           use verbose output
+      --json                  use json output
+      --type <metastoreType>  the type of metastore to clear (example: hive, oozie)
+
+---------------------------------------------------
+List available mobile service locations
+Usage: mobile locations [options]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Create a new mobile service
+Usage: mobile create [options] [servicename] [sqlAdminUsername] [sqlAdminPassword]
+    
+    Options:
+      -h, --help                   output usage information
+      -v, --verbose                use verbose output
+      --json                       use json output
+      -r, --sqlServer <sqlServer>  use existing SQL server
+      -d, --sqlDb <sqlDb>          use existing SQL database
+      -l, --location <location>    create the service in a particular location; run azure mobile locations to get available locations
+      --sqlLocation <location>     create the SQL server in a particular location; defaults to mobile service location
+      -s, --subscription <id>      the subscription id
+      -b, --backend <backend>      backend of mobile service
+
+---------------------------------------------------
+Delete a mobile service
+Usage: mobile delete [options] [servicename] [username] [password]
+    
+    Options:
+      -h, --help                            output usage information
+      -v, --verbose                         use verbose output
+      --json                                use json output
+      -d, --deleteData                      delete all data from the database
+      -a, --deleteAll                       delete all data, SQL database, and SQL server
+      -n, --deleteNotificationHubNamespace  delete associated Notification Hub namespace and entities
+      -s, --subscription <id>               the subscription id
+      -q, --quiet                           do not prompt for confirmation
+
+---------------------------------------------------
+List your mobile services
+Usage: mobile list [options]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Show details for a mobile service
+Usage: mobile show [servicename] [options]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Restart a mobile service
+Usage: mobile restart [options] [servicename]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Get mobile service logs
+Usage: mobile log [options] [servicename]
+    
+    Options:
+      -h, --help                       output usage information
+      -v, --verbose                    use verbose output
+      --json                           use json output
+      -r, --query <query>              log query; takes precedence over --type, --source, --continuationToken, and --top
+      -t, --type <type>                filter entry by type
+      --source <source>                filter entry by source
+      -c, --continuationToken <token>  show logs starting from the specified continuation token
+      -p, --top <top>                  return the first <top> number of remaining rows
+      -s, --subscription <id>          the subscription id
+
+---------------------------------------------------
+Recovers an unhealthy mobile service using the capacity reserved by a healthy mobile service in a different region.
+Usage: mobile recover [options] [unhealthyservicename] [healthyservicename]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -q, --quiet              do not prompt for confirmation of recovery
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Regenerate the mobile service key
+Usage: mobile key regenerate [options] [servicename] [type]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  use the subscription id
+
+---------------------------------------------------
+Set the mobile service key to a specific value
+Usage: mobile key set [options] [servicename] [type] [value]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  use the subscription id
+
+---------------------------------------------------
+Show your mobile service configuration settings
+Usage: mobile config list [options] [servicename]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Set a mobile service configuration setting
+Usage: mobile config set [options] <servicename> <key> [value]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -f, --file <file>        read the value of the setting from a file
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Get a mobile service configuration setting
+Usage: mobile config get [options] [servicename] [key]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -f, --file <file>        save the value of the setting to a file
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Get notification hub settings for mobile service
+Usage: mobile push nh get [options] [servicename]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Create notification hub for mobile service
+Usage: mobile push nh enable [options] [servicename]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+      --nowait                 Do not wait for push operation to complete
+
+---------------------------------------------------
+Create notification hub for mobile service
+Usage: mobile push nh disable [options] [servicename]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Get google cloud API key for mobile service
+Usage: mobile push gcm get [options] [servicename]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Set google cloud API key for mobile service
+Usage: mobile push gcm set [options] [servicename] [apiKey]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Delete google cloud API key for mobile service
+Usage: mobile push gcm delete [options] [servicename]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Get Apple push notification settings for mobile service
+Usage: mobile push apns get [options] [servicename]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+      -f, --file <file>        save the certificate to file
+
+---------------------------------------------------
+Set Apple push notification settings for mobile service
+Usage: mobile push apns set [options] [servicename] [mode] [certificateFile]
+    
+    Options:
+      -h, --help                 output usage information
+      -v, --verbose              use verbose output
+      --json                     use json output
+      -s, --subscription <id>    the subscription id
+      -p, --password <password>  password for certificateFile
+
+---------------------------------------------------
+Delete Apple push notification settings for mobile service
+Usage: mobile push apns delete [options] [servicename]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Get windows phone notification settings for mobile service
+Usage: mobile push mpns get [options] [servicename]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+      -f, --file <file>        save the certificate to file
+
+---------------------------------------------------
+Set windows phone notification settings for mobile service
+Usage: mobile push mpns set [options] [servicename] [certificateFile] [password]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Delete windows phone notification settings for mobile service
+Usage: mobile push mpns delete [options] [servicename]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Get windows application credentials for mobile service
+Usage: mobile push wns get [options] [servicename]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Set windows application credentials for mobile service
+Usage: mobile push wns set [options] [servicename] [clientSecret] [packageSID]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Delete windows application credentials for mobile service
+Usage: mobile push wns delete [options] [servicename]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Get microsoft account settings for mobile service
+Usage: mobile auth microsoftaccount get [options] [servicename]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Set microsoft account settings for mobile service
+Usage: mobile auth microsoftaccount set [options] [servicename] [clientId] [clientSecret]
+    
+    Options:
+      -h, --help                 output usage information
+      -v, --verbose              use verbose output
+      --json                     use json output
+      -s, --subscription <id>    the subscription id
+      --packageSid <packageSid>  Package SID to be set
+
+---------------------------------------------------
+Delete microsoft account settings for mobile service
+Usage: mobile auth microsoftaccount delete [options] [servicename]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Get facebook identity settings for mobile service
+Usage: mobile auth facebook get [options] [servicename]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Set facebook identity settings for mobile service
+Usage: mobile auth facebook set [options] [servicename] [apiKey] [appSecret]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Delete facebook identity settings for mobile service
+Usage: mobile auth facebook delete [options] [servicename]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Get twitter identity settings for mobile service
+Usage: mobile auth twitter get [options] [servicename]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Set twitter identity settings for mobile service
+Usage: mobile auth twitter set [options] [servicename] [apiKey] [apiSecret]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Delete twitter identity settings for mobile service
+Usage: mobile auth twitter delete [options] [servicename]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Get google identity settings for mobile service
+Usage: mobile auth google get [options] [servicename]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Set google identity settings for mobile service
+Usage: mobile auth google set [options] [servicename] [clientId] [clientSecret]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Delete google identity settings for mobile service
+Usage: mobile auth google delete [options] [servicename]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Get azure active directory identity settings for mobile service
+Usage: mobile auth aad get [options] [servicename]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Set azure active directory identity settings for mobile service
+Usage: mobile auth aad set [options] [servicename] [clientId]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Delete azure active directory identity settings for mobile service
+Usage: mobile auth aad delete [options] [servicename]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+List mobile service tables
+Usage: mobile table list [options] [servicename]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Show details for a mobile service table
+Usage: mobile table show [options] [servicename] [tablename]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Create a new mobile service table
+Usage: mobile table create [options] [servicename] [tablename]
+    
+    Options:
+      -h, --help                       output usage information
+      -v, --verbose                    use verbose output
+      --json                           use json output
+      -p, --permissions <permissions>  comma delimited list of <operation>=<permission> pairs
+      -s, --subscription <id>          the subscription id
+      --integerId                      Create a table with an integer id column
+
+---------------------------------------------------
+Update mobile service table properties
+Usage: mobile table update [options] [servicename] [tablename]
+    
+    Options:
+      -h, --help                       output usage information
+      -v, --verbose                    use verbose output
+      --json                           use json output
+      -p, --permissions <permissions>  comma delimited list of <operation>=<permission> pairs
+      --addColumn <columns>            comma separated list of <name>=<type> to add
+      --deleteColumn <columns>         comma separated list of columns to delete
+      -q, --quiet                      do not prompt for confirmation of column deletion
+      --addIndex <columns>             comma separated list of columns to create an index on
+      --deleteIndex <columns>          comma separated list of columns to delete an index from
+      -s, --subscription <id>          the subscription id
+
+---------------------------------------------------
+Delete a mobile service table
+Usage: mobile table delete [options] [servicename] [tablename]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -q, --quiet              do not prompt for confirmation
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Query data from a mobile service table
+Usage: mobile data read [options] [servicename] [tablename] [query]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -k, --skip <top>         skip the first <skip> number of rows
+      -t, --top <top>          return the first <top> number of remaining rows
+      -l, --list               display results in list format
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Delete all data from a mobile service table
+Usage: mobile data truncate [options] [servicename] [tablename]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -q, --quiet              do not prompt for confirmation
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Delete a record from the mobile service table
+Usage: mobile data delete [options] [servicename] [tablename] [recordid]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -q, --quiet              do not prompt for confirmation
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+List mobile service scripts
+Usage: mobile script list [options] [servicename]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  use the subscription id
+
+---------------------------------------------------
+Downloads a mobile service script
+Usage: mobile script download [options] [servicename] [scriptname]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  use the subscription id
+      -f, --file <file>        file to save the script to
+      -o, --override           override existing files
+      -c, --console            write the script to the console instead of a file
+
+---------------------------------------------------
+Uploads a mobile service script
+Usage: mobile script upload [options] [servicename] [scriptname]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  use the subscription id
+      -f, --file <file>        file to read the script from
+
+---------------------------------------------------
+Deletes a mobile service script
+Usage: mobile script delete [options] [servicename] [scriptname]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  use the subscription id
+
+---------------------------------------------------
+Show the scale settings of a mobile service
+Usage: mobile scale show [options] [servicename]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  use the subscription id
+
+---------------------------------------------------
+Change the scale settings of a mobile service
+Usage: mobile scale change [options] [servicename]
+    
+    Options:
+      -h, --help                       output usage information
+      -v, --verbose                    use verbose output
+      --json                           use json output
+      -s, --subscription <id>          use the subscription id
+      -t, --tier <tier>                choose the free, basic or standard tier
+      -i, --numberOfInstances <count>  number of instances in basic or standard mode
+      -q, --quiet                      do not prompt for confirmation
+
+---------------------------------------------------
+List mobile service scheduled jobs
+Usage: mobile job list [options] [servicename]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Create a mobile service scheduled job
+Usage: mobile job create [options] [servicename] [jobname]
+    
+    Options:
+      -h, --help                 output usage information
+      -v, --verbose              use verbose output
+      --json                     use json output
+      -i, --interval <number>    job interval as an integer; defaults to 15
+      -u, --intervalUnit <unit>  specify one of: minute, hour, day, month or none for on-demand jobs; defaults to minute
+      -t, --startTime <time>     time of the first run of the script in ISO format; defaults to now
+      -s, --subscription <id>    the subscription id
+
+---------------------------------------------------
+Update a mobile service scheduled job
+Usage: mobile job update [options] [servicename] [jobname]
+    
+    Options:
+      -h, --help                 output usage information
+      -v, --verbose              use verbose output
+      --json                     use json output
+      -i, --interval <number>    job interval as an integer
+      -u, --intervalUnit <unit>  specify one of: minute, hour, day, month or none for on-demand jobs
+      -t, --startTime <time>     time of the first run of the script in ISO format
+      -a, --status <status>      enabled or disabled
+      -s, --subscription <id>    the subscription id
+
+---------------------------------------------------
+Delete a mobile service scheduled job
+Usage: mobile job delete [options] [servicename] [jobname]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Show the preview features enabled for a mobile service
+Usage: mobile preview list [options] [servicename]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Enable a preview feature for a mobile service. Note that preview features cannot be disabled for a mobile service!
+Usage: mobile preview enable [options] [servicename] [featurename]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+List mobile service custom APIs
+Usage: mobile api list [options] [servicename]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  use the subscription id
+
+---------------------------------------------------
+Creates a mobile service custom API
+Usage: mobile api create [options] [servicename] [apiname]
+    
+    Options:
+      -h, --help                       output usage information
+      -v, --verbose                    use verbose output
+      --json                           use json output
+      -s, --subscription <id>          use the subscription id
+      -p, --permissions <permissions>  comma delimited list of <method>=<permission> pairs
+
+---------------------------------------------------
+Updates a mobile service custom API
+Usage: mobile api update [options] [servicename] [apiname]
+    
+    Options:
+      -h, --help                       output usage information
+      -v, --verbose                    use verbose output
+      --json                           use json output
+      -s, --subscription <id>          use the subscription id
+      -p, --permissions <permissions>  comma delimited list of <method>=<permission> pairs
+      -f, --force                      override any custom changes to the permissions metadata file
+
+---------------------------------------------------
+Deletes a mobile service custom API
+Usage: mobile api delete [options] [servicename] [apiname]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  use the subscription id
+
+---------------------------------------------------
+Show your mobile application app settings
+Usage: mobile appsetting list [options] [servicename]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  use the subscription id
+
+---------------------------------------------------
+Add an application setting for your mobile service
+Usage: mobile appsetting add [options] [servicename] [name] [value]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  use the subscription id
+
+---------------------------------------------------
+Remove an application setting for your mobile service
+Usage: mobile appsetting delete [options] [servicename] [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  use the subscription id
+
+---------------------------------------------------
+Show an application setting for your mobile service
+Usage: mobile appsetting show [options] [servicename] [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  use the subscription id
+
+---------------------------------------------------
+Export the current Network configuration to a file
+Usage: network export [options] <file-path>
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Set the Network configuration from a json file
+Usage: network import [options] <file-path>
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+List DNS Servers registered in current Network
+Usage: network dnsserver list [options]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Register a DNS Server with current Network
+Usage: network dnsserver register [options] <dnsIp>
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -p, --dns-ip <name>      the IP address of the DNS server entry
+      -i, --dns-id <name>      the name identifier of the DNS server entry
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Unregister a DNS Server registered in the current Azure Network by dns-id or dns-ip
+Usage: network dnsserver unregister [options] <dnsIp>
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -p, --dns-ip <name>      the IP address of the DNS server entry
+      -i, --dns-id <name>      the name identifier of the DNS server entry
+      -q, --quiet              quiet mode, do not ask for unregister confirmation
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+List your Azure Virtual Networks
+Usage: network vnet list [options]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Show details about a Virtual Network
+Usage: network vnet show <vnet> [options]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      --vnet <vnet>            the name of the virtual network
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Delete a virtual network
+Usage: network vnet delete [options] <vnet>
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      --vnet <vnet>            the name of the virtual network
+      -q, --quiet              quiet mode, do not ask for delete confirmation
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Create a Virtual Network
+Usage: network vnet create [options] <vnet>
+    
+    Options:
+      -h, --help                       output usage information
+      -v, --verbose                    use verbose output
+      --json                           use json output
+      --vnet <vnet>                    the name of the virtual network
+      -e, --address-space <ipv4>       the address space for the virtual network
+      -m, --max-vm-count <number>      the maximum number of VMs in the address space
+      -i, --cidr <number>              the address space network mask in CIDR format
+      -p, --subnet-start-ip <ipv4>     the start IP address of subnet
+      -n, --subnet-name <name>         the name for the subnet
+      -c, --subnet-vm-count <number>   the maximum number of VMs in the subnet
+      -r, --subnet-cidr <number>       the subnet network mask in CIDR format
+      -l, --location <name>            the location
+      -f, --create-new-affinity-group  creates a new affinity group at the location specified in --location
+      -a, --affinity-group <name>      the affinity group
+      -d, --dns-server-id <dns-id>     the name identifier of the DNS server
+      -s, --subscription <id>          the subscription id
+
+---------------------------------------------------
+Check the availability of a static IP address
+Usage: network vnet static-ip check [options] <vnet> <ip-address>
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+List your Azure reserved IP addresses
+Usage: network reserved-ip list [options]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Show details about a reserved IP address
+Usage: network reserved-ip show [options] <name>
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Delete a reserved IP address
+Usage: network reserved-ip delete [options] <name>
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -q, --quiet              quiet mode, do not ask for delete confirmation
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Create a reserved IP address
+Usage: network reserved-ip create [options] <name> <location>
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -e, --label <label>      the reserved IP address label
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+List currently defined service bus namespaces
+Usage: sb namespace list [options]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Get detailed information about a single service bus namespace
+Usage: sb namespace show [options] [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Check that a service bus namespace is legal and available
+Usage: sb namespace check [options] <name>
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Create a service bus namespace
+Usage: sb namespace create [options] <namespace> <region>
+    
+    Options:
+      -h, --help                   output usage information
+      -v, --verbose                use verbose output
+      --json                       use json output
+      -n, --namespace <namespace>  the namespace name
+      -r, --region <region>        the region to create the namespace in
+      -s, --subscription <id>      the subscription id
+
+---------------------------------------------------
+Delete a service bus namespace
+Usage: sb namespace delete [options] [namespace]
+    
+    Options:
+      -h, --help                   output usage information
+      -v, --verbose                use verbose output
+      --json                       use json output
+      -n, --namespace <namespace>  the namespace name
+      -q, --quiet                  quiet mode, do not ask for delete confirmation
+      -s, --subscription <id>      the subscription id
+
+---------------------------------------------------
+Show list of available service bus locations
+Usage: sb namespace location list [options]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Create a cloud service
+Usage: service create [options] <serviceName>
+    
+    Options:
+      -h, --help                       output usage information
+      -v, --verbose                    use verbose output
+      --json                           use json output
+      --serviceName <serviceName>      the cloud service name
+      --description <description>      the description. Defaults to 'Service host'
+      --location <location>            the location. Optional if affinitygroup is specified
+      --affinitygroup <affinitygroup>  the affinity group. Optional if location is specified
+      --label <label>                  the label. Defaults to serviceName
+      -s, --subscription <id>          the subscription id
+
+---------------------------------------------------
+List Azure cloud services
+Usage: service list [options]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Show Azure cloud service
+Usage: service show [options] <serviceName>
+    
+    Options:
+      -h, --help                   output usage information
+      -v, --verbose                use verbose output
+      --json                       use json output
+      --serviceName <serviceName>  the cloud service name
+      -s, --subscription <id>      the subscription id
+
+---------------------------------------------------
+Delete a cloud service
+Usage: service delete [options] <serviceName>
+    
+    Options:
+      -h, --help                   output usage information
+      -v, --verbose                use verbose output
+      --json                       use json output
+      --serviceName <serviceName>  the cloud service name
+      -q, --quiet                  quiet mode, do not ask for delete confirmation
+      -s, --subscription <id>      the subscription id
+
+---------------------------------------------------
+List Azure certificates
+Usage: service cert list [options]
+    
+    Options:
+      -h, --help                   output usage information
+      -v, --verbose                use verbose output
+      --json                       use json output
+      --serviceName <serviceName>  the cloud service name
+      -s, --subscription <id>      the subscription id
+
+---------------------------------------------------
+Upload certificate
+Usage: service cert create [options] <dns-name> <file> [password]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Delete certificate
+Usage: service cert delete [options] <thumbprint>
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -d, --dns-name <name>    indicates to only look for certs for this DNS name
+      -q, --quiet              quiet mode, do not ask for delete confirmation
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+List internal load balancers for a cloud service deployment
+Usage: service internal-load-balancer list [options] [serviceName]
+    
+    Options:
+      -h, --help                       output usage information
+      -v, --verbose                    use verbose output
+      --json                           use json output
+      -r, --serviceName <serviceName>  the cloud service name
+      -s, --subscription <id>          the subscription id
+
+---------------------------------------------------
+Add an internal load balancer for a cloud service deployment
+Usage: service internal-load-balancer add [options] [serviceName] [internalLBName]
+    
+    Options:
+      -h, --help                                          output usage information
+      -v, --verbose                                       use verbose output
+      --json                                              use json output
+      -r, --serviceName <serviceName>                     the cloud service name
+      -n, --internalLBName <internalLBName>               the internal load balancer name
+      -t, --subnet-name <name>                            the name of the subnet in the virtual network that the load balancer uses
+      -a, --static-virtualnetwork-ipaddress <ip-address>  specific virtual IP address that the load balancer uses from the subnet in the virtual network
+      -s, --subscription <id>                             the subscription id
+
+---------------------------------------------------
+Delete an internal load balancer for a cloud service deployment
+Usage: service internal-load-balancer delete [options] [serviceName] [internalLBName]
+    
+    Options:
+      -h, --help                             output usage information
+      -v, --verbose                          use verbose output
+      --json                                 use json output
+      -r, --serviceName <serviceName>        the cloud service name
+      -n, --internalLBName <internalLBName>  the internal load balancer name
+      -q, --quiet                            quiet mode, do not ask for delete confirmation
+      -s, --subscription <id>                the subscription id
+
+---------------------------------------------------
+Update internal load balancer of a cloud service deployment
+Usage: service internal-load-balancer set [options] [serviceName] [internalLBName]
+    
+    Options:
+      -h, --help                                          output usage information
+      -v, --verbose                                       use verbose output
+      --json                                              use json output
+      -r, --serviceName <serviceName>                     the cloud service name
+      -n, --internalLBName <internalLBName>               the internal load balancer name
+      -t, --subnet-name <name>                            the name of the subnet in the virtual network that the load balancer uses
+      -a, --static-virtualnetwork-ipaddress <ip-address>  specific virtual IP address that the load balancer uses from the subnet in the virtual network
+      -d, --remove-subnet                                 remove subnet entry if it is already defined for the internal load balancer
+      -e, --remove-vnetip                                 remove virtual network IP address if it is already defined for the internal load balancer
+      -s, --subscription <id>                             the subscription id
+
+---------------------------------------------------
+List your web sites
+Usage: site list [options] [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Set configuration options for your web site [name]
+Usage: site set [options] [name]
+    
+    Options:
+      -h, --help                                                 output usage information
+      -v, --verbose                                              use verbose output
+      --json                                                     use json output
+      --slot <slot>                                              the name of the slot
+      --net-version <net-version>                                the .NET version. Valid options are v3.5 and v4.5
+      --php-version <php-version>                                the PHP version. Valid options are off, v5.3 and v5.4
+      --platform <platform>                                      the platform. Valid options are x86 and x64
+      -w, --web-socket                                           use this flag to enable web sockets
+      -W, --disable-web-socket                                   use this flag to disable web sockets
+      -r, --remote-debugging                                     use this flag to enable remote debugging
+      -R, --disable-remote-debugging                             use this flag to disable remote debugging
+      -d, --remote-debugging-version <remote-debugging-version>  the version of remote debugging. It's either VS2012 or VS2013. This parameter is only valid when remote debugging is on.
+      -m, --managed-pipeline-mode <managed-pipeline-mode>        the mode for managed pipeline. valid values are Classic and Integrated.
+      -s, --subscription <id>                                    the subscription id
+
+---------------------------------------------------
+Generate custom deployment script
+Usage: site deploymentscript [options]
+    
+    Options:
+      -h, --help                         output usage information
+      -v, --verbose                      use verbose output
+      --json                             use json output
+      -r, --repositoryRoot [dir path]    The root path for the repository (default: .)
+      --aspWAP <projectFilePath>         Create a deployment script for .NET web application, specify the project file path
+      --aspWebSite                       Create a deployment script for basic website
+      --node                             Create a deployment script for node.js website
+      --php                              Create a deployment script for php website
+      --python                           Create a deployment script for python website
+      --basic                            Create a deployment script for any other website
+      --dotNetConsole <projectFilePath>  Create a deployment script for .NET console application, specify the project file path
+      -s, --solutionFile [file path]     The solution file path (sln)
+      -p, --sitePath [directory path]    The path to the site being deployed (default: same as repositoryRoot)
+      -t, --scriptType [batch|bash]      The script output type (default: batch)
+      -o, --outputPath <output path>     The path to output generated script (default: same as repository root)
+      -y, --suppressPrompt               Suppresses prompting to confirm you want to overwrite an existing destination file.
+      --no-dot-deployment                Do not generate the .deployment file.
+      --no-solution                      Do not require a solution file path (only for --aspWAP otherwise ignored).
+
+---------------------------------------------------
+Create a web site
+Usage: site create [options] [name]
+    
+    Options:
+      -h, --help                       output usage information
+      -v, --verbose                    use verbose output
+      --json                           use json output
+      --location <location>            the geographic region to create the website
+      --hostname <hostname>            the custom host name to use
+      --slot <slot>                    the name of the slot
+      --git                            Configure git on web site and local folder
+      --gitusername <gitusername>      the publishing username for git
+      --github                         Configure github on web site and local folder
+      --githubusername <username>      the github username
+      --githubpassword <password>      the github password
+      --githubrepository <repository>  the github repository full name (i.e. user/repository)
+      -s, --subscription <id>          the subscription id
+
+---------------------------------------------------
+Open your web site in a browser
+Usage: site browse [options] [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      --slot <slot>            the name of the slot
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Show details for a web site
+Usage: site show [options] [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -d, --details            show additional site details
+      --slot <slot>            the name of the slot
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Delete a web site
+Usage: site delete [options] [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -q, --quiet              quiet mode, do not ask for delete confirmation
+      --slot <slot>            the name of the slot
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Swap two web site slots
+Usage: site swap [options] <name> [slot1] [slot2]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -q, --quiet              quiet mode, do not ask for swap confirmation
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Start a web site
+Usage: site start [options] [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      --slot <slot>            the name of the slot
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Stop a web site
+Usage: site stop [options] [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      --slot <slot>            the name of the slot
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Stop and then start a web site
+Usage: site restart [options] [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      --slot <slot>            the name of the slot
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+List locations available for your account
+Usage: site location list [options]
+    
+    Options:
+      -h, --help     output usage information
+      -v, --verbose  use verbose output
+      --json         use json output
+
+---------------------------------------------------
+Show your site application settings
+Usage: site appsetting list [options] [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      --slot <slot>            the name of the slot
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Add an application setting for your site (for values containing the character ';', use quotes in the format of "\"value\"". e.g. SB_CONN="\"Endpoint=sb://namespace.servicebus.windows.net/;SharedSecretIssuer=owner"\")
+Usage: site appsetting add [options] <keyvaluepair> [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      --slot <slot>            the name of the slot
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Delete an application setting for your site
+Usage: site appsetting delete [options] <key> [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      --slot <slot>            the name of the slot
+      -q, --quiet              quiet mode, do not ask for delete confirmation
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Show an application setting for your site
+Usage: site appsetting show [options] <key> [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      --slot <slot>            the name of the slot
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Show your site certificates
+Usage: site cert list [options] [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      --slot <slot>            the name of the slot
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Add a site certificate in pfx format
+Usage: site cert add [options] <certificate-path> [name]
+    
+    Options:
+      -h, --help                                 output usage information
+      -v, --verbose                              use verbose output
+      --json                                     use json output
+      --slot <slot>                              the name of the slot
+      -c, --certificate-path <certificate-path>  the certificate path
+      -k, --key <key>                            the certificate key
+      -s, --subscription <id>                    the subscription id
+
+---------------------------------------------------
+Delete a site certificate
+Usage: site cert delete [options] <thumbprint> [name]
+    
+    Options:
+      -h, --help                     output usage information
+      -v, --verbose                  use verbose output
+      --json                         use json output
+      --slot <slot>                  the name of the slot
+      -t, --thumbprint <thumbprint>  the certificate thumbprint
+      -q, --quiet                    quiet mode, do not ask for delete confirmation
+      -s, --subscription <id>        the subscription id
+
+---------------------------------------------------
+Show a site certificate
+Usage: site cert show [options] <thumbprint> [name]
+    
+    Options:
+      -h, --help                     output usage information
+      -v, --verbose                  use verbose output
+      --json                         use json output
+      --slot <slot>                  the name of the slot
+      -t, --thumbprint <thumbprint>  the certificate thumbprint
+      -s, --subscription <id>        the subscription id
+
+---------------------------------------------------
+Show your site application settings (deprecated. This command is deprecated and will be removed in a future version. Please use "site appsetting" instead
+Usage: site config list [options] [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      --slot <slot>            the name of the slot
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Add an application setting for your site (for values containing the character ';', use quotes in the format of "\"value\"". e.g. SB_CONN="\"Endpoint=sb://namespace.servicebus.windows.net/;SharedSecretIssuer=owner"\") (deprecated. This command is deprecated and will be removed in a future version. Please use "site appsetting" instead
+Usage: site config add [options] <keyvaluepair> [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      --slot <slot>            the name of the slot
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Clear an application setting for your site (deprecated. This command is deprecated and will be removed in a future version. Please use "site appsetting" instead
+Usage: site config clear [options] <key> [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      --slot <slot>            the name of the slot
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Get an application setting for your site (deprecated. This command is deprecated and will be removed in a future version. Please use "site appsetting" instead
+Usage: site config get [options] <key> [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      --slot <slot>            the name of the slot
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Show your site application settings
+Usage: site connectionstring list [options] [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      --slot <slot>            the name of the slot
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Add a connection string to your site
+Usage: site connectionstring add [options] <connectionname> <value> <type> [name]
+    
+    Options:
+      -h, --help                             output usage information
+      -v, --verbose                          use verbose output
+      --json                                 use json output
+      --slot <slot>                          the name of the slot
+      -c, --connectionname <connectionname>  the connection string name
+      -v, --value <value>                    the connection string value
+      -t, --type <type>                      the connection string type
+      -s, --subscription <id>                the subscription id
+
+---------------------------------------------------
+Delete a connection string for your site
+Usage: site connectionstring delete [options] <connectionname> [name]
+    
+    Options:
+      -h, --help                             output usage information
+      -v, --verbose                          use verbose output
+      --json                                 use json output
+      --slot <slot>                          the name of the slot
+      -c, --connectionname <connectionname>  the connection string name
+      -q, --quiet                            quiet mode, do not ask for delete confirmation
+      -s, --subscription <id>                the subscription id
+
+---------------------------------------------------
+Show a connection string for your site
+Usage: site connectionstring show [options] <connectionname> [name]
+    
+    Options:
+      -h, --help                             output usage information
+      -v, --verbose                          use verbose output
+      --json                                 use json output
+      --slot <slot>                          the name of the slot
+      -c, --connectionname <connectionname>  the connection string name
+      -s, --subscription <id>                the subscription id
+
+---------------------------------------------------
+Show your site default documents
+Usage: site defaultdocument list [options] [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      --slot <slot>            the name of the slot
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Add a site default document (by default, to the end of the list)
+Usage: site defaultdocument add [options] <document> [name]
+    
+    Options:
+      -h, --help                 output usage information
+      -v, --verbose              use verbose output
+      --json                     use json output
+      --slot <slot>              the name of the slot
+      -d, --document <document>  the new default document
+      -p, --position <position>  the position of the new default document
+      -s, --subscription <id>    the subscription id
+
+---------------------------------------------------
+Delete a site default document
+Usage: site defaultdocument delete [options] <document> [name]
+    
+    Options:
+      -h, --help                 output usage information
+      -v, --verbose              use verbose output
+      --json                     use json output
+      --slot <slot>              the name of the slot
+      -d, --document <document>  the new default document
+      -q, --quiet                quiet mode, do not ask for delete confirmation
+      -s, --subscription <id>    the subscription id
+
+---------------------------------------------------
+List your git deployments
+Usage: site deployment list [options] [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      --slot <slot>            the name of the slot
+      -m, --max <count>        Limit the maximum number of results
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Show your git deployment
+Usage: site deployment show [options] <commitId> [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      --slot <slot>            the name of the slot
+      -d, --details            Display log details
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Redeploy your git deployment
+Usage: site deployment redeploy [options] <commitId> [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      --slot <slot>            the name of the slot
+      -q, --quiet              quiet mode, do not ask for redeploy confirmation
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Link a website to a github account for deployment
+Usage: site deployment github [options] [name]
+    
+    Options:
+      -h, --help                       output usage information
+      -v, --verbose                    use verbose output
+      --json                           use json output
+      --slot <slot>                    the name of the slot
+      --githubusername <username>      the github username
+      --githubpassword <password>      the github password
+      --githubrepository <repository>  the github repository full name (i.e. user/repository)
+      -s, --subscription <id>          the subscription id
+
+---------------------------------------------------
+Set the deployment credentials
+Usage: site deployment user set [options] [username] [pass]
+    
+    Options:
+      -h, --help                    output usage information
+      -v, --verbose                 use verbose output
+      --json                        use json output
+      -u, --username <gitUsername>  the new git username
+      -p, --pass <gitPassword>      the new git password
+      -s, --subscription <id>       the subscription id
+
+---------------------------------------------------
+Show your site domains
+Usage: site domain list [options] [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      --slot <slot>            the name of the slot
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Add a site domain
+Usage: site domain add [options] <dn> [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -d, --dn <dn>            the new domain name
+      --slot <slot>            the name of the slot
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Delete a site domain
+Usage: site domain delete [options] <dn> [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -d, --dn <dn>            the domain name
+      -q, --quiet              quiet mode, do not ask for delete confirmation
+      --slot <slot>            the name of the slot
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Show your site handler mappings documents
+Usage: site handler list [options] [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      --slot <slot>            the name of the slot
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Add a handler mapping
+Usage: site handler add [options] <extension> <processor> [name]
+    
+    Options:
+      -h, --help                   output usage information
+      -v, --verbose                use verbose output
+      --json                       use json output
+      -e, --extension <extension>  the handler mapping extension
+      -p, --processor <processor>  the path to the script processor (executable that will process the file given by the extension)
+      -a, --arguments <arguments>  the additional arguments
+      --slot <slot>                the name of the slot
+      -s, --subscription <id>      the subscription id
+
+---------------------------------------------------
+Delete a site handler mapping
+Usage: site handler delete [options] <extension> [name]
+    
+    Options:
+      -h, --help                   output usage information
+      -v, --verbose                use verbose output
+      --json                       use json output
+      -e, --extension <extension>  the extension
+      -q, --quiet                  quiet mode, do not ask for delete confirmation
+      --slot <slot>                the name of the slot
+      -s, --subscription <id>      the subscription id
+
+---------------------------------------------------
+List all the WebJobs under a web site
+Usage: site job list [options] [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      --job-type <job-type>    optional. The type of the webjob. Valid value is "triggered" or "continuous". By default return webjobs of all types.
+      --slot <slot>            the name of the slot
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Show details of a specific webjob
+Usage: site job show [options] <jobName> <jobType> [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      --job-name <job-name>    required. The name of the webjob.
+      --job-type <job-type>    required. The type of the webjob. Valid value is "triggered" or "continuous".
+      --slot <slot>            the name of the slot
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Delete a WebJob
+Usage: site job delete [options] <jobName> <jobType> [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      --job-name <job-name>    required. The name of the webjob.
+      --job-type <job-type>    required. The type of the webjob. Valid value is "triggered" or "continuous".
+      -q, --quiet              quiet mode, do not ask for delete confirmation
+      --slot <slot>            the name of the slot
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Upload a new WebJob
+Usage: site job upload [options] <jobName> <jobType> <jobFile> [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      --job-name <job-name>    required. The name of the webjob.
+      --job-type <job-type>    required. The type of the webjob. Valid values are "triggered" or "continuous".
+      --job-file <job-file>    required. The job file.
+      --slot <slot>            the name of the slot
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Start a WebJob
+Usage: site job start [options] <jobName> <jobType> [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      --job-name <job-name>    required. The name of the webjob.
+      --job-type <job-type>    required. The type of the webjob. Valid value is "triggered" or "continuous".
+      --slot <slot>            the name of the slot
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Stops a WebJob. Only continuous jobs can  be stopped
+Usage: site job stop [options] <jobName> <jobType> [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      --job-name <job-name>    required. The name of the webjob.
+      --slot <slot>            the name of the slot
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+List all the triggered WebJobs runs under a web site
+Usage: site job history list [options] [jobName] [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      --job-name <job-name>    required. The name of the webjob.
+      --slot <slot>            the name of the slot
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Get the detaisl for a triggered WebJobs run under a web site
+Usage: site job history show [options] [jobName] [runId] [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      --job-name <job-name>    required. The name of the webjob.
+      --run-id <run-id>        optional. The id of the run history. If not specified, show the latest run.
+      --slot <slot>            the name of the slot
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Download diagnostic log
+Usage: site log download [options] [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -o, --output <path>      the output path, default is local folder
+      --slot <slot>            the name of the slot
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Live diagnostic log
+Usage: site log tail [options] [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -p, --path <path>        the log path under LogFiles folder
+      -f, --filter <filter>    the filter matching line
+      --log                    indicates to write output as log data
+      --slot <slot>            the name of the slot
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Configure diagnostics
+Usage: site log set [options] [name]
+    
+    Options:
+      -h, --help                               output usage information
+      -v, --verbose                            use verbose output
+      --json                                   use json output
+      -a, --application                        use this flag to enable application diagnostics.
+      -A, --disable-application                use this flag to disable application diagnostics.
+      -w, --web-server-logging                 use this flag to enable web server logging.
+      -W, --disable-web-server-logging         use this flag to disable web server logging.
+      -e, --detailed-error-messages            use this flag to enable detailed error messages.
+      -E, --disable-detailed-error-messages    use this flag to disable detailed error messages.
+      -f, --failed-request-tracing             use this flag to enable failed request tracing.
+      -F, --disable-failed-request-tracing     use this flag to disable failed request tracing.
+      -o, --out <out>                          takes file or storage. When -a is specified, use this parameter to specify the output of the log.
+      -l, --level <level>                      takes error, warning, verbose or info. When -a is specified, use this parameter to specify the log level. But default is error.
+      -t, --storage-account <storage-account>  use this parameter to specify the storage account where the log will be stored.
+      --slot <slot>                            the name of the slot
+      -s, --subscription <id>                  the subscription id
+
+---------------------------------------------------
+Set your repository branch
+Usage: site repository branch [options] <branch> [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      --slot <slot>            the name of the slot
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Delete your repository
+Usage: site repository delete [options] [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -q, --quiet              quiet mode, do not ask for delete confirmation
+      --slot <slot>            the name of the slot
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Sync your repository
+Usage: site repository sync [options] [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      --slot <slot>            the name of the slot
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Link a website to a github account for deployment
+Usage: site repository update [options] [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Set the web site mode
+Usage: site scale mode [options] <mode> [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      --mode <mode>            the mode of the site (available are: free, shared and standard)
+      --slot <slot>            the name of the slot
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Set the web site number of instances
+Usage: site scale instances [options] <instances> [name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      --instances <instances>  the number of instances
+      --size <size>            the size of the instances (available are: small, medium and large)
+      --slot <slot>            the name of the slot
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Create a database server
+Usage: sql server create [options] <administratorLogin> <administratorPassword> <location>
+    
+    Options:
+      -h, --help                                       output usage information
+      -v, --verbose                                    use verbose output
+      --json                                           use json output
+      --administratorLogin <administratorLogin>        the new administrator login
+      --administratorPassword <administratorPassword>  the new administrator password
+      --location <location>                            the location
+      --defaultFirewallRule                            Add a firewall rule allowing access from Microsoft Azure
+      -s, --subscription <id>                          the subscription id
+
+---------------------------------------------------
+Show server details
+Usage: sql server show [options] <serverName>
+    
+    Options:
+      -h, --help                 output usage information
+      -v, --verbose              use verbose output
+      --json                     use json output
+      --serverName <serverName>  the SQL Server name
+      -s, --subscription <id>    the subscription id
+
+---------------------------------------------------
+List the servers
+Usage: sql server list [options]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Delete a server
+Usage: sql server delete [options] <serverName>
+    
+    Options:
+      -h, --help                 output usage information
+      -v, --verbose              use verbose output
+      --json                     use json output
+      --serverName <serverName>  the SQL Server name
+      -q, --quiet                quiet mode, do not ask for delete confirmation
+      -s, --subscription <id>    the subscription id
+
+---------------------------------------------------
+Create a firewall rule for a SQL Server
+Usage: sql firewallrule create [options] <serverName> <ruleName> <startIPAddress> <endIPAddress>
+    
+    Options:
+      -h, --help                         output usage information
+      -v, --verbose                      use verbose output
+      --json                             use json output
+      --serverName <serverName>          the SQL Server name
+      --ruleName <ruleName>              the firewall rule name
+      --startIPAddress <startIPAddress>  the starting IP address for the firewall rule
+      --endIPAddress <endIPAddress>      the ending IP address for the firewall rule
+      -s, --subscription <id>            the subscription id
+
+---------------------------------------------------
+Show firewall rule details
+Usage: sql firewallrule show [options] <serverName> <ruleName>
+    
+    Options:
+      -h, --help                 output usage information
+      -v, --verbose              use verbose output
+      --json                     use json output
+      --serverName <serverName>  the SQL Server name
+      --ruleName <ruleName>      the firewall rule name
+      -s, --subscription <id>    the subscription id
+
+---------------------------------------------------
+List the firewall rules
+Usage: sql firewallrule list [options] <serverName>
+    
+    Options:
+      -h, --help                 output usage information
+      -v, --verbose              use verbose output
+      --json                     use json output
+      --serverName <serverName>  the SQL Server name
+      -s, --subscription <id>    the subscription id
+
+---------------------------------------------------
+Delete a firewall rule
+Usage: sql firewallrule delete [options] <serverName> <ruleName>
+    
+    Options:
+      -h, --help                 output usage information
+      -v, --verbose              use verbose output
+      --json                     use json output
+      --serverName <serverName>  the SQL server name
+      --ruleName <ruleName>      the firewall rule name
+      -q, --quiet                quiet mode, do not ask for delete confirmation
+      -s, --subscription <id>    the subscription id
+
+---------------------------------------------------
+Create a database
+Usage: sql db create [options] <serverName> <databaseName> <administratorLogin> <administratorPassword> [collationName] [edition] [maxSizeInGB]
+    
+    Options:
+      -h, --help                                       output usage information
+      -v, --verbose                                    use verbose output
+      --json                                           use json output
+      --serverName <serverName>                        the SQL server name
+      --databaseName <databaseName>                    the database name
+      --administratorLogin <administratorLogin>        the administrator login
+      --administratorPassword <administratorPassword>  the administrator password
+      --collationName <collationName>                  the database collation name
+      --edition <edition>                              the database edition
+      --maxSizeInGB <maxSizeInGB>                      the database maximum size in GB
+      --location <location>                            the location
+      -s, --subscription <id>                          the subscription id
+
+---------------------------------------------------
+List the databases
+Usage: sql db list [options] <serverName> <administratorLogin> <administratorPassword>
+    
+    Options:
+      -h, --help                                       output usage information
+      -v, --verbose                                    use verbose output
+      --json                                           use json output
+      --serverName <serverName>                        the SQL server name
+      --administratorLogin <administratorLogin>        the administrator login
+      --administratorPassword <administratorPassword>  the administrator password
+      -s, --subscription <id>                          the subscription id
+
+---------------------------------------------------
+Show database details
+Usage: sql db show [options] <serverName> <databaseName> <administratorLogin> <administratorPassword>
+    
+    Options:
+      -h, --help                                       output usage information
+      -v, --verbose                                    use verbose output
+      --json                                           use json output
+      --serverName <serverName>                        the SQL server name
+      --databaseName <databaseName>                    the database name
+      --administratorLogin <administratorLogin>        the administrator login
+      --administratorPassword <administratorPassword>  the administrator password
+      -s, --subscription <id>                          the subscription id
+
+---------------------------------------------------
+Delete a database
+Usage: sql db delete [options] <serverName> <databaseName> <administratorPassword>
+    
+    Options:
+      -h, --help                                       output usage information
+      -v, --verbose                                    use verbose output
+      --json                                           use json output
+      --serverName <serverName>                        the SQL server name
+      --databaseName <databaseName>                    the database name
+      --administratorLogin <administratorLogin>        the administrator login
+      --administratorPassword <administratorPassword>  the administrator password
+      -q, --quiet                                      quiet mode, do not ask for delete confirmation
+      -s, --subscription <id>                          the subscription id
+
+---------------------------------------------------
+List storage accounts
+Usage: storage account list [options]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Show a storage account
+Usage: storage account show [options] <name>
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Create a storage account
+Usage: storage account create [options] <name>
+    
+    Options:
+      -h, --help                       output usage information
+      -v, --verbose                    use verbose output
+      --json                           use json output
+      -e, --label <label>              the storage account label
+      -d, --description <description>  the storage account description
+      -l, --location <name>            the location
+      -a, --affinity-group <name>      the affinity group
+      --geoReplication                 indicates if the geo replication is enabled
+      --disable-geoReplication         indicates if the geo replication is disabled
+      -s, --subscription <id>          the subscription id
+
+---------------------------------------------------
+Update a storage account
+Usage: storage account set [options] <name>
+    
+    Options:
+      -h, --help                       output usage information
+      -v, --verbose                    use verbose output
+      --json                           use json output
+      -e, --label <label>              the storage account label
+      -d, --description <description>  the storage account description
+      --geoReplication                 indicates if the geo replication is enabled
+      --disable-geoReplication         indicates if the geo replication is disabled
+      -s, --subscription <id>          the subscription id
+
+---------------------------------------------------
+Delete a storage account
+Usage: storage account delete [options] <name>
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -q, --quiet              quiet mode, do not ask for delete confirmation
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+List the keys for a storage account
+Usage: storage account keys list [options] <name>
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Renew a key for a storage account from your account
+Usage: storage account keys renew [options] <name>
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      --primary                Update the primary key
+      --secondary              Update the secondary key
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Show the connection string for your account
+Usage: storage account connectionstring show [options] <name>
+    
+    Options:
+      -h, --help                        output usage information
+      -v, --verbose                     use verbose output
+      --json                            use json output
+      --use-http                        Use http as default endpoints protocol
+      --blob-endpoint <blobEndpoint>    the blob endpoint
+      --queue-endpoint <queueEndpoint>  the queue endpoint
+      --table-endpoint <tableEndpoint>  the table endpoint
+      --file-endpoint <fileEndpoint>    the file endpoint
+      -s, --subscription <id>           the subscription id
+
+---------------------------------------------------
+List storage containers with wildcard
+Usage: storage container list [options] [prefix]
+    
+    Options:
+      -h, --help                                  output usage information
+      -v, --verbose                               use verbose output
+      --json                                      use json output
+      -p, --prefix <prefix>                       the storage container name prefix
+      -a, --account-name <accountName>            the storage account name
+      -k, --account-key <accountKey>              the storage account key
+      -c, --connection-string <connectionString>  the storage connection string
+      -vv                                         run storage command in debug mode
+
+---------------------------------------------------
+Show details of the specified storage container
+Usage: storage container show [options] [container]
+    
+    Options:
+      -h, --help                                  output usage information
+      -v, --verbose                               use verbose output
+      --json                                      use json output
+      --container <container>                     the storage container name
+      -a, --account-name <accountName>            the storage account name
+      -k, --account-key <accountKey>              the storage account key
+      -c, --connection-string <connectionString>  the storage connection string
+      -vv                                         run storage command in debug mode
+
+---------------------------------------------------
+Create a storage container
+Usage: storage container create [options] [container]
+    
+    Options:
+      -h, --help                                  output usage information
+      -v, --verbose                               use verbose output
+      --json                                      use json output
+      --container <container>                     the storage container name
+      -p, --permission <permission>               the storage container ACL permission(Off/Blob/Container)
+      -a, --account-name <accountName>            the storage account name
+      -k, --account-key <accountKey>              the storage account key
+      -c, --connection-string <connectionString>  the storage connection string
+      -vv                                         run storage command in debug mode
+
+---------------------------------------------------
+Delete the specified storage container
+Usage: storage container delete [options] [container]
+    
+    Options:
+      -h, --help                                  output usage information
+      -v, --verbose                               use verbose output
+      --json                                      use json output
+      --container <container>                     the storage container name
+      -q, --quiet                                 remove the specified Storage container without confirmation
+      -a, --account-name <accountName>            the storage account name
+      -k, --account-key <accountKey>              the storage account key
+      -c, --connection-string <connectionString>  the storage connection string
+      -vv                                         run storage command in debug mode
+
+---------------------------------------------------
+Set storage container ACL
+Usage: storage container set [options] [container]
+    
+    Options:
+      -h, --help                                  output usage information
+      -v, --verbose                               use verbose output
+      --json                                      use json output
+      --container <container>                     the storage container name
+      -p, --permission <permission>               the storage container ACL permission(Off/Blob/Container)
+      -a, --account-name <accountName>            the storage account name
+      -k, --account-key <accountKey>              the storage account key
+      -c, --connection-string <connectionString>  the storage connection string
+      -vv                                         run storage command in debug mode
+
+---------------------------------------------------
+Generate shared access signature of storage container
+Usage: storage container sas create [options] [container] [permissions] [expiry]
+    
+    Options:
+      -h, --help                                  output usage information
+      -v, --verbose                               use verbose output
+      --json                                      use json output
+      --container <container>                     the storage container name
+      --permissions <permissions>                 the operation permissions combining symbols of r(Read)/w(Write)/d(Delete)/l(List)
+      --start <start>                             the UTC time at which the SAS becomes valid
+      --expiry <expiry>                           the UTC time at which the SAS expires
+      --policy <policy>                           the stored access policy identifier
+      -a, --account-name <accountName>            the storage account name
+      -k, --account-key <accountKey>              the storage account key
+      -c, --connection-string <connectionString>  the storage connection string
+      -vv                                         run storage command in debug mode
+
+---------------------------------------------------
+List storage blob in the specified storage container use wildcard and blob name prefix
+Usage: storage blob list [options] [container] [prefix]
+    
+    Options:
+      -h, --help                                  output usage information
+      -v, --verbose                               use verbose output
+      --json                                      use json output
+      --container <container>                     the storage container name
+      -p, --prefix <prefix>                       the blob name prefix
+      --sas <sas>                                 the shared access signature of the storage container
+      -a, --account-name <accountName>            the storage account name
+      -k, --account-key <accountKey>              the storage account key
+      -c, --connection-string <connectionString>  the storage connection string
+      -vv                                         run storage command in debug mode
+
+---------------------------------------------------
+Show details of the specified storage blob
+Usage: storage blob show [options] [container] [blob]
+    
+    Options:
+      -h, --help                                  output usage information
+      -v, --verbose                               use verbose output
+      --json                                      use json output
+      --container <container>                     the storage container name
+      -b, --blob <blobName>                       the storage blob name
+      --sas <sas>                                 the shared access signature of the storage container or blob
+      -a, --account-name <accountName>            the storage account name
+      -k, --account-key <accountKey>              the storage account key
+      -c, --connection-string <connectionString>  the storage connection string
+      -vv                                         run storage command in debug mode
+
+---------------------------------------------------
+Delete the specified storage blob
+Usage: storage blob delete [options] [container] [blob]
+    
+    Options:
+      -h, --help                                  output usage information
+      -v, --verbose                               use verbose output
+      --json                                      use json output
+      --container <container>                     the storage container name
+      -b, --blob <blobName>                       the storage blob name
+      --sas <sas>                                 the shared access signature of the storage container or blob
+      -q, --quiet                                 remove the specified Storage blob without confirmation
+      -a, --account-name <accountName>            the storage account name
+      -k, --account-key <accountKey>              the storage account key
+      -c, --connection-string <connectionString>  the storage connection string
+      -vv                                         run storage command in debug mode
+
+---------------------------------------------------
+Upload the specified file to storage blob
+Usage: storage blob upload [options] [file] [container] [blob]
+    
+    Options:
+      -h, --help                                   output usage information
+      -v, --verbose                                use verbose output
+      --json                                       use json output
+      -f, --file <file>                            the local file path
+      --container <container>                      the storage container name
+      -b, --blob <blobName>                        the storage blob name
+      -t, --blobtype <blobtype>                    the storage blob type(Page, Block)
+      -p, --properties <properties>                the storage blob properties for uploaded file. Properties are key=value pairs and separated with semicolon(;). Available properties are contentType, contentEncoding, contentLanguage, cacheControl
+      -m, --metadata <metadata>                    the storage blob metadata for uploaded file. Metadata are key=value pairs and separated with semicolon(;)
+      --concurrenttaskcount <concurrenttaskcount>  the maximum number of concurrent upload requests
+      -q, --quiet                                  overwrite the specified Storage blob without confirmation
+      -a, --account-name <accountName>             the storage account name
+      -k, --account-key <accountKey>               the storage account key
+      -c, --connection-string <connectionString>   the storage connection string
+      -vv                                          run storage command in debug mode
+
+---------------------------------------------------
+Download the specified storage blob
+Usage: storage blob download [options] [container] [blob] [destination]
+    
+    Options:
+      -h, --help                                   output usage information
+      -v, --verbose                                use verbose output
+      --json                                       use json output
+      --container <container>                      the storage container name
+      -b, --blob <blobName>                        the storage blob name
+      -d, --destination [destination]              download destination file or directory path
+      -m, --checkmd5                               check md5sum for the downloaded file
+      --concurrenttaskcount <concurrenttaskcount>  the maximum number of concurrent download requests
+      --sas <sas>                                  the shared access signature of the storage container or blob
+      -q, --quiet                                  overwrite the destination file without confirmation
+      -a, --account-name <accountName>             the storage account name
+      -k, --account-key <accountKey>               the storage account key
+      -c, --connection-string <connectionString>   the storage connection string
+      -vv                                          run storage command in debug mode
+
+---------------------------------------------------
+sas-token <sasToken> (deprecated. This command is deprecated and will be removed in a future version.
+Please use "the shared access signature of the source storage" instead
+Usage: storage blob copy start [options] [sourceUri] [destContainer]
+    
+    Options:
+      -h, --help                                       output usage information
+      -v, --verbose                                    use verbose output
+      --json                                           use json output
+      --source-sas <sourceSas>                         the shared access signature of the source storage
+      --source-container <sourceContainer>             the source storage container name
+      --source-blob <sourceBlob>                       the source storage blob name
+      --source-uri <sourceUri>                         the source storage blob absolute uri
+      --dest-account-name <destAccountName>            the destination storage account name
+      --dest-account-key <destAccountKey>              the destination storage account key
+      --dest-connection-string <destConnectionString>  the destination storage connection string
+      --dest-container <destContainer>                 the destination storage container name
+      --dest-sas <destSas>                             the shared access signature of the destination storage container or blob
+      --dest-blob <destBlob>                           the destination storage blob name
+      -q, --quiet                                      overwrite the destination blob without confirmation
+      -a, --account-name <accountName>                 the storage account name
+      -k, --account-key <accountKey>                   the storage account key
+      -c, --connection-string <connectionString>       the storage connection string
+      -vv                                              run storage command in debug mode
+
+---------------------------------------------------
+Show the copy status
+Usage: storage blob copy show [options] [container] [blob]
+    
+    Options:
+      -h, --help                                  output usage information
+      -v, --verbose                               use verbose output
+      --json                                      use json output
+      --container <container>                     the destination container in the blob copy start operation
+      --blob <blob>                               the destination blob in the blob copy start operation
+      --sas <sas>                                 the shared access signature of the destination storage containe or blob
+      -a, --account-name <accountName>            the storage account name
+      -k, --account-key <accountKey>              the storage account key
+      -c, --connection-string <connectionString>  the storage connection string
+      -vv                                         run storage command in debug mode
+
+---------------------------------------------------
+Stop the copy operation
+Usage: storage blob copy stop [options] [container] [blob] [copyid]
+    
+    Options:
+      -h, --help                                  output usage information
+      -v, --verbose                               use verbose output
+      --json                                      use json output
+      --container <container>                     the destination container in the blob copy start operation
+      --blob <blob>                               the destination blob in the blob copy start operation
+      --copyid <copyid>                           the copy ID which is returned from blob copy start operation
+      -a, --account-name <accountName>            the storage account name
+      -k, --account-key <accountKey>              the storage account key
+      -c, --connection-string <connectionString>  the storage connection string
+      -vv                                         run storage command in debug mode
+
+---------------------------------------------------
+Generate shared access signature of storage blob
+Usage: storage blob sas create [options] [container] [blob] [permissions] [expiry]
+    
+    Options:
+      -h, --help                                  output usage information
+      -v, --verbose                               use verbose output
+      --json                                      use json output
+      --container <container>                     the storage container name
+      --blob <blobName>                           the storage blob name
+      --permissions <permissions>                 the operation permissions combining symbols of r(Read)/w(Write)/d(Delete)
+      --start <start>                             the UTC time at which the SAS becomes valid
+      --expiry <expiry>                           the UTC time at which the SAS expires
+      --policy <policy>                           the stored access policy identifier
+      -a, --account-name <accountName>            the storage account name
+      -k, --account-key <accountKey>              the storage account key
+      -c, --connection-string <connectionString>  the storage connection string
+      -vv                                         run storage command in debug mode
+
+---------------------------------------------------
+Create a storage file share
+Usage: storage share create [options] [share]
+    
+    Options:
+      -h, --help                                  output usage information
+      -v, --verbose                               use verbose output
+      --json                                      use json output
+      --share <share>                             the storage file share name
+      -a, --account-name <accountName>            the storage account name
+      -k, --account-key <accountKey>              the storage account key
+      -c, --connection-string <connectionString>  the storage connection string
+      -vv                                         run storage command in debug mode
+
+---------------------------------------------------
+Show details of the storage file share
+Usage: storage share show [options] [share]
+    
+    Options:
+      -h, --help                                  output usage information
+      -v, --verbose                               use verbose output
+      --json                                      use json output
+      --share <share>                             the storage file share name
+      -a, --account-name <accountName>            the storage account name
+      -k, --account-key <accountKey>              the storage account key
+      -c, --connection-string <connectionString>  the storage connection string
+      -vv                                         run storage command in debug mode
+
+---------------------------------------------------
+Delete the specified storage file share
+Usage: storage share delete [options] [share]
+    
+    Options:
+      -h, --help                                  output usage information
+      -v, --verbose                               use verbose output
+      --json                                      use json output
+      --share <share>                             the storage file share name
+      -q, --quiet                                 remove the specified storage file share without confirmation
+      -a, --account-name <accountName>            the storage account name
+      -k, --account-key <accountKey>              the storage account key
+      -c, --connection-string <connectionString>  the storage connection string
+      -vv                                         run storage command in debug mode
+
+---------------------------------------------------
+List storage shares with prefix
+Usage: storage share list [options] [prefix]
+    
+    Options:
+      -h, --help                                  output usage information
+      -v, --verbose                               use verbose output
+      --json                                      use json output
+      -p, --prefix <prefix>                       the storage share name prefix
+      -a, --account-name <accountName>            the storage account name
+      -k, --account-key <accountKey>              the storage account key
+      -c, --connection-string <connectionString>  the storage connection string
+      -vv                                         run storage command in debug mode
+
+---------------------------------------------------
+List storage files in the specified share under specific path
+Usage: storage file list [options] [share] [path]
+    
+    Options:
+      -h, --help                                  output usage information
+      -v, --verbose                               use verbose output
+      --json                                      use json output
+      --share <share>                             the storage share name
+      -p, --path <path>                           the path to be listed
+      -a, --account-name <accountName>            the storage account name
+      -k, --account-key <accountKey>              the storage account key
+      -c, --connection-string <connectionString>  the storage connection string
+      -vv                                         run storage command in debug mode
+
+---------------------------------------------------
+Delete the specified storage file
+Usage: storage file delete [options] [share] [path]
+    
+    Options:
+      -h, --help                                  output usage information
+      -v, --verbose                               use verbose output
+      --json                                      use json output
+      --share <share>                             the storage share name
+      -p, --path <path>                           the path to the storage file
+      -q, --quiet                                 remove the specified storage file without confirmation
+      -a, --account-name <accountName>            the storage account name
+      -k, --account-key <accountKey>              the storage account key
+      -c, --connection-string <connectionString>  the storage connection string
+      -vv                                         run storage command in debug mode
+
+---------------------------------------------------
+Upload the specified local file to storage
+Usage: storage file upload [options] [source] [share] [path]
+    
+    Options:
+      -h, --help                                   output usage information
+      -v, --verbose                                use verbose output
+      --json                                       use json output
+      -s, --source <source>                        the local file path
+      --share <share>                              the storage share name
+      -p, --path <path>                            the path to the storage file
+      --concurrenttaskcount <concurrenttaskcount>  the maximum number of concurrent upload requests
+      -q, --quiet                                  overwrite the specified storage file without confirmation
+      -a, --account-name <accountName>             the storage account name
+      -k, --account-key <accountKey>               the storage account key
+      -c, --connection-string <connectionString>   the storage connection string
+      -vv                                          run storage command in debug mode
+
+---------------------------------------------------
+Download the specified storage file
+Usage: storage file download [options] [share] [path] [destination]
+    
+    Options:
+      -h, --help                                  output usage information
+      -v, --verbose                               use verbose output
+      --json                                      use json output
+      --share <share>                             the storage share name
+      -p, --path <path>                           the path to the storage file
+      -d, --destination <destination>             path to the destination file or directory
+      -m, --checkmd5                              check md5sum for the downloaded file
+      -q, --quiet                                 overwrite the destination file without confirmation
+      -a, --account-name <accountName>            the storage account name
+      -k, --account-key <accountKey>              the storage account key
+      -c, --connection-string <connectionString>  the storage connection string
+      -vv                                         run storage command in debug mode
+
+---------------------------------------------------
+Create a storage file directory
+Usage: storage directory create [options] [share] [path]
+    
+    Options:
+      -h, --help                                  output usage information
+      -v, --verbose                               use verbose output
+      --json                                      use json output
+      --share <share>                             the storage file share name
+      -p, --path <path>                           the path to the storage file directory to be created
+      -a, --account-name <accountName>            the storage account name
+      -k, --account-key <accountKey>              the storage account key
+      -c, --connection-string <connectionString>  the storage connection string
+      -vv                                         run storage command in debug mode
+
+---------------------------------------------------
+Delete the specified storage file directory
+Usage: storage directory delete [options] [share] [path]
+    
+    Options:
+      -h, --help                                  output usage information
+      -v, --verbose                               use verbose output
+      --json                                      use json output
+      --share <share>                             the storage share name
+      -p, --path <path>                           the path to the storage file directory to be deleted
+      -q, --quiet                                 remove the specified storage file directory without confirmation
+      -a, --account-name <accountName>            the storage account name
+      -k, --account-key <accountKey>              the storage account key
+      -c, --connection-string <connectionString>  the storage connection string
+      -vv                                         run storage command in debug mode
+
+---------------------------------------------------
+Create a storage queue
+Usage: storage queue create [options] [queue]
+    
+    Options:
+      -h, --help                                  output usage information
+      -v, --verbose                               use verbose output
+      --json                                      use json output
+      --queue <queue>                             the storage queue name
+      -a, --account-name <accountName>            the storage account name
+      -k, --account-key <accountKey>              the storage account key
+      -c, --connection-string <connectionString>  the storage connection string
+      -vv                                         run storage command in debug mode
+
+---------------------------------------------------
+List storage queues with wildcard
+Usage: storage queue list [options] [prefix]
+    
+    Options:
+      -h, --help                                  output usage information
+      -v, --verbose                               use verbose output
+      --json                                      use json output
+      -p, --prefix <prefix>                       the storage queue name prefix
+      -a, --account-name <accountName>            the storage account name
+      -k, --account-key <accountKey>              the storage account key
+      -c, --connection-string <connectionString>  the storage connection string
+      -vv                                         run storage command in debug mode
+
+---------------------------------------------------
+Show details of the storage able
+Usage: storage queue show [options] [queue]
+    
+    Options:
+      -h, --help                                  output usage information
+      -v, --verbose                               use verbose output
+      --json                                      use json output
+      --queue <queue>                             the storage queue name
+      --sas <sas>                                 the shared access signature of the storage queue
+      -a, --account-name <accountName>            the storage account name
+      -k, --account-key <accountKey>              the storage account key
+      -c, --connection-string <connectionString>  the storage connection string
+      -vv                                         run storage command in debug mode
+
+---------------------------------------------------
+Delete the specified storage queue
+Usage: storage queue delete [options] [queue]
+    
+    Options:
+      -h, --help                                  output usage information
+      -v, --verbose                               use verbose output
+      --json                                      use json output
+      --queue <queue>                             the storage queue name
+      -q, --quiet                                 remove the specified storage queue without confirmation
+      -a, --account-name <accountName>            the storage account name
+      -k, --account-key <accountKey>              the storage account key
+      -c, --connection-string <connectionString>  the storage connection string
+      -vv                                         run storage command in debug mode
+
+---------------------------------------------------
+Generate shared access signature of storage queue
+Usage: storage queue sas create [options] [queue] [permissions] [expiry]
+    
+    Options:
+      -h, --help                                  output usage information
+      -v, --verbose                               use verbose output
+      --json                                      use json output
+      --queue <queue>                             the storage queue name
+      --permissions <permissions>                 the operation permissions combining symbols of r(Read)/a(Add)/u(Update)/p(Process)
+      --start <start>                             the UTC time at which the SAS becomes valid
+      --expiry <expiry>                           the UTC time at which the SAS expires
+      --policy <policy>                           the stored access policy identifier
+      -a, --account-name <accountName>            the storage account name
+      -k, --account-key <accountKey>              the storage account key
+      -c, --connection-string <connectionString>  the storage connection string
+      -vv                                         run storage command in debug mode
+
+---------------------------------------------------
+Show the logging properties of the storage services 
+Usage: storage logging show [options]
+    
+    Options:
+      -h, --help                                  output usage information
+      -v, --verbose                               use verbose output
+      --json                                      use json output
+      --blob                                      show logging properties for blob service
+      --table                                     show logging properties for table service
+      --queue                                     show logging properties for queue service
+      -a, --account-name <accountName>            the storage account name
+      -k, --account-key <accountKey>              the storage account key
+      -c, --connection-string <connectionString>  the storage connection string
+      -vv                                         run storage command in debug mode
+
+---------------------------------------------------
+Set the logging properties of the storage service
+Usage: storage logging set [options]
+    
+    Options:
+      -h, --help                                  output usage information
+      -v, --verbose                               use verbose output
+      --json                                      use json output
+      --blob                                      set logging properties for blob service
+      --table                                     set logging properties for table service
+      --queue                                     set logging properties for queue service
+      --version <version>                         the version string
+      --retention <retention>                     set logging retention in days
+      --read                                      enable logging for read requests
+      --read-off                                  disable logging for read requests
+      --write                                     enable logging for write requests
+      --write-off                                 disable logging for write requests
+      --delete                                    enable logging for delete requests
+      --delete-off                                disable logging for delete requests
+      -a, --account-name <accountName>            the storage account name
+      -k, --account-key <accountKey>              the storage account key
+      -c, --connection-string <connectionString>  the storage connection string
+      -vv                                         run storage command in debug mode
+
+---------------------------------------------------
+Show the metrics properties of the storage services 
+Usage: storage metrics show [options]
+    
+    Options:
+      -h, --help                                  output usage information
+      -v, --verbose                               use verbose output
+      --json                                      use json output
+      --blob                                      show metrics properties for blob service
+      --table                                     show metrics properties for table service
+      --queue                                     show metrics properties for queue service
+      -a, --account-name <accountName>            the storage account name
+      -k, --account-key <accountKey>              the storage account key
+      -c, --connection-string <connectionString>  the storage connection string
+      -vv                                         run storage command in debug mode
+
+---------------------------------------------------
+Set the metrics properties of the storage service
+Usage: storage metrics set [options]
+    
+    Options:
+      -h, --help                                  output usage information
+      -v, --verbose                               use verbose output
+      --json                                      use json output
+      --blob                                      set metrics properties for blob service
+      --table                                     set metrics properties for table service
+      --queue                                     set metrics properties for queue service
+      --version <version>                         the version string
+      --retention <retention>                     set metrics retention in days
+      --hour                                      set hourly metrics properties
+      --hour-off                                  turn off hourly metrics properties
+      --minute                                    set minute metrics properties
+      --minute-off                                turn off minute metrics properties
+      --api                                       include API in metrics 
+      --api-off                                   exclude API from metrics
+      -a, --account-name <accountName>            the storage account name
+      -k, --account-key <accountKey>              the storage account key
+      -c, --connection-string <connectionString>  the storage connection string
+      -vv                                         run storage command in debug mode
+
+---------------------------------------------------
+Create a storage table
+Usage: storage table create [options] [table]
+    
+    Options:
+      -h, --help                                  output usage information
+      -v, --verbose                               use verbose output
+      --json                                      use json output
+      --table <table>                             the storage table name
+      -a, --account-name <accountName>            the storage account name
+      -k, --account-key <accountKey>              the storage account key
+      -c, --connection-string <connectionString>  the storage connection string
+      -vv                                         run storage command in debug mode
+
+---------------------------------------------------
+List storage tables with wildcard
+Usage: storage table list [options] [prefix]
+    
+    Options:
+      -h, --help                                  output usage information
+      -v, --verbose                               use verbose output
+      --json                                      use json output
+      -p, --prefix <prefix>                       the storage table name prefix
+      -a, --account-name <accountName>            the storage account name
+      -k, --account-key <accountKey>              the storage account key
+      -c, --connection-string <connectionString>  the storage connection string
+      -vv                                         run storage command in debug mode
+
+---------------------------------------------------
+Show details of the storage able
+Usage: storage table show [options] [table]
+    
+    Options:
+      -h, --help                                  output usage information
+      -v, --verbose                               use verbose output
+      --json                                      use json output
+      --table <table>                             the storage table name
+      -a, --account-name <accountName>            the storage account name
+      -k, --account-key <accountKey>              the storage account key
+      -c, --connection-string <connectionString>  the storage connection string
+      -vv                                         run storage command in debug mode
+
+---------------------------------------------------
+Delete the specified storage table
+Usage: storage table delete [options] [table]
+    
+    Options:
+      -h, --help                                  output usage information
+      -v, --verbose                               use verbose output
+      --json                                      use json output
+      --table <table>                             the storage table name
+      -q, --quiet                                 remove the specified storage table without confirmation
+      -a, --account-name <accountName>            the storage account name
+      -k, --account-key <accountKey>              the storage account key
+      -c, --connection-string <connectionString>  the storage connection string
+      -vv                                         run storage command in debug mode
+
+---------------------------------------------------
+Generate shared access signature of storage table
+Usage: storage table sas create [options] [table] [permissions] [expiry]
+    
+    Options:
+      -h, --help                                  output usage information
+      -v, --verbose                               use verbose output
+      --json                                      use json output
+      --table <table>                             the storage table name
+      --permissions <permissions>                 the operation permissions combining symbols of r(Query)/a(Add)/u(Update)/d(Delete)
+      --start <start>                             the UTC time at which the SAS becomes valid
+      --expiry <expiry>                           the UTC time at which the SAS expires
+      --policy <policy>                           the stored access policy identifier
+      --start-pk <startPk>                        the inclusive starting partition key
+      --end-pk <endPk>                            the inclusive ending partition key
+      --start-rk <startRk>                        the inclusive starting row key
+      --end-rk <endRk>                            the inclusive ending row key
+      -a, --account-name <accountName>            the storage account name
+      -k, --account-key <accountKey>              the storage account key
+      -c, --connection-string <connectionString>  the storage connection string
+      -vv                                         run storage command in debug mode
+
+---------------------------------------------------
+Create a VM
+Usage: vm create [options] <dns-name> <image> [userName] [password]
+    
+    Options:
+      -h, --help                             output usage information
+      -v, --verbose                          use verbose output
+      --json                                 use json output
+      -u, --userName <userName>              the user name
+      -p, --password <password>              the password
+      -o, --community                        the <image> is a community image
+      -c, --connect                          connect to existing VMs
+      -l, --location <name>                  the location
+      -a, --affinity-group <name>            the affinity group
+      -u, --blob-url <url>                   the blob url for OS disk
+      -z, --vm-size <size>                   the virtual machine size [small]
+      -n, --vm-name <name>                   the virtual machine name
+      -e, --ssh [port]                       the ssh port to enable [22]
+      -t, --ssh-cert <pem-file|fingerprint>  the SSH certificate
+      -P, --no-ssh-password                  indicates that the password should be removed when using --ssh-cert
+      -r, --rdp [port]                       indicates that RDP should be enabled [3389]
+      -w, --virtual-network-name <name>      the virtual network name
+      -b, --subnet-names <list>              the comma-delimited subnet names
+      -i, --public-ip <name>                 the name of the public IP address assigned to the virtual machine
+      -S, --static-ip <ip-address>           the static IP address assigned to the virtual machine
+      -R, --reserved-ip <name>               the name of the reserved IP address assigned to the virtual machine
+      -A, --availability-set <name>          the name of availability set to create or use
+      -s, --subscription <id>                the subscription id
+      -d, --custom-data <custom-data-file>   CustomData file
+
+---------------------------------------------------
+Create a VM from json role file
+Usage: vm create-from [options] <dns-name> <role-file>
+    
+    Options:
+      -h, --help                         output usage information
+      -v, --verbose                      use verbose output
+      --json                             use json output
+      -c, --connect                      connect to existing VMs
+      -l, --location <name>              the location
+      -a, --affinity-group <name>        the affinity group
+      -t, --ssh-cert <pem-file>          Upload SSH certificate
+      -w, --virtual-network-name <name>  the virtual network name
+      -s, --subscription <id>            the subscription id
+
+---------------------------------------------------
+List the VM
+Usage: vm list [options]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -d, --dns-name <name>    only show VMs for this DNS name
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Show details about the VM
+Usage: vm show [options] <name>
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -d, --dns-name <name>    only show VMs for this DNS name
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Delete the VM
+Usage: vm delete [options] <name>
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -d, --dns-name <name>    only show VMs for this DNS name
+      -b, --blob-delete        Remove image and disk blobs
+      -q, --quiet              quiet mode, do not ask for delete confirmation
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Start the VM
+Usage: vm start [options] <name>
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -d, --dns-name <name>    only show VMs for this DNS name
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Restart the VM
+Usage: vm restart [options] <name>
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -d, --dns-name <name>    only show VMs for this DNS name
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Shutdown the VM
+Usage: vm shutdown [options] <name>
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -d, --dns-name <name>    only show VMs for this DNS name
+      -p, --stay-provisioned   if specified the compute resource will not be released on shutdown
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Capture the VM as OS Image or VM Image
+Usage: vm capture [options] <vm-name> <target-image-name>
+    
+    Options:
+      -h, --help                output usage information
+      -v, --verbose             use verbose output
+      --json                    use json output
+      -d, --dns-name <name>     filter VMs for the specified DNS name
+      -e, --label <label>       the target image friendly name
+      -o, --os-state <osState>  the OS state [Specialized, Generalized], required for capturing VM as VM Image
+      -t, --delete              Delete virtual machine after successful capture, can be used only for capturing a VM as OS Image
+      -s, --subscription <id>   the subscription id
+
+---------------------------------------------------
+Export a VM to a file
+Usage: vm export [options] <vm-name> <file-path>
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -d, --dns-name <name>    Export the virtual machine for this DNS name
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+List available resource extensions for VMs
+Usage: vm extension list [options]
+    
+    Options:
+      -h, --help                   output usage information
+      -v, --verbose                use verbose output
+      --json                       use json output
+      -n, --extension-name <name>  name of the extension
+      -p, --publisher-name <name>  name of the extension publisher
+      -e, --version <version>      version number of the extension to fetch
+      -a, --all-versions           list all versions of an extension
+      -s, --subscription <id>      the subscription id
+
+---------------------------------------------------
+Enable/disable resource extensions for VMs
+Usage: vm extension set [options] <vm-name> <extension-name> <publisher-name> <version>
+    
+    Options:
+      -h, --help                                       output usage information
+      -v, --verbose                                    use verbose output
+      --json                                           use json output
+      -r, --reference-name <name>                      extension's reference name
+      -i, --public-config <public-config>              public configuration text
+      -c, --public-config-path <public-config-path>    public configuration file path
+      -t, --private-config <private-config>            private configuration text
+      -e, --private-config-path <private-config-path>  private configuration file path
+      -b, --disable                                    disable extension
+      -u, --uninstall                                  uninstall extension
+      -d, --dns-name <name>                            consider VM hosted in this DNS name
+      -s, --subscription <id>                          the subscription id
+
+---------------------------------------------------
+Gets resource extensions applied to a VM.
+Usage: vm extension get [options] <vm-name>
+    
+    Options:
+      -h, --help                   output usage information
+      -v, --verbose                use verbose output
+      --json                       use json output
+      -n, --extension-name <name>  name of the extension
+      -p, --publisher-name <name>  name of the extension publisher
+      -r, --reference-name <name>  extension's reference name
+      -d, --dns-name <name>        consider only VM for this DNS name
+      -s, --subscription <id>      the subscription id
+
+---------------------------------------------------
+Create a VM
+Usage: vm docker create [options] <dns-name> <image> <user-name> [password]
+    
+    Options:
+      -h, --help                             output usage information
+      -v, --verbose                          use verbose output
+      --json                                 use json output
+      -p, --docker-port [port]               Port to use for docker [4243]
+      -C, --docker-cert-dir [dir]            Directory containing docker certs [.docker/]
+      -c, --connect                          connect to existing VMs
+      -l, --location <name>                  the location
+      -a, --affinity-group <name>            the affinity group
+      -u, --blob-url <url>                   the blob url for OS disk
+      -z, --vm-size <size>                   the virtual machine size [small]
+      -n, --vm-name <name>                   the virtual machine name
+      -e, --ssh [port]                       the ssh port to enable [22]
+      -t, --ssh-cert <pem-file|fingerprint>  the SSH certificate
+      -P, --no-ssh-password                  indicates that the password should be removed when using --ssh-cert
+      -w, --virtual-network-name <name>      the virtual network name
+      -b, --subnet-names <list>              the comma-delimited subnet names
+      -S, --static-ip <ip-address>           the static IP address assigned to the virtual machine
+      -R, --reserved-ip <name>               the name of the reserved IP address assigned to the virtual machine
+      -A, --availability-set <name>          the name of availability set to create or use
+      -s, --subscription <id>                the subscription id
+      -d, --custom-data <custom-data-file>   CustomData file
+
+---------------------------------------------------
+List locations available for your account
+Usage: vm location list [options]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Show a VM static IP address
+Usage: vm static-ip show [options] <vm-name>
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -d, --dns-name <name>    consider VM hosted in this DNS name
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Set a VM static IP address
+Usage: vm static-ip set [options] <vm-name> <ip-address>
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -d, --dns-name <name>    consider VM hosted in this DNS name
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Remove a VM static IP address
+Usage: vm static-ip remove [options] <vm-name>
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -d, --dns-name <name>    consider VM hosted in this DNS name
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+List public IP addresses for a VM
+Usage: vm public-ip list [options] [vm-name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -n, --vm-name <name>     the VM name
+      -d, --dns-name <name>    filter VMs for the specified DNS name
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Set public IP address for a VM
+Usage: vm public-ip set [options] [vm-name] [publicip-name]
+    
+    Options:
+      -h, --help                             output usage information
+      -v, --verbose                          use verbose output
+      --json                                 use json output
+      -n, --vm-name <name>                   the VM name
+      -p, --publicip-name <name>             the public IP name
+      -t, --idle-timeoutInMinutes <timeout>  timeout for tcp idle connection
+      -d, --dns-name <name>                  filter VMs for the specified DNS name
+      -s, --subscription <id>                the subscription id
+
+---------------------------------------------------
+Delete public IP address for a VM
+Usage: vm public-ip delete [options] [vm-name] [publicip-name]
+    
+    Options:
+      -h, --help                  output usage information
+      -v, --verbose               use verbose output
+      --json                      use json output
+      -n, --vm-name <name>        the VM name
+      -p, --publicip-name <name>  the public IP name
+      -q, --quiet                 quiet mode, do not ask for remove confirmation
+      -d, --dns-name <name>       filter VMs for the specified DNS name
+      -s, --subscription <id>     the subscription id
+
+---------------------------------------------------
+Create a VM endpoint
+Usage: vm endpoint create [options] <vm-name> <lb-port> [vm-port]
+    
+    Options:
+      -h, --help                                output usage information
+      -v, --verbose                             use verbose output
+      --json                                    use json output
+      -d, --dns-name <name>                     only show VMs for this DNS name
+      -n, --endpoint-name <name>                the endpoint name
+      -b, --lb-set-name <name>                  the load-balancer set name
+      -t, --probe-port <port>                   the virtual machine port to use to inspect the role availability status
+      -r, --probe-protocol <protocol>           the protocol to use to inspect the role availability status
+      -p, --probe-path <path>                   the relative path to inspect the role availability status
+      -o, --endpoint-protocol <protocol>        the transport layer protocol for port (tcp or udp)
+      -u, --enable-direct-server-return         whether to enable direct server return on this endpoint, disabled by default
+      -i, --internal-load-balancer-name <name>  the internal load balancer name
+      -s, --subscription <id>                   the subscription id
+
+---------------------------------------------------
+Create multiple VM endpoints
+Usage: vm endpoint create-multiple [options] <vm-name> <lb-port>[:<vm-port>[:<protocol>[:<enable-direct-server-return>[:<lb-set-name>[:<probe-protocol>[:<probe-port>[:<probe-path>[:<internal-lb-name>]]]]]]]] {1-*}
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -d, --dns-name <name>    consider VM hosted in this DNS name
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Delete a VM endpoint
+Usage: vm endpoint delete [options] <vm-name> <endpoint-name>
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -d, --dns-name <name>    only consider VMs for this DNS name
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Update a VM endpoint
+Usage: vm endpoint update [options] <vm-name> <endpoint-name>
+    
+    Options:
+      -h, --help                          output usage information
+      -v, --verbose                       use verbose output
+      --json                              use json output
+      -d, --dns-name <name>               only consider VM for this DNS name
+      -n, --new-endpoint-name <name>      the new endpoint name
+      -l, --lb-port <port>                the new load balancer port
+      -t, --vm-port <port>                the new local port port
+      -o, --endpoint-protocol <protocol>  the new transport layer protocol for port (tcp or udp)
+      -s, --subscription <id>             the subscription id
+
+---------------------------------------------------
+List a VM endpoints
+Usage: vm endpoint list [options] <vm-name>
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -d, --dns-name <name>    only show VMs for this DNS name
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Show details of VM endpoint
+Usage: vm endpoint show [options] <vm-name>
+    
+    Options:
+      -h, --help                  output usage information
+      -v, --verbose               use verbose output
+      --json                      use json output
+      -e, --endpoint-name <name>  only show details of this endpoint
+      -d, --dns-name <name>       only show VMs for this DNS name
+      -s, --subscription <id>     the subscription id
+
+---------------------------------------------------
+Create an ACL rule for a VM endpoint
+Usage: vm endpoint acl-rule create [options] [vm-name] [endpoint-name] [order] [action] [remote-subnet]
+    
+    Options:
+      -h, --help                     output usage information
+      -v, --verbose                  use verbose output
+      --json                         use json output
+      -n, --vm-name <name>           the VM name
+      -e, --endpoint-name <name>     the ACL rule name
+      -o, --order <id>               the ACL rule order
+      -a, --action  <name>           the ACL rule action
+      -t, --remote-subnet  <subnet>  the ACL rule remote subnet
+      -r, --description              the ACL rule rule description
+      -d, --dns-name <name>          filter VMs for the specified DNS name
+      -s, --subscription <id>        the subscription id
+
+---------------------------------------------------
+List ACL rules defined for a VM endpoint
+Usage: vm endpoint acl-rule list [options] [vm-name] [endpoint-name]
+    
+    Options:
+      -h, --help                  output usage information
+      -v, --verbose               use verbose output
+      --json                      use json output
+      -n, --vm-name <name>        the VM name
+      -e, --endpoint-name <name>  the ACL rule name
+      -d, --dns-name <name>       filter VMs for the specified DNS name
+      -s, --subscription <id>     the subscription id
+
+---------------------------------------------------
+Delete an ACL rule for a VM endpoint
+Usage: vm endpoint acl-rule delete [options] [vm-name] [endpoint-name] [order]
+    
+    Options:
+      -h, --help                  output usage information
+      -v, --verbose               use verbose output
+      --json                      use json output
+      -n, --vm-name <name>        the VM name
+      -e, --endpoint-name <name>  the ACL rule name
+      -o, --order <id>            the ACL rule order
+      -d, --dns-name <name>       filter VMs for the specified DNS name
+      -q, --quiet                 quiet mode, do not ask for delete confirmation
+      -s, --subscription <id>     the subscription id
+
+---------------------------------------------------
+Update an ACL rule defined for a VM endpoint
+Usage: vm endpoint acl-rule set [options] [vm-name] [endpoint-name] [order]
+    
+    Options:
+      -h, --help                  output usage information
+      -v, --verbose               use verbose output
+      --json                      use json output
+      -n, --vm-name <name>        the VM name
+      -e, --endpoint-name <name>  the ACL rule name
+      -o, --order <id>            the ACL rule order
+      -w, --new-order <id>        the new order for the ACL
+      -a, --action  <name>        the new action for the ACL
+      -r, --description  <name>   the new description for the ACL
+      -d, --dns-name <name>       filter VMs for the specified DNS name
+      -s, --subscription <id>     the subscription id
+
+---------------------------------------------------
+Show details about a VM image
+Usage: vm image show [options] <name>
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+List VM images
+Usage: vm image list [options]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Delete a VM image from a personal repository
+Usage: vm image delete [options] <name>
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -b, --blob-delete        delete the underlying blob from storage
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Upload and register a VM image
+Usage: vm image create [options] <name> [source-path]
+    
+    Options:
+      -h, --help                   output usage information
+      -v, --verbose                use verbose output
+      --json                       use json output
+      -u, --blob-url <url>         the target image blob url
+      -l, --location <name>        the location
+      -a, --affinity-group <name>  the affinity group
+      -o, --os <type>              the operating system [linux|windows]
+      -p, --parallel <number>      the maximum number of parallel uploads [96]
+      -m, --md5-skip               skip MD5 hash computation
+      -f, --force-overwrite        Force overwrite of prior uploads
+      -e, --label <about>          the image label
+      -d, --description <about>    the image description
+      -b, --base-vhd <blob>        the base vhd blob url
+      -k, --source-key <key>       the source storage key if source-path
+                               is a Microsoft Azure private blob url
+      -s, --subscription <id>      the subscription id
+
+---------------------------------------------------
+Show details about a disk
+Usage: vm disk show [options] <name>
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+List disk images, or disks attached to a specified VM
+Usage: vm disk list [options] [vm-name]
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -d, --dns-name <name>    only show VMs for this DNS name
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Delete a disk image from personal repository
+Usage: vm disk delete [options] <name>
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -b, --blob-delete        Delete underlying blob from storage
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Upload and register a disk image
+Usage: vm disk create [options] <name> [source-path]
+    
+    Options:
+      -h, --help                   output usage information
+      -v, --verbose                use verbose output
+      --json                       use json output
+      -u, --blob-url <url>         the target image blob url
+      -l, --location <name>        the location
+      -a, --affinity-group <name>  the affinity group
+      -o, --os [type]              the operating system if any [linux|windows|none]
+      -p, --parallel <number>      the maximum number of parallel uploads [96]
+      -m, --md5-skip               skip MD5 hash computation
+      -f, --force-overwrite        Force overwrite of prior uploads
+      -e, --label <about>          the image label
+      -d, --description <about>    the image description
+      -b, --base-vhd <blob>        the base vhd blob url
+      -k, --source-key <key>       the source storage key if source-path
+                               is a Microsoft Azure private blob url
+      -s, --subscription <id>      the subscription id
+
+---------------------------------------------------
+Upload a VHD to a storage account
+Usage: vm disk upload [options] <source-path> <blob-url> <storage-account-key>
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -p, --parallel <number>  the maximum number of parallel uploads [96]
+      -m, --md5-skip           skip MD5 hash computation
+      -f, --force-overwrite    Force overwrite of prior uploads
+      -b, --base-vhd <blob>    the base vhd blob url
+      -k, --source-key <key>   the source storage key if source-path
+                               is a Microsoft Azure private blob url
+      -s, --subscription <id>  the subscription id
+
+---------------------------------------------------
+Detaches a data-disk attached to a VM
+Usage: vm disk detach [options] <vm-name> <lun>
+    
+    Options:
+      -h, --help               output usage information
+      -v, --verbose            use verbose output
+      --json                   use json output
+      -d, --dns-name <name>    only show VMs for this DNS name
+      -s, --subscription <id>  the subscription id
