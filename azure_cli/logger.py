@@ -47,3 +47,4 @@ def init(level=logging.INFO):
     global log
     logging.setLoggerClass(Logger)
     log = logging.getLogger("azurectl")
+    log.setLevel(level)
