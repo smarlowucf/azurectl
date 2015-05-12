@@ -17,7 +17,7 @@ config = {
         'APScheduler',
         'pyliblzma',
         'azure',
-        'dateutil'
+        'python-dateutil'
     ],
     'packages': ['azure_cli'],
     'entry_points': {
