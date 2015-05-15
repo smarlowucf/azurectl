@@ -14,8 +14,11 @@ Command Line Interface to manage
   * [Contributing](#contributing)
     - [Dependencies](#dependencies)
     - [Basics](#basics)
-    - [Setup](#setup)
+    - [Testing] (#testing)
     - [Implementing commands](#implementing-commands)
+    - [Code Structure] (#code-structure)
+  * Compatibility (#compatibility)
+  * Issues (#issues)
 
 ## Motivation
 
@@ -34,8 +37,8 @@ provides a significant improvement for Linux distributions.
 
 For this project we chose Python as the implementation language. Other
 public cloud command line tools are also based on Python and thus we can
-reuse existing dependencies for other tools reducing effort at the
-distribution level. Further, Microsoft provides and maintains an
+reuse existing dependencies reducing effort at the distribution level.
+Further, Microsoft provides and maintains an
 [SDK for python](https://github.com/Azure/azure-sdk-for-python)
 to interact with Microsoft Azure. This results in a solution that is
 easier to maintain for Linux distributors.
@@ -59,7 +62,7 @@ azurectl [global-options] <servicename> <command> [command-options]
 ```
 
 In order to call azurectl one has to create an account configuration
-file. By default azurectl looks up the config file in
+file.
 
 #### Configuration file
 
@@ -109,7 +112,7 @@ logged in, the Publish Settings file for the corresponding account
 will be offered as download, otherwise you will be redirected to
 the login page and need to login with your Azure account.
 
-Please note if you have multiple accounts for Azure and you're already logged
+Please note, if you have multiple accounts for Azure and you're already logged
 in, check that you are logged in with the account for which you would like
 to download the Publish Settings file.
 
@@ -121,7 +124,7 @@ to download the Publish Settings file.
   $ azurectl --help
   ```
 
-* Get manual page for azurectl
+* Get extended help for azurectl
 
   ```
   $ azurectl help
@@ -133,7 +136,7 @@ to download the Publish Settings file.
   $ azurectl <servicename> <command> --help
   ```
 
-* Get manual page for a command
+* Get extended help for a command
 
   ```
   $ azurectl <servicename> <command> help
@@ -185,7 +188,9 @@ obvious issues that would prevent a pull request from being accepted.
   [PEP8](https://www.python.org/dev/peps/pep-0008/)
 * All code contributions must be accompanied by a test. Should you not have
   a suitable Publish Settings file to run your test you will receive help.
-  However you must make a good effort in providing a test.
+  However you must make a good effort in providing a test. In general we
+  strive to have unit tests that are not integration tests, i.e. no
+  account data is needed.
 * We follow the [Semantic Versioning](http://semver.org/) scheme
 
 1. MAJOR version when you make incompatible API changes,
@@ -201,7 +206,7 @@ but we do not bump the version for every change.
   easy by simple interfaces and loosely coupled objects
 * The file __azure_command_help.txt__ contains a dump of the Node.js
   tools help at the time we started the project. We believe there are
-  some inconsitencies in the Node.js tool implementation and thus will
+  some inconsistencies in the Node.js tool implementation and thus will
   deviate from this command line interface.
 
 ### Testing
@@ -220,7 +225,7 @@ $ make storage_test.py
 ```
 
 Running the syntax and style check requires the pep8 framework.
-Running the check as follows:
+Run the check as follows:
 
 ```
 $ make pep8
@@ -234,26 +239,41 @@ $ cd bin
 $ ./azurectl
 ```
 
-So far there are no integration tests defined. Running such implementation
-tests requires access to a Microsoft Azure account. If you are a regular
-contributor to the project and you do not have your own account we can
-provide access to an account that can be used for testing. The account
-is sponsored by Microsoft and may not be used to run a VM or use any
-services for more than 1 hour. Acitvity is monitored.
+The primary focus of testing is unit testing without verification of the
+integration. Therefore is is not required to have a Microsoft Azure account
+to run the tests or contribute to the project. When integration tests will be
+developed these will be separated from the unit tests. Once integration
+testing is implemented and if you are a regular contributor to the project but
+you do not have your own account we can provide access to an account that
+can be used for testing. The account is sponsored by Microsoft and may not
+be used to run a VM or use any services for more than 1 hour. Acitvity
+is monitored.
 
 ### Implementing commands
 
 Adding new commands to the project consists out of four steps
 
-1. Write the implementation classes providing the functionality you need
-2. Write a task class providing the command line processing and output
+1. Write tests
+2. Write the implementation classes providing the functionality you need
+3. Write a task class providing the command line processing and output
    using the implementation classes (file name must end with `_task`).
-3. Write a manual page
-4. Write tests
+4. Write a manual page
+
 
 The following is a simple template to illustrate the implementation
 
-### Class implementing desired functionality: mycmd.py
+#### Write tests
+
+For a new command at least two tests need to be written
+
+* mycmd_test.py
+* service_mycmd_task_test.py
+
+Tests are written using the nose testing framework. Please refer to
+the `test/unit` directory to see current implementations
+
+
+#### Class implementing desired functionality: mycmd.py
 
 ```python
 from azurectl_exceptions import *
@@ -273,7 +293,7 @@ class MyCmd:
 ```
 
 
-### Command line class: mycmd_task.py
+#### Command line class: mycmd_task.py
 
 azurectl autoloads all task classes it can find. The established naming
 convention is that the file ends with `_task.py`. The class must implement
@@ -294,13 +314,13 @@ commands:
         show manual page
 """
 
-from cli_task import CliTask
 from azure_account import AzureAccount
+from azurectl_exceptions import *
+from cli_task import CliTask
 from data_collector import DataCollector
 from data_output import DataOutput
-from logger import log
-from azurectl_exceptions import *
 from help import Help
+from logger import log
 
 from mycmd import MyCmd
 
@@ -333,14 +353,13 @@ class ServiceMyCmdTask(CliTask):
         return self.manual
 ```
 
-### Write manual page
+#### Write manual page
 
 Manual pages are written in github markdown and auto converted into the
-man format using the pandoc utility. The manual page for _mycmd_ needs to
-be created here:
+man page format using the pandoc utility. Manual pages are located in:
 
 ```
-$ vi doc/man/azurectl::service::mycmd.md
+$ doc/man/azurectl::service::mycmd.md
 ```
 
 and should follow the basic manual page structure:
@@ -359,12 +378,44 @@ __azurectl__ service mycmd dig-for-gold
 Digs for gold
 ```
 
-### Write tests
+### Code Structure
 
-For a new command at least two tests needs to be written
+All code needs to conform to [PEP8](https://www.python.org/dev/peps/pep-0008/).
+In addition __import__ statements should be in alpha-order. The
+"from ... import .." form follows at the end, also in alpha order based on
+the module name from which the import occurs. Modules loaded from azurectl are
+separated from the Python imported modules by the __# project__ comment.
 
-* mycmd_test.py
-* service_mycmd_task_test.py
+For example:
 
-Tests are written using the nose testing framework. Please refer to
-the `test/unit` directory to see current implementations
+```
+import dateutil
+import os
+
+from A import B
+
+# project
+import logger
+```
+
+## Compatibility
+
+As mentioned previously we believe there is room for improvement in the
+Node.js based tools with respect to the command organization. Therefore
+we will implement commands and functionality as we see fit with consideration
+also being given to the command organization in other public cloud framework
+command line tools.
+
+A compatibility layer to match the Node.js implementation is a possibility.
+
+
+## Issues
+
+We track issues (bugs and feature requests) in the GitHub Issue tracker. As
+noted above we believe that there are consistency issue in the Node.js tools
+and we will not follow the command implementation of the Node.js tools 1 for
+1. Therefore, please do not file issues of the form "it works like this in
+Node.js tools and the command should be the same." Issues of this type will
+not be accepted for the general implementation and will only apply to the
+compatibility layer.
+
