@@ -11,13 +11,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import sys
 import logging
+import re
+import sys
 
 
 class LoggerSchedulerFilter(logging.Filter):
     def filter(self, record):
-        return not record.msg.find('print_upload_status')
+        # messages from apscheduler scheduler instances are filtered out
+        # they conflict with console progress information
+        return not record.name == 'apscheduler.scheduler'
+
+
+class InfoFilter(logging.Filter):
+    def filter(self, record):
+        # only messages with record level INFO and DEBUG can pass
+        # for messages with another level an extra handler is used
+        return record.levelno in (logging.INFO, logging.DEBUG)
 
 
 class Logger(logging.Logger):
@@ -26,13 +36,23 @@ class Logger(logging.Logger):
     """
     def __init__(self, name):
         logging.Logger.__init__(self, name, logging.INFO)
-        console = logging.StreamHandler(sys.__stdout__)
-        console.setLevel(logging.INFO)
+
         formatter = logging.Formatter('%(levelname)s: %(message)s')
-        console.setFormatter(formatter)
-        log_filter = LoggerSchedulerFilter()
-        console.addFilter(log_filter)
-        self.addHandler(console)
+
+        # log INFO and DEBUG messages to stdout
+        console_info = logging.StreamHandler(sys.__stdout__)
+        console_info.setLevel(logging.INFO)
+        console_info.setFormatter(formatter)
+        console_info.addFilter(InfoFilter())
+        console_info.addFilter(LoggerSchedulerFilter())
+
+        # log ERROR messages to stderr (default stream)
+        console_error = logging.StreamHandler()
+        console_error.setLevel(logging.ERROR)
+        console_error.setFormatter(formatter)
+
+        self.addHandler(console_info)
+        self.addHandler(console_error)
 
     def progress(self, current, total, prefix, bar_length=40):
         try:
