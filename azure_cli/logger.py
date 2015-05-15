@@ -15,6 +15,11 @@ import sys
 import logging
 
 
+class LoggerSchedulerFilter(logging.Filter):
+    def filter(self, record):
+        return not record.msg.find('print_upload_status')
+
+
 class Logger(logging.Logger):
     """
         azurectl logging facility based on python logging
@@ -25,6 +30,8 @@ class Logger(logging.Logger):
         console.setLevel(logging.INFO)
         formatter = logging.Formatter('%(levelname)s: %(message)s')
         console.setFormatter(formatter)
+        log_filter = LoggerSchedulerFilter()
+        console.addFilter(log_filter)
         self.addHandler(console)
 
     def progress(self, current, total, prefix, bar_length=40):
