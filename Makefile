@@ -14,7 +14,12 @@ install:
 
 .PHONY: test
 test:
-	nosetests
+	nosetests --with-coverage --cover-erase --cover-package=azure_cli --cover-xml
+	tools/coverage-check
+
+coverage:
+	nosetests --with-coverage --cover-erase --cover-package=azure_cli --cover-xml
+	mv test/unit/coverage.xml test/unit/coverage.reference.xml
 
 list_tests:
 	@for i in test/unit/*_test.py; do basename $$i;done | sort
