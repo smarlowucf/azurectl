@@ -2,7 +2,7 @@ from nose.tools import *
 
 import nose_helper
 
-from azure_cli.xz import XZ
+from azurectl.xz import XZ
 
 
 class TestXZ:

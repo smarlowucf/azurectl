@@ -5,8 +5,8 @@ from nose.tools import *
 
 import nose_helper
 
-import azure_cli
-from azure_cli.compute_image_task import ComputeImageTask
+import azurectl
+from azurectl.compute_image_task import ComputeImageTask
 
 
 class TestComputeImageTask:
@@ -16,10 +16,10 @@ class TestComputeImageTask:
             'compute', 'image', 'list'
         ]
         self.task = ComputeImageTask()
-        azure_cli.compute_image_task.Image = mock.Mock(
+        azurectl.compute_image_task.Image = mock.Mock(
             return_value=mock.Mock()
         )
-        azure_cli.compute_image_task.Help = mock.Mock(
+        azurectl.compute_image_task.Help = mock.Mock(
             return_value=mock.Mock()
         )
 
@@ -29,7 +29,7 @@ class TestComputeImageTask:
         self.task.command_args['list'] = False
         self.task.command_args['help'] = False
 
-    @patch('azure_cli.compute_image_task.DataOutput')
+    @patch('azurectl.compute_image_task.DataOutput')
     def test_process_compute_image_list(self, mock_out):
         self.__init_command_args()
         self.task.command_args['list'] = True

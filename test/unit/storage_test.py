@@ -5,10 +5,10 @@ from nose.tools import *
 
 import nose_helper
 
-from azure_cli.azurectl_exceptions import *
-from azure_cli.storage import Storage
+from azurectl.azurectl_exceptions import *
+from azurectl.storage import Storage
 
-import azure_cli
+import azurectl
 
 from collections import namedtuple
 
@@ -34,7 +34,7 @@ class TestStorage:
         self.storage.upload('some-blob', None)
 
     @raises(AzureStorageUploadError)
-    @patch('azure_cli.storage.XZ.uncompressed_size')
+    @patch('azurectl.storage.XZ.uncompressed_size')
     def test_upload(self, mock_uncompressed_size):
         mock_uncompressed_size.return_value = 1024
         self.storage.upload('../data/blob.xz', None, 1024)

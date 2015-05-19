@@ -1,16 +1,16 @@
 #
-# spec file for package python-azure-cli
+# spec file for package python-azurectl
 #
-Name:           python-azure-cli
+Name:           python-azurectl
 Version:        %%VERSION
 Release:        0
-Url:            https://github.com/SUSE/azure-cli
+Url:            https://github.com/SUSE/azurectl
 Summary:        Command Line Interface to manage Microsoft Azure services
 License:        GPL-2.0
 Group:          Development/Languages/Python
-Source:         python-azure-cli.tar.gz
-Source1:        python-azure-cli-completion.tar.gz
-Source2:        python-azure-cli-man.tar.gz
+Source:         python-azurectl.tar.gz
+Source1:        python-azurectl-completion.tar.gz
+Source2:        python-azurectl-man.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 BuildRequires:  python-devel
 BuildRequires:  python-setuptools
@@ -28,7 +28,7 @@ It allows uploading, registering and maintaining OS images for
 multiple Azure Account Subscriptions.
 
 %prep
-%setup -q -n azure_cli-%{version} -b1 -b2
+%setup -q -n azurectl-%{version} -b1 -b2
 
 %build
 python setup.py build
@@ -46,8 +46,8 @@ done
 %files
 %defattr(-,root,root,-)
 %{_bindir}/azurectl
-%{python_sitelib}/azure_cli-%{version}-py%{py_ver}.egg-info
-%{python_sitelib}/azure_cli
+%{python_sitelib}/azurectl-%{version}-py%{py_ver}.egg-info
+%{python_sitelib}/azurectl
 %config /etc/bash_completion.d/azurectl.sh
 %doc %{_mandir}/man1/*
 %changelog

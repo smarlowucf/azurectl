@@ -4,11 +4,11 @@ from nose.tools import *
 
 import nose_helper
 
-from azure_cli.azurectl_exceptions import *
+from azurectl.azurectl_exceptions import *
 
-import azure_cli
+import azurectl
 
-from azure_cli.azure_account import AzureAccount
+from azurectl.azure_account import AzureAccount
 
 from collections import namedtuple
 
@@ -25,7 +25,7 @@ class TestAzureAccount:
             certificate='abc',
             subscription_id='4711'
         )
-        azure_cli.azure_account.load_pkcs12 = mock.Mock()
+        azurectl.azure_account.load_pkcs12 = mock.Mock()
 
     def test_storage_name(self):
         assert self.account.storage_name() == 'bob'
@@ -47,15 +47,15 @@ class TestAzureAccount:
         )
         account_invalid.publishsettings()
 
-    @patch('azure_cli.azure_account.dump_privatekey')
-    @patch('azure_cli.azure_account.dump_certificate')
+    @patch('azurectl.azure_account.dump_privatekey')
+    @patch('azurectl.azure_account.dump_certificate')
     def test_publishsettings(self, mock_dump_pkey, mock_dump_certificate):
         mock_dump_pkey.return_value = 'abc'
         mock_dump_certificate.return_value = 'abc'
         assert self.account.publishsettings() == self.publishsettings
 
     @patch(
-        'azure_cli.azure_account.ServiceManagementService' +
+        'azurectl.azure_account.ServiceManagementService' +
         '.get_storage_account_keys'
     )
     def test_storage_key(self, mock_service):
@@ -73,7 +73,7 @@ class TestAzureAccount:
         assert self.account.storage_key() == 'foo'
 
     @patch(
-        'azure_cli.azure_account.ServiceManagementService' +
+        'azurectl.azure_account.ServiceManagementService' +
         '.list_storage_accounts'
     )
     def test_storage_names(self, mock_service):

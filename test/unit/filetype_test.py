@@ -1,8 +1,8 @@
 from nose.tools import *
 
-from azure_cli.filetype import FileType
+from azurectl.filetype import FileType
 
-from azure_cli.azurectl_exceptions import *
+from azurectl.azurectl_exceptions import *
 
 
 class TestFileType:

@@ -2,7 +2,7 @@ from mock import patch
 
 import nose_helper
 
-from azure_cli.logger import log
+from azurectl.logger import log
 
 
 class TestLogger:
