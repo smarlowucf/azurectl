@@ -14,5 +14,6 @@ install:
   - "pip install docopt"
   - "pip install APScheduler"
   - "pip install pyliblzma"
+  - "pip install coverage"
 
 script: make pep8 test
