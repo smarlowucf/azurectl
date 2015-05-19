@@ -12,9 +12,9 @@ __azurectl__ compute storage delete --name=*blobname*
 
 ## __upload__
 
-Upload file to a container. The command autodetects the filetype whether it is compressed or not and applies the appropriate decompressor. If the filetype could not be identified the file will be uploaded as raw sequence of bytes
+Upload file to a page blob in a container. The command autodetects the filetype whether it is XZ-compressed or not and decompresses the image automatically. If the filetype could not be identified the file will be uploaded as raw sequence of bytes.
 
-While any kind of data can be uploaded to the blob storage the purpose of this command is mainly for uploading XZ compressed VHD (Virtual Hard Drive) disk images in order to register an Azure operating system image from it at a later point in time.
+While any kind of data can be uploaded to the blob storage the purpose of this command is mainly for uploading XZ-compressed VHD (Virtual Hard Drive) disk images in order to register an Azure operating system image from it at a later point in time.
 
 ## __delete__
 
