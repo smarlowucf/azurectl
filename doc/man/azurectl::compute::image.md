@@ -20,7 +20,7 @@ List registered images and their attributes
 
 ## __create__
 
-Register operating system image from a VHD disk stored in a Microsoft Azure blob storage container
+Register operating system image from a VHD disk stored in a Microsoft Azure blob storage container. Before creating an image, the VHD must be uploaded to storage as a page blob. See the __azurectl compute storage upload__ command
 
 # OPTIONS
 

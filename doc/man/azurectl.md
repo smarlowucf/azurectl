@@ -8,7 +8,7 @@ __azurectl__ [global-options] *servicename* *command* [*args*...]
 
 # DESCRIPTION
 
-  Manage Microsoft Azure public cloud services from the command line in a similar fashion to other public cloud services. [Microsoft Azure](https://manage.windowsazure.com)
+  Manage [Microsoft Azure](https://manage.windowsazure.com) public cloud services from the command line in a similar fashion to other public cloud services. 
 
 # SERVICE NAMES
 
