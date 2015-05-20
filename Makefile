@@ -29,7 +29,12 @@ list_tests:
 
 build: pep8 test
 	${MAKE} -C doc/man all
-	python setup.py sdist
+	# delete version information from setup.py for rpm package
+	# we don't want to have this in the egg info because the rpm
+	# package should handle package/version requirements
+	cat setup.py | sed -e "s@==[0-9.]*'@'@g" > setup.build.py
+	python setup.build.py sdist
+	rm setup.build.py
 	mv dist/azurectl-${version}.tar.gz dist/python-azurectl.tar.gz
 	git log | tools/changelog_generator |\
 		tools/changelog_descending > dist/python-azurectl.changes

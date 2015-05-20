@@ -31,10 +31,10 @@ multiple Azure Account Subscriptions.
 %setup -q -n azurectl-%{version} -b1 -b2
 
 %build
-python setup.py build
+python setup.build.py build
 
 %install
-python setup.py install --prefix=%{_prefix} --root=%{buildroot}
+python setup.build.py install --prefix=%{_prefix} --root=%{buildroot}
 mkdir -p %{buildroot}/etc/bash_completion.d
 cp completion/azurectl.sh %{buildroot}/etc/bash_completion.d
 
