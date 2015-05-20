@@ -3,13 +3,13 @@ try:
 except ImportError:
     from distutils.core import setup
 
-from azure_cli.version import __VERSION__
+from azurectl.version import __VERSION__
 
 config = {
     'description': 'Manage Azure PubCloud Service',
     'author': 'PubCloud Development team',
-    'url': 'https://github.com/SUSE/azure-cli',
-    'download_url': 'https://github.com/SUSE/azure-cli',
+    'url': 'https://github.com/SUSE/azurectl',
+    'download_url': 'https://github.com/SUSE/azurectl',
     'author_email': 'public-cloud-dev@susecloud.net',
     'version': __VERSION__,
     'install_requires': [
@@ -19,11 +19,11 @@ config = {
         'azure==0.10.2',
         'python-dateutil==2.1'
     ],
-    'packages': ['azure_cli'],
+    'packages': ['azurectl'],
     'entry_points': {
-        'console_scripts': ['azurectl=azure_cli.azurectl:main'],
+        'console_scripts': ['azurectl=azurectl.azurectl:main'],
     },
-    'name': 'azure_cli'
+    'name': 'azurectl'
 }
 
 setup(**config)

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-files=$(find azure_cli test/unit -name "*.py" -type f)
+files=$(find azurectl test/unit -name "*.py" -type f)
 
 # IGNORE="E..." # Ignore check
 # IGNORE="$IGNORE,E..." # Another check to ignore

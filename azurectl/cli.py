@@ -92,7 +92,7 @@ class Cli:
             raise AzureLoadServiceNameUndefined(service)
         try:
             loaded = importlib.import_module(
-                'azure_cli.' + service + '_' + command + '_task'
+                'azurectl.' + service + '_' + command + '_task'
             )
         except Exception as e:
             raise AzureUnknownCommand(

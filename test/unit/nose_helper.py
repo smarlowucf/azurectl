@@ -1,6 +1,6 @@
-import azure_cli.logger
+import azurectl.logger
 import logging
 
-azure_cli.logger.init()
+azurectl.logger.init()
 
-azure_cli.logger.log.setLevel(logging.WARN)
+azurectl.logger.log.setLevel(logging.WARN)

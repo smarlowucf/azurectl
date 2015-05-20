@@ -6,9 +6,9 @@ from nose.tools import *
 
 import nose_helper
 
-import azure_cli
-from azure_cli.azurectl_exceptions import *
-from azure_cli.compute_storage_task import ComputeStorageTask
+import azurectl
+from azurectl.azurectl_exceptions import *
+from azurectl.compute_storage_task import ComputeStorageTask
 
 
 class TestComputeStorageTask:
@@ -20,16 +20,16 @@ class TestComputeStorageTask:
             '--name', 'name'
         ]
         self.task = ComputeStorageTask()
-        azure_cli.compute_storage_task.AzureAccount.storage_names = mock.Mock(
+        azurectl.compute_storage_task.AzureAccount.storage_names = mock.Mock(
             return_value=mock.Mock()
         )
-        azure_cli.compute_storage_task.Storage = mock.Mock(
+        azurectl.compute_storage_task.Storage = mock.Mock(
             return_value=mock.Mock()
         )
-        azure_cli.compute_storage_task.Container = mock.Mock(
+        azurectl.compute_storage_task.Container = mock.Mock(
             return_value=mock.Mock()
         )
-        azure_cli.compute_storage_task.Help = mock.Mock(
+        azurectl.compute_storage_task.Help = mock.Mock(
             return_value=mock.Mock()
         )
         self.__init_command_args()
@@ -54,7 +54,7 @@ class TestComputeStorageTask:
         self.task.command_args['--name'] = 'some-blob'
         self.task.command_args['help'] = False
 
-    @patch('azure_cli.compute_storage_task.DataOutput')
+    @patch('azurectl.compute_storage_task.DataOutput')
     def test_process_compute_storage_account_list(self, mock_out):
         self.__init_command_args()
         self.task.command_args['account'] = True
@@ -62,7 +62,7 @@ class TestComputeStorageTask:
         self.task.process()
         self.task.account.storage_names.assert_called_once_with()
 
-    @patch('azure_cli.compute_storage_task.DataOutput')
+    @patch('azurectl.compute_storage_task.DataOutput')
     def test_process_compute_storage_show(self, mock_out):
         self.__init_command_args()
         self.task.command_args['container'] = True
@@ -87,7 +87,7 @@ class TestComputeStorageTask:
         self.task.command_args['--permissions'] = 'a'
         assert_raises(AzureInvalidCommand, self.task.process)
 
-    @patch('azure_cli.compute_storage_task.DataOutput')
+    @patch('azurectl.compute_storage_task.DataOutput')
     def test_process_compute_storage_container_sas(self, mock_out):
         self.__init_command_args()
         self.task.command_args['container'] = True
@@ -107,7 +107,7 @@ class TestComputeStorageTask:
             'rl'
         )
 
-    @patch('azure_cli.compute_storage_task.DataOutput')
+    @patch('azurectl.compute_storage_task.DataOutput')
     def test_process_compute_storage_list(self, mock_out):
         self.__init_command_args()
         self.task.command_args['container'] = True
@@ -115,7 +115,7 @@ class TestComputeStorageTask:
         self.task.process()
         self.task.container.list.assert_called_once_with()
 
-    @patch('azure_cli.compute_storage_task.BackgroundScheduler')
+    @patch('azurectl.compute_storage_task.BackgroundScheduler')
     def test_process_compute_storage_upload(self, job):
         self.__init_command_args()
         self.task.command_args['upload'] = True

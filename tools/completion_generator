@@ -19,7 +19,7 @@ class AutoVivification(dict):
 
 class AppHash:
     def __init__(self):
-        call_parm = ["bash", "-c", "cat azure_cli/*.py"]
+        call_parm = ["bash", "-c", "cat azurectl/*.py"]
         cmd = subprocess.Popen(
             call_parm, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
         )

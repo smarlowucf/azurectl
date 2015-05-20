@@ -4,8 +4,8 @@ from nose.tools import *
 
 import nose_helper
 
-from azure_cli.data_output import DataOutput
-from azure_cli.data_collector import DataCollector
+from azurectl.data_output import DataOutput
+from azurectl.data_collector import DataCollector
 import json
 
 

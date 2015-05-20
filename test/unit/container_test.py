@@ -7,10 +7,10 @@ from urlparse import urlparse
 
 import nose_helper
 
-from azure_cli.azurectl_exceptions import *
-from azure_cli.container import Container
+from azurectl.azurectl_exceptions import *
+from azurectl.container import Container
 
-import azure_cli
+import azurectl
 
 from collections import namedtuple
 
@@ -40,12 +40,12 @@ class TestContainer:
         )
         self.container = Container(account)
 
-    @patch('azure_cli.container.BlobService.list_containers')
+    @patch('azurectl.container.BlobService.list_containers')
     def test_list(self, mock_list_containers):
         mock_list_containers.return_value = self.name_list
         assert self.container.list() == ['a', 'b']
 
-    @patch('azure_cli.container.BlobService.list_blobs')
+    @patch('azurectl.container.BlobService.list_blobs')
     def test_content(self, mock_list_blobs):
         mock_list_blobs.return_value = self.name_list
         assert self.container.content('some-container') == \

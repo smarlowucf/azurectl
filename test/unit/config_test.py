@@ -3,8 +3,8 @@ from nose.tools import *
 
 import nose_helper
 
-from azure_cli.azurectl_exceptions import *
-from azure_cli.config import Config
+from azurectl.azurectl_exceptions import *
+from azurectl.config import Config
 
 
 class TestConfig:

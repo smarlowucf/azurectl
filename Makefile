@@ -1,4 +1,4 @@
-version := $(shell python -c 'from azure_cli.version import __VERSION__; print __VERSION__')
+version := $(shell python -c 'from azurectl.version import __VERSION__; print __VERSION__')
 
 all:
 	python setup.py build
@@ -14,11 +14,11 @@ install:
 
 .PHONY: test
 test:
-	nosetests --with-coverage --cover-erase --cover-package=azure_cli --cover-xml
+	nosetests --with-coverage --cover-erase --cover-package=azurectl --cover-xml
 	tools/coverage-check
 
 coverage:
-	nosetests --with-coverage --cover-erase --cover-package=azure_cli --cover-xml
+	nosetests --with-coverage --cover-erase --cover-package=azurectl --cover-xml
 	mv test/unit/coverage.xml test/unit/coverage.reference.xml
 
 list_tests:
@@ -30,25 +30,25 @@ list_tests:
 build: pep8 test
 	${MAKE} -C doc/man all
 	python setup.py sdist
-	mv dist/azure_cli-${version}.tar.gz dist/python-azure-cli.tar.gz
+	mv dist/azurectl-${version}.tar.gz dist/python-azurectl.tar.gz
 	git log | tools/changelog_generator |\
-		tools/changelog_descending > dist/python-azure-cli.changes
+		tools/changelog_descending > dist/python-azurectl.changes
 	cat package/spec-template | sed -e s'@%%VERSION@${version}@' \
-		> dist/python-azure-cli.spec
-	mkdir -p dist/azure_cli-${version}/completion
+		> dist/python-azurectl.spec
+	mkdir -p dist/azurectl-${version}/completion
 	tools/completion_generator \
-		> dist/azure_cli-${version}/completion/azurectl.sh
-	tar -C dist -czf dist/python-azure-cli-completion.tar.gz \
-		azure_cli-${version}/completion
-	mkdir -p dist/azure_cli-${version}/doc/man
-	cp -a doc/man/*.1.gz dist/azure_cli-${version}/doc/man
-	tar -C dist -czf dist/python-azure-cli-man.tar.gz \
-		azure_cli-${version}/doc/man
-	rm -rf dist/azure_cli-${version}
+		> dist/azurectl-${version}/completion/azurectl.sh
+	tar -C dist -czf dist/python-azurectl-completion.tar.gz \
+		azurectl-${version}/completion
+	mkdir -p dist/azurectl-${version}/doc/man
+	cp -a doc/man/*.1.gz dist/azurectl-${version}/doc/man
+	tar -C dist -czf dist/python-azurectl-man.tar.gz \
+		azurectl-${version}/doc/man
+	rm -rf dist/azurectl-${version}
 	${MAKE} -C doc/man clean
 
 clean:
 	find -name *.pyc | xargs rm -f
-	rm -rf azure_cli.egg-info
+	rm -rf azurectl.egg-info
 	rm -rf build
 	rm -rf dist

@@ -5,11 +5,11 @@ from nose.tools import *
 
 import nose_helper
 
-from azure_cli.azure_account import AzureAccount
-from azure_cli.azurectl_exceptions import *
-from azure_cli.image import Image
+from azurectl.azure_account import AzureAccount
+from azurectl.azurectl_exceptions import *
+from azurectl.image import Image
 
-import azure_cli
+import azurectl
 
 from collections import namedtuple
 
@@ -46,7 +46,7 @@ class TestImage:
         account.storage_key = mock.Mock()
         self.image = Image(account)
 
-    @patch('azure_cli.image.ServiceManagementService.list_os_images')
+    @patch('azurectl.image.ServiceManagementService.list_os_images')
     def test_list(self, mock_list_os_images):
         mock_list_os_images.return_value = self.list_os_images
         assert self.image.list() == [self.list_os_images.pop()._asdict()]
@@ -55,13 +55,13 @@ class TestImage:
     def test_create_raise_blob_error(self):
         self.image.create('some-name', 'some-blob')
 
-    @patch('azure_cli.image.BlobService.get_blob_properties')
+    @patch('azurectl.image.BlobService.get_blob_properties')
     @raises(AzureOsImageCreateError)
     def test_create_raise_os_image_error(self, mock_get_blob_props):
         self.image.create('some-name', 'some-blob')
 
-    @patch('azure_cli.image.ServiceManagementService.add_os_image')
-    @patch('azure_cli.image.BlobService.get_blob_properties')
+    @patch('azurectl.image.ServiceManagementService.add_os_image')
+    @patch('azurectl.image.BlobService.get_blob_properties')
     def test_create(self, mock_get_blob_props, mock_add_os_image):
         MyStatus = namedtuple(
             'MyStatus',
