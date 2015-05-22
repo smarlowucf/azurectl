@@ -81,7 +81,7 @@ class Image:
             service_call = service.add_os_image(
                 label, media_link, name, 'Linux'
             )
-            add_os_image_result = service_call.get_operation_status(
+            add_os_image_result = service.get_operation_status(
                 service_call.request_id
             )
             status = add_os_image_result.status
