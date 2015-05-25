@@ -61,17 +61,14 @@ class TestImage:
         self.image.create('some-name', 'some-blob')
 
     @patch('azurectl.image.ServiceManagementService.add_os_image')
+    @patch('azurectl.image.ServiceManagementService.get_operation_status')
     @patch('azurectl.image.BlobService.get_blob_properties')
-    def test_create(self, mock_get_blob_props, mock_add_os_image):
+    def test_create(self, mock_get_blob_props, mock_status, mock_add_os_image):
         MyStatus = namedtuple(
             'MyStatus',
             'status'
         )
-        mock_status = mock.Mock()
-        mock_status.get_operation_status = mock.Mock(
-            return_value=MyStatus(status='OK')
-        )
-        mock_add_os_image.return_value = mock_status
+        mock_status.return_value = MyStatus(status='OK')
         assert self.image.create(
             'some-name', 'some-blob', 'some-label'
         ) == 'OK'
