@@ -65,7 +65,7 @@ class TestContainer:
             '.blob.core.windows.net'
         assert parsed.path == '/' + container
         assert 'st=2015-01-01T00%3A00%3A00Z&' in parsed.query
-        assert 'e=2015-12-31T00%3A00%3A00Z&' in parsed.query
+        assert 'se=2015-12-31T00%3A00%3A00Z' in parsed.query
         assert 'sp=rl&' in parsed.query
         assert 'sr=c&' in parsed.query
         assert 'sig=' in parsed.query  # can't actively validate the signature

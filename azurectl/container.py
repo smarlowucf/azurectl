@@ -20,9 +20,7 @@ from azure.storage import (
     SharedAccessSignature
 )
 from azure.storage.sharedaccesssignature import (
-    RESOURCE_CONTAINER,
-    SIGNED_RESOURCE_TYPE,
-    SHARED_ACCESS_PERMISSION
+    ResourceType
 )
 
 # project
@@ -73,11 +71,9 @@ class Container:
         sas = SharedAccessSignature(self.account_name, self.account_key)
         signed_query = sas.generate_signed_query_string(
             container,
-            RESOURCE_CONTAINER,
+            ResourceType.RESOURCE_CONTAINER,
             sap
         )
-        token = sas._convert_query_string(signed_query)
-
         return 'https://{}.blob.core.windows.net/{}?{}'.format(
-            self.account_name, container, token
+            self.account_name, container, signed_query
         )
