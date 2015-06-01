@@ -8,9 +8,9 @@ Url:            https://github.com/SUSE/azurectl
 Summary:        Command Line Interface to manage Microsoft Azure services
 License:        GPL-2.0
 Group:          Development/Languages/Python
-Source:         python-azurectl.tar.gz
-Source1:        python-azurectl-completion.tar.gz
-Source2:        python-azurectl-man.tar.gz
+Source:         python-azurectl-%{version}.tar.gz
+Source1:        python-azurectl-completion-%{version}.tar.gz
+Source2:        python-azurectl-man-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 BuildRequires:  python-devel
 BuildRequires:  python-setuptools

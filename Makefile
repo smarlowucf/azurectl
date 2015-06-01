@@ -34,6 +34,7 @@ build: pep8 test
 	# package should handle package/version requirements
 	cat setup.py | sed -e "s@==[0-9.]*'@'@g" > setup.build.py
 	python setup.build.py sdist
+	mv dist/azurectl-${version}.tar.gz dist/python-azurectl-${version}.tar.gz
 	rm setup.build.py
 	git log | tools/changelog_generator |\
 		tools/changelog_descending > dist/python-azurectl.changes
