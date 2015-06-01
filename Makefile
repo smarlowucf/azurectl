@@ -35,7 +35,6 @@ build: pep8 test
 	cat setup.py | sed -e "s@==[0-9.]*'@'@g" > setup.build.py
 	python setup.build.py sdist
 	rm setup.build.py
-	mv dist/azurectl-${version}.tar.gz dist/python-azurectl.tar.gz
 	git log | tools/changelog_generator |\
 		tools/changelog_descending > dist/python-azurectl.changes
 	cat package/spec-template | sed -e s'@%%VERSION@${version}@' \
@@ -43,11 +42,11 @@ build: pep8 test
 	mkdir -p dist/azurectl-${version}/completion
 	tools/completion_generator \
 		> dist/azurectl-${version}/completion/azurectl.sh
-	tar -C dist -czf dist/python-azurectl-completion.tar.gz \
+	tar -C dist -czf dist/python-azurectl-completion-${version}.tar.gz \
 		azurectl-${version}/completion
 	mkdir -p dist/azurectl-${version}/doc/man
 	cp -a doc/man/*.1.gz dist/azurectl-${version}/doc/man
-	tar -C dist -czf dist/python-azurectl-man.tar.gz \
+	tar -C dist -czf dist/python-azurectl-man-${version}.tar.gz \
 		azurectl-${version}/doc/man
 	rm -rf dist/azurectl-${version}
 	${MAKE} -C doc/man clean
