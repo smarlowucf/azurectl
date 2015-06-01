@@ -10,7 +10,7 @@ install:
     # azure SDK >= 0.11.0 has changed the semantics of sharedaccesssignature
     # this new SDK version is currently not packaged for SUSE, thus we stick
     # to a compatible version for testing
-  - "pip install azure==0.10.2"
+  - "pip install azure==0.11.0"
   - "pip install docopt"
   - "pip install APScheduler"
   - "pip install pyliblzma"
