@@ -14,10 +14,14 @@
 """
 usage: azurectl -h | --help
        azurectl [--config=<file>]
+                [--output-format=<format>]
+                [--output-style=<style>]
+           setup <command> [<args>...]
+       azurectl [--config=<file>]
                 [--account=<name>]
                 [--output-format=<format>]
                 [--output-style=<style>]
-           <servicename> <command> [<args>...]
+           compute <command> [<args>...]
        azurectl --version
        azurectl help
 
@@ -62,7 +66,14 @@ class Cli:
         return self.all_args['help']
 
     def get_servicename(self):
-        return self.all_args['<servicename>']
+        if self.all_args['compute']:
+            return 'compute'
+        elif self.all_args['setup']:
+            return 'setup'
+        else:
+            raise AzureUnknownServiceName(
+                'Unknown/Invalid Servicename'
+            )
 
     def get_command(self):
         return self.all_args['<command>']
@@ -87,16 +98,17 @@ class Cli:
         command = self.get_command()
         service = self.get_servicename()
         if not command:
-            raise AzureLoadCommandUndefined(command)
-        if not service:
-            raise AzureLoadServiceNameUndefined(service)
+            raise AzureLoadCommandUndefined(
+                'No command specified for %s service' % service
+            )
         try:
             loaded = importlib.import_module(
                 'azurectl.' + service + '_' + command + '_task'
             )
         except Exception as e:
             raise AzureUnknownCommand(
-                'Unknown command "' + command + '" for ' + service + ' service'
+                'Loading command %s for %s service failed with: %s: %s' %
+                (command, service, type(e).__name__, format(e))
             )
         self.loaded = loaded
         return self.loaded

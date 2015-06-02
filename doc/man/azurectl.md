@@ -12,13 +12,27 @@ __azurectl__ [global-options] *servicename* *command* [*args*...]
 
 # SERVICE NAMES
 
+## __setup__
+
+Create and Manage account setup
+
 ## __compute__
 
 Compute service which includes image and blob storage management
 
 # COMMANDS
 
-## __storage__
+Each service provides a collection of commands which are loaded as plugin when the command is requested. The following chapter lists the available commands for each service. In addition every service command provides an extra manual page with detailed information about the command capabilities using the __help__ command
+
+## __azurectl__ __setup__ __account__ help
+
+Configuration file setup for azurectl
+
+  * List configured accounts
+  * Add account to config file
+  * Delete account from config file
+
+## __azurectl__ __compute__ __storage__ help
 
 Azure blob storage and container management:
 
@@ -29,7 +43,7 @@ Azure blob storage and container management:
   * upload files to storage container
   * delete files from storage container
 
-## __image__
+## __azurectl__ __compute__ __image__ help
 
 Azure image management
 
