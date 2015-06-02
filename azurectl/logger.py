@@ -25,9 +25,11 @@ class LoggerSchedulerFilter(logging.Filter):
 
 class InfoFilter(logging.Filter):
     def filter(self, record):
-        # only messages with record level INFO and DEBUG can pass
+        # only messages with record level INFO, WARNING and DEBUG can pass
         # for messages with another level an extra handler is used
-        return record.levelno in (logging.INFO, logging.DEBUG)
+        return record.levelno in (
+            logging.INFO, logging.WARNING, logging.DEBUG
+        )
 
 
 class Logger(logging.Logger):
