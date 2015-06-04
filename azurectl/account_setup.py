@@ -34,7 +34,7 @@ class AccountSetup:
         except Exception as e:
             raise AzureConfigParseError(
                 'Could not parse config file: %s: %s' %
-                (type(e).__name__, format(e))
+                (filename, format(e))
             )
 
     def list(self):
