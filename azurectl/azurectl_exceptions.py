@@ -25,6 +25,10 @@ class AzureError(Exception):
         return repr(self.message)
 
 
+class AzureConfigPublishSettingsError(AzureError):
+    pass
+
+
 class AzureUnknownServiceName(AzureError):
     pass
 

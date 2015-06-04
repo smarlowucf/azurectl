@@ -27,7 +27,7 @@ class TestAccountSetup:
             },
             'foo': {
                 'storage_account_name': 'storage',
-                'publishsettings': 'settings',
+                'publishsettings': '../data/publishsettings',
                 'storage_container_name': 'container'
             }
         }
@@ -37,7 +37,9 @@ class TestAccountSetup:
 
     @mock.patch('__builtin__.open')
     def test_add(self, mock_open):
-        self.setup.add('foo', 'settings', 'storage', 'container')
+        self.setup.add(
+            'foo', '../data/publishsettings', 'storage', 'container'
+        )
         assert mock_open.called
         assert self.setup.list() == self.add_data
 
@@ -55,3 +57,9 @@ class TestAccountSetup:
     @raises(AzureConfigParseError)
     def test_parse_raise(self):
         AccountSetup('../data/blob.xz')
+
+    @raises(AzureConfigPublishSettingsError)
+    def test_add_raise(self):
+        self.setup.add(
+            'foo', '../data/does-not-exist', 'storage', 'container'
+        )

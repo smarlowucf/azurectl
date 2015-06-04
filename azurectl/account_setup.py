@@ -56,6 +56,7 @@ class AccountSetup:
         self, name,
         publish_settings_file, storage_account_name, container_name
     ):
+        self.__validate_publish_settings_file(publish_settings_file)
         self.config.add_section(name)
         self.config.set(
             name, 'publishsettings', publish_settings_file
@@ -68,6 +69,12 @@ class AccountSetup:
         )
         self.__write()
         return True
+
+    def __validate_publish_settings_file(self, filename):
+        if not os.path.isfile(filename):
+            raise AzureConfigPublishSettingsError(
+                'No such Publish Settings file: %s' % filename
+            )
 
     def __write(self):
         try:
