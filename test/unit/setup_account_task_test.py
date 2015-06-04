@@ -49,10 +49,7 @@ class TestSetupAccountTask:
         self.task.command_args['add'] = True
         self.task.process()
         self.task.setup.add.assert_called_once_with(
-            self.task.command_args['--name'],
-            self.task.command_args['--publish-settings-file'],
-            self.task.command_args['--storage-account-name'],
-            self.task.command_args['--container-name']
+            self.task.command_args
         )
 
     def test_process_setup_account_remove(self):

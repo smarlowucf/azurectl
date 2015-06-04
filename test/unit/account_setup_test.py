@@ -38,7 +38,12 @@ class TestAccountSetup:
     @mock.patch('__builtin__.open')
     def test_add(self, mock_open):
         self.setup.add(
-            'foo', '../data/publishsettings', 'storage', 'container'
+            {
+                '--name': 'foo',
+                '--publish-settings-file': '../data/publishsettings',
+                '--storage-account-name': 'storage',
+                '--container-name': 'container'
+            }
         )
         assert mock_open.called
         assert self.setup.list() == self.add_data
@@ -61,5 +66,8 @@ class TestAccountSetup:
     @raises(AzureConfigPublishSettingsError)
     def test_add_raise(self):
         self.setup.add(
-            'foo', '../data/does-not-exist', 'storage', 'container'
+            {
+                '--name': 'foo',
+                '--publish-settings-file': '../data/does-not-exist'
+            }
         )
