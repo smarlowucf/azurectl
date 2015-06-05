@@ -78,7 +78,17 @@ class SetupAccountTask(CliTask):
         return self.manual
 
     def __add(self):
-        if self.setup.add(self.command_args):
+        args = {
+            'name':
+                self.command_args['--name'],
+            'publishsettings':
+                self.command_args['--publish-settings-file'],
+            'storage_account_name':
+                self.command_args['--storage-account-name'],
+            'storage_container_name':
+                self.command_args['--container-name']
+        }
+        if self.setup.add(args):
             log.info('Added Account %s' % self.command_args['--name'])
 
     def __list(self):

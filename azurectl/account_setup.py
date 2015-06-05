@@ -54,21 +54,21 @@ class AccountSetup:
 
     def add(self, args):
         self.__validate_publish_settings_file(
-            args['--publish-settings-file']
+            args['publishsettings']
         )
-        section_name = args['--name']
+        section_name = args['name']
         self.config.add_section(section_name)
         self.config.set(
             section_name, 'publishsettings',
-            args['--publish-settings-file']
+            args['publishsettings']
         )
         self.config.set(
             section_name, 'storage_account_name',
-            args['--storage-account-name']
+            args['storage_account_name']
         )
         self.config.set(
             section_name, 'storage_container_name',
-            args['--container-name']
+            args['storage_container_name']
         )
         self.__write()
         return True

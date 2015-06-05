@@ -39,10 +39,10 @@ class TestAccountSetup:
     def test_add(self, mock_open):
         self.setup.add(
             {
-                '--name': 'foo',
-                '--publish-settings-file': '../data/publishsettings',
-                '--storage-account-name': 'storage',
-                '--container-name': 'container'
+                'name': 'foo',
+                'publishsettings': '../data/publishsettings',
+                'storage_account_name': 'storage',
+                'storage_container_name': 'container'
             }
         )
         assert mock_open.called
@@ -67,7 +67,7 @@ class TestAccountSetup:
     def test_add_raise(self):
         self.setup.add(
             {
-                '--name': 'foo',
-                '--publish-settings-file': '../data/does-not-exist'
+                'name': 'foo',
+                'publishsettings': '../data/does-not-exist'
             }
         )
