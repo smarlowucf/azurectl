@@ -106,8 +106,8 @@ as shown above could be created using the following command
 $ azurectl setup account add \
   --name default \
   --publish-settings-file /path/to/publish/settings/file \
-  --storage-acainer-name storage-account-name \
-  --container-name container-name
+  --storage-account-name storage_account_name \
+  --container-name container_name
 ```
 
 #### Credentials
@@ -476,7 +476,7 @@ instructions below to let git sign your commits.
        signingkey = 11223344
    ```
 
-   Thats basically it.
+   That's basically it.
 
 3. Signing your commits
 
