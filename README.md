@@ -93,9 +93,21 @@ for a default account:
 
 ```
 [default]
-storage_account_name = some-storage
+storage_account_name = storage-account-name
 storage_container_name = container-name
-publishsettings = path-to-publish-settings-file
+publishsettings = /path/to/publish/settings/file
+```
+
+In order to create or manage the account sections in the config file,
+azurectl provides the __setup__ command. The default account section
+as shown above could be created using the following command
+
+```
+$ azurectl setup account add \
+  --name default \
+  --publish-settings-file /path/to/publish/settings/file \
+  --storage-acainer-name storage-account-name \
+  --container-name container-name
 ```
 
 #### Credentials
