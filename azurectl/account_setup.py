@@ -38,6 +38,9 @@ class AccountSetup:
             )
 
     def list(self):
+        """
+            list account sections
+        """
         accounts = {}
         for section in self.config.sections():
             accounts[section] = {}
@@ -46,40 +49,51 @@ class AccountSetup:
         return accounts
 
     def remove(self, name):
+        """
+            remove specified account section
+        """
         if not self.config.remove_section(name):
             log.info('Section %s does not exist' % name)
             return False
         self.__write()
         return True
 
-    def add(self, args):
+    def add(
+        self, section_name, publish_settings, storage_account, storage_container
+    ):
+        """
+            add new account section
+        """
         self.__validate_publish_settings_file(
-            args['publishsettings']
+            publish_settings
         )
-        section_name = args['name']
         self.config.add_section(section_name)
         self.config.set(
-            section_name, 'publishsettings',
-            args['publishsettings']
+            section_name, 'publishsettings', publish_settings
         )
         self.config.set(
-            section_name, 'storage_account_name',
-            args['storage_account_name']
+            section_name, 'storage_account_name', storage_account
         )
         self.config.set(
-            section_name, 'storage_container_name',
-            args['storage_container_name']
+            section_name, 'storage_container_name', storage_container
         )
         self.__write()
         return True
 
     def __validate_publish_settings_file(self, filename):
+        """
+            validate given publish settings file for
+            + existence
+        """
         if not os.path.isfile(filename):
             raise AzureConfigPublishSettingsError(
                 'No such Publish Settings file: %s' % filename
             )
 
     def __write(self):
+        """
+            write out config data to file
+        """
         try:
             config_handle = open(self.filename, 'w')
             self.config.write(config_handle)
