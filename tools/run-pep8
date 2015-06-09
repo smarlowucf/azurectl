@@ -5,4 +5,6 @@ files=$(find azurectl test/unit -name "*.py" -type f)
 # IGNORE="E..." # Ignore check
 # IGNORE="$IGNORE,E..." # Another check to ignore
 
+IGNORE="E501" # ignore line too long, ok for docopt usage
+
 pep8 -v --statistics --ignore="$IGNORE" $files

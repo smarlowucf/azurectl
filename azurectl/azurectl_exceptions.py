@@ -25,6 +25,18 @@ class AzureError(Exception):
         return repr(self.message)
 
 
+class AzureConfigPublishSettingsError(AzureError):
+    pass
+
+
+class AzureConfigAddAccountSectionError(AzureError):
+    pass
+
+
+class AzureUnknownServiceName(AzureError):
+    pass
+
+
 class AzureBlobServicePropertyError(AzureError):
     pass
 
@@ -34,6 +46,10 @@ class AzureOsImageCreateError(AzureError):
 
 
 class AzureConfigParseError(AzureError):
+    pass
+
+
+class AzureConfigWriteError(AzureError):
     pass
 
 
@@ -50,10 +66,6 @@ class AzureHelpNoCommandGiven(AzureError):
 
 
 class AzureLoadCommandUndefined(AzureError):
-    pass
-
-
-class AzureLoadServiceNameUndefined(AzureError):
     pass
 
 

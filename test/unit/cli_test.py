@@ -11,14 +11,15 @@ class TestCli:
     def setup(self):
         self.help_global_args = {
             '--output-format': None,
+            'compute': True,
             'help': False,
+            'setup': False,
             '--output-style': None,
             '--config': None,
             '--account': None,
             '--version': False,
             '--help': False,
-            '-h': False,
-            '<servicename>': 'compute'
+            '-h': False
         }
         self.help_command_args = {
             '--container': None,
@@ -67,3 +68,26 @@ class TestCli:
 
     def test_load_command(self):
         assert self.cli.load_command() == self.loaded_command
+
+    @raises(AzureUnknownCommand)
+    def test_load_command_unknown(self):
+        self.cli.loaded = False
+        self.cli.all_args['<command>'] = 'foo'
+        self.cli.load_command()
+
+    @raises(AzureLoadCommandUndefined)
+    def test_load_command_undefined(self):
+        self.cli.loaded = False
+        self.cli.all_args['<command>'] = None
+        self.cli.load_command()
+
+    @raises(AzureCommandNotLoaded)
+    def test_get_command_args_not_loaded(self):
+        self.cli.loaded = False
+        self.cli.get_command_args()
+
+    @raises(AzureUnknownServiceName)
+    def test_get_servicename_unknown(self):
+        self.cli.all_args['compute'] = False
+        self.cli.all_args['setup'] = False
+        self.cli.get_servicename()

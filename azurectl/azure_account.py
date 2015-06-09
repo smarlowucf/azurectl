@@ -74,7 +74,7 @@ class AzureAccount:
                 if not name:
                     name = self.storage_name()
                 return service.get_storage_account_keys(
-                   name
+                    name
                 ).storage_service_keys.primary
             raise AzureInternalError(
                 'AzureAccount::__query_account_for(invalid information type)'
