@@ -59,7 +59,13 @@ class TestAccountSetup:
         AccountSetup('../data/blob.xz')
 
     @raises(AzureConfigPublishSettingsError)
-    def test_add_raise(self):
+    def test_add_raise_publish_settings_error(self):
         self.setup.add(
             'foo', '../data/does-not-exist', 'storage', 'container'
+        )
+
+    @raises(AzureConfigAddAccountSectionError)
+    def test_add_raise(self):
+        self.setup.add(
+            'default', '../data/publishsettings', 'storage', 'container'
         )

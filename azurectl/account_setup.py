@@ -67,7 +67,12 @@ class AccountSetup:
         self.__validate_publish_settings_file(
             publish_settings
         )
-        self.config.add_section(section_name)
+        try:
+            self.config.add_section(section_name)
+        except Exception as e:
+            raise AzureConfigAddAccountSectionError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
         self.config.set(
             section_name, 'publishsettings', publish_settings
         )

@@ -29,6 +29,10 @@ class AzureConfigPublishSettingsError(AzureError):
     pass
 
 
+class AzureConfigAddAccountSectionError(AzureError):
+    pass
+
+
 class AzureUnknownServiceName(AzureError):
     pass
 
