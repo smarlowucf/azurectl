@@ -46,6 +46,14 @@ easier to maintain for Linux distributors.
 
 ## Installation
 
+Packages for azurectl are provided at the openSUSE buildservice:
+
+```
+$ zypper ar http://download.opensuse.org/repositories/Cloud:/Tools/<distribution>/ \
+  azurectl
+$ zypper in python-azurectl
+```
+
 Installation from source follows the standard Python setup procedure
 which is wrapped into a Makefile.
 
