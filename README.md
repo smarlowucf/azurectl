@@ -7,9 +7,10 @@ Command Line Interface to manage
 
   * [Motivation](#motivation)
   * [Installation](#installation)
-  * [Usage](#usage)
+  * [Setup](#setup)
+    - [Publish Settings](#publish-settings)
     - [Configuration file](#configuration-file)
-    - [Credentials](#credentials)
+  * [Usage](#usage)
     - [Examples](#examples)
   * [Contributing](#contributing)
     - [Dependencies](#dependencies)
@@ -62,16 +63,32 @@ $ make
 $ sudo make install
 ```
 
-### Usage
+## Setup
 
-azurectl uses the following basic syntax
+In order to call azurectl a setup procedure is required. The setup is a two
+step process for each Microsoft Azure Account you want to use with azurectl
 
-```
-azurectl [global-options] <servicename> <command> [command-options]
-```
+1. Download of the Publish Settings file
+2. Adding an account section to the azurectl configuration file
 
-In order to call azurectl one has to create an account configuration
+#### Publish Settings
+
+Access to the Azure REST interface requires credentials associated with
+a specific account. These credentials are provided by Azure in the
+Publish Settings file. The file contains all keys and the subscription id
+for a given account in Azure. The azurectl command will extract the required
+information from the Publish Settings file specified in the configuration
 file.
+
+To download the Publish Settings file for your account visit
+https://manage.windowsazure.com/publishsettings . If you are already
+logged in, the Publish Settings file for the corresponding account
+will be offered as download, otherwise you will be redirected to
+the login page and need to login with your Azure account.
+
+Please note, if you have multiple accounts for Azure and you're already logged
+in, check that you are logged in with the account for which you would like
+to download the Publish Settings file.
 
 #### Configuration file
 
@@ -96,19 +113,9 @@ Each configured account in the configuration file must contain the
 * default storage container name
 * path to the Publish Settings file
 
-The following example outlines all possible configuration parameters
-for a default account:
-
-```
-[default]
-storage_account_name = storage-account-name
-storage_container_name = container-name
-publishsettings = /path/to/publish/settings/file
-```
-
 In order to create or manage the account sections in the config file,
 azurectl provides the __setup__ command. The default account section
-as shown above could be created using the following command
+as described above could be created using the following command
 
 ```
 $ azurectl setup account add \
@@ -118,46 +125,35 @@ $ azurectl setup account add \
   --container-name container_name
 ```
 
-#### Credentials
+### Usage
 
-Access to the Azure REST interface requires credentials associated with
-a specific account. These credentials are provided by Azure in the
-Publish Settings file. The file contains all keys and the subscription id
-for a given account in Azure. The azurectl command will extract the required
-information from the Publish Settings file specified in the configuration
-file.
+azurectl uses the following basic syntax
 
-To download the Publish Settings file for your account visit
-https://manage.windowsazure.com/publishsettings . If you are already
-logged in, the Publish Settings file for the corresponding account
-will be offered as download, otherwise you will be redirected to
-the login page and need to login with your Azure account.
-
-Please note, if you have multiple accounts for Azure and you're already logged
-in, check that you are logged in with the account for which you would like
-to download the Publish Settings file.
+```
+azurectl [global-options] <servicename> <command> [command-options]
+```
 
 #### Examples
 
-* Get short help
+* Show short help
 
   ```
   $ azurectl --help
   ```
 
-* Get extended help for azurectl
+* Show azurectl man page
 
   ```
   $ azurectl help
   ```
 
-* Get short help for a command
+* Show short help for a command
 
   ```
   $ azurectl <servicename> <command> --help
   ```
 
-* Get extended help for a command
+* Show man page for a command
 
   ```
   $ azurectl <servicename> <command> help
