@@ -20,7 +20,7 @@ Command Line Interface to manage
     - [Code Structure] (#code-structure)
   * [Compatibility] (#compatibility)
   * [Issues] (#issues)
-  * [Signing GIT patches] (#signing-git-patches)
+    - [Signing GIT patches] (#signing-git-patches)
 
 ## Motivation
 
@@ -438,7 +438,7 @@ Node.js tools and the command should be the same." Issues of this type will
 not be accepted for the general implementation and will only apply to the
 compatibility layer.
 
-## Signing GIT Patches
+### Signing GIT Patches
 
 With ssh keys being widely available and the increasing compute power available
 to many people refactoring of SSH keys is in the range of possibilities.
