@@ -6,14 +6,19 @@ python:
   - "2.7"
 
 install:
+# The azure SDK is currently taken from a development branch
+# Once our PR (https://github.com/Azure/azure-sdk-for-python/pull/394)
+# is merged in master we can use azure from pip again
+#
+#  - "pip install azure"
+#
+#
   - "pip install pep8"
-    # azure SDK >= 0.11.0 has changed the semantics of sharedaccesssignature
-    # this new SDK version is currently not packaged for SUSE, thus we stick
-    # to a compatible version for testing
-  - "pip install azure==0.11.0"
+  - "pip install python-dateutil"
   - "pip install docopt"
   - "pip install APScheduler"
   - "pip install pyliblzma"
   - "pip install coverage"
+  - "pip install pyOpenSSL"
 
-script: make pep8 test
+script: ./.travis.script
