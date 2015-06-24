@@ -35,10 +35,12 @@ class TestCli:
             'account': True,
             'compute': True,
             'container': False,
+            'create': False,
             'delete': False,
             'help': False,
             'list': True,
             'sas': False,
+            'share': False,
             'show': False,
             'storage': True,
             'upload': False

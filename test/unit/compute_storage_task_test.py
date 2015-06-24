@@ -29,6 +29,9 @@ class TestComputeStorageTask:
         azurectl.compute_storage_task.Container = mock.Mock(
             return_value=mock.Mock()
         )
+        azurectl.compute_storage_task.FileShare = mock.Mock(
+            return_value=mock.Mock()
+        )
         azurectl.compute_storage_task.Help = mock.Mock(
             return_value=mock.Mock()
         )
@@ -36,6 +39,8 @@ class TestComputeStorageTask:
 
     def __init_command_args(self):
         self.task.command_args = {}
+        self.task.command_args['share'] = False
+        self.task.command_args['create'] = False
         self.task.command_args['container'] = False
         self.task.command_args['account'] = False
         self.task.command_args['delete'] = False
@@ -51,8 +56,34 @@ class TestComputeStorageTask:
         self.task.command_args['--source'] = 'some-file'
         self.task.command_args['--max-chunk-size'] = 1024
         self.task.command_args['--quiet'] = False
-        self.task.command_args['--name'] = 'some-blob'
+        self.task.command_args['--name'] = 'some-thing'
         self.task.command_args['help'] = False
+
+    @patch('azurectl.compute_storage_task.DataOutput')
+    def test_process_compute_storage_share_list(self, mock_out):
+        self.__init_command_args()
+        self.task.command_args['share'] = True
+        self.task.command_args['list'] = True
+        self.task.process()
+        self.task.fileshare.list.assert_called_once_with()
+
+    def test_process_compute_storage_share_delete(self):
+        self.__init_command_args()
+        self.task.command_args['share'] = True
+        self.task.command_args['delete'] = True
+        self.task.process()
+        self.task.fileshare.delete.assert_called_once_with(
+            'some-thing'
+        )
+
+    def test_process_compute_storage_share_create(self):
+        self.__init_command_args()
+        self.task.command_args['share'] = True
+        self.task.command_args['create'] = True
+        self.task.process()
+        self.task.fileshare.create.assert_called_once_with(
+            'some-thing'
+        )
 
     @patch('azurectl.compute_storage_task.DataOutput')
     def test_process_compute_storage_account_list(self, mock_out):
@@ -121,7 +152,7 @@ class TestComputeStorageTask:
         self.task.command_args['upload'] = True
         self.task.process()
         self.task.storage.upload.assert_called_once_with(
-            'some-file', 'some-blob', 1024
+            'some-file', 'some-thing', 1024
         )
 
     def test_process_compute_storage_delete(self):
@@ -129,7 +160,7 @@ class TestComputeStorageTask:
         self.task.command_args['delete'] = True
         self.task.process()
         self.task.storage.delete.assert_called_once_with(
-            'some-blob'
+            'some-thing'
         )
 
     def test_process_compute_storage_help(self):

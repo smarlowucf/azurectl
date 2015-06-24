@@ -33,6 +33,18 @@ class AzureConfigAddAccountSectionError(AzureError):
     pass
 
 
+class AzureFileShareCreateError(AzureError):
+    pass
+
+
+class AzureFileShareDeleteError(AzureError):
+    pass
+
+
+class AzureFileShareListError(AzureError):
+    pass
+
+
 class AzureUnknownServiceName(AzureError):
     pass
 
