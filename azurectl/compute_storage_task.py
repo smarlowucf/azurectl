@@ -22,6 +22,9 @@ usage: azurectl compute storage -h | --help
            [--start-datetime=<start>]
            [--expiry-datetime=<expiry>]
            [--permissions=<permissions>]
+       azurectl compute storage share list
+       azurectl compute storage share create --name=<sharename>
+       azurectl compute storage share delete --name=<sharename>
        azurectl compute storage upload --source=<file> --name=<blobname>
            [--max-chunk-size=<size>]
            [--container=<container>]
@@ -42,11 +45,15 @@ commands:
     upload
         upload xz compressed blob to the given container
     delete
-        delete blob from the given container
+        storage: delete blob from the given container
+        storage share: delete share from the storage account
+    create
+        create file share in the storage account
     --source=<file>
         file to upload
     --name=<name>
-        name of the file in the storage pool
+        blobname: name of the file in the storage pool
+        sharename: name of the files share
     --max-chunk-size=<size>
         max chunk size in bytes for upload, default 4MB
     --container=<container>
@@ -89,6 +96,7 @@ from logger import log
 from azurectl_exceptions import *
 from storage import Storage
 from container import Container
+from fileshare import FileShare
 from help import Help
 
 
@@ -131,6 +139,7 @@ class ComputeStorageTask(CliTask):
 
         self.storage = Storage(self.account, container_name)
         self.container = Container(self.account)
+        self.fileshare = FileShare(self.account)
 
         if self.command_args['account'] and self.command_args['list']:
             self.__account_list()
@@ -145,6 +154,12 @@ class ComputeStorageTask(CliTask):
                 expiry,
                 self.command_args['--permissions']
             )
+        elif self.command_args['share'] and self.command_args['list']:
+            self.__share_list()
+        elif self.command_args['share'] and self.command_args['create']:
+            self.__share_create()
+        elif self.command_args['share'] and self.command_args['delete']:
+            self.__share_delete()
         elif self.command_args['upload']:
             self.__upload()
         elif self.command_args['delete']:
@@ -246,3 +261,17 @@ class ComputeStorageTask(CliTask):
     def __account_list(self):
         self.result.add('storage_names', self.account.storage_names())
         self.out.display()
+
+    def __share_list(self):
+        self.result.add('share_names', self.fileshare.list())
+        self.out.display()
+
+    def __share_create(self):
+        share_name = self.command_args['--name']
+        self.fileshare.create(share_name)
+        log.info('Created Files Share %s' % share_name)
+
+    def __share_delete(self):
+        share_name = self.command_args['--name']
+        self.fileshare.delete(share_name)
+        log.info('Deleted Files Share %s' % share_name)
