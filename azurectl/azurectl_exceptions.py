@@ -25,6 +25,26 @@ class AzureError(Exception):
         return repr(self.message)
 
 
+class AzureCloudServiceAddCertificateError(AzureError):
+    pass
+
+
+class AzureCloudServiceCreateError(AzureError):
+    pass
+
+
+class AzureCloudServiceDeleteError(AzureError):
+    pass
+
+
+class AzureCloudServiceOpenSSLError(AzureError):
+    pass
+
+
+class AzureCloudServiceStatusError(AzureError):
+    pass
+
+
 class AzureConfigPublishSettingsError(AzureError):
     pass
 
@@ -149,11 +169,31 @@ class AzurePageBlobAlignmentViolation(AzureError):
     pass
 
 
+class AzureRequestTimeout(AzureError):
+    pass
+
+
+class AzureRequestError(AzureError):
+    pass
+
+
+class AzureSSHKeyFileNotFound(AzureError):
+    pass
+
+
 class AzureServiceManagementError(AzureError):
     pass
 
 
 class AzureStorageListError(AzureError):
+    pass
+
+
+class AzureVmCreateError(AzureError):
+    pass
+
+
+class AzureVmDeleteError(AzureError):
     pass
 
 
