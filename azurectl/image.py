@@ -78,15 +78,26 @@ class Image:
                 self.publishsettings.subscription_id,
                 self.cert_file.name
             )
-            service_call = service.add_os_image(
+            result = service.add_os_image(
                 label, media_link, name, 'Linux'
             )
-            add_os_image_result = service.get_operation_status(
-                service_call.request_id
-            )
-            status = add_os_image_result.status
+            return (result.request_id)
         except Exception as e:
             raise AzureOsImageCreateError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
-        return status
+
+    def delete(self, name, delete_disk=False):
+        service = ServiceManagementService(
+            self.publishsettings.subscription_id,
+            self.cert_file.name
+        )
+        try:
+            result = service.delete_vm_image(
+                name, delete_disk
+            )
+            return(result.request_id)
+        except Exception as e:
+            raise AzureOsImageDeleteError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
