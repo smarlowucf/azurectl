@@ -7,5 +7,5 @@
 
 pushd ../ &>/dev/null
 
-python -c "from azurectl.azurectl import main; main()" $@
+python -c "from azurectl.azurectl import main; main()" "$@"
 
