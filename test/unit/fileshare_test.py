@@ -56,13 +56,19 @@ class TestFileShare:
         mock_delete_shares.assert_called_once_with('foo')
 
     @raises(AzureFileShareCreateError)
-    def test_raise_create_failed(self):
+    @patch('azurectl.fileshare.FilesService.create_share')
+    def test_raise_create_failed(self, mock_create_shares):
+        mock_create_shares.side_effect = AzureFileShareCreateError('Boom')
         self.files.create('foo')
 
     @raises(AzureFileShareListError)
-    def test_raise_list_failed(self):
+    @patch('azurectl.fileshare.FilesService.list_shares')
+    def test_raise_list_failed(self, mock_list_shares):
+        mock_list_shares.side_effect = AzureFileShareListError('Boom')
         self.files.list()
 
     @raises(AzureFileShareDeleteError)
-    def test_raise_delete_failed(self):
+    @patch('azurectl.fileshare.FilesService.delete_share')
+    def test_raise_delete_failed(self, mock_delete_shares):
+        mock_delete_shares.side_effect = AzureFileShareDeleteError('Boom')
         self.files.delete('foo')

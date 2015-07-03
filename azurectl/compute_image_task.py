@@ -17,6 +17,8 @@ usage: azurectl compute image -h | --help
        azurectl compute image create --name=<imagename> --blob=<blobname>
            [--container=<container>]
            [--label=<imagelabel>]
+       azurectl compute image delete --name=<imagename>
+           [--delete-disk]
        azurectl compute image help
 
 commands:
@@ -26,6 +28,8 @@ commands:
         create OS image from VHD disk stored on blob storage container
     --container=<container>
         container name, overwrites configuration value
+    --delete-disk
+        on deletion of the image also delete the associated VHD disk
     --label=<imagelabel>
         image label on create, defaults to name if not set
     --name=<imagename>
@@ -68,6 +72,8 @@ class ComputeImageTask(CliTask):
             self.__list()
         elif self.command_args['create']:
             self.__create()
+        elif self.command_args['delete']:
+            self.__delete()
 
     def __help(self):
         if self.command_args['help']:
@@ -84,6 +90,16 @@ class ComputeImageTask(CliTask):
                 self.command_args['--blob'],
                 self.command_args['--label'],
                 self.command_args['--container']
+            )
+        )
+        self.out.display()
+
+    def __delete(self):
+        self.result.add(
+            'image:' + self.command_args['--name'],
+            self.image.delete(
+                self.command_args['--name'],
+                self.command_args['--delete-disk'],
             )
         )
         self.out.display()

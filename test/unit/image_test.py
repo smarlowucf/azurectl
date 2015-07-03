@@ -16,6 +16,11 @@ from collections import namedtuple
 
 class TestImage:
     def setup(self):
+        MyResult = namedtuple(
+            'MyResult',
+            'request_id'
+        )
+        self.myrequest = MyResult(request_id=42)
         MyStruct = namedtuple(
             'MyStruct',
             'name label os category description location \
@@ -51,6 +56,10 @@ class TestImage:
         mock_list_os_images.return_value = self.list_os_images
         assert self.image.list() == [self.list_os_images.pop()._asdict()]
 
+    @raises(AzureOsImageListError)
+    def test_list_raises_error(self):
+        self.image.list()
+
     @raises(AzureBlobServicePropertyError)
     def test_create_raise_blob_error(self):
         self.image.create('some-name', 'some-blob')
@@ -61,20 +70,31 @@ class TestImage:
         self.image.create('some-name', 'some-blob')
 
     @patch('azurectl.image.ServiceManagementService.add_os_image')
-    @patch('azurectl.image.ServiceManagementService.get_operation_status')
     @patch('azurectl.image.BlobService.get_blob_properties')
-    def test_create(self, mock_get_blob_props, mock_status, mock_add_os_image):
-        MyStatus = namedtuple(
-            'MyStatus',
-            'status'
+    def test_create(self, mock_get_blob_props, mock_add_os_image):
+        mock_add_os_image.return_value = self.myrequest
+        request_id = self.image.create(
+            'some-name', 'some-blob'
         )
-        mock_status.return_value = MyStatus(status='OK')
-        assert self.image.create(
-            'some-name', 'some-blob', 'some-label'
-        ) == 'OK'
+        assert request_id == 42
         mock_add_os_image.assert_called_once_with(
-            'some-label',
+            'some-name',
             'https://bob.blob.core.windows.net/foo/some-blob',
             'some-name',
             'Linux'
         )
+
+    @patch('azurectl.image.ServiceManagementService.delete_vm_image')
+    def test_delete(self, mock_add_delete_image):
+        mock_add_delete_image.return_value = self.myrequest
+        request_id = self.image.delete(
+            'some-name', False
+        )
+        assert request_id == 42
+        mock_add_delete_image.assert_called_once_with(
+            'some-name', False
+        )
+
+    @raises(AzureOsImageDeleteError)
+    def test_delete_raise_os_delete_error(self):
+        self.image.delete('some-name')
