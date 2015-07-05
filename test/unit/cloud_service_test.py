@@ -181,41 +181,6 @@ class TestCloudService:
         )
         assert request_id == 42
 
-    @patch('azurectl.cloud_service.ServiceManagementService.get_operation_status')
-    def test_status(self, mock_status):
-        self.service.status(4711)
-        mock_status.assert_called_once_with(4711)
-
-    @patch('azurectl.cloud_service.time.sleep')
-    @patch('azurectl.cloud_service.ServiceManagementService.get_operation_status')
-    @raises(AzureRequestTimeout)
-    def test_wait_for_request_completion_timeout(self, mock_status, mock_time):
-        MyStatus = namedtuple(
-            'MyStatus',
-            'status'
-        )
-        status = MyStatus(status='InProgress')
-        mock_status.return_value = status
-        self.service.wait_for_request_completion(4711)
-
-    @patch('azurectl.cloud_service.time.sleep')
-    @patch('azurectl.cloud_service.ServiceManagementService.get_operation_status')
-    @raises(AzureRequestError)
-    def test_wait_for_request_completion_error(self, mock_status, mock_time):
-        MyStatus = namedtuple(
-            'MyStatus',
-            'status error'
-        )
-        MyError = namedtuple(
-            'MyError',
-            'message code'
-        )
-        status = MyStatus(
-            status='Failed', error=MyError(message='foo', code=1)
-        )
-        mock_status.return_value = status
-        self.service.wait_for_request_completion(4711)
-
     @patch('azurectl.cloud_service.ServiceManagementService.create_hosted_service')
     @raises(AzureCloudServiceCreateError)
     def test_create_service_error(self, mock_create_service):
@@ -237,9 +202,3 @@ class TestCloudService:
     def test_delete_service_error(self, mock_delete_service):
         mock_delete_service.side_effect = AzureCloudServiceDeleteError
         self.service.delete('cloud-service')
-
-    @patch('azurectl.cloud_service.ServiceManagementService.get_operation_status')
-    @raises(AzureCloudServiceStatusError)
-    def test_status_error(self, mock_status):
-        mock_status.side_effect = AzureCloudServiceStatusError
-        self.service.status(4711)
