@@ -29,6 +29,7 @@ class TestDataOutput:
     @patch('os.system')
     def test_display_color(self, mock_system, mock_stdout):
         self.out.style = 'color'
+        self.out.color_json = True
         self.out.display()
         assert mock_system.called
 
