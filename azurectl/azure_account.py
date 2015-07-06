@@ -16,6 +16,7 @@ from xml.dom import minidom
 from OpenSSL.crypto import *
 from tempfile import NamedTemporaryFile
 from azure.servicemanagement import ServiceManagementService
+import base64
 
 # project
 from azurectl_exceptions import *
@@ -28,6 +29,7 @@ class AzureAccount:
     """
     def __init__(self, account_name=None, filename=None):
         self.config = Config(account_name, filename)
+        self.service = None
 
     def storage_name(self):
         return self.config.get_option('storage_account_name')
@@ -36,10 +38,18 @@ class AzureAccount:
         return self.config.get_option('storage_container_name')
 
     def storage_key(self, name=None):
-        return self.__query_account_for('storage_key', name)
+        self.__get_service()
+        if not name:
+            name = self.storage_name()
+        account_keys = self.service.get_storage_account_keys(name)
+        return account_keys.storage_service_keys.primary
 
     def storage_names(self):
-        return self.__query_account_for('storage_names')
+        self.__get_service()
+        result = []
+        for storage in self.service.list_storage_accounts():
+            result.append(storage.service_name)
+        return result
 
     def publishsettings(self):
         credentials = namedtuple(
@@ -54,30 +64,18 @@ class AzureAccount:
         )
         return result
 
-    def __query_account_for(self, information_type, name=None):
+    def __get_service(self):
+        if self.service:
+            return
         publishsettings = self.publishsettings()
-        cert_file = NamedTemporaryFile()
-        cert_file.write(publishsettings.private_key)
-        cert_file.write(publishsettings.certificate)
-        cert_file.flush()
+        self.cert_file = NamedTemporaryFile()
+        self.cert_file.write(publishsettings.private_key)
+        self.cert_file.write(publishsettings.certificate)
+        self.cert_file.flush()
         try:
-            service = ServiceManagementService(
+            self.service = ServiceManagementService(
                 publishsettings.subscription_id,
-                cert_file.name
-            )
-            if information_type == 'storage_names':
-                result = []
-                for storage in service.list_storage_accounts():
-                    result.append(storage.service_name)
-                return result
-            elif information_type == 'storage_key':
-                if not name:
-                    name = self.storage_name()
-                return service.get_storage_account_keys(
-                    name
-                ).storage_service_keys.primary
-            raise AzureInternalError(
-                'AzureAccount::__query_account_for(invalid information type)'
+                self.cert_file.name
             )
         except Exception as e:
             raise AzureServiceManagementError(
@@ -91,7 +89,7 @@ class AzureAccount:
                 FILETYPE_PEM, p12.get_privatekey()
             )
         except Exception as e:
-            raise AzureSubscriptionDecodeError(
+            raise AzureSubscriptionPrivateKeyDecodeError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
 
@@ -102,7 +100,7 @@ class AzureAccount:
                 FILETYPE_PEM, p12.get_certificate()
             )
         except Exception as e:
-            raise AzureSubscriptionDecodeError(
+            raise AzureSubscriptionCertificateDecodeError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
 
@@ -136,8 +134,8 @@ class AzureAccount:
                 self.settings
             )
         try:
-            return load_pkcs12(cert.decode("base64"), '')
+            return load_pkcs12(base64.b64decode(cert), '')
         except Exception as e:
-            raise AzureSubscriptionDecodeError(
+            raise AzureSubscriptionPKCS12DecodeError(
                 '%s: %s' % (type(e).__name__, format(e))
             )

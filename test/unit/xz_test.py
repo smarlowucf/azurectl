@@ -1,8 +1,11 @@
 from nose.tools import *
+from mock import patch
 
 import nose_helper
+import mock
 
 from azurectl.xz import XZ
+from azurectl.azurectl_exceptions import *
 
 
 class TestXZ:
@@ -12,5 +15,37 @@ class TestXZ:
     def test_read(self):
         assert self.xz.read(128) == 'foo'
 
+    def test_read_chunks(self):
+        with XZ.open('../data/blob.more.xz') as xz:
+            chunk = xz.read(8)
+            assert chunk == 'Some dat'
+            chunk = xz.read(8)
+            assert chunk == 'a so tha'
+            chunk = xz.read(8)
+            assert chunk == 't we can'
+            chunk = xz.read(8)
+            assert chunk == ' read it'
+            chunk = xz.read(8)
+            assert chunk == ' as mult'
+            chunk = xz.read(8)
+            assert chunk == 'iple chu'
+            chunk = xz.read(8)
+            assert chunk == 'nks'
+
     def test_uncompressed_size(self):
         assert XZ.uncompressed_size('../data/blob.xz') == 4
+
+    @raises(AzureXZError)
+    @patch('subprocess.Popen')
+    def test_uncompressed_size_raise(self, mock_popen):
+        mock_xz = mock.Mock()
+        mock_xz.communicate = mock.Mock(
+            return_value=['data', 'error']
+        )
+        mock_popen.returncode = 1
+        mock_popen.return_value = mock_xz
+        XZ.uncompressed_size('../data/blob.xz')
+
+    def test_read_raise(self):
+        # don't know how to mock lzma.flush, mock can't overwrite it
+        pass

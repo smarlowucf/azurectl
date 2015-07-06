@@ -27,6 +27,18 @@ class TestAzureAccount:
         )
         azurectl.azure_account.load_pkcs12 = mock.Mock()
 
+    @raises(AzureServiceManagementError)
+    @patch('azurectl.azure_account.ServiceManagementService')
+    @patch('azurectl.azure_account.dump_privatekey')
+    @patch('azurectl.azure_account.dump_certificate')
+    def test_service_error(
+        self, mock_dump_pkey, mock_dump_certificate, mock_service
+    ):
+        mock_dump_pkey.return_value = 'abc'
+        mock_dump_certificate.return_value = 'abc'
+        mock_service.side_effect = AzureServiceManagementError
+        self.account.storage_names()
+
     def test_storage_name(self):
         assert self.account.storage_name() == 'bob'
 
@@ -40,24 +52,59 @@ class TestAzureAccount:
         )
         account_invalid.publishsettings()
 
-    @raises(AzureSubscriptionDecodeError)
+    @raises(AzureSubscriptionPrivateKeyDecodeError)
     def test_publishsettings_invalid_cert(self):
         account_invalid = AzureAccount(
             'default', '../data/config.invalid_publishsettings_cert'
         )
         account_invalid.publishsettings()
 
+    @raises(AzureSubscriptionCertificateDecodeError)
     @patch('azurectl.azure_account.dump_privatekey')
     @patch('azurectl.azure_account.dump_certificate')
-    def test_publishsettings(self, mock_dump_pkey, mock_dump_certificate):
+    def test_subscription_cert_decode_error(
+        self, mock_dump_certificate, mock_dump_pkey
+    ):
+        mock_dump_pkey.return_value = 'abc'
+        mock_dump_certificate.side_effect = AzureSubscriptionCertificateDecodeError
+        self.account.publishsettings()
+
+    @raises(AzureManagementCertificateNotFound)
+    def test_subscription_management_cert_not_found(self):
+        account_invalid = AzureAccount(
+            'default', '../data/config.missing_publishsettings_cert'
+        )
+        account_invalid.publishsettings()
+
+    @raises(AzureSubscriptionIdNotFound)
+    @patch('azurectl.azure_account.load_pkcs12')
+    @patch('azurectl.azure_account.dump_privatekey')
+    @patch('azurectl.azure_account.dump_certificate')
+    @patch('base64.b64decode')
+    def test_subscription_id_not_found(
+        self, base64_decode, mock_dump_certificate,
+        mock_dump_pkey, mock_pkcs12
+    ):
+        account_invalid = AzureAccount(
+            'default', '../data/config.missing_publishsettings_id'
+        )
+        account_invalid.publishsettings()
+
+    @raises(AzureSubscriptionPKCS12DecodeError)
+    def test_subscription_pkcs12_error(self):
+        account_invalid = AzureAccount(
+            'default', '../data/config.missing_publishsettings_id'
+        )
+        account_invalid.publishsettings()
+
+    @patch('azurectl.azure_account.dump_privatekey')
+    @patch('azurectl.azure_account.dump_certificate')
+    def test_publishsettings(self, mock_dump_certificate, mock_dump_pkey):
         mock_dump_pkey.return_value = 'abc'
         mock_dump_certificate.return_value = 'abc'
         assert self.account.publishsettings() == self.publishsettings
 
-    @patch(
-        'azurectl.azure_account.ServiceManagementService' +
-        '.get_storage_account_keys'
-    )
+    @patch('azurectl.azure_account.ServiceManagementService.get_storage_account_keys')
     def test_storage_key(self, mock_service):
         self.account.publishsettings = mock.Mock(
             return_value=self.publishsettings
@@ -72,10 +119,7 @@ class TestAzureAccount:
         mock_service.return_value = service_result
         assert self.account.storage_key() == 'foo'
 
-    @patch(
-        'azurectl.azure_account.ServiceManagementService' +
-        '.list_storage_accounts'
-    )
+    @patch('azurectl.azure_account.ServiceManagementService.list_storage_accounts')
     def test_storage_names(self, mock_service):
         self.account.publishsettings = mock.Mock(
             return_value=self.publishsettings
@@ -87,3 +131,7 @@ class TestAzureAccount:
         service_result.append(names(service_name='foo'))
         mock_service.return_value = service_result
         assert self.account.storage_names() == ['foo']
+        service = self.account.service
+        # calling again and see if the same ServiceManagementService is used
+        self.account.storage_names()
+        assert service == self.account.service

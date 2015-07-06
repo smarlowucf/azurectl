@@ -45,11 +45,23 @@ class TestContainer:
         mock_list_containers.return_value = self.name_list
         assert self.container.list() == ['a', 'b']
 
+    @raises(AzureContainerListError)
+    @patch('azurectl.container.BlobService.list_containers')
+    def test_list_raises(self, mock_list_containers):
+        mock_list_containers.side_effect = AzureContainerListError
+        self.container.list()
+
     @patch('azurectl.container.BlobService.list_blobs')
     def test_content(self, mock_list_blobs):
         mock_list_blobs.return_value = self.name_list
         assert self.container.content('some-container') == \
             {'some-container': ['a', 'b']}
+
+    @raises(AzureContainerListContentError)
+    @patch('azurectl.container.BlobService.list_blobs')
+    def test_content_raises(self, mock_list_blobs):
+        mock_list_blobs.side_effect = AzureContainerListContentError
+        self.container.content('some-container')
 
     def test_sas(self):
         container = 'mock-container'

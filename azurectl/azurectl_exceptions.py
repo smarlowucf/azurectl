@@ -93,7 +93,15 @@ class AzureSubscriptionParseError(AzureError):
     pass
 
 
-class AzureSubscriptionDecodeError(AzureError):
+class AzureSubscriptionPrivateKeyDecodeError(AzureError):
+    pass
+
+
+class AzureSubscriptionCertificateDecodeError(AzureError):
+    pass
+
+
+class AzureSubscriptionPKCS12DecodeError(AzureError):
     pass
 
 
@@ -158,10 +166,6 @@ class AzureSubscriptionIdNotFound(AzureError):
 
 
 class AzureManagementCertificateNotFound(AzureError):
-    pass
-
-
-class AzureInternalError(AzureError):
     pass
 
 

@@ -15,8 +15,12 @@ class TestSetupAccountTask:
             sys.argv[0], 'setup', 'account', 'list'
         ]
         self.task = SetupAccountTask()
+        self.setup = mock.Mock()
+        self.setup.list = mock.Mock(
+            return_value=['a', 'b']
+        )
         azurectl.setup_account_task.AccountSetup = mock.Mock(
-            return_value=mock.Mock()
+            return_value=self.setup
         )
         azurectl.setup_account_task.Help = mock.Mock(
             return_value=mock.Mock()
@@ -41,8 +45,16 @@ class TestSetupAccountTask:
         self.task.command_args['list'] = True
         self.task.process()
         self.task.setup.list.assert_called_once_with()
-        assert not mock_display.called
-        mock_logging.info('There are no accounts configured')
+
+    @patch('azurectl.logger.log.info')
+    def test_process_setup_account_list_empty(self, mock_info):
+        self.__init_command_args()
+        self.task.command_args['list'] = True
+        self.setup.list.return_value = None
+        self.task.process()
+        mock_info.assert_called_once_with(
+            'There are no accounts configured'
+        )
 
     def test_process_setup_account_add(self):
         self.__init_command_args()

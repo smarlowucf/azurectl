@@ -6,6 +6,7 @@ from nose.tools import *
 
 import nose_helper
 
+import datetime
 import azurectl
 from azurectl.azurectl_exceptions import *
 from azurectl.compute_storage_task import ComputeStorageTask
@@ -19,12 +20,13 @@ class TestComputeStorageTask:
             '--source', 'blob',
             '--name', 'name'
         ]
-        self.task = ComputeStorageTask()
         azurectl.compute_storage_task.AzureAccount.storage_names = mock.Mock(
             return_value=mock.Mock()
         )
+        self.storage = mock.Mock()
+        self.storage.upload = mock.Mock()
         azurectl.compute_storage_task.Storage = mock.Mock(
-            return_value=mock.Mock()
+            return_value=self.storage
         )
         azurectl.compute_storage_task.Container = mock.Mock(
             return_value=mock.Mock()
@@ -35,6 +37,7 @@ class TestComputeStorageTask:
         azurectl.compute_storage_task.Help = mock.Mock(
             return_value=mock.Mock()
         )
+        self.task = ComputeStorageTask()
         self.__init_command_args()
 
     def __init_command_args(self):
@@ -130,30 +133,83 @@ class TestComputeStorageTask:
         expiry = dateutil.parser.parse(
             self.task.command_args['--expiry-datetime']
         )
-
         self.task.container.sas.assert_called_once_with(
-            'some-container',
-            start,
-            expiry,
-            'rl'
+            'some-container', start, expiry, 'rl'
         )
 
     @patch('azurectl.compute_storage_task.DataOutput')
-    def test_process_compute_storage_list(self, mock_out):
+    def test_process_compute_storage_container_sas_now(self, mock_out):
+        self.__init_command_args()
+        self.task.command_args['--start-datetime'] = 'now'
+        self.task.command_args['container'] = True
+        self.task.command_args['sas'] = True
+        self.task.process()
+        expiry = dateutil.parser.parse(
+            self.task.command_args['--expiry-datetime']
+        )
+        self.task.container.sas.assert_called_once_with(
+            'some-container', mock.ANY, expiry, 'rl'
+        )
+
+    @patch('azurectl.compute_storage_task.DataOutput')
+    def test_process_compute_storage_container_sas_expire(self, mock_out):
+        self.__init_command_args()
+        self.task.command_args['--expiry-datetime'] = '30 days from start'
+        self.task.command_args['container'] = True
+        self.task.command_args['sas'] = True
+        self.task.process()
+        start = dateutil.parser.parse(
+            self.task.command_args['--start-datetime']
+        )
+        expiry = start + datetime.timedelta(days=30)
+        self.task.container.sas.assert_called_once_with(
+            'some-container', start, expiry, 'rl'
+        )
+
+    @patch('azurectl.compute_storage_task.DataOutput')
+    def test_process_compute_storage_container_list(self, mock_out):
         self.__init_command_args()
         self.task.command_args['container'] = True
         self.task.command_args['list'] = True
         self.task.process()
         self.task.container.list.assert_called_once_with()
 
+    @patch('azurectl.compute_storage_task.DataOutput')
+    def test_process_compute_storage_container_from_cfg_list(self, mock_out):
+        self.__init_command_args()
+        self.task.command_args['--container'] = None
+        self.task.command_args['container'] = True
+        self.task.command_args['list'] = True
+        self.task.process()
+        self.task.container.list.assert_called_once_with()
+
     @patch('azurectl.compute_storage_task.BackgroundScheduler')
-    def test_process_compute_storage_upload(self, job):
+    @patch('azurectl.compute_storage_task.DataOutput')
+    def test_process_compute_storage_upload(self, mock_out, mock_job):
         self.__init_command_args()
         self.task.command_args['upload'] = True
         self.task.process()
         self.task.storage.upload.assert_called_once_with(
             'some-file', 'some-thing', 1024
         )
+
+    @raises(SystemExit)
+    @patch('azurectl.compute_storage_task.BackgroundScheduler')
+    @patch('azurectl.compute_storage_task.DataOutput')
+    def test_process_compute_storage_upload_interrupted(self, mock_out, mock_job):
+        self.__init_command_args()
+        self.task.command_args['upload'] = True
+        self.storage.upload.side_effect = KeyboardInterrupt
+        self.task.process()
+
+    @raises(SystemExit)
+    @patch('azurectl.compute_storage_task.BackgroundScheduler')
+    def test_process_compute_storage_upload_quiet_interrupted(self, mock_job):
+        self.__init_command_args()
+        self.task.command_args['upload'] = True
+        self.task.command_args['--quiet'] = True
+        self.storage.upload.side_effect = KeyboardInterrupt
+        self.task.process()
 
     def test_process_compute_storage_delete(self):
         self.__init_command_args()

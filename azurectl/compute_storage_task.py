@@ -164,8 +164,6 @@ class ComputeStorageTask(CliTask):
             self.__upload()
         elif self.command_args['delete']:
             self.__delete()
-        else:
-            raise AzureUnknownCommand(self.command_args)
 
     # argument validation
 
@@ -207,7 +205,7 @@ class ComputeStorageTask(CliTask):
         try:
             self.__process_upload()
         except (KeyboardInterrupt):
-            progress.shutdown()
+            raise SystemExit('azurectl aborted by keyboard interrupt')
 
     def __upload_with_progress(self):
         image = self.command_args['--source']
@@ -222,6 +220,7 @@ class ComputeStorageTask(CliTask):
             progress.shutdown()
         except (KeyboardInterrupt):
             progress.shutdown()
+            raise SystemExit('azurectl aborted by keyboard interrupt')
         print
         log.info('Uploaded %s' % image)
 

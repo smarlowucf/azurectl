@@ -49,6 +49,9 @@ class TestAccountSetup:
         assert mock_open.called
         assert self.setup.list() == {}
 
+    def test_remove_section_does_not_exist(self):
+        assert self.setup.remove('foofoo') == False
+
     @raises(AzureConfigWriteError)
     def test_write_raise(self):
         self.setup.filename = '/proc/xxx'
