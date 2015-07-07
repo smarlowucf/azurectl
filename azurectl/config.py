@@ -60,7 +60,7 @@ class Config:
     def __default_config(self, platform):
         homeEnvVar = 'HOME'
         if platform == 'win':
-            if os.environ.has_key('HOMEPATH'):
+            if 'HOMEPATH' in os.environ:
                 homeEnvVar = 'HOMEPATH'
             else:
                 homeEnvVar = 'UserProfile'
