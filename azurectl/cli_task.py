@@ -44,10 +44,9 @@ class CliTask:
         self.global_args = self.cli.get_global_args()
 
         # get account name and config file
-        azurectl_config = Config()
+        azurectl_config = Config(
+            self.global_args['--account'],
+            self.global_args['--config']
+        )
         self.account_name = azurectl_config.account_name
         self.config_file = azurectl_config.config_file
-        if self.global_args['--account']:
-            self.account_name = self.global_args['--account']
-        if self.global_args['--config']:
-            self.config_file = self.global_args['--config']

@@ -12,9 +12,9 @@ from azurectl.setup_account_task import SetupAccountTask
 class TestSetupAccountTask:
     def setup(self):
         sys.argv = [
-            sys.argv[0], 'setup', 'account', 'list'
+            sys.argv[0], '--config', '../data/config',
+            'setup', 'account', 'list'
         ]
-        self.task = SetupAccountTask()
         self.setup = mock.Mock()
         self.setup.list = mock.Mock(
             return_value=['a', 'b']
@@ -25,6 +25,7 @@ class TestSetupAccountTask:
         azurectl.setup_account_task.Help = mock.Mock(
             return_value=mock.Mock()
         )
+        self.task = SetupAccountTask()
 
     def __init_command_args(self):
         self.task.command_args = {}

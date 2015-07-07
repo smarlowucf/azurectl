@@ -21,7 +21,9 @@ class TestCliTask:
         CliTask()
         help_show.assert_called_once_with('azurectl')
 
-    def test_global_args(self):
+    @patch('os.path.isfile')
+    @patch('ConfigParser.ConfigParser.has_section')
+    def test_global_args(self, mock_section, mock_isfile):
         sys.argv = [
             sys.argv[0], '--account', 'account', '--config', 'config',
             'compute', 'storage', 'account', 'list'
