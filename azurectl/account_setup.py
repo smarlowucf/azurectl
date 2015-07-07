@@ -24,7 +24,7 @@ class AccountSetup:
     """
         Implements setup methods to list, add and delete account configs
     """
-    def __init__(self, filename=Config.DEFAULT_CONFIG):
+    def __init__(self, filename):
         self.config = ConfigParser.ConfigParser()
         self.filename = filename
         try:

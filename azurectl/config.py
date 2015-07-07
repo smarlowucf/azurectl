@@ -24,16 +24,13 @@ class Config:
     """
         Reading of INI style config file attributes
     """
-    DEFAULT_ACCOUNT = 'default'
-    homeEnvVar = 'HOME'
-    if sys.platform[:3] == 'win':
-        if 'HOMEPATH' in os.environ.has_key:
-            homeEnvVar = 'HOMEPATH'
-        else:
-            homeEnvVar = 'UserProfile'
-    DEFAULT_CONFIG = os.environ[homeEnvVar] + '/.azurectl/config'
+    PLATFORM = sys.platform[:3]
 
-    def __init__(self, account_name=DEFAULT_ACCOUNT, filename=DEFAULT_CONFIG):
+    def __init__(self, account_name=None, filename=None, platform=PLATFORM):
+        if not account_name:
+            account_name = 'default'
+        if not filename:
+            filename = self.__default_config(platform)
         usr_config = ConfigParser.ConfigParser()
         if not os.path.isfile(filename):
             raise AzureAccountLoadFailed('no such config file %s' % filename)
@@ -59,3 +56,13 @@ class Config:
                 "%s not defined for account %s" % (option, self.account_name)
             )
         return result
+
+    def __default_config(self, platform):
+        homeEnvVar = 'HOME'
+        if platform == 'win':
+            if os.environ.has_key('HOMEPATH'):
+                homeEnvVar = 'HOMEPATH'
+            else:
+                homeEnvVar = 'UserProfile'
+        config_file_path = os.environ[homeEnvVar] + '/.azurectl/config'
+        return config_file_path

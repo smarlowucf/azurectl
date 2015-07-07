@@ -46,6 +46,9 @@ class TestXZ:
         mock_popen.return_value = mock_xz
         XZ.uncompressed_size('../data/blob.xz')
 
-    def test_read_raise(self):
-        # don't know how to mock lzma.flush, mock can't overwrite it
-        pass
+    @raises(AssertionError)
+    @patch('lzma.LZMADecompressor')
+    def test_read_raise(self, mock_xz):
+        mock_xz.flush = 'data-which-should-never-be-there'
+        with XZ.open('../data/blob.more.xz') as xz:
+            chunk = xz.read(8)

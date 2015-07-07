@@ -35,10 +35,24 @@ class TestConfig:
     def test_get_option_not_found(self):
         self.config.get_option('foo')
 
-    def test_home_path_linux(self):
-        config = Config('default', '../data/config')
-        assert config.DEFAULT_CONFIG == os.environ['HOME'] + '/.azurectl/config'
+    @patch('os.path.isfile')
+    @patch('ConfigParser.ConfigParser.has_section')
+    def test_home_path_linux(self, mock_section, mock_isfile):
+        mock_isfile.return_value = True
+        mock_section.return_value = True
+        config = Config()
+        assert config.config_file == os.environ['HOME'] + '/.azurectl/config'
 
-    def test_home_path_win(self):
-        # sorry, no idea how to mock sys.platform
-        pass
+    @patch('os.path.isfile')
+    @patch('ConfigParser.ConfigParser.has_section')
+    def test_home_path_win(self, mock_section, mock_isfile):
+        mock_isfile.return_value = True
+        mock_section.return_value = True
+        with patch.dict('os.environ', {'HOMEPATH': 'foo'}):
+            config = Config(None, None, 'win')
+            assert config.config_file == \
+                os.environ['HOMEPATH'] + '/.azurectl/config'
+        with patch.dict('os.environ', {'UserProfile': 'foo'}):
+            config = Config(None, None, 'win')
+            assert config.config_file == \
+                os.environ['UserProfile'] + '/.azurectl/config'
