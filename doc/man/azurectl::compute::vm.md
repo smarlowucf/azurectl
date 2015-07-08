@@ -19,6 +19,8 @@ __azurectl__ compute vm delete --cloud-service-name=*name*
 
     [--instance-name=name]
 
+__azurectl__ compute vm types
+
 # DESCRIPTION
 
 ## __create__
@@ -28,6 +30,15 @@ Create a virtual machine and cloud service from a given image name. If the cloud
 ## __delete__
 
 Delete a cloud service and all its virtual machines or only a specific virtual machine instance from the cloud service. If only a specific instance should be deleted it is required to name this instance via the --instance-name option.
+
+## __types__
+
+List available instance types and their attributes
+
+* number of core CPUs
+* size of OS disk in MB
+* maximum number of data disks to attach
+* size of main memory in MB
 
 # OPTIONS
 
@@ -53,7 +64,7 @@ Name of the virtual machine instance. if no name is given the instance name is t
 
 ## __--instance-type=type__
 
-The virtual machine type in terms of storage space, memory size, etc. By default this is set to __Small__ which is the least powerful machine one can get. For more information which types are provided by Microsoft Azure please look at __https://azure.microsoft.com/en-us/documentation/articles/virtual-machines-size-specs/__
+The virtual machine type in terms of storage space, memory size, etc. By default this is set to __Small__ which is the least powerful machine one can get. For more information which types are provided by Microsoft call: __azurectl compute vm types__
 
 ## __--label=label__
 
