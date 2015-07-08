@@ -69,7 +69,8 @@ class TestComputeVmTask:
         self.task.account.instance_types.assert_called_once_with()
 
     @patch('azurectl.compute_vm_task.DataOutput')
-    def test_process_compute_vm_create(self, mock_out):
+    @patch('azurectl.request_result.RequestResult.wait_for_request_completion')
+    def test_process_compute_vm_create(self, mock_wait_completion, mock_out):
         self.__init_command_args()
         self.task.command_args['create'] = True
         self.task.process()
@@ -77,7 +78,9 @@ class TestComputeVmTask:
             self.task.command_args['--cloud-service-name'],
             self.task.command_args['--region']
         )
-        self.task.cloud_service.wait_for_request_completion.assert_called_once_with(42)
+        mock_wait_completion.assert_called_once_with(
+            self.task.cloud_service
+        )
         self.task.vm.create_instance.assert_called_once_with(
             self.task.command_args['--cloud-service-name'],
             self.task.command_args['--region'],
@@ -90,7 +93,10 @@ class TestComputeVmTask:
         )
 
     @patch('azurectl.compute_vm_task.DataOutput')
-    def test_process_compute_vm_create_with_fingerprint(self, mock_out):
+    @patch('azurectl.request_result.RequestResult.wait_for_request_completion')
+    def test_process_compute_vm_create_with_fingerprint(
+        self, mock_wait_completion, mock_out
+    ):
         self.task.command_args['--fingerprint'] = 'foo'
         self.task.command_args['create'] = True
         self.task.process()

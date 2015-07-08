@@ -83,6 +83,7 @@ from logger import log
 from azurectl_exceptions import *
 from virtual_machine import VirtualMachine
 from cloud_service import CloudService
+from request_result import RequestResult
 from help import Help
 
 
@@ -168,8 +169,9 @@ class ComputeVmTask(CliTask):
             # for the cloud service to become created. Basically we try
             # to prevent blocking, thus this is an exception to other
             # requests
-            self.cloud_service.wait_for_request_completion(
-                cloud_service_request_id
+            request_result = RequestResult(cloud_service_request_id)
+            request_result.wait_for_request_completion(
+                self.cloud_service
             )
 
     def __delete_cloud_service(self):

@@ -41,10 +41,6 @@ class AzureCloudServiceOpenSSLError(AzureError):
     pass
 
 
-class AzureCloudServiceStatusError(AzureError):
-    pass
-
-
 class AzureConfigPublishSettingsError(AzureError):
     pass
 
@@ -178,6 +174,10 @@ class AzureRequestTimeout(AzureError):
 
 
 class AzureRequestError(AzureError):
+    pass
+
+
+class AzureRequestStatusError(AzureError):
     pass
 
 

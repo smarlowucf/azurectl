@@ -13,7 +13,6 @@
 #
 import base64
 import subprocess
-import time
 from tempfile import NamedTemporaryFile
 from azure.servicemanagement import ServiceManagementService
 from azure import WindowsAzureConflictError
@@ -42,10 +41,6 @@ class CloudService:
             self.publishsettings.subscription_id,
             self.cert_file.name
         )
-
-        # set request timeout to 300s (5min)
-        self.request_timeout_count = 60
-        self.request_timeout = 5
 
     def get_pem_certificate(self, ssh_private_key_file):
         """
@@ -175,40 +170,4 @@ class CloudService:
         except Exception as e:
             raise AzureCloudServiceDeleteError(
                 '%s: %s' % (type(e).__name__, format(e))
-            )
-
-    def status(self, request_id):
-        """
-            query status for given request id
-        """
-        try:
-            result = self.service.get_operation_status(request_id)
-            return result
-        except Exception as e:
-            raise AzureCloudServiceStatusError(
-                '%s: %s' % (type(e).__name__, format(e))
-            )
-
-    def wait_for_request_completion(self, request_id):
-        """
-            poll on status, waiting for success until timeout
-        """
-        count = 0
-        result = self.status(request_id)
-        while result.status == 'InProgress':
-            count = count + 1
-            if count > self.request_timeout_count:
-                raise AzureRequestTimeout(
-                    'Operation %s timed out' % request_id
-                )
-            time.sleep(self.request_timeout)
-            result = self.status(request_id)
-
-        if result.status != 'Succeeded':
-            raise AzureRequestError(
-                'Operation %s failed. %s (%s)' % (
-                    request_id,
-                    format(result.error.message),
-                    format(result.error.code)
-                )
             )
