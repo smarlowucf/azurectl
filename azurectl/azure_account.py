@@ -44,6 +44,25 @@ class AzureAccount:
         account_keys = self.service.get_storage_account_keys(name)
         return account_keys.storage_service_keys.primary
 
+    def instance_types(self):
+        self.__get_service()
+        result = []
+        for rolesize in self.service.list_role_sizes():
+            memory = rolesize.memory_in_mb
+            cores = rolesize.cores
+            disks = rolesize.max_data_disk_count
+            size = rolesize.virtual_machine_resource_disk_size_in_mb
+            instance_type = {
+                rolesize.name: {
+                    'memory': format(memory) + 'MB',
+                    'cores': cores,
+                    'max_disk_count': disks,
+                    'disk_size': format(size) + 'MB'
+                }
+            }
+            result.append(instance_type)
+        return result
+
     def storage_names(self):
         self.__get_service()
         result = []

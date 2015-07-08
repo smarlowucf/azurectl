@@ -24,6 +24,7 @@ usage: azurectl compute vm -h | --help
            [--user=<user>]
        azurectl compute vm delete --cloud-service-name=<name>
            [--instance-name=<name>]
+       azurectl compute vm types
        azurectl compute vm help
 
 commands:
@@ -33,6 +34,8 @@ commands:
         delete a virtual machine instance. If no instance name is
         specified, the cloud service and all its associated instances
         will be deleted
+    types
+        list available virtual machine types
     --cloud-service-name=<name>
         name of the cloud service to put the virtual machine in.
         if the cloud service does not exist it will be created
@@ -101,9 +104,9 @@ class ComputeVmTask(CliTask):
             self.global_args['--output-style']
         )
 
-        account = AzureAccount(self.account_name, self.config_file)
-        self.vm = VirtualMachine(account)
-        self.cloud_service = CloudService(account)
+        self.account = AzureAccount(self.account_name, self.config_file)
+        self.vm = VirtualMachine(self.account)
+        self.cloud_service = CloudService(self.account)
         if self.command_args['create']:
             self.__create_cloud_service()
             self.__create_instance()
@@ -112,6 +115,8 @@ class ComputeVmTask(CliTask):
                 self.__delete_instance()
             else:
                 self.__delete_cloud_service()
+        elif self.command_args['types']:
+            self.__list_instance_types()
 
     def __help(self):
         if self.command_args['help']:
@@ -119,6 +124,10 @@ class ComputeVmTask(CliTask):
         else:
             return False
         return self.manual
+
+    def __list_instance_types(self):
+        self.result.add('instance-types', self.account.instance_types())
+        self.out.display()
 
     def __create_instance(self):
         instance_type = self.command_args['--instance-type']

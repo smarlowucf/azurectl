@@ -38,6 +38,9 @@ class TestComputeVmTask:
         azurectl.compute_vm_task.Help = mock.Mock(
             return_value=mock.Mock()
         )
+        azurectl.compute_vm_task.AzureAccount = mock.Mock(
+            return_value=mock.Mock()
+        )
 
     def __init_command_args(self):
         self.task.command_args = {}
@@ -55,7 +58,15 @@ class TestComputeVmTask:
         self.task.command_args['--user'] = None
         self.task.command_args['create'] = False
         self.task.command_args['delete'] = False
+        self.task.command_args['types'] = False
         self.task.command_args['help'] = False
+
+    @patch('azurectl.compute_vm_task.DataOutput')
+    def test_process_compute_vm_types(self, mock_out):
+        self.__init_command_args()
+        self.task.command_args['types'] = True
+        self.task.process()
+        self.task.account.instance_types.assert_called_once_with()
 
     @patch('azurectl.compute_vm_task.DataOutput')
     def test_process_compute_vm_create(self, mock_out):

@@ -135,3 +135,32 @@ class TestAzureAccount:
         # calling again and see if the same ServiceManagementService is used
         self.account.storage_names()
         assert service == self.account.service
+
+    @patch('azurectl.azure_account.ServiceManagementService.list_role_sizes')
+    def test_instance_types(self, mock_service):
+        self.account.publishsettings = mock.Mock(
+            return_value=self.publishsettings
+        )
+        service_result = []
+        names = namedtuple(
+            'names',
+            'name memory_in_mb cores max_data_disk_count \
+             virtual_machine_resource_disk_size_in_mb'
+        )
+        service_result.append(names(
+            name='foo',
+            memory_in_mb=1,
+            cores=2,
+            max_data_disk_count=3,
+            virtual_machine_resource_disk_size_in_mb=4
+        ))
+        mock_service.return_value = service_result
+        x = self.account.instance_types()
+        assert self.account.instance_types() == [
+            {'foo': {
+                'cores': 2,
+                'max_disk_count': 3,
+                'disk_size': '4MB',
+                'memory': '1MB'
+            }}
+        ]
