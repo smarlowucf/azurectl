@@ -20,7 +20,11 @@ class LoggerSchedulerFilter(logging.Filter):
     def filter(self, record):
         # messages from apscheduler scheduler instances are filtered out
         # they conflict with console progress information
-        return not record.name == 'apscheduler.scheduler'
+        ignorables = [
+            'apscheduler.scheduler',
+            'apscheduler.executors.default'
+        ]
+        return record.name not in ignorables
 
 
 class InfoFilter(logging.Filter):

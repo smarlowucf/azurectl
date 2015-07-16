@@ -16,8 +16,15 @@ class TestLoggerSchedulerFilter:
             'MyRecord',
             'name'
         )
-        record = MyRecord(name='apscheduler.scheduler')
-        assert self.scheduler_filter.filter(record) == False
+
+        ignorables = [
+            'apscheduler.scheduler',
+            'apscheduler.executors.default'
+        ]
+
+        for ignorable in ignorables:
+            record = MyRecord(name=ignorable)
+            assert self.scheduler_filter.filter(record) == False
 
 
 class TestInfoFilter:
