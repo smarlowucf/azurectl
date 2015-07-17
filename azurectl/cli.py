@@ -22,11 +22,11 @@ usage: azurectl -h | --help
                 [--output-format=<format>]
                 [--output-style=<style>]
            compute <command> [<args>...]
-       azurectl --version
+       azurectl -v | --version
        azurectl help
 
 global options:
-    --version
+    -v --version
         show program version
     --config=<file>
         config file, default is: ~/.azurectl/config
