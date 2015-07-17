@@ -44,7 +44,13 @@ class AppHash:
                 if not line:
                     begin = False
                 else:
-                    if re.match('.*azurectl \[', line):
+                    if re.match('.*--version', line):
+                        mod_line = re.sub('[\[\]\|]', '', line)
+                        mod_line = re.sub('-v ', '', mod_line)
+                        key_list = mod_line.split()
+                        result_keys = self.validate(key_list)
+                        cur_path = self.merge(result_keys, self.result)
+                    elif re.match('.*azurectl \[', line):
                         key_list = line.split()
                         key_list.pop(0)
                         for global_opt in key_list:
