@@ -6,9 +6,9 @@ python:
   - "2.7"
 
 install:
-# The azure SDK is currently taken from a development branch
-# Once our PR (https://github.com/Azure/azure-sdk-for-python/pull/394)
-# is merged in master we can use azure from pip again
+# The azure SDK is currently taken from the development branch (dev)
+# We can switch using azure from pip once Microsoft has released
+# the new version which is planned to happen in August 2015
 #
 #  - "pip install azure"
 #
@@ -20,5 +20,6 @@ install:
   - "pip install pyliblzma"
   - "pip install coverage"
   - "pip install pyOpenSSL"
+  - "pip install requests"
 
 script: ./.travis.script

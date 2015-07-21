@@ -13,7 +13,7 @@
 #
 import datetime
 
-from azure.files import FilesService
+from azure.storage.file import FileService
 
 # project
 from azurectl_exceptions import *
@@ -26,7 +26,7 @@ class FileShare:
     def __init__(self, account):
         self.account_name = account.storage_name()
         self.account_key = account.storage_key()
-        self.files = FilesService(
+        self.files = FileService(
             self.account_name, self.account_key
         )
 

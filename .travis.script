@@ -4,7 +4,7 @@
 git clone https://github.com/schaefi/azure-sdk-for-python.git
 
 # Install specified development branch
-branch_name=azure-files-api
+branch_name=dev
 (
     cd azure-sdk-for-python
     git checkout $branch_name

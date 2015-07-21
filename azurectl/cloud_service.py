@@ -15,7 +15,7 @@ import base64
 import subprocess
 from tempfile import NamedTemporaryFile
 from azure.servicemanagement import ServiceManagementService
-from azure import WindowsAzureConflictError
+from azure.common import WindowsAzureConflictError
 
 # project
 from azurectl_exceptions import *
