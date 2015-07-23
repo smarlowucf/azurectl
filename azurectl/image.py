@@ -13,7 +13,7 @@
 #
 from tempfile import NamedTemporaryFile
 from azure.servicemanagement import ServiceManagementService
-from azure.storage import BlobService
+from azure.storage.blob import BlobService
 
 # project
 from azurectl_exceptions import *

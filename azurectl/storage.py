@@ -12,7 +12,7 @@
 # limitations under the License.
 #
 import os
-from azure.storage import BlobService
+from azure.storage.blob import BlobService
 
 # project
 from xz import XZ

@@ -18,7 +18,7 @@ from azure.servicemanagement import ConfigurationSet
 from azure.servicemanagement import PublicKey
 from azure.servicemanagement import LinuxConfigurationSet
 from azure.servicemanagement import OSVirtualHardDisk
-from azure.storage import BlobService
+from azure.storage.blob import BlobService
 
 # project
 from azurectl_exceptions import *

@@ -9,7 +9,7 @@ from azurectl.azure_account import AzureAccount
 from azurectl.azurectl_exceptions import *
 from azurectl.cloud_service import CloudService
 
-from azure import WindowsAzureConflictError
+from azure.common import WindowsAzureConflictError
 
 import azurectl
 

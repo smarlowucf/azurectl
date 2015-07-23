@@ -13,9 +13,9 @@
 #
 import datetime
 
+from azure.storage.blob import BlobService
 from azure.storage import (
     AccessPolicy,
-    BlobService,
     SharedAccessPolicy,
     SharedAccessSignature
 )
