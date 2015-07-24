@@ -178,8 +178,8 @@ class ComputeVmTask(CliTask):
             cloud_service, complete_deletion
         )
         log.info(
-            'Deletion of cloud service %s requested: %s' %
-            (format(cloud_service), format(request_id))
+            'Deletion of cloud service %s requested: %s',
+            format(cloud_service), format(request_id)
         )
 
     def __delete_instance(self):
@@ -189,8 +189,8 @@ class ComputeVmTask(CliTask):
             instance_name
         )
         log.info(
-            'Deletion of instance %s requested: %s' %
-            (format(instance_name), format(request_id))
+            'Deletion of instance %s requested: %s',
+            format(instance_name), format(request_id)
         )
 
     def __prepare_linux_configuration(self, fingerprint=u''):

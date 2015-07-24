@@ -84,7 +84,7 @@ class SetupAccountTask(CliTask):
             self.command_args['--storage-account-name'],
             self.command_args['--container-name']
         ):
-            log.info('Added Account %s' % self.command_args['--name'])
+            log.info('Added Account %s', self.command_args['--name'])
 
     def __list(self):
         account_info = self.setup.list()
@@ -98,4 +98,4 @@ class SetupAccountTask(CliTask):
         if self.setup.remove(
             self.command_args['--name']
         ):
-            log.info('Removed Account %s' % self.command_args['--name'])
+            log.info('Removed Account %s', self.command_args['--name'])

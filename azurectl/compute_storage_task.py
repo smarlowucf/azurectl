@@ -222,7 +222,7 @@ class ComputeStorageTask(CliTask):
             progress.shutdown()
             raise SystemExit('azurectl aborted by keyboard interrupt')
         print
-        log.info('Uploaded %s' % image)
+        log.info('Uploaded %s', image)
 
     def __process_upload(self):
         self.storage.upload(
@@ -234,7 +234,7 @@ class ComputeStorageTask(CliTask):
     def __delete(self):
         image = self.command_args['--name']
         self.storage.delete(image)
-        log.info('Deleted %s' % image)
+        log.info('Deleted %s', image)
 
     def __container_sas(self, container_name, start, expiry, permissions):
         self.result.add(
@@ -268,9 +268,9 @@ class ComputeStorageTask(CliTask):
     def __share_create(self):
         share_name = self.command_args['--name']
         self.fileshare.create(share_name)
-        log.info('Created Files Share %s' % share_name)
+        log.info('Created Files Share %s', share_name)
 
     def __share_delete(self):
         share_name = self.command_args['--name']
         self.fileshare.delete(share_name)
-        log.info('Deleted Files Share %s' % share_name)
+        log.info('Deleted Files Share %s', share_name)

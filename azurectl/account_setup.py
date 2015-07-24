@@ -33,7 +33,7 @@ class AccountSetup(object):
         self.filename = filename
         try:
             if os.path.isfile(filename):
-                log.info('Parsing config file: %s' % filename)
+                log.info('Parsing config file: %s', filename)
                 self.config.read(filename)
         except Exception as e:
             raise AzureConfigParseError(
@@ -57,7 +57,7 @@ class AccountSetup(object):
             remove specified account section
         """
         if not self.config.remove_section(name):
-            log.info('Section %s does not exist' % name)
+            log.info('Section %s does not exist', name)
             return False
         self.__write()
         return True
