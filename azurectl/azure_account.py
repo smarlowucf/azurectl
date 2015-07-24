@@ -36,7 +36,7 @@ from azurectl_exceptions import (
 from config import Config
 
 
-class AzureAccount:
+class AzureAccount(object):
     """
         Azure Service and Storage account handling
     """

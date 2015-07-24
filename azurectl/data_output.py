@@ -17,7 +17,7 @@ from tempfile import NamedTemporaryFile
 from logger import log
 
 
-class DataOutput:
+class DataOutput(object):
     """
         Output console data in style and format as needed
     """

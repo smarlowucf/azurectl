@@ -30,7 +30,7 @@ from azurectl_exceptions import (
 ISO8061_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
 
 
-class Container:
+class Container(object):
     """
         Information from Azure storage containers
     """

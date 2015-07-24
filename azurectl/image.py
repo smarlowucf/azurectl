@@ -24,7 +24,7 @@ from azurectl_exceptions import (
 )
 
 
-class Image:
+class Image(object):
     """
         Implements showing and creation of Azure images from a previously
         uploaded vhd disk image file

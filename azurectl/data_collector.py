@@ -13,7 +13,7 @@
 #
 
 
-class DataCollector:
+class DataCollector(object):
     """
         Collect all data to output to the user in raw and markup formats
     """

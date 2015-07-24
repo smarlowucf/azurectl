@@ -15,7 +15,7 @@
 from cli_task import CliTask
 
 
-class App:
+class App(object):
     """
         Application class to create task instances and process them
     """

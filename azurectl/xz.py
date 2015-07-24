@@ -18,7 +18,7 @@ import lzma
 from azurectl_exceptions import AzureXZError
 
 
-class XZ:
+class XZ(object):
     """
         Implements decompression of lzma compressed files
     """

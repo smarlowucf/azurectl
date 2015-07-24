@@ -27,7 +27,7 @@ from azurectl_exceptions import (
 )
 
 
-class VirtualMachine:
+class VirtualMachine(object):
     """
         Implements creation/deletion and management of virtual
         machine instances from a given image name

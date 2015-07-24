@@ -52,7 +52,7 @@ from azurectl_exceptions import (
 from version import __VERSION__
 
 
-class Cli:
+class Cli(object):
     """
         Commandline interface, global, servicename and command
         specific option handling

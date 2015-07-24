@@ -26,7 +26,7 @@ from azurectl_exceptions import (
 )
 
 
-class CloudService:
+class CloudService(object):
     """
         Implements creation/deletion and management of cloud
         services required to run virtual machine instances

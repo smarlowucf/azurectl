@@ -15,7 +15,7 @@ import re
 import subprocess
 
 
-class FileType:
+class FileType(object):
     """
         map file magic information to type methods
     """

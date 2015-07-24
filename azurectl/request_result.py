@@ -21,7 +21,7 @@ from azurectl_exceptions import (
 )
 
 
-class RequestResult:
+class RequestResult(object):
     """
         operate on azure request ID and provide methods
         to get status information as well as define operations

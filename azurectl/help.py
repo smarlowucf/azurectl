@@ -16,7 +16,7 @@ import subprocess
 from azurectl_exceptions import AzureHelpNoCommandGiven
 
 
-class Help:
+class Help(object):
     """
         Implements man page help for azurectl commands
     """

@@ -21,7 +21,7 @@ from azurectl_exceptions import (
 )
 
 
-class FileShare:
+class FileShare(object):
     """
         Information from Azure files service
     """

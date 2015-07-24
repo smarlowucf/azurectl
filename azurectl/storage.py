@@ -26,7 +26,7 @@ from filetype import FileType
 from logger import log
 
 
-class Storage:
+class Storage(object):
     """
         Implements storage operations in Azure storage containers
     """

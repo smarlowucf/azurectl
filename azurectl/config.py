@@ -25,7 +25,7 @@ from azurectl_exceptions import (
 )
 
 
-class Config:
+class Config(object):
     """
         Reading of INI style config file attributes
     """

@@ -19,7 +19,7 @@ from config import Config
 from help import Help
 
 
-class CliTask:
+class CliTask(object):
     """
         Base class for all task classes, loads the task and provides
         the interface to the command options and the account to use

@@ -24,7 +24,7 @@ from azurectl_exceptions import (
 from logger import log
 
 
-class AccountSetup:
+class AccountSetup(object):
     """
         Implements setup methods to list, add and delete account configs
     """
