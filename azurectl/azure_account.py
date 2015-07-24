@@ -13,7 +13,12 @@
 #
 from collections import namedtuple
 from xml.dom import minidom
-from OpenSSL.crypto import *
+from OpenSSL.crypto import (
+    dump_privatekey,
+    dump_certificate,
+    load_pkcs12,
+    FILETYPE_PEM
+)
 from tempfile import NamedTemporaryFile
 from azure.servicemanagement import ServiceManagementService
 import base64
