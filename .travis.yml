@@ -6,12 +6,6 @@ python:
   - "2.7"
 
 install:
-# The azure SDK is currently taken from the development branch (dev)
-# We can switch using azure from pip once Microsoft has released
-# the new version which is planned to happen in August 2015
-#
-#  - "pip install azure"
-#
   - pip install -r .requirements.txt
 
 script: ./.travis.script
