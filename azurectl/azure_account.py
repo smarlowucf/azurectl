@@ -88,7 +88,6 @@ class AzureAccount:
             'credentials',
             ['private_key', 'certificate', 'subscription_id']
         )
-        p12 = self.__read_p12()
         result = credentials(
             private_key=self.__get_private_key(),
             certificate=self.__get_certificate(),

@@ -116,7 +116,8 @@ class VirtualMachine:
             'service_name': cloud_service_name,
             'system_config': system_config,
             'os_virtual_hard_disk': instance_disk,
-            'provision_guest_agent': True
+            'provision_guest_agent': True,
+            'media_location': location
         }
         if label:
             instance_record['label'] = label

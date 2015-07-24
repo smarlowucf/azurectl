@@ -12,7 +12,6 @@
 # limitations under the License.
 #
 import logging
-import re
 import sys
 
 

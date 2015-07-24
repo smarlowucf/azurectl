@@ -70,7 +70,7 @@ class Image:
             label = name
         try:
             storage = BlobService(self.account_name, self.account_key)
-            blob_properties = storage.get_blob_properties(
+            storage.get_blob_properties(
                 container_name, blob_name
             )
         except Exception as e:

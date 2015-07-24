@@ -39,9 +39,8 @@ class Config:
         usr_config = ConfigParser.ConfigParser()
         if not os.path.isfile(filename):
             raise AzureAccountLoadFailed('no such config file %s' % filename)
-        parsed = None
         try:
-            parsed = usr_config.read(filename)
+            usr_config.read(filename)
         except Exception as e:
             raise AzureConfigParseError(
                 'Could not parse config file: "%s"\n%s' % (filename, e.message)

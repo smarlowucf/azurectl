@@ -72,8 +72,6 @@ commands:
     help
         show manual page for image command
 """
-import os
-
 # project
 from cli_task import CliTask
 from azure_account import AzureAccount
