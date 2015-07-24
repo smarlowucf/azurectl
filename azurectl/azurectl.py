@@ -29,7 +29,7 @@ def main():
         App()
     except AzureError as e:
         # known exception, log information and exit
-        logger.log.error('%s: %s' % (type(e).__name__, format(e)))
+        logger.log.error('%s: %s', type(e).__name__, format(e))
         sys.exit(1)
     except docopt.DocoptExit:
         # exception caught by docopt, results in usage message
