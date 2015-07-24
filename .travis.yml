@@ -12,14 +12,6 @@ install:
 #
 #  - "pip install azure"
 #
-#
-  - "pip install pep8"
-  - "pip install python-dateutil"
-  - "pip install docopt"
-  - "pip install APScheduler"
-  - "pip install pyliblzma"
-  - "pip install coverage"
-  - "pip install pyOpenSSL"
-  - "pip install requests"
+  - pip install -r .requirements.txt
 
 script: ./.travis.script
