@@ -1,6 +1,7 @@
 # Azure - azurectl
 
 [![Build Status](https://travis-ci.org/SUSE/azurectl.svg?branch=master)](https://travis-ci.org/SUSE/azurectl)
+[![Health Status](https://landscape.io/github/SUSE/azurectl/master/badges)](https://landscape.io/github/SUSE/azurectl)
 
 Command Line Interface to manage
 [Microsoft Azure](https://manage.windowsazure.com) services.
