@@ -43,7 +43,12 @@ import importlib
 from docopt import docopt
 
 # project
-from azurectl_exceptions import *
+from azurectl_exceptions import (
+    AzureUnknownServiceName,
+    AzureCommandNotLoaded,
+    AzureLoadCommandUndefined,
+    AzureUnknownCommand
+)
 from version import __VERSION__
 
 

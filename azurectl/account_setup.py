@@ -15,8 +15,12 @@ import ConfigParser
 import os
 
 # project
-from azurectl_exceptions import *
-from config import Config
+from azurectl_exceptions import (
+    AzureConfigParseError,
+    AzureConfigAddAccountSectionError,
+    AzureConfigPublishSettingsError,
+    AzureConfigWriteError
+)
 from logger import log
 
 

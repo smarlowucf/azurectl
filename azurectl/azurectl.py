@@ -17,7 +17,6 @@ import docopt
 # project
 import logger
 from app import App
-from azurectl_exceptions import *
 
 
 def main():

@@ -21,7 +21,10 @@ from azure.servicemanagement import OSVirtualHardDisk
 from azure.storage.blob import BlobService
 
 # project
-from azurectl_exceptions import *
+from azurectl_exceptions import (
+    AzureVmCreateError,
+    AzureVmDeleteError
+)
 
 
 class VirtualMachine:

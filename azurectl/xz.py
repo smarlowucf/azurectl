@@ -15,7 +15,7 @@ import subprocess
 import lzma
 
 # project
-from azurectl_exceptions import *
+from azurectl_exceptions import AzureXZError
 
 
 class XZ:

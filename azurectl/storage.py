@@ -16,7 +16,12 @@ from azure.storage.blob import BlobService
 
 # project
 from xz import XZ
-from azurectl_exceptions import *
+from azurectl_exceptions import (
+    AzureStorageFileNotFound,
+    AzurePageBlobAlignmentViolation,
+    AzureStorageUploadError,
+    AzureStorageDeleteError
+)
 from filetype import FileType
 from logger import log
 

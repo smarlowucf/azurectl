@@ -80,7 +80,6 @@ from azure_account import AzureAccount
 from data_collector import DataCollector
 from data_output import DataOutput
 from logger import log
-from azurectl_exceptions import *
 from virtual_machine import VirtualMachine
 from cloud_service import CloudService
 from request_result import RequestResult

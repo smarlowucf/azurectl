@@ -18,7 +18,12 @@ from azure.servicemanagement import ServiceManagementService
 from azure.common import WindowsAzureConflictError
 
 # project
-from azurectl_exceptions import *
+from azurectl_exceptions import (
+    AzureCloudServiceOpenSSLError,
+    AzureCloudServiceAddCertificateError,
+    AzureCloudServiceCreateError,
+    AzureCloudServiceDeleteError
+)
 
 
 class CloudService:

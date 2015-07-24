@@ -16,7 +16,12 @@ from azure.servicemanagement import ServiceManagementService
 from azure.storage.blob import BlobService
 
 # project
-from azurectl_exceptions import *
+from azurectl_exceptions import (
+    AzureOsImageListError,
+    AzureBlobServicePropertyError,
+    AzureOsImageCreateError,
+    AzureOsImageDeleteError
+)
 
 
 class Image:

@@ -93,7 +93,7 @@ from azure_account import AzureAccount
 from data_collector import DataCollector
 from data_output import DataOutput
 from logger import log
-from azurectl_exceptions import *
+from azurectl_exceptions import AzureInvalidCommand
 from storage import Storage
 from container import Container
 from fileshare import FileShare

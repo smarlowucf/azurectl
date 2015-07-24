@@ -11,10 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from cli import Cli
-
 # project
-from azurectl_exceptions import *
 from cli_task import CliTask
 
 
