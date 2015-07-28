@@ -9,8 +9,6 @@ from azurectl.azure_account import AzureAccount
 from azurectl.azurectl_exceptions import *
 from azurectl.cloud_service import CloudService
 
-from azure.common import WindowsAzureConflictError
-
 import azurectl
 
 from collections import namedtuple
@@ -163,8 +161,11 @@ class TestCloudService:
         self.service.add_certificate('cloud-service', '../data/id_test')
 
     @patch('azurectl.cloud_service.ServiceManagementService.create_hosted_service')
-    def test_create(self, mock_create_service):
+    @patch('azurectl.cloud_service.ServiceManagementService.get_hosted_service_properties')
+    def test_create(self, mock_get_service, mock_create_service):
+        mock_get_service.side_effect = AzureError('does-not-exist')
         self.service.create('cloud-service', 'region', 'my-cloud', 'label')
+        mock_get_service.assert_called_once_with('cloud-service')
         mock_create_service.assert_called_once_with(
             service_name='cloud-service',
             description='my-cloud',
@@ -188,10 +189,8 @@ class TestCloudService:
         self.service.create('cloud-service', 'region', 'my-cloud', 'label')
 
     @patch('azurectl.cloud_service.ServiceManagementService.create_hosted_service')
-    def test_create_service_exists(self, mock_create_service):
-        mock_create_service.side_effect = WindowsAzureConflictError(
-            'something-went-wrong'
-        )
+    @patch('azurectl.cloud_service.ServiceManagementService.get_hosted_service_properties')
+    def test_create_service_exists(self, mock_get_service, mock_create_service):
         request_id = self.service.create(
             'cloud-service', 'region', 'my-cloud', 'label'
         )

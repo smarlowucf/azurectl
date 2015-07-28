@@ -15,7 +15,6 @@ import base64
 import subprocess
 from tempfile import NamedTemporaryFile
 from azure.servicemanagement import ServiceManagementService
-from azure.common import WindowsAzureConflictError
 
 # project
 from azurectl_exceptions import (
@@ -151,11 +150,17 @@ class CloudService(object):
         if label:
             service_record['label'] = label
         try:
-            result = self.service.create_hosted_service(**service_record)
-            return (result.request_id)
-        except WindowsAzureConflictError:
+            self.service.get_hosted_service_properties(
+                cloud_service_name
+            )
             # Cloud service already exists, return request id: 0
             return 0
+        except Exception:
+            # Cloud service does not exist, continue creating a new one
+            pass
+        try:
+            result = self.service.create_hosted_service(**service_record)
+            return (result.request_id)
         except Exception as e:
             raise AzureCloudServiceCreateError(
                 '%s: %s' % (type(e).__name__, format(e))
