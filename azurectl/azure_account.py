@@ -140,7 +140,7 @@ class AzureAccount(object):
         subscriptions = xml.getElementsByTagName('Subscription')
         try:
             return subscriptions[0].attributes['Id'].value
-        except:
+        except Exception:
             raise AzureSubscriptionIdNotFound(
                 'No Subscription.Id found in %s' % self.settings
             )
@@ -159,7 +159,7 @@ class AzureAccount(object):
         try:
             profile = xml.getElementsByTagName('Subscription')
             cert = profile[0].attributes['ManagementCertificate'].value
-        except:
+        except Exception:
             raise AzureManagementCertificateNotFound(
                 'No PublishProfile.ManagementCertificate found in %s' %
                 self.settings

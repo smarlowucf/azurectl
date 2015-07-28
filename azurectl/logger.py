@@ -62,7 +62,7 @@ class Logger(logging.Logger):
     def progress(self, current, total, prefix, bar_length=40):
         try:
             percent = float(current) / total
-        except:
+        except Exception:
             # we don't want the progress to raise an exception
             # In case of any error e.g division by zero the current
             # way out is to skip the progress update

@@ -55,7 +55,7 @@ class Config(object):
         result = ''
         try:
             result = self.config.get(self.account_name, option)
-        except:
+        except Exception:
             raise AzureAccountValueNotFound(
                 "%s not defined for account %s" % (option, self.account_name)
             )

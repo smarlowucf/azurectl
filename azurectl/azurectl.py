@@ -37,7 +37,7 @@ def main():
     except SystemExit:
         # user exception, program aborted by user
         sys.exit(1)
-    except:
+    except Exception:
         # exception we did no expect, show python backtrace
         logger.log.error('Unexpected error:')
         raise
