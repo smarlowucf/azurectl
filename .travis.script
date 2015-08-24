@@ -2,13 +2,19 @@
 
 # Clone Azure SDK development fork on github
 git clone https://github.com/schaefi/azure-sdk-for-python.git
+git clone https://github.com/schaefi/azure-storage-python.git
 
-# Install specified development branch
-branch_name=dev
+# Install specified branch
+branch_name=master
 (
     cd azure-sdk-for-python
     git checkout $branch_name
-
+    python setup.py build
+    python setup.py install
+)
+(
+    cd azure-storage-python
+    git checkout $branch_name
     python setup.py build
     python setup.py install
 )
