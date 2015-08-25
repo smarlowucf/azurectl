@@ -54,7 +54,12 @@ class AzureAccount(object):
         self.__get_service()
         if not name:
             name = self.storage_name()
-        account_keys = self.service.get_storage_account_keys(name)
+        try:
+            account_keys = self.service.get_storage_account_keys(name)
+        except Exception as e:
+            raise AzureServiceManagementError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
         return account_keys.storage_service_keys.primary
 
     def instance_types(self):

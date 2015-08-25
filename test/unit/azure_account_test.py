@@ -105,7 +105,7 @@ class TestAzureAccount:
         assert self.account.publishsettings() == self.publishsettings
 
     @patch('azurectl.azure_account.ServiceManagementService.get_storage_account_keys')
-    def test_storage_key(self, mock_service):
+    def test_storage_key(self, mock_get_keys):
         self.account.publishsettings = mock.Mock(
             return_value=self.publishsettings
         )
@@ -115,9 +115,18 @@ class TestAzureAccount:
         keys = namedtuple(
             'storage_service_keys', 'storage_service_keys'
         )
-        service_result = keys(storage_service_keys=primary(primary='foo'))
-        mock_service.return_value = service_result
+        get_keys_result = keys(storage_service_keys=primary(primary='foo'))
+        mock_get_keys.return_value = get_keys_result
         assert self.account.storage_key() == 'foo'
+
+    @raises(AzureServiceManagementError)
+    @patch('azurectl.azure_account.ServiceManagementService.get_storage_account_keys')
+    def test_storage_key_error(self, mock_get_keys):
+        self.account.publishsettings = mock.Mock(
+            return_value=self.publishsettings
+        )
+        mock_get_keys.side_effect = AzureServiceManagementError
+        self.account.storage_key()
 
     @patch('azurectl.azure_account.ServiceManagementService.list_storage_accounts')
     def test_storage_names(self, mock_service):
