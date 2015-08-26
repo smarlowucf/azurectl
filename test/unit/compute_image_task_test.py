@@ -32,9 +32,12 @@ class TestComputeImageTask:
         self.task.command_args['delete'] = False
         self.task.command_args['replicate'] = False
         self.task.command_args['unreplicate'] = False
+        self.task.command_args['publish'] = False
         self.task.command_args['--offer'] = 'offer'
         self.task.command_args['--regions'] = 'a,b,c'
         self.task.command_args['--sku'] = 'sku'
+        self.task.command_args['--private'] = False
+        self.task.command_args['--msdn'] = False
         self.task.command_args['--image-version'] = '1.0.0'
         self.task.command_args['--delete-disk'] = False
         self.task.command_args['--container'] = 'container'
@@ -99,4 +102,33 @@ class TestComputeImageTask:
         self.task.process()
         self.task.image.unreplicate.assert_called_once_with(
             self.task.command_args['--name']
+        )
+
+    @patch('azurectl.compute_image_task.DataOutput')
+    def test_process_compute_image_publish_public(self, mock_out):
+        self.__init_command_args()
+        self.task.command_args['publish'] = True
+        self.task.process()
+        self.task.image.publish.assert_called_once_with(
+            self.task.command_args['--name'], 'public'
+        )
+
+    @patch('azurectl.compute_image_task.DataOutput')
+    def test_process_compute_image_publish_private(self, mock_out):
+        self.__init_command_args()
+        self.task.command_args['publish'] = True
+        self.task.command_args['--private'] = True
+        self.task.process()
+        self.task.image.publish.assert_called_once_with(
+            self.task.command_args['--name'], 'private'
+        )
+
+    @patch('azurectl.compute_image_task.DataOutput')
+    def test_process_compute_image_publish_msdn(self, mock_out):
+        self.__init_command_args()
+        self.task.command_args['publish'] = True
+        self.task.command_args['--msdn'] = True
+        self.task.process()
+        self.task.image.publish.assert_called_once_with(
+            self.task.command_args['--name'], 'msdn'
         )

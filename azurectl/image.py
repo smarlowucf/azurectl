@@ -23,7 +23,8 @@ from azurectl_exceptions import (
     AzureOsImageCreateError,
     AzureOsImageDeleteError,
     AzureOsImageReplicateError,
-    AzureOsImageUnReplicateError
+    AzureOsImageUnReplicateError,
+    AzureOsImagePublishError
 )
 
 
@@ -34,6 +35,7 @@ class Image(object):
         + creation and deletion of VM images
         + replication of VM images to multiple regions
         + listing VM images
+        + publish VM images
     """
     def __init__(self, account):
         self.account = account
@@ -145,5 +147,18 @@ class Image(object):
             return(result.request_id)
         except Exception as e:
             raise AzureOsImageUnReplicateError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
+
+    def publish(self, name, permission):
+        service = ComputeManagementService(
+            self.publishsettings.subscription_id,
+            self.cert_file.name
+        )
+        try:
+            result = service.share(name, permission)
+            return(result.request_id)
+        except Exception as e:
+            raise AzureOsImagePublishError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
