@@ -30,6 +30,12 @@ class TestComputeImageTask:
         self.task.command_args['help'] = False
         self.task.command_args['create'] = False
         self.task.command_args['delete'] = False
+        self.task.command_args['replicate'] = False
+        self.task.command_args['unreplicate'] = False
+        self.task.command_args['--offer'] = 'offer'
+        self.task.command_args['--regions'] = 'a,b,c'
+        self.task.command_args['--sku'] = 'sku'
+        self.task.command_args['--image-version'] = '1.0.0'
         self.task.command_args['--delete-disk'] = False
         self.task.command_args['--container'] = 'container'
         self.task.command_args['--label'] = 'label'
@@ -71,4 +77,26 @@ class TestComputeImageTask:
         self.task.process()
         self.task.manual.show.assert_called_once_with(
             'azurectl::compute::image'
+        )
+
+    @patch('azurectl.compute_image_task.DataOutput')
+    def test_process_compute_image_replicate(self, mock_out):
+        self.__init_command_args()
+        self.task.command_args['replicate'] = True
+        self.task.process()
+        self.task.image.replicate.assert_called_once_with(
+            self.task.command_args['--name'],
+            self.task.command_args['--regions'].split(','),
+            self.task.command_args['--offer'],
+            self.task.command_args['--sku'],
+            self.task.command_args['--image-version']
+        )
+
+    @patch('azurectl.compute_image_task.DataOutput')
+    def test_process_compute_image_unreplicate(self, mock_out):
+        self.__init_command_args()
+        self.task.command_args['unreplicate'] = True
+        self.task.process()
+        self.task.image.unreplicate.assert_called_once_with(
+            self.task.command_args['--name']
         )

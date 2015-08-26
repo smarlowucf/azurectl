@@ -98,3 +98,37 @@ class TestImage:
     @raises(AzureOsImageDeleteError)
     def test_delete_raise_os_delete_error(self):
         self.image.delete('some-name')
+
+    @patch('azurectl.image.ComputeManagementService.replicate')
+    def test_replicate(self, mock_replicate):
+        mock_replicate.return_value = self.myrequest
+        request_id = self.image.replicate(
+            'some-name', ['a', 'b', 'c'], 'offer', 'sku', 'version'
+        )
+        assert request_id == 42
+        mock_replicate.assert_called_once_with(
+            'some-name', ['a', 'b', 'c'], 'offer', 'sku', 'version'
+        )
+
+    @patch('azurectl.image.ComputeManagementService.unreplicate')
+    def test_unreplicate(self, mock_unreplicate):
+        mock_unreplicate.return_value = self.myrequest
+        request_id = self.image.unreplicate('some-name')
+        assert request_id == 42
+        mock_unreplicate.assert_called_once_with(
+            'some-name'
+        )
+
+    @raises(AzureOsImageReplicateError)
+    @patch('azurectl.image.ComputeManagementService.replicate')
+    def test_replicate_raises_error(self, mock_replicate):
+        mock_replicate.side_effect = AzureOsImageReplicateError
+        self.image.replicate(
+            'some-name', 'some-regions', 'offer', 'sku', 'version'
+        )
+
+    @raises(AzureOsImageUnReplicateError)
+    @patch('azurectl.image.ComputeManagementService.unreplicate')
+    def test_unreplicate_raises_error(self, mock_unreplicate):
+        mock_unreplicate.side_effect = AzureOsImageUnReplicateError
+        self.image.unreplicate('some-name')
