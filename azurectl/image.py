@@ -13,6 +13,7 @@
 #
 from tempfile import NamedTemporaryFile
 from azure.servicemanagement import ServiceManagementService
+from azure.servicemanagement import ComputeManagementService
 from azure.storage.blob import BlobService
 
 # project
@@ -20,14 +21,19 @@ from azurectl_exceptions import (
     AzureOsImageListError,
     AzureBlobServicePropertyError,
     AzureOsImageCreateError,
-    AzureOsImageDeleteError
+    AzureOsImageDeleteError,
+    AzureOsImageReplicateError,
+    AzureOsImageUnReplicateError
 )
 
 
 class Image(object):
     """
-        Implements showing and creation of Azure images from a previously
-        uploaded vhd disk image file
+        Implements Azure image management from a previously uploaded
+        vhd disk image file. This includes the following task
+        + creation and deletion of VM images
+        + replication of VM images to multiple regions
+        + listing VM images
     """
     def __init__(self, account):
         self.account = account
@@ -104,5 +110,40 @@ class Image(object):
             return(result.request_id)
         except Exception as e:
             raise AzureOsImageDeleteError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
+
+    def replicate(self, name, regions, offer, sku, version):
+        '''
+        Note: The regions are not additive. If a VM Image has already
+        been replicated to Regions A, B, and C, and a request is made
+        to replicate to Regions A and D, the VM Image will remain in
+        Region A, will be replicated in Region D, and will be
+        unreplicated from Regions B and C
+        '''
+        service = ComputeManagementService(
+            self.publishsettings.subscription_id,
+            self.cert_file.name
+        )
+        try:
+            result = service.replicate(
+                name, regions, offer, sku, version
+            )
+            return(result.request_id)
+        except Exception as e:
+            raise AzureOsImageReplicateError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
+
+    def unreplicate(self, name):
+        service = ComputeManagementService(
+            self.publishsettings.subscription_id,
+            self.cert_file.name
+        )
+        try:
+            result = service.unreplicate(name)
+            return(result.request_id)
+        except Exception as e:
+            raise AzureOsImageUnReplicateError(
                 '%s: %s' % (type(e).__name__, format(e))
             )

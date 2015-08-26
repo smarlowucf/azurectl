@@ -19,6 +19,8 @@ usage: azurectl compute image -h | --help
            [--label=<imagelabel>]
        azurectl compute image delete --name=<imagename>
            [--delete-disk]
+       azurectl compute image replicate --name=<imagename> --regions=<regionlist> --offer=<offer> --sku=<sku> --image-version=<version>
+       azurectl compute image unreplicate --name=<imagename>
        azurectl compute image help
 
 commands:
@@ -36,6 +38,14 @@ commands:
         image name on create
     --blob=<blobname>
         filename of disk image as it is stored on the blob storage
+    --regions=<regionlist>
+        comma separated list of region names
+    --offer=<offer>
+        name of the offer
+    --sku=<sku>
+        name of the sku
+    --image-version=<version>
+        semantic version of the image
     help
         show manual page for image command
 """
@@ -72,6 +82,10 @@ class ComputeImageTask(CliTask):
             self.__create()
         elif self.command_args['delete']:
             self.__delete()
+        elif self.command_args['replicate']:
+            self.__replicate()
+        elif self.command_args['unreplicate']:
+            self.__unreplicate()
 
     def __help(self):
         if self.command_args['help']:
@@ -104,4 +118,27 @@ class ComputeImageTask(CliTask):
 
     def __list(self):
         self.result.add('images', self.image.list())
+        self.out.display()
+
+    def __replicate(self):
+        self.result.add(
+            'replicate:' +
+            self.command_args['--name'] + ':' + self.command_args['--regions'],
+            self.image.replicate(
+                self.command_args['--name'],
+                self.command_args['--regions'].split(','),
+                self.command_args['--offer'],
+                self.command_args['--sku'],
+                self.command_args['--image-version']
+            )
+        )
+        self.out.display()
+
+    def __unreplicate(self):
+        self.result.add(
+            'unreplicate:' + self.command_args['--name'],
+            self.image.unreplicate(
+                self.command_args['--name']
+            )
+        )
         self.out.display()

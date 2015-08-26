@@ -77,6 +77,14 @@ class AzureOsImageDeleteError(AzureError):
     pass
 
 
+class AzureOsImageReplicateError(AzureError):
+    pass
+
+
+class AzureOsImageUnReplicateError(AzureError):
+    pass
+
+
 class AzureConfigParseError(AzureError):
     pass
 
