@@ -16,7 +16,8 @@ config = {
         'docopt==0.6.2',
         'APScheduler==3.0.2',
         'pyliblzma==0.5.3',
-        'azure==0.20.0',
+        'azure_storage==0.20.0',
+        'azure_servicemanagement_legacy==0.20.0',
         'python-dateutil==2.1'
     ],
     'packages': ['azurectl'],
