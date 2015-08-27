@@ -21,6 +21,9 @@ usage: azurectl compute image -h | --help
            [--delete-disk]
        azurectl compute image replicate --name=<imagename> --regions=<regionlist> --offer=<offer> --sku=<sku> --image-version=<version>
        azurectl compute image unreplicate --name=<imagename>
+       azurectl compute image publish --name=<imagename>
+           [--private]
+           [--msdn]
        azurectl compute image help
 
 commands:
@@ -46,6 +49,10 @@ commands:
         name of the sku
     --image-version=<version>
         semantic version of the image
+    --private
+        restrict publish scope to be private
+    --msdn
+        restrict publish scope to the Microsoft Developer Network
     help
         show manual page for image command
 """
@@ -86,6 +93,8 @@ class ComputeImageTask(CliTask):
             self.__replicate()
         elif self.command_args['unreplicate']:
             self.__unreplicate()
+        elif self.command_args['publish']:
+            self.__publish()
 
     def __help(self):
         if self.command_args['help']:
@@ -139,6 +148,21 @@ class ComputeImageTask(CliTask):
             'unreplicate:' + self.command_args['--name'],
             self.image.unreplicate(
                 self.command_args['--name']
+            )
+        )
+        self.out.display()
+
+    def __publish(self):
+        scope = 'public'
+        if self.command_args['--private']:
+            scope = 'private'
+        elif self.command_args['--msdn']:
+            scope = 'msdn'
+        self.result.add(
+            'publish:' + self.command_args['--name'],
+            self.image.publish(
+                self.command_args['--name'],
+                scope
             )
         )
         self.out.display()

@@ -119,6 +119,15 @@ class TestImage:
             'some-name'
         )
 
+    @patch('azurectl.image.ComputeManagementService.share')
+    def test_publish(self, mock_publish):
+        mock_publish.return_value = self.myrequest
+        request_id = self.image.publish('some-name', 'public')
+        assert request_id == 42
+        mock_publish.assert_called_once_with(
+            'some-name', 'public'
+        )
+
     @raises(AzureOsImageReplicateError)
     @patch('azurectl.image.ComputeManagementService.replicate')
     def test_replicate_raises_error(self, mock_replicate):
@@ -132,3 +141,9 @@ class TestImage:
     def test_unreplicate_raises_error(self, mock_unreplicate):
         mock_unreplicate.side_effect = AzureOsImageUnReplicateError
         self.image.unreplicate('some-name')
+
+    @raises(AzureOsImagePublishError)
+    @patch('azurectl.image.ComputeManagementService.share')
+    def test_publish_raises_error(self, mock_publish):
+        mock_publish.side_effect = AzureOsImagePublishError
+        self.image.publish('some-name', 'public')

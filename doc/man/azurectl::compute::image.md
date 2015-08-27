@@ -15,6 +15,11 @@ __azurectl__ compute image replicate --name=*imagename* --regions=*regionlist* -
 
 __azurectl__ compute image unreplicate --name=*imagename*
 
+__azurectl__ compute image publish --name=*imagename*
+
+    [--private]
+    [--msdn]
+
 # DESCRIPTION
 
 ## __list__
@@ -32,6 +37,12 @@ Replicate a VM image to multiple target locations. This operation is only for pu
 ## __unreplicate__
 
 Unreplicate a VM image from all regions. Like with replication this operation is only for publishers.
+
+## __publish__
+
+Publicly share an already replicated VM image. This operation is only for
+publishers. You have to be registered as image publisher with Windows
+Azure to be able to call this.
 
 # OPTIONS
 
@@ -66,3 +77,11 @@ Publisher meta data, specifies the name of the sku
 ## __--image-version__
 
 Publisher meta data, specifies the semantic version of the image. For details on the format see: http://semver.org. Example: 1.0.0
+
+## __--private__
+
+When publising an image this option limits the scope of the shared image to be account private
+
+## __--msdn__
+
+When publising an image this option limits the scope of the shared image to the Microsoft Developer Network

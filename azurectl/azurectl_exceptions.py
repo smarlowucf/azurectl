@@ -85,6 +85,10 @@ class AzureOsImageUnReplicateError(AzureError):
     pass
 
 
+class AzureOsImagePublishError(AzureError):
+    pass
+
+
 class AzureConfigParseError(AzureError):
     pass
 
