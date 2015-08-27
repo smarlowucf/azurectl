@@ -18,7 +18,7 @@ config = {
         'pyliblzma==0.5.3',
         'azure_storage==0.20.0',
         'azure_servicemanagement_legacy==0.20.0',
-        'python-dateutil==2.1'
+        'python-dateutil==2.4'
     ],
     'packages': ['azurectl'],
     'entry_points': {
