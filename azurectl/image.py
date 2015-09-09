@@ -106,7 +106,7 @@ class Image(object):
             self.cert_file.name
         )
         try:
-            result = service.delete_vm_image(
+            result = service.delete_os_image(
                 name, delete_disk
             )
             return(result.request_id)

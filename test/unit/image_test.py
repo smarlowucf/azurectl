@@ -84,7 +84,7 @@ class TestImage:
             'Linux'
         )
 
-    @patch('azurectl.image.ServiceManagementService.delete_vm_image')
+    @patch('azurectl.image.ServiceManagementService.delete_os_image')
     def test_delete(self, mock_add_delete_image):
         mock_add_delete_image.return_value = self.myrequest
         request_id = self.image.delete(
