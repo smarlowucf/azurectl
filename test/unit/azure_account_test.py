@@ -45,7 +45,7 @@ class TestAzureAccount:
     def test_storage_container(self):
         assert self.account.storage_container() == 'foo'
 
-    @raises(AzureSubscriptionParseError)
+    @raises(AzureSubscriptionIdNotFound)
     def test_publishsettings_missing_subscription(self):
         account_invalid = AzureAccount(
             'default', '../data/config.invalid_publishsettings_subscription'
@@ -93,7 +93,7 @@ class TestAzureAccount:
     @raises(AzureSubscriptionPKCS12DecodeError)
     def test_subscription_pkcs12_error(self):
         account_invalid = AzureAccount(
-            'default', '../data/config.missing_publishsettings_id'
+            'default', '../data/config.corrupted_p12_cert'
         )
         account_invalid.publishsettings()
 

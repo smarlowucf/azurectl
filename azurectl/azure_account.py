@@ -157,6 +157,20 @@ class AzureAccount(object):
                 'No Subscription.Id found in %s' % self.settings
             )
 
+    def __get_subscription(self, subscription_id):
+        xml = self.__read_xml()
+        subscriptions = xml.getElementsByTagName('Subscription')
+        for subscription in subscriptions:
+            if subscription.attributes['Id'].value == subscription_id:
+                return subscription
+        else:
+            raise AzureSubscriptionIdNotFound(
+                "Subscription_id '%s' not found in %s" % (
+                    subscription_id,
+                    self.settings
+                )
+            )
+
     def __read_xml(self):
         try:
             self.settings = self.config.get_option('publishsettings')
@@ -167,10 +181,9 @@ class AzureAccount(object):
             )
 
     def __read_p12(self):
-        xml = self.__read_xml()
+        subscription = self.__get_subscription(self.subscription_id())
         try:
-            profile = xml.getElementsByTagName('Subscription')
-            cert = profile[0].attributes['ManagementCertificate'].value
+            cert = subscription.attributes['ManagementCertificate'].value
         except Exception:
             raise AzureManagementCertificateNotFound(
                 'No PublishProfile.ManagementCertificate found in %s' %
