@@ -161,8 +161,13 @@ class AzureAccount(object):
         xml = self.__read_xml()
         subscriptions = xml.getElementsByTagName('Subscription')
         for subscription in subscriptions:
-            if subscription.attributes['Id'].value == subscription_id:
-                return subscription
+            try:
+                if subscription.attributes['Id'].value == subscription_id:
+                    return subscription
+            except Exception:
+                raise AzureSubscriptionIdNotFound(
+                    'No Subscription.Id found in %s' % self.settings
+                )
         else:
             raise AzureSubscriptionIdNotFound(
                 "Subscription_id '%s' not found in %s" % (

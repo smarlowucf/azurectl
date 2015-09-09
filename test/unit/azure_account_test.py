@@ -45,6 +45,20 @@ class TestAzureAccount:
     def test_storage_container(self):
         assert self.account.storage_container() == 'foo'
 
+    @raises(AzureSubscriptionParseError)
+    def test_empty_publishsettings(self):
+        account_invalid = AzureAccount(
+            'default', '../data/config.empty_publishsettings'
+        )
+        account_invalid.publishsettings()
+
+    @raises(AzureSubscriptionParseError)
+    def test_missing_publishsettings(self):
+        account_invalid = AzureAccount(
+            'default', '../data/config.missing_publishsettings'
+        )
+        account_invalid.publishsettings()
+
     @raises(AzureSubscriptionIdNotFound)
     def test_publishsettings_missing_subscription(self):
         account_invalid = AzureAccount(
@@ -81,12 +95,40 @@ class TestAzureAccount:
     @patch('azurectl.azure_account.dump_privatekey')
     @patch('azurectl.azure_account.dump_certificate')
     @patch('base64.b64decode')
-    def test_subscription_id_not_found(
+    def test_subscription_id_missing(
         self, base64_decode, mock_dump_certificate,
         mock_dump_pkey, mock_pkcs12
     ):
         account_invalid = AzureAccount(
             'default', '../data/config.missing_publishsettings_id'
+        )
+        account_invalid.publishsettings()
+
+    @raises(AzureSubscriptionIdNotFound)
+    @patch('azurectl.azure_account.load_pkcs12')
+    @patch('azurectl.azure_account.dump_privatekey')
+    @patch('azurectl.azure_account.dump_certificate')
+    @patch('base64.b64decode')
+    def test_config_subscription_id_not_found_in_publishsettings(
+        self, base64_decode, mock_dump_certificate,
+        mock_dump_pkey, mock_pkcs12
+    ):
+        account_invalid = AzureAccount(
+            'default', '../data/config.missing_set_subscription_id'
+        )
+        account_invalid.publishsettings()
+
+    @raises(AzureSubscriptionIdNotFound)
+    @patch('azurectl.azure_account.load_pkcs12')
+    @patch('azurectl.azure_account.dump_privatekey')
+    @patch('azurectl.azure_account.dump_certificate')
+    @patch('base64.b64decode')
+    def test_config_subscription_id_missing(
+        self, base64_decode, mock_dump_certificate,
+        mock_dump_pkey, mock_pkcs12
+    ):
+        account_invalid = AzureAccount(
+            'default', '../data/config.set_subscription_id_missing_id'
         )
         account_invalid.publishsettings()
 
