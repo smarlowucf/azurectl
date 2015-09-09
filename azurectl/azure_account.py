@@ -25,6 +25,7 @@ import base64
 
 # project
 from azurectl_exceptions import (
+    AzureAccountValueNotFound,
     AzureServiceManagementError,
     AzureSubscriptionPrivateKeyDecodeError,
     AzureSubscriptionCertificateDecodeError,
@@ -49,6 +50,12 @@ class AzureAccount(object):
 
     def storage_container(self):
         return self.config.get_option('storage_container_name')
+
+    def subscription_id(self):
+        try:
+            return self.config.get_option('subscription_id')
+        except AzureAccountValueNotFound as e:
+            return self.__get_subscription_id()
 
     def storage_key(self, name=None):
         self.__get_service()
@@ -96,7 +103,7 @@ class AzureAccount(object):
         result = credentials(
             private_key=self.__get_private_key(),
             certificate=self.__get_certificate(),
-            subscription_id=self.__get_subscription_id()
+            subscription_id=self.subscription_id()
         )
         return result
 

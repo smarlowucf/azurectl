@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PublishData>
+  <PublishProfile SchemaVersion="2.0">
+     <Subscription Id="first" Name="first sub" ManagementCertificate="dGVzdA=="/>
+     <Subscription Id="second" Name="second sub" ManagementCertificate="dGVzdA=="/>
+     <Subscription Id="third" Name="third sub" ManagementCertificate="dGVzdA=="/>     
+  </PublishProfile>
+</PublishData>

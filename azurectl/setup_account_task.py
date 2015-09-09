@@ -15,7 +15,7 @@
 usage: azurectl setup account -h | --help
        azurectl setup account list
        azurectl setup account remove --name=<configname>
-       azurectl setup account add --name=<configname> --publish-settings-file=<file> --storage-account-name=<storagename> --container-name=<containername>
+       azurectl setup account add --name=<configname> --publish-settings-file=<file> --storage-account-name=<storagename> --container-name=<containername> [--subscription-id=<subscriptionid>]
        azurectl setup account help
 
 commands:
@@ -33,6 +33,10 @@ commands:
         storage account name to use by default
     --container-name=<containername>
         container name for storage account to use by default
+    --subscription-id=<subscriptionid>
+        subscription id, if more than one subscription is included in your
+        publish settings file.
+
     help
         show manual page for config command
 """
@@ -82,7 +86,8 @@ class SetupAccountTask(CliTask):
             self.command_args['--name'],
             self.command_args['--publish-settings-file'],
             self.command_args['--storage-account-name'],
-            self.command_args['--container-name']
+            self.command_args['--container-name'],
+            self.command_args['--subscription-id']
         ):
             log.info('Added Account %s', self.command_args['--name'])
 

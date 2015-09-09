@@ -63,7 +63,12 @@ class AccountSetup(object):
         return True
 
     def add(
-        self, section_name, publish_settings, storage_account, storage_container
+        self,
+        section_name,
+        publish_settings,
+        storage_account,
+        storage_container,
+        subscription_id=None
     ):
         """
             add new account section
@@ -86,6 +91,10 @@ class AccountSetup(object):
         self.config.set(
             section_name, 'storage_container_name', storage_container
         )
+        if subscription_id:
+            self.config.set(
+                section_name, 'subscription_id', subscription_id
+            )
         self.__write()
         return True
 

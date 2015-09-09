@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <PublishData>
   <PublishProfile SchemaVersion="2.0">
      <Subscription Id="4711" Name="azure" ManagementCertificate="dGVzdA=="/>

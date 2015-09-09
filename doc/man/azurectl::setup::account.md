@@ -13,6 +13,7 @@ __azurectl__ setup account add --name=*configname*
     --publish-settings-file=*file*
     --storage-account-name=*storagename*
     --container-name=*containername*
+    [--subscription-id=*subscriptionid*]
 
 # DESCRIPTION
 
@@ -41,3 +42,12 @@ The name of the storage account which holds the account specific storage contain
 ## __--container-name=containername__
 
 The name of the container to use from the previously specified storage account
+
+## __--subscription-id=subscriptionid__
+
+If your Microsoft Azure account includes more than one subscription, your 
+publish setttings file will contain data about all of your subscriptions.
+Specify a __subscriptionid__ in order to select the appropriate subscription.
+
+If __subscriptionid__ is not supplied the first subscription listed in the 
+publish settings file will be selected by default.
