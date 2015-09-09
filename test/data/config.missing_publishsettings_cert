@@ -1,4 +1,4 @@
 [default]
 storage_account_name = bob
 storage_container_name = foo
-publishsettings = ../data/publishsettings_missing_cert
+publishsettings = ../data/publishsettings.missing_cert
