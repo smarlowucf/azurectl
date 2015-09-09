@@ -115,6 +115,17 @@ class TestAzureAccount:
             'default', '../data/config.multiple_subscriptions_no_id')
         assert account.publishsettings().subscription_id == 'first'
 
+    @patch('azurectl.azure_account.dump_privatekey')
+    @patch('azurectl.azure_account.dump_certificate')
+    def test_config_specifies_subscription_in_publishsettings(
+        self,
+        mock_dump_certificate,
+        mock_dump_pkey
+    ):
+        account = AzureAccount(
+            'default', '../data/config.multiple_subscriptions_set_id')
+        assert account.publishsettings().subscription_id == 'second'
+
     @patch('azurectl.azure_account.ServiceManagementService.get_storage_account_keys')
     def test_storage_key(self, mock_get_keys):
         self.account.publishsettings = mock.Mock(

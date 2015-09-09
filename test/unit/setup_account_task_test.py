@@ -34,6 +34,7 @@ class TestSetupAccountTask:
         self.task.command_args['--publish-settings-file'] = 'file'
         self.task.command_args['--storage-account-name'] = 'foo'
         self.task.command_args['--container-name'] = 'foo'
+        self.task.command_args['--subscription-id'] = False
         self.task.command_args['list'] = False
         self.task.command_args['add'] = False
         self.task.command_args['remove'] = False
@@ -65,7 +66,21 @@ class TestSetupAccountTask:
             self.task.command_args['--name'],
             self.task.command_args['--publish-settings-file'],
             self.task.command_args['--storage-account-name'],
-            self.task.command_args['--container-name']
+            self.task.command_args['--container-name'],
+            False
+        )
+
+    def test_process_setup_account_add_with_subscription_id(self):
+        self.__init_command_args()
+        self.task.command_args['add'] = True
+        self.task.command_args['--subscription-id'] = '1234'
+        self.task.process()
+        self.task.setup.add.assert_called_once_with(
+            self.task.command_args['--name'],
+            self.task.command_args['--publish-settings-file'],
+            self.task.command_args['--storage-account-name'],
+            self.task.command_args['--container-name'],
+            self.task.command_args['--subscription-id']
         )
 
     def test_process_setup_account_remove(self):
