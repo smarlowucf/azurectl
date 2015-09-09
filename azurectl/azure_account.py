@@ -55,7 +55,7 @@ class AzureAccount(object):
         try:
             return self.config.get_option('subscription_id')
         except AzureAccountValueNotFound as e:
-            return self.__get_subscription_id()
+            return self.__get_first_subscription_id()
 
     def storage_key(self, name=None):
         self.__get_service()
@@ -147,7 +147,7 @@ class AzureAccount(object):
                 '%s: %s' % (type(e).__name__, format(e))
             )
 
-    def __get_subscription_id(self):
+    def __get_first_subscription_id(self):
         xml = self.__read_xml()
         subscriptions = xml.getElementsByTagName('Subscription')
         try:
