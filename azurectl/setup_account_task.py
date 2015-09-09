@@ -15,7 +15,8 @@
 usage: azurectl setup account -h | --help
        azurectl setup account list
        azurectl setup account remove --name=<configname>
-       azurectl setup account add --name=<configname> --publish-settings-file=<file> --storage-account-name=<storagename> --container-name=<containername> [--subscription-id=<subscriptionid>]
+       azurectl setup account add --name=<configname> --publish-settings-file=<file> --storage-account-name=<storagename> --container-name=<containername>
+           [--subscription-id=<subscriptionid>]
        azurectl setup account help
 
 commands:
