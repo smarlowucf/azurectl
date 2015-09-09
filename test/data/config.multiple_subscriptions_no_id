@@ -1,0 +1,5 @@
+[default]
+storage_account_name = bob
+storage_container_name = foo
+publishsettings = ../data/publishsettings.multiple_subscriptions
+
