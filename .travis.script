@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Clone Azure SDK development fork on github
-git clone https://github.com/schaefi/azure-sdk-for-python.git
-git clone https://github.com/schaefi/azure-storage-python.git
+git clone https://github.com/SUSE/azure-sdk-for-python.git
+git clone https://github.com/SUSE/azure-storage-python.git
 
 # Install specified branch
 branch_name=compute_management_service
