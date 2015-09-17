@@ -35,13 +35,20 @@ class TestConfig:
     def test_get_option_not_found(self):
         self.config.get_option('foo')
 
+    @raises(AzureAccountLoadFailed)
+    @patch('os.path.isfile')
+    def test_no_default_config_file_found(self, mock_isfile):
+        mock_isfile.return_value = False
+        Config()
+
     @patch('os.path.isfile')
     @patch('ConfigParser.ConfigParser.has_section')
     def test_home_path_linux(self, mock_section, mock_isfile):
         mock_isfile.return_value = True
         mock_section.return_value = True
         config = Config()
-        assert config.config_file == os.environ['HOME'] + '/.azurectl/config'
+        assert config.config_file == \
+            os.environ['HOME'] + '/.config/azurectl/config'
 
     @patch('os.path.isfile')
     @patch('ConfigParser.ConfigParser.has_section')
@@ -51,8 +58,8 @@ class TestConfig:
         with patch.dict('os.environ', {'HOMEPATH': 'foo'}):
             config = Config(None, None, 'win')
             assert config.config_file == \
-                os.environ['HOMEPATH'] + '/.azurectl/config'
+                os.environ['HOMEPATH'] + '/.config/azurectl/config'
         with patch.dict('os.environ', {'UserProfile': 'foo'}):
             config = Config(None, None, 'win')
             assert config.config_file == \
-                os.environ['UserProfile'] + '/.azurectl/config'
+                os.environ['UserProfile'] + '/.config/azurectl/config'

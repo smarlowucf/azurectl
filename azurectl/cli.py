@@ -29,7 +29,7 @@ global options:
     -v --version
         show program version
     --config=<file>
-        config file, default is: ~/.azurectl/config
+        config file, default is: ~/.config/azurectl/config
     --account=<name>
         account name in config file, default is: 'default'
     --output-format=<format>

@@ -54,7 +54,10 @@ Azure image management
 
 ## __--config=file__
 
-Location of global config file, default is: __~/.azurectl/config__
+Location of global config file, default is searched in:
+
+1. __~/.config/azurectl/config__
+2. __~/.azurectl/config__
 
 ## __--account=name__
 
