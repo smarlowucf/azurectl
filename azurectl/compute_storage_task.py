@@ -116,7 +116,7 @@ class ComputeStorageTask(CliTask):
             self.global_args['--output-style']
         )
 
-        self.account = AzureAccount(self.account_name, self.config_file)
+        self.account = AzureAccount(self.config)
 
         if self.command_args['--container']:
             container_name = self.command_args['--container']

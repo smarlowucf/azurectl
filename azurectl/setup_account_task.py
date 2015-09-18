@@ -59,7 +59,7 @@ class SetupAccountTask(CliTask):
         if self.__help():
             return
 
-        self.setup = AccountSetup(self.config_file)
+        self.setup = AccountSetup(self.config.config_file)
 
         self.result = DataCollector()
         self.out = DataOutput(

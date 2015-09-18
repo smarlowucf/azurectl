@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import ConfigParser
+from ConfigParser import ConfigParser
 import os
 import sys
 
@@ -32,24 +32,45 @@ class Config(object):
     PLATFORM = sys.platform[:3]
 
     def __init__(self, account_name=None, filename=None, platform=PLATFORM):
+        from logger import log
+
+        usr_config = ConfigParser()
+        self.config_files = [
+            '.config/azurectl/config', '.azurectl/config'
+        ]
         if not account_name:
             account_name = 'default'
-        if not filename:
-            filename = self.__default_config(platform)
-        usr_config = ConfigParser.ConfigParser()
-        if not os.path.isfile(filename):
-            raise AzureAccountLoadFailed('no such config file %s' % filename)
+        if filename and not os.path.isfile(filename):
+            raise AzureAccountLoadFailed(
+                'Could not find config file: %s' % filename
+            )
+        elif filename:
+            self.config_file = filename
+        else:
+            self.config_file = self.__default_config(platform)
+            if not self.config_file:
+                raise AzureAccountLoadFailed(
+                    'could not find default configuration file %s %s: %s' %
+                    (
+                        ' or '.join(self.config_files),
+                        'in home directory',
+                        self.__home_path(platform)
+                    )
+                )
         try:
-            usr_config.read(filename)
+            log.debug('Using configuration from %s', self.config_file)
+            usr_config.read(self.config_file)
         except Exception as e:
             raise AzureConfigParseError(
-                'Could not parse config file: "%s"\n%s' % (filename, e.message)
+                'Could not parse config file: "%s"\n%s' %
+                (self.config_file, e.message)
             )
         if not usr_config.has_section(account_name):
-            raise AzureAccountNotFound("Account %s not found" % account_name)
+            raise AzureAccountNotFound(
+                'Account %s not found' % account_name
+            )
         self.config = usr_config
         self.account_name = account_name
-        self.config_file = filename
 
     def get_option(self, option):
         result = ''
@@ -61,12 +82,18 @@ class Config(object):
             )
         return result
 
-    def __default_config(self, platform):
+    def __home_path(self, platform):
         homeEnvVar = 'HOME'
         if platform == 'win':
             if 'HOMEPATH' in os.environ:
                 homeEnvVar = 'HOMEPATH'
             else:
                 homeEnvVar = 'UserProfile'
-        config_file_path = os.environ[homeEnvVar] + '/.azurectl/config'
-        return config_file_path
+        return os.environ[homeEnvVar]
+
+    def __default_config(self, platform):
+        for filename in self.config_files:
+            full_qualified_config = self.__home_path(platform) + '/' + filename
+            if os.path.isfile(full_qualified_config):
+                return full_qualified_config
+        return None

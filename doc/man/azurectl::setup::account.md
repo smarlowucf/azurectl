@@ -19,7 +19,10 @@ __azurectl__ setup account add --name=*configname*
 
 ## __list__
 
-List configured account names. If no config file is specified all commands will use the default config file __~/.azurectl/config__
+List configured account names. If no config file is specified all commands will use the default config file searched in:
+
+1. __~/.config/azurectl/config__
+2. __~/.azurectl/config__
 
 ## __remove__
 

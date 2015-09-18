@@ -34,15 +34,14 @@ from azurectl_exceptions import (
     AzureManagementCertificateNotFound,
     AzureSubscriptionPKCS12DecodeError
 )
-from config import Config
 
 
 class AzureAccount(object):
     """
         Azure Service and Storage account handling
     """
-    def __init__(self, account_name=None, filename=None):
-        self.config = Config(account_name, filename)
+    def __init__(self, config):
+        self.config = config
         self.service = None
 
     def storage_name(self):

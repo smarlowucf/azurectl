@@ -17,6 +17,7 @@ class TestCli:
             '--output-style': None,
             '--config': None,
             '--account': None,
+            '--debug': False,
             '--version': False,
             '--help': False,
             '-h': False

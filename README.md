@@ -96,12 +96,12 @@ to download the Publish Settings file.
 #### Configuration file
 
 The azurectl command uses information stored in a configuration file. By
-default the file is located in a directory named __.azurectl__ in the
-user's home directory (__HOMEPATH__ setting on Windows.)
+default the following files will be looked up in the user's home
+directory (__HOMEPATH__ setting on Windows.)
 
-```
-$ ~/.azurectl/config
-```
+1. ~/.config/azurectl/config
+
+2. ~/.azurectl/config
 
 An alternate location for the configuration file can be specified with the
 `--config` command line option.

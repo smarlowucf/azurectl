@@ -16,11 +16,13 @@ usage: azurectl -h | --help
        azurectl [--config=<file>]
                 [--output-format=<format>]
                 [--output-style=<style>]
+                [--debug]
            setup <command> [<args>...]
        azurectl [--config=<file>]
                 [--account=<name>]
                 [--output-format=<format>]
                 [--output-style=<style>]
+                [--debug]
            compute <command> [<args>...]
        azurectl -v | --version
        azurectl help
@@ -29,7 +31,7 @@ global options:
     -v --version
         show program version
     --config=<file>
-        config file, default is: ~/.azurectl/config
+        config file, default is: ~/.config/azurectl/config
     --account=<name>
         account name in config file, default is: 'default'
     --output-format=<format>

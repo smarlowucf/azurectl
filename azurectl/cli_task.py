@@ -12,6 +12,7 @@
 # limitations under the License.
 #
 import sys
+import logging
 
 # project
 from cli import Cli
@@ -25,7 +26,9 @@ class CliTask(object):
         the interface to the command options and the account to use
         for the task
     """
-    def __init__(self):
+    def __init__(self, load_config=True):
+        from logger import log
+
         self.cli = Cli()
 
         # show main help man page if requested
@@ -43,10 +46,13 @@ class CliTask(object):
         # get global args
         self.global_args = self.cli.get_global_args()
 
-        # get account name and config file
-        azurectl_config = Config(
-            self.global_args['--account'],
-            self.global_args['--config']
-        )
-        self.account_name = azurectl_config.account_name
-        self.config_file = azurectl_config.config_file
+        # set log level
+        if self.global_args['--debug']:
+            log.setLevel(logging.DEBUG)
+
+        # read config file
+        if load_config:
+            self.config = Config(
+                self.global_args['--account'],
+                self.global_args['--config']
+            )
