@@ -42,7 +42,7 @@ class Config(object):
             account_name = 'default'
         if filename and not os.path.isfile(filename):
             raise AzureAccountLoadFailed(
-                'no such config file %s' % filename
+                'Could not find config file: %s' % filename
             )
         elif filename:
             self.config_file = filename
