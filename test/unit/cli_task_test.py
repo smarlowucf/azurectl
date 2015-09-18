@@ -29,5 +29,5 @@ class TestCliTask:
             'compute', 'storage', 'account', 'list'
         ]
         task = CliTask()
-        assert task.account_name == 'account'
-        assert task.config_file == 'config'
+        assert task.config.account_name == 'account'
+        assert task.config.config_file == 'config'

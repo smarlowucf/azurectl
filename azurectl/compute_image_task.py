@@ -81,7 +81,7 @@ class ComputeImageTask(CliTask):
             self.global_args['--output-style']
         )
 
-        account = AzureAccount(self.account_name, self.config_file)
+        account = AzureAccount(self.config)
         self.image = Image(account)
         if self.command_args['list']:
             self.__list()

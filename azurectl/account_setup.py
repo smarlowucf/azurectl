@@ -33,7 +33,6 @@ class AccountSetup(object):
         self.filename = filename
         try:
             if os.path.isfile(filename):
-                log.info('Parsing config file: %s', filename)
                 self.config.read(filename)
         except Exception as e:
             raise AzureConfigParseError(

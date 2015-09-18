@@ -9,13 +9,16 @@ from azurectl.azurectl_exceptions import *
 import azurectl
 
 from azurectl.azure_account import AzureAccount
+from azurectl.config import Config
 
 from collections import namedtuple
 
 
 class TestAzureAccount:
     def setup(self):
-        self.account = AzureAccount('default', '../data/config')
+        self.account = AzureAccount(
+            Config('default', '../data/config')
+        )
         credentials = namedtuple(
             'credentials',
             ['private_key', 'certificate', 'subscription_id']
@@ -48,28 +51,30 @@ class TestAzureAccount:
     @raises(AzureSubscriptionParseError)
     def test_empty_publishsettings(self):
         account_invalid = AzureAccount(
-            'default', '../data/config.empty_publishsettings'
+            Config('default', '../data/config.empty_publishsettings')
         )
         account_invalid.publishsettings()
 
     @raises(AzureSubscriptionParseError)
     def test_missing_publishsettings(self):
         account_invalid = AzureAccount(
-            'default', '../data/config.missing_publishsettings'
+            Config('default', '../data/config.missing_publishsettings')
         )
         account_invalid.publishsettings()
 
     @raises(AzureSubscriptionIdNotFound)
     def test_publishsettings_missing_subscription(self):
         account_invalid = AzureAccount(
-            'default', '../data/config.invalid_publishsettings_subscription'
+            Config(
+                'default', '../data/config.invalid_publishsettings_subscription'
+            )
         )
         account_invalid.publishsettings()
 
     @raises(AzureSubscriptionPrivateKeyDecodeError)
     def test_publishsettings_invalid_cert(self):
         account_invalid = AzureAccount(
-            'default', '../data/config.invalid_publishsettings_cert'
+            Config('default', '../data/config.invalid_publishsettings_cert')
         )
         account_invalid.publishsettings()
 
@@ -86,7 +91,7 @@ class TestAzureAccount:
     @raises(AzureManagementCertificateNotFound)
     def test_subscription_management_cert_not_found(self):
         account_invalid = AzureAccount(
-            'default', '../data/config.missing_publishsettings_cert'
+            Config('default', '../data/config.missing_publishsettings_cert')
         )
         account_invalid.publishsettings()
 
@@ -100,7 +105,7 @@ class TestAzureAccount:
         mock_dump_pkey, mock_pkcs12
     ):
         account_invalid = AzureAccount(
-            'default', '../data/config.missing_publishsettings_id'
+            Config('default', '../data/config.missing_publishsettings_id')
         )
         account_invalid.publishsettings()
 
@@ -114,7 +119,7 @@ class TestAzureAccount:
         mock_dump_pkey, mock_pkcs12
     ):
         account_invalid = AzureAccount(
-            'default', '../data/config.missing_set_subscription_id'
+            Config('default', '../data/config.missing_set_subscription_id')
         )
         account_invalid.publishsettings()
 
@@ -128,14 +133,14 @@ class TestAzureAccount:
         mock_dump_pkey, mock_pkcs12
     ):
         account_invalid = AzureAccount(
-            'default', '../data/config.set_subscription_id_missing_id'
+            Config('default', '../data/config.set_subscription_id_missing_id')
         )
         account_invalid.publishsettings()
 
     @raises(AzureSubscriptionPKCS12DecodeError)
     def test_subscription_pkcs12_error(self):
         account_invalid = AzureAccount(
-            'default', '../data/config.corrupted_p12_cert'
+            Config('default', '../data/config.corrupted_p12_cert')
         )
         account_invalid.publishsettings()
 
@@ -154,7 +159,8 @@ class TestAzureAccount:
         mock_dump_pkey
     ):
         account = AzureAccount(
-            'default', '../data/config.multiple_subscriptions_no_id')
+            Config('default', '../data/config.multiple_subscriptions_no_id')
+        )
         assert account.publishsettings().subscription_id == 'first'
 
     @patch('azurectl.azure_account.dump_privatekey')
@@ -165,7 +171,8 @@ class TestAzureAccount:
         mock_dump_pkey
     ):
         account = AzureAccount(
-            'default', '../data/config.multiple_subscriptions_set_id')
+            Config('default', '../data/config.multiple_subscriptions_set_id')
+        )
         assert account.publishsettings().subscription_id == 'second'
 
     @patch('azurectl.azure_account.ServiceManagementService.get_storage_account_keys')

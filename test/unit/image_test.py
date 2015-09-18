@@ -6,6 +6,7 @@ from nose.tools import *
 import nose_helper
 
 from azurectl.azure_account import AzureAccount
+from azurectl.config import Config
 from azurectl.azurectl_exceptions import *
 from azurectl.image import Image
 
@@ -36,7 +37,9 @@ class TestImage:
             affinity_group='ok',
             media_link='url'
         )]
-        account = AzureAccount('default', '../data/config')
+        account = AzureAccount(
+            Config('default', '../data/config')
+        )
         credentials = namedtuple(
             'credentials',
             ['private_key', 'certificate', 'subscription_id']
