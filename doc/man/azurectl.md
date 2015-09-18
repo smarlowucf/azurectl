@@ -52,6 +52,11 @@ Azure image management
 
 # GLOBAL OPTIONS
 
+## __--debug__
+
+Enable debugging mode. In this mode azurectl is more verbose and
+provides information useful to clarify processing issues.
+
 ## __--config=file__
 
 Location of global config file, default is searched in:
