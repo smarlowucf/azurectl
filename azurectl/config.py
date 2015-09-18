@@ -32,6 +32,8 @@ class Config(object):
     PLATFORM = sys.platform[:3]
 
     def __init__(self, account_name=None, filename=None, platform=PLATFORM):
+        from logger import log
+
         usr_config = ConfigParser()
         self.config_files = [
             '.config/azurectl/config', '.azurectl/config'
@@ -56,6 +58,7 @@ class Config(object):
                     )
                 )
         try:
+            log.info('Using config file %s', self.config_file)
             usr_config.read(self.config_file)
         except Exception as e:
             raise AzureConfigParseError(
