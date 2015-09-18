@@ -48,8 +48,12 @@ class Config(object):
             self.config_file = self.__default_config(platform)
             if not self.config_file:
                 raise AzureAccountLoadFailed(
-                    'no default config found, searched for %s in home dir: %s' %
-                    (':'.join(self.config_files), self.__home_path(platform))
+                    'could not find default configuration file %s %s: %s' %
+                    (
+                        ' or '.join(self.config_files),
+                        'in home directory',
+                        self.__home_path(platform)
+                    )
                 )
         try:
             usr_config.read(self.config_file)
