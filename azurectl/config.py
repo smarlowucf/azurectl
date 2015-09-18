@@ -58,7 +58,7 @@ class Config(object):
                     )
                 )
         try:
-            log.info('Using config file %s', self.config_file)
+            log.debug('Using configuration from %s', self.config_file)
             usr_config.read(self.config_file)
         except Exception as e:
             raise AzureConfigParseError(

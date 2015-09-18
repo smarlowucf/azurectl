@@ -23,9 +23,11 @@ class TestCliTask:
 
     @patch('os.path.isfile')
     @patch('ConfigParser.ConfigParser.has_section')
-    def test_global_args(self, mock_section, mock_isfile):
+    @patch('azurectl.logger.log.setLevel')
+    def test_global_args(self, mock_setlevel, mock_section, mock_isfile):
         sys.argv = [
-            sys.argv[0], '--account', 'account', '--config', 'config',
+            sys.argv[0], '--debug',
+            '--account', 'account', '--config', 'config',
             'compute', 'storage', 'account', 'list'
         ]
         task = CliTask()

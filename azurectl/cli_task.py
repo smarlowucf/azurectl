@@ -12,6 +12,7 @@
 # limitations under the License.
 #
 import sys
+import logging
 
 # project
 from cli import Cli
@@ -26,6 +27,8 @@ class CliTask(object):
         for the task
     """
     def __init__(self, load_config=True):
+        from logger import log
+
         self.cli = Cli()
 
         # show main help man page if requested
@@ -42,6 +45,10 @@ class CliTask(object):
 
         # get global args
         self.global_args = self.cli.get_global_args()
+
+        # set log level
+        if self.global_args['--debug']:
+            log.setLevel(logging.DEBUG)
 
         # read config file
         if load_config:

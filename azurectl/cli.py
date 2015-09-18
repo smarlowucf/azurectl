@@ -16,11 +16,13 @@ usage: azurectl -h | --help
        azurectl [--config=<file>]
                 [--output-format=<format>]
                 [--output-style=<style>]
+                [--debug]
            setup <command> [<args>...]
        azurectl [--config=<file>]
                 [--account=<name>]
                 [--output-format=<format>]
                 [--output-style=<style>]
+                [--debug]
            compute <command> [<args>...]
        azurectl -v | --version
        azurectl help
