@@ -168,7 +168,7 @@ class ComputeVmTask(CliTask):
             # requests
             request_result = RequestResult(cloud_service_request_id)
             request_result.wait_for_request_completion(
-                self.cloud_service
+                self.cloud_service.service
             )
 
     def __delete_cloud_service(self):
