@@ -57,7 +57,7 @@ class AzureAccount(object):
             return self.__get_first_subscription_id()
 
     def storage_key(self, name=None):
-        self.__get_service()
+        self.get_service()
         if not name:
             name = self.storage_name()
         try:
@@ -69,7 +69,7 @@ class AzureAccount(object):
         return account_keys.storage_service_keys.primary
 
     def instance_types(self):
-        self.__get_service()
+        self.get_service()
         result = []
         for rolesize in self.service.list_role_sizes():
             memory = rolesize.memory_in_mb
@@ -88,7 +88,7 @@ class AzureAccount(object):
         return result
 
     def storage_names(self):
-        self.__get_service()
+        self.get_service()
         result = []
         for storage in self.service.list_storage_accounts():
             result.append(storage.service_name)
@@ -106,7 +106,7 @@ class AzureAccount(object):
         )
         return result
 
-    def __get_service(self):
+    def get_service(self):
         if self.service:
             return
         publishsettings = self.publishsettings()
