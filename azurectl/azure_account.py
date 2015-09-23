@@ -53,7 +53,7 @@ class AzureAccount(object):
     def subscription_id(self):
         try:
             return self.config.get_option('subscription_id')
-        except AzureAccountValueNotFound as e:
+        except AzureAccountValueNotFound:
             return self.__get_first_subscription_id()
 
     def storage_key(self, name=None):
@@ -171,13 +171,11 @@ class AzureAccount(object):
                 raise AzureSubscriptionIdNotFound(
                     'No Subscription.Id found in %s' % self.settings
                 )
-        else:
-            raise AzureSubscriptionIdNotFound(
-                "Subscription_id '%s' not found in %s" % (
-                    subscription_id,
-                    self.settings
-                )
+        raise AzureSubscriptionIdNotFound(
+            "Subscription_id '%s' not found in %s" % (
+                subscription_id, self.settings
             )
+        )
 
     def __read_xml(self):
         try:

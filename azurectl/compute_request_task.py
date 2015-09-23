@@ -29,15 +29,11 @@ options:
     --id=<number>
         request id number returned from azurectl for asynchronous request
 """
-from tempfile import NamedTemporaryFile
-from azure.servicemanagement import ServiceManagementService
-
 # project
 from cli_task import CliTask
 from azure_account import AzureAccount
 from data_collector import DataCollector
 from data_output import DataOutput
-from logger import log
 from request_result import RequestResult
 from help import Help
 
