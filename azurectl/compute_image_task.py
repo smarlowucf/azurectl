@@ -31,6 +31,10 @@ commands:
         list available os images for configured account
     create
         create OS image from VHD disk stored on blob storage container
+    help
+        show manual page for image command
+
+options:
     --container=<container>
         container name, overwrites configuration value
     --delete-disk
@@ -53,8 +57,6 @@ commands:
         restrict publish scope to be private
     --msdn
         restrict publish scope to the Microsoft Developer Network
-    help
-        show manual page for image command
 """
 # project
 from cli_task import CliTask

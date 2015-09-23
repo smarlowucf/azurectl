@@ -22,10 +22,12 @@ commands:
         print status for given request id
     wait
         wait for request to complete
-    --id=<number>
-        request id number returned from azurectl for asynchronous request
     help
         show manual page for request command
+
+options:
+    --id=<number>
+        request id number returned from azurectl for asynchronous request
 """
 from tempfile import NamedTemporaryFile
 from azure.servicemanagement import ServiceManagementService

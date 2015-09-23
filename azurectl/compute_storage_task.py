@@ -49,6 +49,14 @@ commands:
         storage share: delete share from the storage account
     create
         create file share in the storage account
+    account help
+        show manual page for account sub command
+    container help
+        show manual page for container sub command
+    help
+        show manual page for storage command
+
+options:
     --source=<file>
         file to upload
     --name=<name>
@@ -74,12 +82,6 @@ commands:
         [default: rl]
     --quiet
         suppress progress information on upload
-    account help
-        show manual page for account sub command
-    container help
-        show manual page for container sub command
-    help
-        show manual page for storage command
 """
 import datetime
 import dateutil.parser

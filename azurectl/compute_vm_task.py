@@ -36,6 +36,10 @@ commands:
         will be deleted
     types
         list available virtual machine types
+    help
+        show manual page for image command
+
+options:
     --cloud-service-name=<name>
         name of the cloud service to put the virtual machine in.
         if the cloud service does not exist it will be created
@@ -69,8 +73,6 @@ commands:
         external SSH port
     --user=<user>
         user name for login, by default set to: azureuser
-    help
-        show manual page for image command
 """
 # project
 from cli_task import CliTask
