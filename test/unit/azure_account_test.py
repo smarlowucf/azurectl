@@ -214,7 +214,7 @@ class TestAzureAccount:
         service = self.account.service
         # calling again and see if the same ServiceManagementService is used
         self.account.storage_names()
-        assert service == self.account.service
+        assert self.account.get_service() == self.account.service
 
     @patch('azurectl.azure_account.ServiceManagementService.list_role_sizes')
     def test_instance_types(self, mock_service):

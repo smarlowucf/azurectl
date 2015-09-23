@@ -40,7 +40,7 @@ class TestComputeRequestTask:
         self.task.command_args['wait'] = True
         self.task.process()
         self.task.request_result.wait_for_request_completion.assert_called_once_with(
-            self.task.account.service
+            self.task.service
         )
 
     @patch('azurectl.compute_vm_task.DataOutput')
@@ -49,7 +49,7 @@ class TestComputeRequestTask:
         self.task.command_args['status'] = True
         self.task.process()
         self.task.request_result.status.assert_called_once_with(
-            self.task.account.service
+            self.task.service
         )
 
     def test_process_compute_request_help(self):

@@ -59,7 +59,7 @@ class ComputeRequestTask(CliTask):
         )
 
         self.account = AzureAccount(self.config)
-        self.account.get_service()
+        self.service = self.account.get_service()
 
         self.request_result = RequestResult(
             self.command_args['--id']
@@ -75,12 +75,12 @@ class ComputeRequestTask(CliTask):
 
     def __get_status(self):
         return self.request_result.status(
-            self.account.service
+            self.service
         )
 
     def __wait_for_request_to_complete(self):
         self.request_result.wait_for_request_completion(
-            self.account.service
+            self.service
         )
 
     def __help(self):
