@@ -68,11 +68,10 @@ class SetupAccountTask(CliTask):
             CliTask.__init__(self, load_config)
             self.config_file = self.config.config_file
         except AzureAccountLoadFailed:
-            t, v, tb = sys.exc_info()
             if self.command_args['add']:
                 self.config_file = ConfigFilePath().default_new_config()
             else:
-                raise t, v, tb
+                raise
 
     def process(self):
         self.manual = Help()
