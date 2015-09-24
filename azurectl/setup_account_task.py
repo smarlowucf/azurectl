@@ -26,6 +26,10 @@ commands:
         remove specified account section
     add
         add a new account section to the config file
+    help
+        show manual page for config command
+
+options:
     --name=<configname>
         section name to identify this account
     --publish-settings-file=<file>
@@ -37,9 +41,6 @@ commands:
     --subscription-id=<subscriptionid>
         subscription id, if more than one subscription is included in your
         publish settings file.
-
-    help
-        show manual page for config command
 """
 # project
 from cli_task import CliTask

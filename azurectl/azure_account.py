@@ -53,11 +53,11 @@ class AzureAccount(object):
     def subscription_id(self):
         try:
             return self.config.get_option('subscription_id')
-        except AzureAccountValueNotFound as e:
+        except AzureAccountValueNotFound:
             return self.__get_first_subscription_id()
 
     def storage_key(self, name=None):
-        self.__get_service()
+        self.__build_service_instance()
         if not name:
             name = self.storage_name()
         try:
@@ -69,7 +69,7 @@ class AzureAccount(object):
         return account_keys.storage_service_keys.primary
 
     def instance_types(self):
-        self.__get_service()
+        self.__build_service_instance()
         result = []
         for rolesize in self.service.list_role_sizes():
             memory = rolesize.memory_in_mb
@@ -88,7 +88,7 @@ class AzureAccount(object):
         return result
 
     def storage_names(self):
-        self.__get_service()
+        self.__build_service_instance()
         result = []
         for storage in self.service.list_storage_accounts():
             result.append(storage.service_name)
@@ -106,7 +106,11 @@ class AzureAccount(object):
         )
         return result
 
-    def __get_service(self):
+    def get_service(self):
+        self.__build_service_instance()
+        return self.service
+
+    def __build_service_instance(self):
         if self.service:
             return
         publishsettings = self.publishsettings()
@@ -167,13 +171,11 @@ class AzureAccount(object):
                 raise AzureSubscriptionIdNotFound(
                     'No Subscription.Id found in %s' % self.settings
                 )
-        else:
-            raise AzureSubscriptionIdNotFound(
-                "Subscription_id '%s' not found in %s" % (
-                    subscription_id,
-                    self.settings
-                )
+        raise AzureSubscriptionIdNotFound(
+            "Subscription_id '%s' not found in %s" % (
+                subscription_id, self.settings
             )
+        )
 
     def __read_xml(self):
         try:
