@@ -53,19 +53,24 @@ from data_collector import DataCollector
 from data_output import DataOutput
 from azurectl_exceptions import AzureAccountLoadFailed
 from config_file_path import ConfigFilePath
+from config import Config
 
 
 class SetupAccountTask(CliTask):
     """
         Process setup config commands
     """
-    def __init__(self, load_config=True):
+
+    def load_config(self):
         """
-            Override CliTask's init, gracefully handle the case
+            Override CliTask's load_config, gracefully handle the case
             where config file does not exist, so a new one may be added.
         """
         try:
-            CliTask.__init__(self, load_config)
+            self.config = Config(
+                self.global_args['--account'],
+                self.global_args['--config']
+            )
             self.config_file = self.config.config_file
         except AzureAccountLoadFailed:
             if self.command_args['add']:
