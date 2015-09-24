@@ -42,6 +42,8 @@ options:
         subscription id, if more than one subscription is included in your
         publish settings file.
 """
+import sys
+
 # project
 from cli_task import CliTask
 from logger import log
@@ -49,18 +51,35 @@ from help import Help
 from account_setup import AccountSetup
 from data_collector import DataCollector
 from data_output import DataOutput
+from azurectl_exceptions import AzureAccountLoadFailed
+from config_file_path import ConfigFilePath
 
 
 class SetupAccountTask(CliTask):
     """
         Process setup config commands
     """
+    def __init__(self, load_config=True):
+        """
+            Override CliTask's init, gracefully handle the case
+            where config file does not exist, so a new one may be added.
+        """
+        try:
+            CliTask.__init__(self, load_config)
+            self.config_file = self.config.config_file
+        except AzureAccountLoadFailed:
+            t, v, tb = sys.exc_info()
+            if self.command_args['add']:
+                self.config_file = ConfigFilePath().default_new_config()
+            else:
+                raise t, v, tb
+
     def process(self):
         self.manual = Help()
         if self.__help():
             return
 
-        self.setup = AccountSetup(self.config.config_file)
+        self.setup = AccountSetup(self.config_file)
 
         self.result = DataCollector()
         self.out = DataOutput(

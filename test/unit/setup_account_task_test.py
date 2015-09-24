@@ -6,6 +6,7 @@ from nose.tools import *
 import nose_helper
 
 import azurectl
+from azurectl.azurectl_exceptions import *
 from azurectl.setup_account_task import SetupAccountTask
 
 
