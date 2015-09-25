@@ -26,7 +26,7 @@ class CliTask(object):
         the interface to the command options and the account to use
         for the task
     """
-    def __init__(self, load_config=True):
+    def __init__(self, should_load_config=True):
         from logger import log
 
         self.cli = Cli()
@@ -51,8 +51,11 @@ class CliTask(object):
             log.setLevel(logging.DEBUG)
 
         # read config file
-        if load_config:
-            self.config = Config(
-                self.global_args['--account'],
-                self.global_args['--config']
-            )
+        if should_load_config:
+            self.load_config()
+
+    def load_config(self):
+        self.config = Config(
+            self.global_args['--account'],
+            self.global_args['--config']
+        )

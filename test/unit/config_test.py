@@ -40,26 +40,3 @@ class TestConfig:
     def test_no_default_config_file_found(self, mock_isfile):
         mock_isfile.return_value = False
         Config()
-
-    @patch('os.path.isfile')
-    @patch('ConfigParser.ConfigParser.has_section')
-    def test_home_path_linux(self, mock_section, mock_isfile):
-        mock_isfile.return_value = True
-        mock_section.return_value = True
-        config = Config()
-        assert config.config_file == \
-            os.environ['HOME'] + '/.config/azurectl/config'
-
-    @patch('os.path.isfile')
-    @patch('ConfigParser.ConfigParser.has_section')
-    def test_home_path_win(self, mock_section, mock_isfile):
-        mock_isfile.return_value = True
-        mock_section.return_value = True
-        with patch.dict('os.environ', {'HOMEPATH': 'foo'}):
-            config = Config(None, None, 'win')
-            assert config.config_file == \
-                os.environ['HOMEPATH'] + '/.config/azurectl/config'
-        with patch.dict('os.environ', {'UserProfile': 'foo'}):
-            config = Config(None, None, 'win')
-            assert config.config_file == \
-                os.environ['UserProfile'] + '/.config/azurectl/config'

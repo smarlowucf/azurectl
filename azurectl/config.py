@@ -23,6 +23,7 @@ from azurectl_exceptions import (
     AzureAccountNotFound,
     AzureAccountValueNotFound
 )
+from config_file_path import ConfigFilePath
 
 
 class Config(object):
@@ -35,9 +36,9 @@ class Config(object):
         from logger import log
 
         usr_config = ConfigParser()
-        self.config_files = [
-            '.config/azurectl/config', '.azurectl/config'
-        ]
+
+        self.paths = ConfigFilePath(platform)
+
         if not account_name:
             account_name = 'default'
         if filename and not os.path.isfile(filename):
@@ -47,14 +48,14 @@ class Config(object):
         elif filename:
             self.config_file = filename
         else:
-            self.config_file = self.__default_config(platform)
+            self.config_file = self.paths.default_config()
             if not self.config_file:
                 raise AzureAccountLoadFailed(
                     'could not find default configuration file %s %s: %s' %
                     (
-                        ' or '.join(self.config_files),
+                        ' or '.join(self.paths.config_files),
                         'in home directory',
-                        self.__home_path(platform)
+                        self.paths.home_path
                     )
                 )
         try:
@@ -81,19 +82,3 @@ class Config(object):
                 "%s not defined for account %s" % (option, self.account_name)
             )
         return result
-
-    def __home_path(self, platform):
-        homeEnvVar = 'HOME'
-        if platform == 'win':
-            if 'HOMEPATH' in os.environ:
-                homeEnvVar = 'HOMEPATH'
-            else:
-                homeEnvVar = 'UserProfile'
-        return os.environ[homeEnvVar]
-
-    def __default_config(self, platform):
-        for filename in self.config_files:
-            full_qualified_config = self.__home_path(platform) + '/' + filename
-            if os.path.isfile(full_qualified_config):
-                return full_qualified_config
-        return None

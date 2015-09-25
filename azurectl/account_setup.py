@@ -112,6 +112,9 @@ class AccountSetup(object):
             write out config data to file
         """
         try:
+            config_dir = os.path.dirname(self.filename)
+            if not os.path.exists(config_dir):
+                os.makedirs(config_dir)
             config_handle = open(self.filename, 'w')
             self.config.write(config_handle)
             config_handle.close()
