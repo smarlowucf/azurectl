@@ -37,7 +37,7 @@ class Config(object):
 
         usr_config = ConfigParser()
 
-        self.paths = ConfigFilePath(filename, platform)
+        self.paths = ConfigFilePath(platform)
 
         if not account_name:
             account_name = 'default'

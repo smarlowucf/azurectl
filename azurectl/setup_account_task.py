@@ -42,8 +42,6 @@ options:
         subscription id, if more than one subscription is included in your
         publish settings file.
 """
-import sys
-
 # project
 from cli_task import CliTask
 from logger import log

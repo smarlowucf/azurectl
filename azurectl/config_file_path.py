@@ -21,9 +21,7 @@ class ConfigFilePath(object):
     """
     PLATFORM = sys.platform[:3]
 
-    def __init__(self, filename=None, platform=PLATFORM):
-        from logger import log
-
+    def __init__(self, platform=PLATFORM):
         self.platform = platform
         self.config_files = [
             '.config/azurectl/config', '.azurectl/config'
