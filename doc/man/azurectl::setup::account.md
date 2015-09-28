@@ -6,6 +6,8 @@ azurectl - Command Line Interface to manage Microsoft Azure
 
 __azurectl__ setup account list
 
+__azurectl__ setup account default --name=*configname*
+
 __azurectl__ setup account remove --name=*configname*
 
 __azurectl__ setup account add --name=*configname*
@@ -23,6 +25,10 @@ List configured account names. If no config file is specified all commands will 
 
 1. __~/.config/azurectl/config__
 2. __~/.azurectl/config__
+
+## __default__
+
+Set the default account to use if no account name is specified
 
 ## __remove__
 
