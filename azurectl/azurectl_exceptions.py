@@ -121,6 +121,10 @@ class AzureLoadCommandUndefined(AzureError):
     pass
 
 
+class AzureAccountDefaultSectionNotFound(AzureError):
+    pass
+
+
 class AzureAccountLoadFailed(AzureError):
     pass
 

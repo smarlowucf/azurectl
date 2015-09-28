@@ -39,6 +39,7 @@ class TestSetupAccountTask:
         self.task.command_args['list'] = False
         self.task.command_args['add'] = False
         self.task.command_args['remove'] = False
+        self.task.command_args['default'] = False
         self.task.command_args['help'] = False
 
     @patch('azurectl.setup_account_task.DataOutput.display')
@@ -89,6 +90,14 @@ class TestSetupAccountTask:
         self.task.command_args['remove'] = True
         self.task.process()
         self.task.setup.remove.assert_called_once_with(
+            self.task.command_args['--name']
+        )
+
+    def test_process_setup_default_account(self):
+        self.__init_command_args()
+        self.task.command_args['default'] = True
+        self.task.process()
+        self.task.setup.set_default_account.assert_called_once_with(
             self.task.command_args['--name']
         )
 

@@ -1,4 +1,7 @@
-[default]
+[DEFAULT]
+default_account = bob
+
+[bob]
 storage_account_name = bob
 storage_container_name = foo
 publishsettings = ../data/publishsettings.multiple_subscriptions
