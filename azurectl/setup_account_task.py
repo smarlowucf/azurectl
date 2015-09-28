@@ -13,34 +13,34 @@
 #
 """
 usage: azurectl setup account -h | --help
-       azurectl setup account list
-       azurectl setup account default --name=<configname>
-       azurectl setup account remove --name=<configname>
        azurectl setup account add --name=<configname> --publish-settings-file=<file> --storage-account-name=<storagename> --container-name=<containername>
            [--subscription-id=<subscriptionid>]
+       azurectl setup account default --name=<configname>
+       azurectl setup account list
+       azurectl setup account remove --name=<configname>
        azurectl setup account help
 
 commands:
-    list
-        list configured account sections
-    remove
-        remove specified account section
     add
         add a new account section to the config file
     default
         set a new default account to use if not explicitly specified
+    list
+        list configured account sections
+    remove
+        remove specified account section
     help
         show manual page for config command
 
 options:
+    --container-name=<containername>
+        container name for storage account to use by default
     --name=<configname>
         section name to identify this account
     --publish-settings-file=<file>
         path to the Microsoft Azure account publish settings file
     --storage-account-name=<storagename>
         storage account name to use by default
-    --container-name=<containername>
-        container name for storage account to use by default
     --subscription-id=<subscriptionid>
         subscription id, if more than one subscription is included in your
         publish settings file.
