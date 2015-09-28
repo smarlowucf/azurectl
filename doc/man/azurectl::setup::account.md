@@ -4,10 +4,6 @@ azurectl - Command Line Interface to manage Microsoft Azure
 
 # SYNOPSIS
 
-__azurectl__ setup account list
-
-__azurectl__ setup account remove --name=*configname*
-
 __azurectl__ setup account add --name=*configname*
 
     --publish-settings-file=*file*
@@ -15,7 +11,21 @@ __azurectl__ setup account add --name=*configname*
     --container-name=*containername*
     [--subscription-id=*subscriptionid*]
 
+__azurectl__ setup account default --name=*configname*
+
+__azurectl__ setup account list
+
+__azurectl__ setup account remove --name=*configname*
+
 # DESCRIPTION
+
+## __add__
+
+Add an account section with the name specified in __configname__ to the config file.
+
+## __default__
+
+Set the default account to use if no account name is specified
 
 ## __list__
 
@@ -26,13 +36,13 @@ List configured account names. If no config file is specified all commands will 
 
 ## __remove__
 
-Remove the account configuration stored under the specified __configname__ section from the config file
-
-## __add__
-
-Add an account section with the name specified in __configname__ to the config file.
+Remove the account configuration stored under the specified __configname__ section from the config file. Note the account marked as the default account cannot be removed without changing the default account. This also means it is not possible to remove all accounts from the configuration. If this is for some reason necessary, please edit the configuration manually. However without at least one configured account section azurectl will not be able to work.
 
 # OPTIONS
+
+## __--container-name=containername__
+
+The name of the container to use from the previously specified storage account
 
 ## __--publish-settings-file=file__
 
@@ -41,10 +51,6 @@ The path to the Microsoft Azure publish settings file which you can download fro
 ## __--storage-account-name=storagename__
 
 The name of the storage account which holds the account specific storage containers
-
-## __--container-name=containername__
-
-The name of the container to use from the previously specified storage account
 
 ## __--subscription-id=subscriptionid__
 

@@ -13,31 +13,34 @@
 #
 """
 usage: azurectl setup account -h | --help
-       azurectl setup account list
-       azurectl setup account remove --name=<configname>
        azurectl setup account add --name=<configname> --publish-settings-file=<file> --storage-account-name=<storagename> --container-name=<containername>
            [--subscription-id=<subscriptionid>]
+       azurectl setup account default --name=<configname>
+       azurectl setup account list
+       azurectl setup account remove --name=<configname>
        azurectl setup account help
 
 commands:
+    add
+        add a new account section to the config file
+    default
+        set a new default account to use if not explicitly specified
     list
         list configured account sections
     remove
         remove specified account section
-    add
-        add a new account section to the config file
     help
         show manual page for config command
 
 options:
+    --container-name=<containername>
+        container name for storage account to use by default
     --name=<configname>
         section name to identify this account
     --publish-settings-file=<file>
         path to the Microsoft Azure account publish settings file
     --storage-account-name=<storagename>
         storage account name to use by default
-    --container-name=<containername>
-        container name for storage account to use by default
     --subscription-id=<subscriptionid>
         subscription id, if more than one subscription is included in your
         publish settings file.
@@ -96,6 +99,8 @@ class SetupAccountTask(CliTask):
             self.__remove()
         elif self.command_args['add']:
             self.__add()
+        elif self.command_args['default']:
+            self.__set_default()
 
     def __help(self):
         if self.command_args['help']:
@@ -113,6 +118,15 @@ class SetupAccountTask(CliTask):
             self.command_args['--subscription-id']
         ):
             log.info('Added Account %s', self.command_args['--name'])
+
+    def __set_default(self):
+        if self.setup.set_default_account(
+            self.command_args['--name']
+        ):
+            log.info(
+                'Account %s is now set as default account',
+                self.command_args['--name']
+            )
 
     def __list(self):
         account_info = self.setup.list()

@@ -38,7 +38,7 @@ class TestCloudService:
             media_link='url'
         )]
         account = AzureAccount(
-            Config('default', '../data/config')
+            Config('bob', '../data/config')
         )
         credentials = namedtuple(
             'credentials',

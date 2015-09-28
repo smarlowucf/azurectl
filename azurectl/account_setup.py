@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import ConfigParser
+from ConfigParser import ConfigParser
 import os
 
 # project
@@ -29,7 +29,7 @@ class AccountSetup(object):
         Implements setup methods to list, add and delete account configs
     """
     def __init__(self, filename):
-        self.config = ConfigParser.ConfigParser()
+        self.config = ConfigParser()
         self.filename = filename
         try:
             if os.path.isfile(filename):
@@ -45,16 +45,22 @@ class AccountSetup(object):
             list account sections
         """
         accounts = {}
+        accounts['default'] = {'name': self.get_default_account()}
         for section in self.config.sections():
             accounts[section] = {}
             for option in self.config.options(section):
-                accounts[section][option] = self.config.get(section, option)
+                if not option == 'default_account':
+                    accounts[section][option] = self.config.get(section, option)
         return accounts
 
     def remove(self, name):
         """
             remove specified account section
         """
+        if name == self.get_default_account():
+            log.info('Section %s is the default section', name)
+            log.info('Please setup a new default prior to removing')
+            return False
         if not self.config.remove_section(name):
             log.info('Section %s does not exist', name)
             return False
@@ -94,6 +100,20 @@ class AccountSetup(object):
             self.config.set(
                 section_name, 'subscription_id', subscription_id
             )
+        defaults = self.config.defaults()
+        if 'default_account' not in defaults:
+            defaults['default_account'] = section_name
+        self.__write()
+        return True
+
+    def get_default_account(self):
+        return self.config.defaults()['default_account']
+
+    def set_default_account(self, section_name):
+        if section_name not in self.config.sections():
+            log.info('Section %s does not exist', section_name)
+            return False
+        self.config.defaults()['default_account'] = section_name
         self.__write()
         return True
 

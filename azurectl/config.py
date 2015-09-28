@@ -18,10 +18,11 @@ import sys
 
 # project
 from azurectl_exceptions import (
+    AzureAccountDefaultSectionNotFound,
     AzureAccountLoadFailed,
-    AzureConfigParseError,
     AzureAccountNotFound,
-    AzureAccountValueNotFound
+    AzureAccountValueNotFound,
+    AzureConfigParseError
 )
 from config_file_path import ConfigFilePath
 
@@ -39,8 +40,6 @@ class Config(object):
 
         self.paths = ConfigFilePath(platform)
 
-        if not account_name:
-            account_name = 'default'
         if filename and not os.path.isfile(filename):
             raise AzureAccountLoadFailed(
                 'Could not find config file: %s' % filename
@@ -66,6 +65,14 @@ class Config(object):
                 'Could not parse config file: "%s"\n%s' %
                 (self.config_file, e.message)
             )
+        if not account_name:
+            defaults = usr_config.defaults()
+            if 'default_account' not in defaults:
+                raise AzureAccountDefaultSectionNotFound(
+                    'could not find default section in configuration file %s' %
+                    self.config_file
+                )
+            account_name = defaults['default_account']
         if not usr_config.has_section(account_name):
             raise AzureAccountNotFound(
                 'Account %s not found' % account_name
