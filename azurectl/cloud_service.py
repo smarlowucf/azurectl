@@ -23,6 +23,7 @@ from azurectl_exceptions import (
     AzureCloudServiceCreateError,
     AzureCloudServiceDeleteError
 )
+from request_result import RequestResult
 
 
 class CloudService(object):
@@ -124,13 +125,18 @@ class CloudService(object):
                 '%s' % openssl_error
             )
         try:
-            self.service.add_service_certificate(
+            add_cert_request = self.service.add_service_certificate(
                 cloud_service_name, base64.b64encode(pfx_cert), 'pfx', u''
             )
         except Exception as e:
             raise AzureCloudServiceAddCertificateError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
+        # Wait for the certficate to be created
+        request_result = RequestResult(add_cert_request.request_id)
+        request_result.wait_for_request_completion(
+            self.service
+        )
         return self.get_fingerprint(pem_cert)
 
     def create(
