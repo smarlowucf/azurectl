@@ -57,10 +57,11 @@ class TestCloudService:
     @patch('azurectl.cloud_service.CloudService.get_pem_certificate')
     @patch('azurectl.cloud_service.CloudService.get_fingerprint')
     @patch('azurectl.cloud_service.ServiceManagementService.add_service_certificate')
+    @patch('azurectl.cloud_service.RequestResult')
     @patch('subprocess.Popen')
     @patch('base64.b64encode')
     def test_add_certificate(
-        self, mock_base64, mock_popen, mock_add_cert,
+        self, mock_base64, mock_popen, mock_request_result, mock_add_cert,
         mock_fingerprint, mock_getpem
     ):
         mock_openssl = mock.Mock()
