@@ -1,2 +1,0 @@
-#! /bin/bash
-PYTHONPATH="${PYTHONPATH}:`pwd`" bin/azurectl "$@"
