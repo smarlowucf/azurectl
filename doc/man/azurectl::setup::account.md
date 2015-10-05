@@ -4,11 +4,8 @@ azurectl - Command Line Interface to manage Microsoft Azure
 
 # SYNOPSIS
 
-__azurectl__ setup account add --name=*configname*
+__azurectl__ setup account add --name=*account_name* --publish-settings-file=*file*
 
-    --publish-settings-file=*file*
-    --storage-account-name=*storagename*
-    --container-name=*containername*
     [--subscription-id=*subscriptionid*]
 
 __azurectl__ setup account default --name=*configname*
@@ -36,27 +33,20 @@ List configured account names. If no config file is specified all commands will 
 
 ## __remove__
 
-Remove the account configuration stored under the specified __configname__ section from the config file. Note the account marked as the default account cannot be removed without changing the default account. This also means it is not possible to remove all accounts from the configuration. If this is for some reason necessary, please edit the configuration manually. However without at least one configured account section azurectl will not be able to work.
+Remove the configuration section specified in __configname__ from the configuration file. If the section is referenced in the DEFAULT section of the configuration file it cannot be removed without changing the default reference. This can be done with __azurectl setup account default | region default__.
 
 # OPTIONS
 
-## __--container-name=containername__
+## __--name=account_name__
 
-The name of the container to use from the previously specified storage account
+Free form name for the azure account to use
 
 ## __--publish-settings-file=file__
 
 The path to the Microsoft Azure publish settings file which you can download from the Microsoft management console
 
-## __--storage-account-name=storagename__
-
-The name of the storage account which holds the account specific storage containers
-
 ## __--subscription-id=subscriptionid__
 
-If your Microsoft Azure account includes more than one subscription, your 
-publish setttings file will contain data about all of your subscriptions.
-Specify a __subscriptionid__ in order to select the appropriate subscription.
+If your Microsoft Azure account includes more than one subscription, your publish setttings file will contain data about all of your subscriptions. Specify a __subscriptionid__ in order to select the appropriate subscription.
 
-If __subscriptionid__ is not supplied the first subscription listed in the 
-publish settings file will be selected by default.
+If __subscriptionid__ is not supplied the first subscription listed in the publish settings file will be selected by default.

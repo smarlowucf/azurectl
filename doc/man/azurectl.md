@@ -52,11 +52,6 @@ Azure image management
 
 # GLOBAL OPTIONS
 
-## __--debug__
-
-Enable debugging mode. In this mode azurectl is more verbose and
-provides information useful to clarify processing issues.
-
 ## __--config=file__
 
 Location of global config file, default is searched in:
@@ -64,9 +59,23 @@ Location of global config file, default is searched in:
 1. __~/.config/azurectl/config__
 2. __~/.azurectl/config__
 
+The azurectl config file is an INI style file structured into sections. There are account and region sections which are handled by the __azurectl setup account command__
+
 ## __--account=name__
 
-Account name to select from config file. The azurectl config file is an INI style file structured into sections. Each section takes a name and is selectable via the --account option. The default account section name if no account is selected is: __default__
+Account name to use for operations. By default the account referenced as __default_account__ from the the DEFAULT section will be used. In the configuration file the account section is stored with a prefix named __account:<value>__. The given value must match one of the account sections.
+
+## __--region=region__
+
+Region name to use for operations. By default the region referenced as __default_region__ from the DEFAULT section will be used. An azure region is the name of the geographic region to run e.g virtual instances or store VHD disk images. An example region name would be __East US 2__. The value for the region has to match the region names used in Microsoft Azure. In the configuration file the region section is stored with a prefix named __region:<value>__. The given value must match one of the region sections.
+
+## __--storage-account=name__
+
+Storage account name to use for operations. The account name must be part of the __storage_accounts__ setup of the associated region in the configuration file
+
+## __--storage-container=name__
+
+Storage container name to use for operations. The container name must be part of the __storage_containers__ setup of the associated region in the configuration file
 
 ## __--output-format=format__
 
@@ -76,7 +85,7 @@ Print information in specified format. Supported formats are
 
 The default format is: json
 
-## __--output-style=<style>__
+## __--output-style=style__
 
 Print information in specified style. Supported styles are
 
@@ -84,3 +93,10 @@ Print information in specified style. Supported styles are
 * standard
 
 The default style is: standard
+
+## __--debug__
+
+Enable debugging mode. In this mode azurectl is more verbose and
+provides information useful to clarify processing issues.
+
+

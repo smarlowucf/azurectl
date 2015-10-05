@@ -144,3 +144,21 @@ class TestSetupAccountTask:
         self.task.manual.show.assert_called_once_with(
             'azurectl::setup::account'
         )
+
+    def test_process_setup_account_configure_help(self):
+        self.__init_command_args()
+        self.task.command_args['help'] = True
+        self.task.command_args['configure'] = True
+        self.task.process()
+        self.task.manual.show.assert_called_once_with(
+            'azurectl::setup::account::configure'
+        )
+
+    def test_process_setup_account_region_help(self):
+        self.__init_command_args()
+        self.task.command_args['help'] = True
+        self.task.command_args['region'] = True
+        self.task.process()
+        self.task.manual.show.assert_called_once_with(
+            'azurectl::setup::account::region'
+        )

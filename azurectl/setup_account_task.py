@@ -21,6 +21,8 @@ usage: azurectl setup account -h | --help
        azurectl setup account region add --name=<region_name> --storage-account-name=<storagename>... --container-name=<containername>...
        azurectl setup account region default --name=<configname>
        azurectl setup account remove --name=<configname>
+       azurectl setup account configure help
+       azurectl setup account region help
        azurectl setup account help
 
 commands:
@@ -130,7 +132,11 @@ class SetupAccountTask(CliTask):
             self.setup.write()
 
     def __help(self):
-        if self.command_args['help']:
+        if self.command_args['configure'] and self.command_args['help']:
+            self.manual.show('azurectl::setup::account::configure')
+        elif self.command_args['region'] and self.command_args['help']:
+            self.manual.show('azurectl::setup::account::region')
+        elif self.command_args['help']:
             self.manual.show('azurectl::setup::account')
         else:
             return False

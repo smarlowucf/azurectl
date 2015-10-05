@@ -8,11 +8,8 @@ __azurectl__ compute storage container list
 
 __azurectl__ compute storage container show
 
-    [--container=container]
-
 __azurectl__ compute storage container sas
 
-    [--container=container]
     [--start-datetime=start] [--expiry-datetime=expiry]
     [--permissions=permissions]
 
@@ -31,10 +28,6 @@ Show contents of configured __storage_container_name__
 Generate a Shared Access Signature URL for __storage_container_name__
 
 # OPTIONS
-
-## __--container=container__
-
-Select container name. This will overwrite the __storage_container_name__ from the config file
 
 ## __--start-datetime=start__
 
