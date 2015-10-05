@@ -1,4 +1,2 @@
 [default
-storage_account_name = bob
-storage_container_name = foo
-publishsettings = ../data/publishsettings
+default_account = bob

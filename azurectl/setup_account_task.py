@@ -13,34 +13,49 @@
 #
 """
 usage: azurectl setup account -h | --help
-       azurectl setup account add --name=<configname> --publish-settings-file=<file> --storage-account-name=<storagename> --container-name=<containername>
+       azurectl setup account configure --name=<account_name> --publish-settings-file=<file> --region=<region_name> --storage-account-name=<storagename>... --container-name=<containername>...
+       azurectl setup account add --name=<account_name> --publish-settings-file=<file>
            [--subscription-id=<subscriptionid>]
        azurectl setup account default --name=<configname>
        azurectl setup account list
+       azurectl setup account region add --name=<region_name> --storage-account-name=<storagename>... --container-name=<containername>...
+       azurectl setup account region default --name=<configname>
        azurectl setup account remove --name=<configname>
        azurectl setup account help
 
 commands:
     add
         add a new account section to the config file
+    configure
+        add a new account and region configuration to the config file
     default
         set a new default account to use if not explicitly specified
     list
-        list configured account sections
+        list configured account and region sections. Also list
+        information about default references
+    region add
+        add a new region section to the config file
+    region default
+        set a new default region to use if not explicitly specified
     remove
-        remove specified account section
+        remove specified section from config file
     help
         show manual page for config command
 
 options:
-    --container-name=<containername>
-        container name for storage account to use by default
+    --container-name=<containername...>
+        specify container name for storage account. more container names
+        can be added by providing this option multiple times. The first
+        container in the list will be the default one for the specified
+        region
     --name=<configname>
         section name to identify this account
     --publish-settings-file=<file>
         path to the Microsoft Azure account publish settings file
     --storage-account-name=<storagename>
-        storage account name to use by default
+        storage account name. more storage account names can be added by
+        providing this option multiple times. The first storage account in
+        the list will be the default one for the specified region
     --subscription-id=<subscriptionid>
         subscription id, if more than one subscription is included in your
         publish settings file.
@@ -70,11 +85,14 @@ class SetupAccountTask(CliTask):
         try:
             self.config = Config(
                 self.global_args['--account'],
+                self.global_args['--region'],
+                self.global_args['--storage-account'],
+                self.global_args['--storage-container'],
                 self.global_args['--config']
             )
             self.config_file = self.config.config_file
         except AzureAccountLoadFailed:
-            if self.command_args['add']:
+            if self.command_args['configure']:
                 self.config_file = ConfigFilePath().default_new_config()
             else:
                 raise
@@ -97,10 +115,19 @@ class SetupAccountTask(CliTask):
             self.__list()
         elif self.command_args['remove']:
             self.__remove()
+        elif self.command_args['configure']:
+            self.__configure_account_and_region()
+        elif self.command_args['add'] and self.command_args['region']:
+            self.__region_add()
         elif self.command_args['add']:
-            self.__add()
+            self.__account_add()
+        elif self.command_args['default'] and self.command_args['region']:
+            self.__set_region_default()
         elif self.command_args['default']:
-            self.__set_default()
+            self.__set_account_default()
+
+        if not self.command_args['list']:
+            self.setup.write()
 
     def __help(self):
         if self.command_args['help']:
@@ -109,17 +136,42 @@ class SetupAccountTask(CliTask):
             return False
         return self.manual
 
-    def __add(self):
-        if self.setup.add(
+    def __configure_account_and_region(self):
+        self.setup.configure_account_and_region(
             self.command_args['--name'],
             self.command_args['--publish-settings-file'],
+            self.command_args['--region'],
+            self.command_args['--storage-account-name'][0],
+            self.command_args['--container-name'][0],
             self.command_args['--storage-account-name'],
             self.command_args['--container-name'],
             self.command_args['--subscription-id']
-        ):
-            log.info('Added Account %s', self.command_args['--name'])
+        )
+        log.info(
+            'Added account %s with region %s',
+            self.command_args['--name'],
+            self.command_args['--region']
+        )
 
-    def __set_default(self):
+    def __account_add(self):
+        self.setup.add_account(
+            self.command_args['--name'],
+            self.command_args['--publish-settings-file'],
+            self.command_args['--subscription-id']
+        )
+        log.info('Added account %s', self.command_args['--name'])
+
+    def __region_add(self):
+        self.setup.add_region(
+            self.command_args['--name'],
+            self.command_args['--storage-account-name'][0],
+            self.command_args['--container-name'][0],
+            self.command_args['--storage-account-name'],
+            self.command_args['--container-name']
+        )
+        log.info('Added region %s', self.command_args['--name'])
+
+    def __set_account_default(self):
         if self.setup.set_default_account(
             self.command_args['--name']
         ):
@@ -128,16 +180,25 @@ class SetupAccountTask(CliTask):
                 self.command_args['--name']
             )
 
+    def __set_region_default(self):
+        if self.setup.set_default_region(
+            self.command_args['--name']
+        ):
+            log.info(
+                'Region %s is now set as default account',
+                self.command_args['--name']
+            )
+
     def __list(self):
         account_info = self.setup.list()
         if not account_info:
             log.info('There are no accounts configured')
         else:
-            self.result.add('accounts', account_info)
+            self.result.add('setup', account_info)
             self.out.display()
 
     def __remove(self):
         if self.setup.remove(
             self.command_args['--name']
         ):
-            log.info('Removed Account %s', self.command_args['--name'])
+            log.info('Removed config section %s', self.command_args['--name'])

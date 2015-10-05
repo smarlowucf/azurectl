@@ -45,7 +45,6 @@ class TestComputeVmTask:
     def __init_command_args(self):
         self.task.command_args = {}
         self.task.command_args['--cloud-service-name'] = 'cloudservice'
-        self.task.command_args['--region'] = 'somewhere'
         self.task.command_args['--image-name'] = 'image'
         self.task.command_args['--instance-name'] = None
         self.task.command_args['--custom-data'] = None
@@ -76,14 +75,14 @@ class TestComputeVmTask:
         self.task.process()
         self.task.cloud_service.create.assert_called_once_with(
             self.task.command_args['--cloud-service-name'],
-            self.task.command_args['--region']
+            self.task.config.region_name
         )
         mock_wait_completion.assert_called_once_with(
             self.task.cloud_service.service
         )
         self.task.vm.create_instance.assert_called_once_with(
             self.task.command_args['--cloud-service-name'],
-            self.task.command_args['--region'],
+            self.task.config.region_name,
             self.task.command_args['--image-name'],
             {},
             {},

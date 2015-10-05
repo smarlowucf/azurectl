@@ -13,7 +13,7 @@
 #
 """
 usage: azurectl compute vm -h | --help
-       azurectl compute vm create --cloud-service-name=<name> --region=<location> --image-name=<image>
+       azurectl compute vm create --cloud-service-name=<name> --image-name=<image>
            [--custom-data=<base64_string>]
            [--instance-name=<name>]
            [--instance-type=<type>]
@@ -43,8 +43,6 @@ options:
     --cloud-service-name=<name>
         name of the cloud service to put the virtual machine in.
         if the cloud service does not exist it will be created
-    --region=<location>
-        geographic region to run the virtual image
     --image-name=<image>
         name of the VHD disk image to create the virtual machine
         instance from
@@ -147,7 +145,7 @@ class ComputeVmTask(CliTask):
             'instance',
             self.vm.create_instance(
                 self.command_args['--cloud-service-name'],
-                self.command_args['--region'],
+                self.config.get_region_name(),
                 self.command_args['--image-name'],
                 linux_configuration,
                 network_configuration,
@@ -161,7 +159,7 @@ class ComputeVmTask(CliTask):
     def __create_cloud_service(self):
         cloud_service_request_id = self.cloud_service.create(
             self.command_args['--cloud-service-name'],
-            self.command_args['--region']
+            self.config.get_region_name()
         )
         if cloud_service_request_id > 0:
             # a new cloud service was created for this instance, waiting

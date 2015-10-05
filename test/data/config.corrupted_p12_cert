@@ -1,7 +1,12 @@
 [DEFAULT]
 default_account = bob
+default_region = East US 2
+
+[East US 2]
+default_storage_account = bob
+default_storage_container = foo
+storage_accounts = bob,joe
+storage_containers = foo,bar
 
 [bob]
-storage_account_name = bob
-storage_container_name = foo
 publishsettings = ../data/publishsettings.corrupted_p12_cert

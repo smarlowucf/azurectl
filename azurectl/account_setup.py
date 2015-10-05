@@ -18,6 +18,7 @@ import os
 from azurectl_exceptions import (
     AzureConfigParseError,
     AzureConfigAddAccountSectionError,
+    AzureConfigAddRegionSectionError,
     AzureConfigPublishSettingsError,
     AzureConfigWriteError
 )
@@ -26,7 +27,8 @@ from logger import log
 
 class AccountSetup(object):
     """
-        Implements setup methods to list, add and delete account configs
+        Implements setup methods to configure, list, add and delete
+        account configurations in the configuration file
     """
     def __init__(self, filename):
         self.config = ConfigParser()
@@ -45,34 +47,86 @@ class AccountSetup(object):
             list account sections
         """
         accounts = {}
-        accounts['default'] = {'name': self.get_default_account()}
+        accounts['DEFAULT'] = {
+            'account': self.__get_default_account() or '<missing>',
+            'region': self.__get_default_region() or '<missing>'
+        }
+        accounts['account'] = {}
+        accounts['region'] = {}
         for section in self.config.sections():
-            accounts[section] = {}
             for option in self.config.options(section):
-                if not option == 'default_account':
-                    accounts[section][option] = self.config.get(section, option)
+                if option == 'default_account' or option == 'default_region':
+                    continue
+                if option == 'publishsettings' or option == 'subscription_id':
+                    try:
+                        accounts['account'][section]
+                    except KeyError:
+                        accounts['account'][section] = {}
+                    accounts['account'][section][option] = self.config.get(
+                        section, option
+                    )
+                else:
+                    try:
+                        accounts['region'][section]
+                    except KeyError:
+                        accounts['region'][section] = {}
+                    accounts['region'][section][option] = self.config.get(
+                        section, option
+                    )
         return accounts
 
-    def remove(self, name):
+    def remove_account(self, name):
         """
             remove specified account section
         """
-        if name == self.get_default_account():
-            log.info('Section %s is the default section', name)
+        if name == self.__get_default_account():
+            log.info('Section %s is the default account section', name)
             log.info('Please setup a new default prior to removing')
             return False
         if not self.config.remove_section(name):
             log.info('Section %s does not exist', name)
             return False
-        self.__write()
         return True
 
-    def add(
+    def remove_region(self, name):
+        """
+            remove specified region section
+        """
+        if name == self.__get_default_region():
+            log.info('Section %s is the default region section', name)
+            log.info('Please setup a new default prior to removing')
+            return False
+        if not self.config.remove_section(name):
+            log.info('Section %s does not exist', name)
+            return False
+        return True
+
+    def configure_account_and_region(
+        self,
+        account_name,
+        publish_settings,
+        region_name,
+        default_storage_account,
+        default_storage_container,
+        storage_accounts=None,
+        storage_containers=None,
+        subscription_id=None
+    ):
+        self.add_account(
+            account_name, publish_settings, subscription_id
+        )
+        self.add_region(
+            region_name,
+            default_storage_account,
+            default_storage_container,
+            storage_accounts,
+            storage_containers
+        )
+
+    def add_account(
         self,
         section_name,
         publish_settings,
-        storage_account,
-        storage_container,
         subscription_id=None
     ):
         """
@@ -90,12 +144,6 @@ class AccountSetup(object):
         self.config.set(
             section_name, 'publishsettings', publish_settings
         )
-        self.config.set(
-            section_name, 'storage_account_name', storage_account
-        )
-        self.config.set(
-            section_name, 'storage_container_name', storage_container
-        )
         if subscription_id:
             self.config.set(
                 section_name, 'subscription_id', subscription_id
@@ -103,31 +151,63 @@ class AccountSetup(object):
         defaults = self.config.defaults()
         if 'default_account' not in defaults:
             defaults['default_account'] = section_name
-        self.__write()
-        return True
 
-    def get_default_account(self):
-        return self.config.defaults()['default_account']
+    def add_region(
+        self,
+        section_name,
+        default_storage_account,
+        default_storage_container,
+        storage_accounts=None,
+        storage_containers=None
+    ):
+        """
+            add new region section
+        """
+        try:
+            self.config.add_section(section_name)
+        except Exception as e:
+            raise AzureConfigAddRegionSectionError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
+        if not storage_accounts:
+            storage_accounts = []
+        if not storage_containers:
+            storage_containers = []
+        if default_storage_account not in storage_accounts:
+            storage_accounts.append(default_storage_account)
+        if default_storage_container not in storage_containers:
+            storage_containers.append(default_storage_container)
+        self.config.set(
+            section_name, 'default_storage_account', default_storage_account
+        )
+        self.config.set(
+            section_name, 'default_storage_container', default_storage_container
+        )
+        self.config.set(
+            section_name, 'storage_accounts', ','.join(storage_accounts)
+        )
+        self.config.set(
+            section_name, 'storage_containers', ','.join(storage_containers)
+        )
+        defaults = self.config.defaults()
+        if 'default_region' not in defaults:
+            defaults['default_region'] = section_name
 
     def set_default_account(self, section_name):
         if section_name not in self.config.sections():
             log.info('Section %s does not exist', section_name)
             return False
         self.config.defaults()['default_account'] = section_name
-        self.__write()
         return True
 
-    def __validate_publish_settings_file(self, filename):
-        """
-            validate given publish settings file for
-            + existence
-        """
-        if not os.path.isfile(filename):
-            raise AzureConfigPublishSettingsError(
-                'No such Publish Settings file: %s' % filename
-            )
+    def set_default_region(self, section_name):
+        if section_name not in self.config.sections():
+            log.info('Section %s does not exist', section_name)
+            return False
+        self.config.defaults()['default_region'] = section_name
+        return True
 
-    def __write(self):
+    def write(self):
         """
             write out config data to file
         """
@@ -142,4 +222,24 @@ class AccountSetup(object):
             raise AzureConfigWriteError(
                 'Could not write config file: %s: %s' %
                 (type(e).__name__, format(e))
+            )
+
+    def __get_default_account(self):
+        defaults = self.config.defaults()
+        if 'default_account' in defaults:
+            return defaults['default_account']
+
+    def __get_default_region(self):
+        defaults = self.config.defaults()
+        if 'default_region' in defaults:
+            return defaults['default_region']
+
+    def __validate_publish_settings_file(self, filename):
+        """
+            validate given publish settings file for
+            + existence
+        """
+        if not os.path.isfile(filename):
+            raise AzureConfigPublishSettingsError(
+                'No such Publish Settings file: %s' % filename
             )

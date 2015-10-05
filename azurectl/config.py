@@ -18,10 +18,13 @@ import sys
 
 # project
 from azurectl_exceptions import (
+    AzureConfigAccountNotFound,
+    AzureConfigRegionNotFound,
+    AzureStorageAccountInvalid,
     AzureAccountDefaultSectionNotFound,
     AzureAccountLoadFailed,
-    AzureAccountNotFound,
-    AzureAccountValueNotFound,
+    AzureConfigVariableNotFound,
+    AzureConfigSectionNotFound,
     AzureConfigParseError
 )
 from config_file_path import ConfigFilePath
@@ -29,16 +32,27 @@ from config_file_path import ConfigFilePath
 
 class Config(object):
     """
-        Reading of INI style config file attributes
+        Reading of config file attributes. Any instance holds state
+        information about Azure account, region, storage and container
+        references
     """
     PLATFORM = sys.platform[:3]
 
-    def __init__(self, account_name=None, filename=None, platform=PLATFORM):
+    def __init__(
+        self, account_name=None, region_name=None,
+        storage_account_name=None, storage_container_name=None,
+        filename=None, platform=PLATFORM
+    ):
         from logger import log
 
-        usr_config = ConfigParser()
+        paths = ConfigFilePath(platform)
 
-        self.paths = ConfigFilePath(platform)
+        self.account_name = account_name
+        self.region_name = region_name
+        self.storage_container_name = storage_container_name
+        self.storage_account_name = storage_account_name
+
+        self.config = ConfigParser()
 
         if filename and not os.path.isfile(filename):
             raise AzureAccountLoadFailed(
@@ -47,45 +61,114 @@ class Config(object):
         elif filename:
             self.config_file = filename
         else:
-            self.config_file = self.paths.default_config()
+            self.config_file = paths.default_config()
             if not self.config_file:
                 raise AzureAccountLoadFailed(
                     'could not find default configuration file %s %s: %s' %
                     (
-                        ' or '.join(self.paths.config_files),
+                        ' or '.join(paths.config_files),
                         'in home directory',
-                        self.paths.home_path
+                        paths.home_path
                     )
                 )
         try:
             log.debug('Using configuration from %s', self.config_file)
-            usr_config.read(self.config_file)
+            self.config.read(self.config_file)
         except Exception as e:
             raise AzureConfigParseError(
                 'Could not parse config file: "%s"\n%s' %
                 (self.config_file, e.message)
             )
-        if not account_name:
-            defaults = usr_config.defaults()
-            if 'default_account' not in defaults:
-                raise AzureAccountDefaultSectionNotFound(
-                    'could not find default section in configuration file %s' %
-                    self.config_file
-                )
-            account_name = defaults['default_account']
-        if not usr_config.has_section(account_name):
-            raise AzureAccountNotFound(
-                'Account %s not found' % account_name
-            )
-        self.config = usr_config
-        self.account_name = account_name
 
-    def get_option(self, option):
-        result = ''
+        defaults = self.config.defaults()
+
+        if not defaults:
+            raise AzureAccountDefaultSectionNotFound(
+                'could not find default section in configuration file %s' %
+                self.config_file
+            )
+
+        if not self.account_name and 'default_account' in defaults:
+            self.account_name = defaults['default_account']
+        self.__check_for_section(self.account_name)
+
+        if not self.region_name and 'default_region' in defaults:
+            self.region_name = defaults['default_region']
+        self.__check_for_section(self.region_name)
+
+    def get_storage_account_name(self):
+        storage_account_name = self.storage_account_name
+        if not storage_account_name:
+            storage_account_name = self.__get_region_option(
+                'default_storage_account'
+            )
+        storage_accounts = self.__get_region_option('storage_accounts')
+        if storage_account_name not in storage_accounts.split(','):
+            raise AzureStorageAccountInvalid(
+                'storage account %s not in list %s' %
+                (storage_account_name, storage_accounts)
+            )
+        return storage_account_name
+
+    def get_storage_container_name(self):
+        storage_container_name = self.storage_container_name
+        if not storage_container_name:
+            storage_container_name = self.__get_region_option(
+                'default_storage_container'
+            )
+        storage_containers = self.__get_region_option('storage_containers')
+        if storage_container_name not in storage_containers.split(','):
+            raise AzureStorageAccountInvalid(
+                'storage container %s not in list %s' %
+                (storage_container_name, storage_containers)
+            )
+        return storage_container_name
+
+    def get_subscription_id(self):
+        return self.__get_account_option('subscription_id')
+
+    def get_publishsettings_file_name(self):
+        return self.__get_account_option('publishsettings')
+
+    def get_region_name(self):
+        return self.region_name
+
+    def get_account_name(self):
+        return self.account_name
+
+    def __check_for_section(self, section):
+        if section and not self.config.has_section(section):
+            raise AzureConfigSectionNotFound(
+                'Section %s not found in configuration file %s' %
+                (section, self.config_file)
+            )
+
+    def __get_account_option(self, option):
+        if not self.account_name:
+            raise AzureConfigAccountNotFound(
+                'No account referenced in configuration file %s' %
+                self.config_file
+            )
         try:
             result = self.config.get(self.account_name, option)
         except Exception:
-            raise AzureAccountValueNotFound(
-                "%s not defined for account %s" % (option, self.account_name)
+            raise AzureConfigVariableNotFound(
+                '%s not defined for account %s in configuration file %s' %
+                (option, self.account_name, self.config_file)
+            )
+        return result
+
+    def __get_region_option(self, option):
+        if not self.region_name:
+            raise AzureConfigRegionNotFound(
+                'No region referenced in configuration file %s' %
+                self.config_file
+            )
+        try:
+            result = self.config.get(self.region_name, option)
+        except Exception:
+            raise AzureConfigVariableNotFound(
+                '%s not defined for region %s in configuration file %s' %
+                (option, self.region_name, self.config_file)
             )
         return result

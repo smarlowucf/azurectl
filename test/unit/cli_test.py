@@ -13,17 +13,19 @@ class TestCli:
             '--output-format': None,
             'compute': True,
             'help': False,
+            '--region': None,
+            '--storage-container': None,
             'setup': False,
+            '-h': False,
             '--output-style': None,
             '--config': None,
             '--account': None,
             '--debug': False,
             '--version': False,
             '--help': False,
-            '-h': False
+            '--storage-account': None
         }
         self.help_command_args = {
-            '--container': None,
             '--expiry-datetime': '30 days from start',
             '--help': False,
             '--max-chunk-size': None,
