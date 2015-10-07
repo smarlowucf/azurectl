@@ -52,7 +52,6 @@ class TestComputeStorageTask:
         self.task.command_args['show'] = False
         self.task.command_args['sas'] = False
         self.task.command_args['--color'] = False
-        self.task.command_args['--container'] = 'some-container'
         self.task.command_args['--start-datetime'] = '2015-01-01'
         self.task.command_args['--expiry-datetime'] = '2015-12-31'
         self.task.command_args['--permissions'] = 'rl'
@@ -103,7 +102,7 @@ class TestComputeStorageTask:
         self.task.command_args['show'] = True
         self.task.process()
         self.task.container.content.assert_called_once_with(
-            'some-container'
+            self.task.account.storage_container()
         )
 
     def test_start_date_validation(self):
@@ -134,7 +133,7 @@ class TestComputeStorageTask:
             self.task.command_args['--expiry-datetime']
         )
         self.task.container.sas.assert_called_once_with(
-            'some-container', start, expiry, 'rl'
+            self.task.account.storage_container(), start, expiry, 'rl'
         )
 
     @patch('azurectl.compute_storage_task.DataOutput')
@@ -148,7 +147,7 @@ class TestComputeStorageTask:
             self.task.command_args['--expiry-datetime']
         )
         self.task.container.sas.assert_called_once_with(
-            'some-container', mock.ANY, expiry, 'rl'
+            self.task.account.storage_container(), mock.ANY, expiry, 'rl'
         )
 
     @patch('azurectl.compute_storage_task.DataOutput')
@@ -163,7 +162,7 @@ class TestComputeStorageTask:
         )
         expiry = start + datetime.timedelta(days=30)
         self.task.container.sas.assert_called_once_with(
-            'some-container', start, expiry, 'rl'
+            self.task.account.storage_container(), start, expiry, 'rl'
         )
 
     @patch('azurectl.compute_storage_task.DataOutput')
@@ -177,7 +176,6 @@ class TestComputeStorageTask:
     @patch('azurectl.compute_storage_task.DataOutput')
     def test_process_compute_storage_container_from_cfg_list(self, mock_out):
         self.__init_command_args()
-        self.task.command_args['--container'] = None
         self.task.command_args['container'] = True
         self.task.command_args['list'] = True
         self.task.process()

@@ -1,0 +1,7 @@
+[DEFAULT]
+default_region = region:East US 2
+default_account = account:bob
+
+[region:East US 2]
+
+[account:bob]

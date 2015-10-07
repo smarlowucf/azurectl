@@ -40,7 +40,6 @@ class TestComputeImageTask:
         self.task.command_args['--msdn'] = False
         self.task.command_args['--image-version'] = '1.0.0'
         self.task.command_args['--delete-disk'] = False
-        self.task.command_args['--container'] = 'container'
         self.task.command_args['--label'] = 'label'
         self.task.command_args['--name'] = 'some-image'
         self.task.command_args['--blob'] = 'some-blob'
@@ -71,7 +70,7 @@ class TestComputeImageTask:
             self.task.command_args['--name'],
             self.task.command_args['--blob'],
             self.task.command_args['--label'],
-            self.task.command_args['--container']
+            self.task.account.storage_container()
         )
 
     def test_process_compute_image_help(self):

@@ -20,6 +20,9 @@ usage: azurectl -h | --help
            setup <command> [<args>...]
        azurectl [--config=<file>]
                 [--account=<name>]
+                [--region=<name>]
+                [--storage-account=<name>]
+                [--storage-container=<name>]
                 [--output-format=<format>]
                 [--output-style=<style>]
                 [--debug]
@@ -28,16 +31,28 @@ usage: azurectl -h | --help
        azurectl help
 
 global options:
-    -v --version
-        show program version
+    --account=<name>
+        account name in config file, default is default_account
+        from config file DEFAULT section
     --config=<file>
         config file, default is: ~/.config/azurectl/config
-    --account=<name>
-        account name in config file, default is: 'default'
     --output-format=<format>
         output formats, supported are: json
     --output-style=<style>
         output styles, supported are: standard, color
+    --region=<name>
+        region name in config file, default is default_region
+        from config file DEFAULT section
+    --storage-account=<name>
+        storage account name in config file. The account name must be
+        part of the storage_accounts setup of the associated region
+        in the configuration file
+    --storage-container=<name>
+        storage container name in the config file. The container name
+        must be part of the storage_containers setup of the associated
+        region in the configuration file
+    -v --version
+        show program version
     help
         show manual page
 """

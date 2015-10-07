@@ -121,9 +121,10 @@ azurectl provides the __setup__ command. The default account section
 as described above could be created using the following command
 
 ```
-$ azurectl setup account add \
+$ azurectl setup account configure \
   --name default \
   --publish-settings-file /path/to/publish/settings/file \
+  --region region
   --storage-account-name storage_account_name \
   --container-name container_name
 ```

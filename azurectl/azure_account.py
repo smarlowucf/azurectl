@@ -25,7 +25,7 @@ import base64
 
 # project
 from azurectl_exceptions import (
-    AzureAccountValueNotFound,
+    AzureConfigVariableNotFound,
     AzureServiceManagementError,
     AzureSubscriptionPrivateKeyDecodeError,
     AzureSubscriptionCertificateDecodeError,
@@ -45,15 +45,15 @@ class AzureAccount(object):
         self.service = None
 
     def storage_name(self):
-        return self.config.get_option('storage_account_name')
+        return self.config.get_storage_account_name()
 
     def storage_container(self):
-        return self.config.get_option('storage_container_name')
+        return self.config.get_storage_container_name()
 
     def subscription_id(self):
         try:
-            return self.config.get_option('subscription_id')
-        except AzureAccountValueNotFound:
+            return self.config.get_subscription_id()
+        except AzureConfigVariableNotFound:
             return self.__get_first_subscription_id()
 
     def storage_key(self, name=None):
@@ -179,7 +179,7 @@ class AzureAccount(object):
 
     def __read_xml(self):
         try:
-            self.settings = self.config.get_option('publishsettings')
+            self.settings = self.config.get_publishsettings_file_name()
             return minidom.parse(self.settings)
         except Exception as e:
             raise AzureSubscriptionParseError(

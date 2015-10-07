@@ -1,9 +1,5 @@
-[bob]
-storage_account_name = bob
-storage_container_name = foo
+[account:bob]
 publishsettings = ../data/publishsettings
 
-[foo]
-storage_account_name = bob
-storage_container_name = foo
+[account:foo]
 publishsettings = ../data/publishsettings

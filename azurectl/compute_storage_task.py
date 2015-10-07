@@ -16,9 +16,7 @@ usage: azurectl compute storage -h | --help
        azurectl compute storage account list
        azurectl compute storage container list
        azurectl compute storage container show
-           [--container=<container>]
        azurectl compute storage container sas
-           [--container=<container>]
            [--start-datetime=<start>]
            [--expiry-datetime=<expiry>]
            [--permissions=<permissions>]
@@ -27,10 +25,8 @@ usage: azurectl compute storage -h | --help
        azurectl compute storage share delete --name=<sharename>
        azurectl compute storage upload --source=<file> --name=<blobname>
            [--max-chunk-size=<size>]
-           [--container=<container>]
            [--quiet]
        azurectl compute storage delete --name=<blobname>
-           [--container=<container>]
        azurectl compute storage account help
        azurectl compute storage container help
        azurectl compute storage help
@@ -64,8 +60,6 @@ options:
         sharename: name of the files share
     --max-chunk-size=<size>
         max chunk size in bytes for upload, default 4MB
-    --container=<container>
-        container name, overwrites configuration value
     --start-datetime=<start>
         Date (and optionally time) to grant access via a shared access
         signature. [default: now]
@@ -120,10 +114,7 @@ class ComputeStorageTask(CliTask):
 
         self.account = AzureAccount(self.config)
 
-        if self.command_args['--container']:
-            container_name = self.command_args['--container']
-        else:
-            container_name = self.account.storage_container()
+        container_name = self.account.storage_container()
 
         # default to 1 minute ago (skew around 'now')
         if self.command_args['--start-datetime'] == 'now':

@@ -8,7 +8,6 @@ __azurectl__ compute image list
 
 __azurectl__ compute image create --name=*imagename* --blob=*blobname*
 
-    [--container=container]
     [--label=label]
 
 __azurectl__ compute image replicate --name=*imagename* --regions=*regionlist* --offer=*offer* --sku=*sku* --image-version=*version*
@@ -45,10 +44,6 @@ publishers. You have to be registered as image publisher with Windows
 Azure to be able to call this.
 
 # OPTIONS
-
-## __--container=container__
-
-Select container name. This will overwrite the __storage_container_name__ from the config file
 
 ## __--label__
 

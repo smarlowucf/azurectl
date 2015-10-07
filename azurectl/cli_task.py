@@ -57,5 +57,8 @@ class CliTask(object):
     def load_config(self):
         self.config = Config(
             self.global_args['--account'],
+            self.global_args['--region'],
+            self.global_args['--storage-account'],
+            self.global_args['--storage-container'],
             self.global_args['--config']
         )

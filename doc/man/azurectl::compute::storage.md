@@ -22,10 +22,6 @@ Delete a file from a container
 
 # OPTIONS
 
-## __--container=container__
-
-Select container name. This will overwrite the __storage_container_name__ from the config file
-
 ## __--max-chunk-size=byte_size__
 
 Specify the maximum page size for uploading data. By default a page size of 4MB is used

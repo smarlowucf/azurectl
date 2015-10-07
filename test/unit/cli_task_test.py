@@ -3,6 +3,8 @@ import mock
 from nose.tools import *
 from mock import patch
 
+import logging
+
 import nose_helper
 
 import azurectl
@@ -21,15 +23,23 @@ class TestCliTask:
         CliTask()
         help_show.assert_called_once_with('azurectl')
 
-    @patch('os.path.isfile')
-    @patch('ConfigParser.ConfigParser.has_section')
+    @patch('azurectl.cli_task.Cli.show_help')
+    @patch('azurectl.cli_task.Config')
     @patch('azurectl.logger.log.setLevel')
-    def test_global_args(self, mock_setlevel, mock_section, mock_isfile):
+    def test_cli_init(
+        self, mock_loglevel, mock_config, mock_show_help,
+    ):
         sys.argv = [
-            sys.argv[0], '--debug',
-            '--account', 'account', '--config', 'config',
+            sys.argv[0],
+            '--debug',
+            '--account', 'account',
+            '--region', 'region',
+            '--config', 'config',
             'compute', 'storage', 'account', 'list'
         ]
+        mock_show_help.return_value = False
         task = CliTask()
-        assert task.config.account_name == 'account'
-        assert task.config.config_file == 'config'
+        mock_config.assert_called_once_with(
+            'account', 'region', None, None, 'config'
+        )
+        mock_loglevel.assert_called_once_with(logging.DEBUG)

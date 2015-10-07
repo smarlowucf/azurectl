@@ -45,7 +45,27 @@ class AzureConfigPublishSettingsError(AzureError):
     pass
 
 
+class AzureConfigAccountNotFound(AzureError):
+    pass
+
+
+class AzureConfigRegionNotFound(AzureError):
+    pass
+
+
 class AzureConfigAddAccountSectionError(AzureError):
+    pass
+
+
+class AzureConfigAddRegionSectionError(AzureError):
+    pass
+
+
+class AzureConfigSectionNotFound(AzureError):
+    pass
+
+
+class AzureConfigVariableNotFound(AzureError):
     pass
 
 
@@ -129,11 +149,7 @@ class AzureAccountLoadFailed(AzureError):
     pass
 
 
-class AzureAccountNotFound(AzureError):
-    pass
-
-
-class AzureAccountValueNotFound(AzureError):
+class AzureStorageAccountInvalid(AzureError):
     pass
 
 

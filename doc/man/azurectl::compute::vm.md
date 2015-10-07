@@ -4,7 +4,7 @@ azurectl - Command Line Interface to manage Microsoft Azure
 
 # SYNOPSIS
 
-__azurectl__ compute vm create --cloud-service-name=*name* --region=*location* --image-name=*image*
+__azurectl__ compute vm create --cloud-service-name=*name* --image-name=*image*
 
     [--custom-data=base64_string]
     [--instance-name=name]
@@ -45,10 +45,6 @@ List available instance types and their attributes
 ## __--cloud-service-name=name__
 
 Name of the cloud service to put the virtual machine in. If the cloud service does not exist it will be created.
-
-## __--region=location__
-
-Geographic region to run the virtual image in. Please note the region the VHD disk is stored may not be different from the region the instance should run. If this is a different location the service will respond with an exception.
 
 ## __--image-name=image__
 

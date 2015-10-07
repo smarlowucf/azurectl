@@ -15,7 +15,6 @@
 usage: azurectl compute image -h | --help
        azurectl compute image list
        azurectl compute image create --name=<imagename> --blob=<blobname>
-           [--container=<container>]
            [--label=<imagelabel>]
        azurectl compute image delete --name=<imagename>
            [--delete-disk]
@@ -35,8 +34,6 @@ commands:
         show manual page for image command
 
 options:
-    --container=<container>
-        container name, overwrites configuration value
     --delete-disk
         on deletion of the image also delete the associated VHD disk
     --label=<imagelabel>
@@ -83,8 +80,9 @@ class ComputeImageTask(CliTask):
             self.global_args['--output-style']
         )
 
-        account = AzureAccount(self.config)
-        self.image = Image(account)
+        self.account = AzureAccount(self.config)
+
+        self.image = Image(self.account)
         if self.command_args['list']:
             self.__list()
         elif self.command_args['create']:
@@ -112,7 +110,7 @@ class ComputeImageTask(CliTask):
                 self.command_args['--name'],
                 self.command_args['--blob'],
                 self.command_args['--label'],
-                self.command_args['--container']
+                self.account.storage_container()
             )
         )
         self.out.display()

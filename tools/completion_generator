@@ -59,7 +59,7 @@ class AppHash:
                             )
                             cur_path = self.merge(result_keys, self.result)
                     elif re.match('                \[', line):
-                        opt_val = re.search('                \[(--.*)', line)
+                        opt_val = re.search('                \[(--.*)\]', line)
                         global_opt = opt_val.group(1)
                         result_keys = self.validate(
                             ['azurectl', global_opt]
