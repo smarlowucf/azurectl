@@ -90,10 +90,14 @@ class Config(object):
 
         if not self.account_name and 'default_account' in defaults:
             self.account_name = defaults['default_account']
+        else:
+            self.account_name = 'account:' + self.account_name
         self.__check_for_section(self.account_name)
 
         if not self.region_name and 'default_region' in defaults:
             self.region_name = defaults['default_region']
+        else:
+            self.region_name = 'region:' + self.region_name
         self.__check_for_section(self.region_name)
 
     def get_storage_account_name(self):
@@ -131,10 +135,10 @@ class Config(object):
         return self.__get_account_option('publishsettings')
 
     def get_region_name(self):
-        return self.region_name
+        return self.region_name.replace('region:', '')
 
     def get_account_name(self):
-        return self.account_name
+        return self.account_name.replace('account:', '')
 
     def __check_for_section(self, section):
         if section and not self.config.has_section(section):

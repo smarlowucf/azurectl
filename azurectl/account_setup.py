@@ -51,34 +51,27 @@ class AccountSetup(object):
             'account': self.__get_default_account() or '<missing>',
             'region': self.__get_default_region() or '<missing>'
         }
-        accounts['account'] = {}
-        accounts['region'] = {}
+        accounts['accounts'] = {}
+        accounts['regions'] = {}
         for section in self.config.sections():
+            options = {}
             for option in self.config.options(section):
                 if option == 'default_account' or option == 'default_region':
                     continue
-                if option == 'publishsettings' or option == 'subscription_id':
-                    try:
-                        accounts['account'][section]
-                    except KeyError:
-                        accounts['account'][section] = {}
-                    accounts['account'][section][option] = self.config.get(
-                        section, option
-                    )
-                else:
-                    try:
-                        accounts['region'][section]
-                    except KeyError:
-                        accounts['region'][section] = {}
-                    accounts['region'][section][option] = self.config.get(
-                        section, option
-                    )
+                options[option] = self.config.get(
+                    section, option
+                )
+            if section.startswith('region:'):
+                accounts['regions'][section] = options
+            else:
+                accounts['accounts'][section] = options
         return accounts
 
     def remove_account(self, name):
         """
             remove specified account section
         """
+        name = 'account:' + name
         if name == self.__get_default_account():
             log.info('Section %s is the default account section', name)
             log.info('Please setup a new default prior to removing')
@@ -92,6 +85,7 @@ class AccountSetup(object):
         """
             remove specified region section
         """
+        name = 'region:' + name
         if name == self.__get_default_region():
             log.info('Section %s is the default region section', name)
             log.info('Please setup a new default prior to removing')
@@ -132,6 +126,7 @@ class AccountSetup(object):
         """
             add new account section
         """
+        section_name = 'account:' + section_name
         self.__validate_publish_settings_file(
             publish_settings
         )
@@ -163,6 +158,7 @@ class AccountSetup(object):
         """
             add new region section
         """
+        section_name = 'region:' + section_name
         try:
             self.config.add_section(section_name)
         except Exception as e:
@@ -194,6 +190,7 @@ class AccountSetup(object):
             defaults['default_region'] = section_name
 
     def set_default_account(self, section_name):
+        section_name = 'account:' + section_name
         if section_name not in self.config.sections():
             log.info('Section %s does not exist', section_name)
             return False
@@ -201,6 +198,7 @@ class AccountSetup(object):
         return True
 
     def set_default_region(self, section_name):
+        section_name = 'region:' + section_name
         if section_name not in self.config.sections():
             log.info('Section %s does not exist', section_name)
             return False

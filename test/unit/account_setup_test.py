@@ -22,25 +22,25 @@ class TestAccountSetup:
         self.setup = AccountSetup('../data/config')
         self.orig_data = {
             'DEFAULT': {
-                'account': 'bob',
-                'region': 'East US 2'
+                'account': 'account:bob',
+                'region': 'region:East US 2'
             },
-            'account': {
-                'bob': {
+            'accounts': {
+                'account:bob': {
                     'publishsettings': '../data/publishsettings'
                 },
-                'foo': {
+                'account:foo': {
                     'publishsettings': '../data/publishsettings'
                 }
             },
-            'region': {
-                'East US 2': {
+            'regions': {
+                'region:East US 2': {
                     'default_storage_container': 'foo',
                     'storage_accounts': 'bob,joe',
                     'storage_containers': 'foo,bar',
                     'default_storage_account': 'bob'
                 },
-                'West US 1': {
+                'region:West US 1': {
                     'default_storage_container': 'bar',
                     'storage_accounts': 'bob,joe',
                     'storage_containers': 'foo,bar',
@@ -50,22 +50,22 @@ class TestAccountSetup:
         }
         self.delete_account_data = {
             'DEFAULT': {
-                'account': 'bob',
-                'region': 'East US 2'
+                'account': 'account:bob',
+                'region': 'region:East US 2'
             },
-            'account': {
-                'bob': {
+            'accounts': {
+                'account:bob': {
                     'publishsettings': '../data/publishsettings'
                 }
             },
-            'region': {
-                'East US 2': {
+            'regions': {
+                'region:East US 2': {
                     'default_storage_account': 'bob',
                     'default_storage_container': 'foo',
                     'storage_accounts': 'bob,joe',
                     'storage_containers': 'foo,bar'
                 },
-                'West US 1': {
+                'region:West US 1': {
                     'default_storage_container': 'bar',
                     'storage_accounts': 'bob,joe',
                     'storage_containers': 'foo,bar',
@@ -75,19 +75,19 @@ class TestAccountSetup:
         }
         self.delete_region_data = {
             'DEFAULT': {
-                'account': 'bob',
-                'region': 'East US 2'
+                'account': 'account:bob',
+                'region': 'region:East US 2'
             },
-            'account': {
-                'bob': {
+            'accounts': {
+                'account:bob': {
                     'publishsettings': '../data/publishsettings'
                 },
-                'foo': {
+                'account:foo': {
                     'publishsettings': '../data/publishsettings'
                 }
             },
-            'region': {
-                'East US 2': {
+            'regions': {
+                'region:East US 2': {
                     'default_storage_account': 'bob',
                     'default_storage_container': 'foo',
                     'storage_accounts': 'bob,joe',
@@ -97,29 +97,29 @@ class TestAccountSetup:
         }
         self.add_account_data = {
             'DEFAULT': {
-                'account': 'bob',
-                'region': 'East US 2'
+                'account': 'account:bob',
+                'region': 'region:East US 2'
             },
-            'account': {
-                'bob': {
+            'accounts': {
+                'account:bob': {
                     'publishsettings': '../data/publishsettings'
                 },
-                'foo': {
+                'account:foo': {
                     'publishsettings': '../data/publishsettings'
                 },
-                'xxx': {
+                'account:xxx': {
                     'subscription_id': '1234',
                     'publishsettings': '../data/publishsettings'
                 }
             },
-            'region': {
-                'East US 2': {
+            'regions': {
+                'region:East US 2': {
                     'default_storage_account': 'bob',
                     'default_storage_container': 'foo',
                     'storage_accounts': 'bob,joe',
                     'storage_containers': 'foo,bar'
                 },
-                'West US 1': {
+                'region:West US 1': {
                     'default_storage_container': 'bar',
                     'storage_accounts': 'bob,joe',
                     'storage_containers': 'foo,bar',
@@ -129,31 +129,31 @@ class TestAccountSetup:
         }
         self.add_region_data = {
             'DEFAULT': {
-                'account': 'bob',
-                'region': 'East US 2'
+                'account': 'account:bob',
+                'region': 'region:East US 2'
             },
-            'account': {
-                'bob': {
+            'accounts': {
+                'account:bob': {
                     'publishsettings': '../data/publishsettings'
                 },
-                'foo': {
+                'account:foo': {
                     'publishsettings': '../data/publishsettings'
                 }
             },
-            'region': {
-                'East US 2': {
+            'regions': {
+                'region:East US 2': {
                     'default_storage_account': 'bob',
                     'default_storage_container': 'foo',
                     'storage_accounts': 'bob,joe',
                     'storage_containers': 'foo,bar'
                 },
-                'West US 1': {
+                'region:West US 1': {
                     'default_storage_container': 'bar',
                     'storage_accounts': 'bob,joe',
                     'storage_containers': 'foo,bar',
                     'default_storage_account': 'joe'
                 },
-                'some-region': {
+                'region:some-region': {
                     'default_storage_account': 'storage',
                     'default_storage_container': 'container',
                     'storage_accounts': 'storage,joe',
@@ -163,35 +163,35 @@ class TestAccountSetup:
         }
         self.configure_data = {
             'DEFAULT': {
-                'account': 'bob',
-                'region': 'East US 2'
+                'account': 'account:bob',
+                'region': 'region:East US 2'
             },
-            'account': {
-                'bob': {
+            'accounts': {
+                'account:bob': {
                     'publishsettings': '../data/publishsettings'
                 },
-                'foo': {
+                'account:foo': {
                     'publishsettings': '../data/publishsettings'
                 },
-                'xxx': {
+                'account:xxx': {
                     'subscription_id': '1234',
                     'publishsettings': '../data/publishsettings'
                 }
             },
-            'region': {
-                'East US 2': {
+            'regions': {
+                'region:East US 2': {
                     'default_storage_account': 'bob',
                     'default_storage_container': 'foo',
                     'storage_accounts': 'bob,joe',
                     'storage_containers': 'foo,bar'
                 },
-                'West US 1': {
+                'region:West US 1': {
                     'default_storage_container': 'bar',
                     'storage_accounts': 'bob,joe',
                     'storage_containers': 'foo,bar',
                     'default_storage_account': 'joe'
                 },
-                'some-region': {
+                'region:some-region': {
                     'default_storage_account': 'storage',
                     'default_storage_container': 'container',
                     'storage_accounts': 'storage,joe',
@@ -230,17 +230,17 @@ class TestAccountSetup:
         setup.add_account(
             'some-account', '../data/publishsettings', '1234'
         )
-        assert setup.list()['DEFAULT']['account'] == 'some-account'
+        assert setup.list()['DEFAULT']['account'] == 'account:some-account'
 
     def test_add_first_region_as_default(self):
         setup = AccountSetup('../data/config.new')
         setup.add_region(
-            'some-region', 'storage', 'container'
+            'earth', 'storage', 'container'
         )
-        assert setup.list()['DEFAULT']['region'] == 'some-region'
-        assert setup.list()['region']['some-region']['storage_accounts'] == \
+        assert setup.list()['DEFAULT']['region'] == 'region:earth'
+        assert setup.list()['regions']['region:earth']['storage_accounts'] ==\
             'storage'
-        assert setup.list()['region']['some-region']['storage_containers'] == \
+        assert setup.list()['regions']['region:earth']['storage_containers'] ==\
             'container'
 
     @patch('__builtin__.open')
@@ -255,12 +255,12 @@ class TestAccountSetup:
 
     def test_set_default_account(self):
         self.setup.set_default_account('foo')
-        assert self.setup.list()['DEFAULT']['account'] == 'foo'
+        assert self.setup.list()['DEFAULT']['account'] == 'account:foo'
         assert self.setup.set_default_account('foofoo') == False
 
     def test_set_default_region(self):
         self.setup.set_default_region('West US 1')
-        assert self.setup.list()['DEFAULT']['region'] == 'West US 1'
+        assert self.setup.list()['DEFAULT']['region'] == 'region:West US 1'
         assert self.setup.set_default_region('foofoo') == False
 
     def test_remove_account(self):
@@ -301,11 +301,11 @@ class TestAccountSetup:
     @raises(AzureConfigAddAccountSectionError)
     def test_add_account_raise(self):
         self.setup.add_account(
-            'default', '../data/publishsettings'
+            'bob', '../data/publishsettings'
         )
 
     @raises(AzureConfigAddRegionSectionError)
     def test_add_region_raise(self):
         self.setup.add_region(
-            'default', 'some-region', 'storage'
+            'East US 2', 'some-region', 'storage'
         )

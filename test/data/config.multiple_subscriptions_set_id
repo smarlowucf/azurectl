@@ -1,13 +1,13 @@
 [DEFAULT]
-default_account = bob
-default_region = East US 2
+default_account = account:bob
+default_region = region:East US 2
 
-[East US 2]
+[region:East US 2]
 default_storage_account = bob
 default_storage_container = foo
 storage_accounts = bob,joe
 storage_containers = foo,bar
 
-[bob]
+[account:bob]
 publishsettings = ../data/publishsettings.multiple_subscriptions
 subscription_id = second

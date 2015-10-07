@@ -1,5 +1,5 @@
-[bob]
+[account:bob]
 publishsettings = ../data/publishsettings
 
-[foo]
+[account:foo]
 publishsettings = ../data/publishsettings

@@ -75,14 +75,14 @@ class TestComputeVmTask:
         self.task.process()
         self.task.cloud_service.create.assert_called_once_with(
             self.task.command_args['--cloud-service-name'],
-            self.task.config.region_name
+            self.task.config.get_region_name()
         )
         mock_wait_completion.assert_called_once_with(
             self.task.cloud_service.service
         )
         self.task.vm.create_instance.assert_called_once_with(
             self.task.command_args['--cloud-service-name'],
-            self.task.config.region_name,
+            self.task.config.get_region_name(),
             self.task.command_args['--image-name'],
             {},
             {},
