@@ -18,8 +18,7 @@ usage: azurectl -h | --help
                 [--output-style=<style>]
                 [--debug]
            setup <command> [<args>...]
-       azurectl [--config=<file>]
-                [--account=<name>]
+       azurectl [--config=<file> | --account=<name>]
                 [--region=<name>]
                 [--storage-account=<name>]
                 [--storage-container=<name>]
@@ -32,8 +31,8 @@ usage: azurectl -h | --help
 
 global options:
     --account=<name>
-        account name in config file, default is default_account
-        from config file DEFAULT section
+        account template name. The given name is used as config file
+        template: ~/.config/azurectl/<name>.config.
     --config=<file>
         config file, default is: ~/.config/azurectl/config
     --output-format=<format>

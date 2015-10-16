@@ -32,7 +32,6 @@ class TestCliTask:
         sys.argv = [
             sys.argv[0],
             '--debug',
-            '--account', 'account',
             '--region', 'region',
             '--config', 'config',
             'compute', 'storage', 'account', 'list'
@@ -40,6 +39,6 @@ class TestCliTask:
         mock_show_help.return_value = False
         task = CliTask()
         mock_config.assert_called_once_with(
-            'account', 'region', None, None, 'config'
+            None, 'region', None, None, 'config'
         )
         mock_loglevel.assert_called_once_with(logging.DEBUG)

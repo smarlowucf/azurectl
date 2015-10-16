@@ -35,7 +35,9 @@ class TestVirtualMachine:
             media_link='url'
         )]
         account = AzureAccount(
-            Config('bob', 'East US 2', None, None, '../data/config')
+            Config(
+                region_name='East US 2', filename='../data/config'
+            )
         )
         credentials = namedtuple(
             'credentials',

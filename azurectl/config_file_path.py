@@ -21,11 +21,20 @@ class ConfigFilePath(object):
     """
     PLATFORM = sys.platform[:3]
 
-    def __init__(self, platform=PLATFORM):
+    def __init__(self, template=None, platform=PLATFORM):
         self.platform = platform
-        self.config_files = [
-            '.config/azurectl/config', '.azurectl/config'
+        self.config_directories_in_home = [
+            '.config/azurectl/', '.azurectl/'
         ]
+        self.config_files = []
+        self.template_config_file = None
+        for directory in self.config_directories_in_home:
+            self.config_files.append(directory + 'config')
+
+        if template:
+            self.template_config_file = \
+                self.config_directories_in_home[0] + template + '.config'
+
         self.home_path = self.__home_path()
 
     def default_new_config(self):
@@ -35,6 +44,17 @@ class ConfigFilePath(object):
         """
         return self.__full_qualified_config(self.config_files[0])
 
+    def default_new_template_config(self):
+        """
+            The fully qualified path of the config file when
+            using a template name
+        """
+        full_qualified_config = self.__full_qualified_config(
+            self.template_config_file
+        )
+        if os.path.isfile(full_qualified_config):
+            return full_qualified_config
+
     def default_config(self):
         """
             Find and return the path of the first config_file that exists
@@ -43,7 +63,6 @@ class ConfigFilePath(object):
             full_qualified_config = self.__full_qualified_config(filename)
             if os.path.isfile(full_qualified_config):
                 return full_qualified_config
-        return None
 
     def __home_path(self):
         homeEnvVar = 'HOME'

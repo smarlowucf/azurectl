@@ -38,7 +38,9 @@ class TestImage:
             media_link='url'
         )]
         account = AzureAccount(
-            Config('bob', 'East US 2', None, None, '../data/config')
+            Config(
+                region_name='East US 2', filename='../data/config'
+            )
         )
         credentials = namedtuple(
             'credentials',
@@ -59,17 +61,21 @@ class TestImage:
         mock_list_os_images.return_value = self.list_os_images
         assert self.image.list() == [self.list_os_images.pop()._asdict()]
 
+    @patch('azurectl.image.ServiceManagementService.list_os_images')
     @raises(AzureOsImageListError)
-    def test_list_raises_error(self):
+    def test_list_raises_error(self, mock_list_os_images):
+        mock_list_os_images.side_effect = Exception
         self.image.list()
 
     @raises(AzureBlobServicePropertyError)
     def test_create_raise_blob_error(self):
         self.image.create('some-name', 'some-blob')
 
+    @patch('azurectl.image.ServiceManagementService.add_os_image')
     @patch('azurectl.image.BlobService.get_blob_properties')
     @raises(AzureOsImageCreateError)
-    def test_create_raise_os_image_error(self, mock_get_blob_props):
+    def test_create_raise_os_image_error(self, mock_get_blob_props, mock_add_os_image):
+        mock_add_os_image.side_effect = Exception
         self.image.create('some-name', 'some-blob')
 
     @patch('azurectl.image.ServiceManagementService.add_os_image')
@@ -88,18 +94,20 @@ class TestImage:
         )
 
     @patch('azurectl.image.ServiceManagementService.delete_os_image')
-    def test_delete(self, mock_add_delete_image):
-        mock_add_delete_image.return_value = self.myrequest
+    def test_delete(self, mock_delete_image):
+        mock_delete_image.return_value = self.myrequest
         request_id = self.image.delete(
             'some-name', False
         )
         assert request_id == 42
-        mock_add_delete_image.assert_called_once_with(
+        mock_delete_image.assert_called_once_with(
             'some-name', False
         )
 
+    @patch('azurectl.image.ServiceManagementService.delete_os_image')
     @raises(AzureOsImageDeleteError)
-    def test_delete_raise_os_delete_error(self):
+    def test_delete_raise_os_delete_error(self, mock_delete_image):
+        mock_delete_image.side_effect = Exception
         self.image.delete('some-name')
 
     @patch('azurectl.image.ComputeManagementService.replicate')

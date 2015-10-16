@@ -38,7 +38,9 @@ class TestCloudService:
             media_link='url'
         )]
         account = AzureAccount(
-            Config('bob', 'East US 2', None, None, '../data/config')
+            Config(
+                region_name='East US 2', filename='../data/config'
+            )
         )
         credentials = namedtuple(
             'credentials',
@@ -187,8 +189,10 @@ class TestCloudService:
         assert request_id == 42
 
     @patch('azurectl.cloud_service.ServiceManagementService.create_hosted_service')
+    @patch('azurectl.cloud_service.ServiceManagementService.get_hosted_service_properties')
     @raises(AzureCloudServiceCreateError)
-    def test_create_service_error(self, mock_create_service):
+    def test_create_service_error(self, mock_get_service, mock_create_service):
+        mock_get_service.side_effect = Exception
         mock_create_service.side_effect = AzureCloudServiceCreateError
         self.service.create('cloud-service', 'region', 'my-cloud', 'label')
 

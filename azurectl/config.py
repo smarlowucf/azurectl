@@ -39,38 +39,24 @@ class Config(object):
     PLATFORM = sys.platform[:3]
 
     def __init__(
-        self, account_name=None, region_name=None,
-        storage_account_name=None, storage_container_name=None,
-        filename=None, platform=PLATFORM
+        self,
+        account_file_template_name=None,
+        region_name=None,
+        storage_account_name=None,
+        storage_container_name=None,
+        filename=None,
+        platform=PLATFORM
     ):
         from logger import log
 
-        paths = ConfigFilePath(platform)
-
-        self.account_name = account_name
-        self.region_name = region_name
         self.storage_container_name = storage_container_name
         self.storage_account_name = storage_account_name
 
-        self.config = ConfigParser()
+        self.config_file = self.__lookup_config_file(
+            platform, account_file_template_name, filename
+        )
 
-        if filename and not os.path.isfile(filename):
-            raise AzureAccountLoadFailed(
-                'Could not find config file: %s' % filename
-            )
-        elif filename:
-            self.config_file = filename
-        else:
-            self.config_file = paths.default_config()
-            if not self.config_file:
-                raise AzureAccountLoadFailed(
-                    'could not find default configuration file %s %s: %s' %
-                    (
-                        ' or '.join(paths.config_files),
-                        'in home directory',
-                        paths.home_path
-                    )
-                )
+        self.config = ConfigParser()
         try:
             log.debug('Using configuration from %s', self.config_file)
             self.config.read(self.config_file)
@@ -80,25 +66,16 @@ class Config(object):
                 (self.config_file, e.message)
             )
 
-        defaults = self.config.defaults()
-
-        if not defaults:
+        if not self.config.defaults():
             raise AzureAccountDefaultSectionNotFound(
-                'could not find default section in configuration file %s' %
+                'Empty or undefined default section in configuration file %s' %
                 self.config_file
             )
 
-        if not self.account_name and 'default_account' in defaults:
-            self.account_name = defaults['default_account']
-        else:
-            self.account_name = 'account:' + self.account_name
-        self.__check_for_section(self.account_name)
-
-        if not self.region_name and 'default_region' in defaults:
-            self.region_name = defaults['default_region']
-        else:
-            self.region_name = 'region:' + self.region_name
-        self.__check_for_section(self.region_name)
+        self.account_name = self.__import_default_account()
+        self.region_name = self.__import_default_region(
+            region_name
+        )
 
     def get_storage_account_name(self):
         storage_account_name = self.storage_account_name
@@ -148,11 +125,6 @@ class Config(object):
             )
 
     def __get_account_option(self, option):
-        if not self.account_name:
-            raise AzureConfigAccountNotFound(
-                'No account referenced in configuration file %s' %
-                self.config_file
-            )
         try:
             result = self.config.get(self.account_name, option)
         except Exception:
@@ -163,11 +135,6 @@ class Config(object):
         return result
 
     def __get_region_option(self, option):
-        if not self.region_name:
-            raise AzureConfigRegionNotFound(
-                'No region referenced in configuration file %s' %
-                self.config_file
-            )
         try:
             result = self.config.get(self.region_name, option)
         except Exception:
@@ -176,3 +143,63 @@ class Config(object):
                 (option, self.region_name, self.config_file)
             )
         return result
+
+    def __lookup_config_file(self, platform, template, filename):
+        paths = ConfigFilePath(template, platform)
+        if filename:
+            # lookup config file as provided by the --config option
+            if not os.path.isfile(filename):
+                raise AzureAccountLoadFailed(
+                    'Could not find config file: %s' % filename
+                )
+        elif template:
+            # lookup config file as provided by the --account option
+            filename = paths.default_new_template_config()
+            if not filename:
+                raise AzureAccountLoadFailed(
+                    'Could not find account config file: %s %s: %s' %
+                    (
+                        paths.template_config_file, 'in home directory',
+                        paths.home_path
+                    )
+                )
+        else:
+            # lookup default config file
+            filename = paths.default_config()
+            if not filename:
+                raise AzureAccountLoadFailed(
+                    'could not find default configuration file %s %s: %s' %
+                    (
+                        ' or '.join(paths.config_files),
+                        'in home directory',
+                        paths.home_path
+                    )
+                )
+        return filename
+
+    def __import_default_region(self, region_name):
+        defaults = self.config.defaults()
+        if region_name:
+            region_name = 'region:' + region_name
+        else:
+            try:
+                region_name = defaults['default_region']
+            except Exception:
+                raise AzureConfigRegionNotFound(
+                    'No region referenced in configuration file %s' %
+                    self.config_file
+                )
+        self.__check_for_section(region_name)
+        return region_name
+
+    def __import_default_account(self):
+        defaults = self.config.defaults()
+        try:
+            account_name = defaults['default_account']
+        except Exception:
+            raise AzureConfigAccountNotFound(
+                'No account referenced in configuration file %s' %
+                self.config_file
+            )
+        self.__check_for_section(account_name)
+        return account_name
