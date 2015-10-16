@@ -87,13 +87,3 @@ class TestConfig:
         Config(
             region_name='East US 2', filename='../data/config.no_default'
         )
-
-    @raises(AzureStorageAccountInvalid)
-    def test_invalid_storage_account_name(self):
-        self.config.storage_account_name = 'xxx'
-        self.config.get_storage_account_name()
-
-    @raises(AzureStorageAccountInvalid)
-    def test_invalid_storage_container_name(self):
-        self.config.storage_container_name = 'xxx'
-        self.config.get_storage_container_name()

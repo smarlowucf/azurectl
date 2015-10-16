@@ -41,8 +41,6 @@ class TestSetupAccountTask_NoConfig:
             task.command_args['--name'],
             task.command_args['--publish-settings-file'],
             task.command_args['--region'],
-            task.command_args['--storage-account-name'][0],
-            task.command_args['--container-name'][0],
             task.command_args['--storage-account-name'],
             task.command_args['--container-name'],
             None

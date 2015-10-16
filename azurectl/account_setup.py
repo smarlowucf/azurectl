@@ -102,8 +102,6 @@ class AccountSetup(object):
         region_name,
         default_storage_account,
         default_storage_container,
-        storage_accounts=None,
-        storage_containers=None,
         subscription_id=None
     ):
         self.add_account(
@@ -112,9 +110,7 @@ class AccountSetup(object):
         self.add_region(
             region_name,
             default_storage_account,
-            default_storage_container,
-            storage_accounts,
-            storage_containers
+            default_storage_container
         )
 
     def add_account(
@@ -151,9 +147,7 @@ class AccountSetup(object):
         self,
         section_name,
         default_storage_account,
-        default_storage_container,
-        storage_accounts=None,
-        storage_containers=None
+        default_storage_container
     ):
         """
             add new region section
@@ -165,25 +159,11 @@ class AccountSetup(object):
             raise AzureConfigAddRegionSectionError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
-        if not storage_accounts:
-            storage_accounts = []
-        if not storage_containers:
-            storage_containers = []
-        if default_storage_account not in storage_accounts:
-            storage_accounts.append(default_storage_account)
-        if default_storage_container not in storage_containers:
-            storage_containers.append(default_storage_container)
         self.config.set(
             section_name, 'default_storage_account', default_storage_account
         )
         self.config.set(
             section_name, 'default_storage_container', default_storage_container
-        )
-        self.config.set(
-            section_name, 'storage_accounts', ','.join(storage_accounts)
-        )
-        self.config.set(
-            section_name, 'storage_containers', ','.join(storage_containers)
         )
         defaults = self.config.defaults()
         if 'default_region' not in defaults:

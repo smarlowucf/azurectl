@@ -20,7 +20,6 @@ import sys
 from azurectl_exceptions import (
     AzureConfigAccountNotFound,
     AzureConfigRegionNotFound,
-    AzureStorageAccountInvalid,
     AzureAccountDefaultSectionNotFound,
     AzureAccountLoadFailed,
     AzureConfigVariableNotFound,
@@ -83,12 +82,6 @@ class Config(object):
             storage_account_name = self.__get_region_option(
                 'default_storage_account'
             )
-        storage_accounts = self.__get_region_option('storage_accounts')
-        if storage_account_name not in storage_accounts.split(','):
-            raise AzureStorageAccountInvalid(
-                'storage account %s not in list %s' %
-                (storage_account_name, storage_accounts)
-            )
         return storage_account_name
 
     def get_storage_container_name(self):
@@ -96,12 +89,6 @@ class Config(object):
         if not storage_container_name:
             storage_container_name = self.__get_region_option(
                 'default_storage_container'
-            )
-        storage_containers = self.__get_region_option('storage_containers')
-        if storage_container_name not in storage_containers.split(','):
-            raise AzureStorageAccountInvalid(
-                'storage container %s not in list %s' %
-                (storage_container_name, storage_containers)
             )
         return storage_container_name
 

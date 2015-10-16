@@ -91,8 +91,6 @@ class TestSetupAccountTask:
         self.task.process()
         self.task.setup.add_region.assert_called_once_with(
             self.task.command_args['--name'],
-            self.task.command_args['--storage-account-name'][0],
-            self.task.command_args['--container-name'][0],
             self.task.command_args['--storage-account-name'],
             self.task.command_args['--container-name']
         )
@@ -105,8 +103,6 @@ class TestSetupAccountTask:
             self.task.command_args['--name'],
             self.task.command_args['--publish-settings-file'],
             self.task.command_args['--region'],
-            self.task.command_args['--storage-account-name'][0],
-            self.task.command_args['--container-name'][0],
             self.task.command_args['--storage-account-name'],
             self.task.command_args['--container-name'],
             self.task.command_args['--subscription-id']

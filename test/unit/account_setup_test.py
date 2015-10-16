@@ -36,14 +36,10 @@ class TestAccountSetup:
             'regions': {
                 'region:East US 2': {
                     'default_storage_container': 'foo',
-                    'storage_accounts': 'bob,joe',
-                    'storage_containers': 'foo,bar',
                     'default_storage_account': 'bob'
                 },
                 'region:West US 1': {
                     'default_storage_container': 'bar',
-                    'storage_accounts': 'bob,joe',
-                    'storage_containers': 'foo,bar',
                     'default_storage_account': 'joe'
                 }
             }
@@ -61,14 +57,10 @@ class TestAccountSetup:
             'regions': {
                 'region:East US 2': {
                     'default_storage_account': 'bob',
-                    'default_storage_container': 'foo',
-                    'storage_accounts': 'bob,joe',
-                    'storage_containers': 'foo,bar'
+                    'default_storage_container': 'foo'
                 },
                 'region:West US 1': {
                     'default_storage_container': 'bar',
-                    'storage_accounts': 'bob,joe',
-                    'storage_containers': 'foo,bar',
                     'default_storage_account': 'joe'
                 }
             }
@@ -89,9 +81,7 @@ class TestAccountSetup:
             'regions': {
                 'region:East US 2': {
                     'default_storage_account': 'bob',
-                    'default_storage_container': 'foo',
-                    'storage_accounts': 'bob,joe',
-                    'storage_containers': 'foo,bar'
+                    'default_storage_container': 'foo'
                 }
             }
         }
@@ -115,14 +105,10 @@ class TestAccountSetup:
             'regions': {
                 'region:East US 2': {
                     'default_storage_account': 'bob',
-                    'default_storage_container': 'foo',
-                    'storage_accounts': 'bob,joe',
-                    'storage_containers': 'foo,bar'
+                    'default_storage_container': 'foo'
                 },
                 'region:West US 1': {
                     'default_storage_container': 'bar',
-                    'storage_accounts': 'bob,joe',
-                    'storage_containers': 'foo,bar',
                     'default_storage_account': 'joe'
                 }
             }
@@ -143,21 +129,15 @@ class TestAccountSetup:
             'regions': {
                 'region:East US 2': {
                     'default_storage_account': 'bob',
-                    'default_storage_container': 'foo',
-                    'storage_accounts': 'bob,joe',
-                    'storage_containers': 'foo,bar'
+                    'default_storage_container': 'foo'
                 },
                 'region:West US 1': {
                     'default_storage_container': 'bar',
-                    'storage_accounts': 'bob,joe',
-                    'storage_containers': 'foo,bar',
                     'default_storage_account': 'joe'
                 },
                 'region:some-region': {
                     'default_storage_account': 'storage',
-                    'default_storage_container': 'container',
-                    'storage_accounts': 'storage,joe',
-                    'storage_containers': 'container,bar'
+                    'default_storage_container': 'container'
                 }
             }
         }
@@ -181,21 +161,15 @@ class TestAccountSetup:
             'regions': {
                 'region:East US 2': {
                     'default_storage_account': 'bob',
-                    'default_storage_container': 'foo',
-                    'storage_accounts': 'bob,joe',
-                    'storage_containers': 'foo,bar'
+                    'default_storage_container': 'foo'
                 },
                 'region:West US 1': {
                     'default_storage_container': 'bar',
-                    'storage_accounts': 'bob,joe',
-                    'storage_containers': 'foo,bar',
                     'default_storage_account': 'joe'
                 },
                 'region:some-region': {
                     'default_storage_account': 'storage',
-                    'default_storage_container': 'container',
-                    'storage_accounts': 'storage,joe',
-                    'storage_containers': 'container,bar'
+                    'default_storage_container': 'container'
                 }
             }
         }
@@ -207,7 +181,6 @@ class TestAccountSetup:
         self.setup.configure_account_and_region(
             'xxx', '../data/publishsettings',
             'some-region', 'storage', 'container',
-            ['storage', 'joe'], ['container', 'bar'],
             '1234'
         )
         assert self.setup.list() == self.configure_data
@@ -220,8 +193,7 @@ class TestAccountSetup:
 
     def test_add_region(self):
         self.setup.add_region(
-            'some-region', 'storage', 'container',
-            ['storage', 'joe'], ['container', 'bar']
+            'some-region', 'storage', 'container'
         )
         assert self.setup.list() == self.add_region_data
 
@@ -238,10 +210,6 @@ class TestAccountSetup:
             'earth', 'storage', 'container'
         )
         assert setup.list()['DEFAULT']['region'] == 'region:earth'
-        assert setup.list()['regions']['region:earth']['storage_accounts'] ==\
-            'storage'
-        assert setup.list()['regions']['region:earth']['storage_containers'] ==\
-            'container'
 
     @patch('__builtin__.open')
     @patch('os.path.exists')

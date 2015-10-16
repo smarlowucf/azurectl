@@ -13,12 +13,12 @@
 #
 """
 usage: azurectl setup account -h | --help
-       azurectl setup account configure --name=<account_name> --publish-settings-file=<file> --region=<region_name> --storage-account-name=<storagename>... --container-name=<containername>...
+       azurectl setup account configure --name=<account_name> --publish-settings-file=<file> --region=<region_name> --storage-account-name=<storagename> --container-name=<containername>
        azurectl setup account add --name=<account_name> --publish-settings-file=<file>
            [--subscription-id=<subscriptionid>]
        azurectl setup account default --name=<configname>
        azurectl setup account list
-       azurectl setup account region add --name=<region_name> --storage-account-name=<storagename>... --container-name=<containername>...
+       azurectl setup account region add --name=<region_name> --storage-account-name=<storagename> --container-name=<containername>
        azurectl setup account region default --name=<configname>
        azurectl setup account remove --name=<configname>
        azurectl setup account configure help
@@ -45,19 +45,15 @@ commands:
         show manual page for config command
 
 options:
-    --container-name=<containername...>
-        specify container name for storage account. more container names
-        can be added by providing this option multiple times. The first
-        container in the list will be the default one for the specified
-        region
+    --container-name=<containername>
+        specify default container name used with the storage account
+        in the selected region.
     --name=<configname>
         section name to identify this account
     --publish-settings-file=<file>
         path to the Microsoft Azure account publish settings file
     --storage-account-name=<storagename>
-        storage account name. more storage account names can be added by
-        providing this option multiple times. The first storage account in
-        the list will be the default one for the specified region
+        specify default storage account name in the selected region.
     --subscription-id=<subscriptionid>
         subscription id, if more than one subscription is included in your
         publish settings file.
@@ -147,8 +143,6 @@ class SetupAccountTask(CliTask):
             self.command_args['--name'],
             self.command_args['--publish-settings-file'],
             self.command_args['--region'],
-            self.command_args['--storage-account-name'][0],
-            self.command_args['--container-name'][0],
             self.command_args['--storage-account-name'],
             self.command_args['--container-name'],
             self.command_args['--subscription-id']
@@ -170,8 +164,6 @@ class SetupAccountTask(CliTask):
     def __region_add(self):
         self.setup.add_region(
             self.command_args['--name'],
-            self.command_args['--storage-account-name'][0],
-            self.command_args['--container-name'][0],
             self.command_args['--storage-account-name'],
             self.command_args['--container-name']
         )

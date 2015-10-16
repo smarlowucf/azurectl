@@ -43,13 +43,13 @@ global options:
         region name in config file, default is default_region
         from config file DEFAULT section
     --storage-account=<name>
-        storage account name in config file. The account name must be
-        part of the storage_accounts setup of the associated region
-        in the configuration file
+        storage account name to use for operations. This will
+        take precedence over the configured default_storage_account
+        from the config file
     --storage-container=<name>
-        storage container name in the config file. The container name
-        must be part of the storage_containers setup of the associated
-        region in the configuration file
+        storage container name to use for operations. This will
+        take precedence over the configured default_storage_container
+        from the config file
     -v --version
         show program version
     help
