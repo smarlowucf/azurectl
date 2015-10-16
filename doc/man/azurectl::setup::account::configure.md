@@ -28,8 +28,8 @@ Name of the geographic region in Azure
 
 ## __--storage-account-name=storagename__
 
-The name of the storage account which holds the account specific storage containers
+The name of the storage account which must exist in the configured region
 
 ## __--container-name=containername__
 
-The name of the container to use from the previously specified storage account
+The name of the container which must exist in the configured storage account
