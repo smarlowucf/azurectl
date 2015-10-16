@@ -95,8 +95,7 @@ class TestVirtualMachine:
             system_config=system_config,
             role_name='cloud-service',
             network_config=network_config,
-            provision_guest_agent=True,
-            media_location='some-region'
+            provision_guest_agent=True
         )
         assert result['instance_name'] == 'some-host'
 
