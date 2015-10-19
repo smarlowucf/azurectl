@@ -13,7 +13,7 @@ import os
 class TestConfigFilePath:
     def setup(self):
         with patch.dict('os.environ', {'HOME': 'foo'}):
-            self.paths = ConfigFilePath(template='bob', platform='lin')
+            self.paths = ConfigFilePath(account_name='bob', platform='lin')
 
     def test_home_path_linux(self):
         with patch.dict('os.environ', {'HOME': 'foo'}):
@@ -39,7 +39,7 @@ class TestConfigFilePath:
             os.environ['HOME'] + '/' + self.paths.config_files[0]
 
     @patch('os.path.isfile')
-    def test_default_new_template_config(self, mock_isfile):
+    def test_default_new_account_config(self, mock_isfile):
         mock_isfile.return_value = True
-        assert self.paths.default_new_template_config() == \
+        assert self.paths.default_new_account_config() == \
             os.environ['HOME'] + '/.config/azurectl/bob.config'

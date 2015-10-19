@@ -39,7 +39,7 @@ class Config(object):
 
     def __init__(
         self,
-        account_file_template_name=None,
+        account_name=None,
         region_name=None,
         storage_account_name=None,
         storage_container_name=None,
@@ -52,7 +52,7 @@ class Config(object):
         self.storage_account_name = storage_account_name
 
         self.config_file = self.__lookup_config_file(
-            platform, account_file_template_name, filename
+            platform, account_name, filename
         )
 
         self.config = ConfigParser()
@@ -131,22 +131,22 @@ class Config(object):
             )
         return result
 
-    def __lookup_config_file(self, platform, template, filename):
-        paths = ConfigFilePath(template, platform)
+    def __lookup_config_file(self, platform, account_name, filename):
+        paths = ConfigFilePath(account_name, platform)
         if filename:
             # lookup config file as provided by the --config option
             if not os.path.isfile(filename):
                 raise AzureAccountLoadFailed(
                     'Could not find config file: %s' % filename
                 )
-        elif template:
+        elif account_name:
             # lookup config file as provided by the --account option
-            filename = paths.default_new_template_config()
+            filename = paths.default_new_account_config()
             if not filename:
                 raise AzureAccountLoadFailed(
                     'Could not find account config file: %s %s: %s' %
                     (
-                        paths.template_config_file, 'in home directory',
+                        paths.account_config_file, 'in home directory',
                         paths.home_path
                     )
                 )

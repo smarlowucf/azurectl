@@ -65,9 +65,9 @@ class TestConfig:
         Config(filename='../data/config_parse_error')
 
     @raises(AzureAccountLoadFailed)
-    def test_config_template_file_not_found(self):
+    def test_config_account_name_not_found(self):
         Config(
-            account_file_template_name='template-name'
+            account_name='account-name'
         )
 
     @raises(AzureAccountLoadFailed)

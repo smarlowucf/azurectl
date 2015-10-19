@@ -21,19 +21,19 @@ class ConfigFilePath(object):
     """
     PLATFORM = sys.platform[:3]
 
-    def __init__(self, template=None, platform=PLATFORM):
+    def __init__(self, account_name=None, platform=PLATFORM):
         self.platform = platform
         self.config_directories_in_home = [
             '.config/azurectl/', '.azurectl/'
         ]
         self.config_files = []
-        self.template_config_file = None
+        self.account_config_file = None
         for directory in self.config_directories_in_home:
             self.config_files.append(directory + 'config')
 
-        if template:
-            self.template_config_file = \
-                self.config_directories_in_home[0] + template + '.config'
+        if account_name:
+            self.account_config_file = \
+                self.config_directories_in_home[0] + account_name + '.config'
 
         self.home_path = self.__home_path()
 
@@ -44,13 +44,13 @@ class ConfigFilePath(object):
         """
         return self.__full_qualified_config(self.config_files[0])
 
-    def default_new_template_config(self):
+    def default_new_account_config(self):
         """
             The fully qualified path of the config file when
-            using a template name
+            using an account name
         """
         full_qualified_config = self.__full_qualified_config(
-            self.template_config_file
+            self.account_config_file
         )
         if os.path.isfile(full_qualified_config):
             return full_qualified_config
