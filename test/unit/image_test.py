@@ -24,18 +24,35 @@ class TestImage:
         self.myrequest = MyResult(request_id=42)
         MyStruct = namedtuple(
             'MyStruct',
-            'name label os category description location \
-             affinity_group media_link'
+            'affinity_group category description eula icon_uri image_family \
+             is_premium label language location logical_size_in_gb media_link \
+             name os os_state pricing_detail_link privacy_uri \
+             published_date publisher_name recommended_vm_size show_in_gui \
+             small_icon_uri'
         )
         self.list_os_images = [MyStruct(
-            name='some-name',
-            label='bob',
-            os='linux',
+            affinity_group='group',
             category='cloud',
             description='nice',
-            location='here',
-            affinity_group='ok',
-            media_link='url'
+            eula='eula',
+            icon_uri='url',
+            image_family='disks',
+            is_premium=False,
+            label='bob',
+            language='English',
+            location='West US',
+            logical_size_in_gb=30,
+            media_link='url',
+            name='some-name',
+            os='linux',
+            os_state='brilliant',
+            pricing_detail_link='url',
+            privacy_uri='url',
+            published_date='date',
+            publisher_name='suse',
+            recommended_vm_size=10,
+            show_in_gui=True,
+            small_icon_uri='url'
         )]
         account = AzureAccount(
             Config('bob', 'East US 2', None, None, '../data/config')
