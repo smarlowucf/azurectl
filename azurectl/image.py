@@ -56,14 +56,28 @@ class Image(object):
         try:
             for image in service.list_os_images():
                 result.append({
-                    'name': image.name,
-                    'label': image.label,
-                    'os': image.os,
+                    'affinity_group': image.affinity_group,
                     'category': image.category,
                     'description': image.description,
+                    'eula': image.eula,
+                    'icon_uri': image.icon_uri,
+                    'image_family': image.image_family,
+                    'is_premium': image.is_premium,
+                    'label': image.label,
+                    'language': image.language,
                     'location': image.location,
-                    'affinity_group': image.affinity_group,
-                    'media_link': image.media_link
+                    'logical_size_in_gb': image.logical_size_in_gb,
+                    'media_link': image.media_link,
+                    'name': image.name,
+                    'os': image.os,
+                    'os_state': image.os_state,
+                    'pricing_detail_link': image.pricing_detail_link,
+                    'privacy_uri': image.privacy_uri,
+                    'published_date': image.published_date,
+                    'publisher_name': image.publisher_name,
+                    'recommended_vm_size': image.recommended_vm_size,
+                    'show_in_gui': image.show_in_gui,
+                    'small_icon_uri': image.small_icon_uri
                 })
         except Exception as e:
             raise AzureOsImageListError(
