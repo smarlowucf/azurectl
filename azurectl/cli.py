@@ -31,8 +31,9 @@ usage: azurectl -h | --help
 
 global options:
     --account=<name>
-        account template name. The given name is used as config file
-        template: ~/.config/azurectl/<name>.config.
+        account name. The given name value is used to select the configuration
+        file of the form <name>.config from the configuration location
+        ~/.config/azurectl.
     --config=<file>
         config file, default is: ~/.config/azurectl/config
     --output-format=<format>
