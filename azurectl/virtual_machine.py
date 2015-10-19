@@ -95,7 +95,7 @@ class VirtualMachine(object):
         )
 
     def create_instance(
-        self, cloud_service_name, location, disk_name, system_config,
+        self, cloud_service_name, disk_name, system_config,
         network_config=None, label=None, group='production',
         machine_size='Small'
     ):

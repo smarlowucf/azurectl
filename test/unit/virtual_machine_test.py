@@ -79,8 +79,11 @@ class TestVirtualMachine:
         endpoint = self.vm.create_network_endpoint('SSH', 22, 22, 'TCP')
         network_config = self.vm.create_network_configuration([endpoint])
         result = self.vm.create_instance(
-            'cloud-service', 'some-region', 'foo.vhd', system_config,
-            network_config, 'some-label'
+            'cloud-service',
+            'foo.vhd',
+            system_config,
+            network_config,
+            'some-label'
         )
         mock_os_disk.assert_called_once_with(
             'foo.vhd', 'https://bob.blob.core.windows.net/foo/foo.vhd_instance'
