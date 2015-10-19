@@ -82,7 +82,6 @@ class TestComputeVmTask:
         )
         self.task.vm.create_instance.assert_called_once_with(
             self.task.command_args['--cloud-service-name'],
-            self.task.config.get_region_name(),
             self.task.command_args['--image-name'],
             {},
             {},

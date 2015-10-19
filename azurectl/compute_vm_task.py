@@ -145,7 +145,6 @@ class ComputeVmTask(CliTask):
             'instance',
             self.vm.create_instance(
                 self.command_args['--cloud-service-name'],
-                self.config.get_region_name(),
                 self.command_args['--image-name'],
                 linux_configuration,
                 network_configuration,
