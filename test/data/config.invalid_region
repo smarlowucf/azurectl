@@ -1,17 +1,10 @@
 [DEFAULT]
 default_account = account:bob
-default_region = region:East US 2
-
-[region:East US 2]
-default_storage_account = bob
-default_storage_container = foo
+default_region = region:foo
 
 [region:West US 1]
 default_storage_account = joe
 default_storage_container = bar
 
 [account:bob]
-publishsettings = ../data/publishsettings
-
-[account:foo]
 publishsettings = ../data/publishsettings

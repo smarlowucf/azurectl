@@ -149,10 +149,6 @@ class AzureAccountLoadFailed(AzureError):
     pass
 
 
-class AzureStorageAccountInvalid(AzureError):
-    pass
-
-
 class AzureStorageFileNotFound(AzureError):
     pass
 

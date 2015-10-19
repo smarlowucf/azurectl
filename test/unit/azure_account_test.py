@@ -17,7 +17,9 @@ from collections import namedtuple
 class TestAzureAccount:
     def setup(self):
         self.account = AzureAccount(
-            Config('bob', 'East US 2', None, None, '../data/config')
+            Config(
+                region_name='East US 2', filename='../data/config'
+            )
         )
         credentials = namedtuple(
             'credentials',
@@ -52,8 +54,9 @@ class TestAzureAccount:
     def test_empty_publishsettings(self):
         account_invalid = AzureAccount(
             Config(
-                'bob', 'East US 2', None, None,
-                '../data/config.empty_publishsettings')
+                region_name='East US 2',
+                filename='../data/config.empty_publishsettings'
+            )
         )
         account_invalid.publishsettings()
 
@@ -61,8 +64,8 @@ class TestAzureAccount:
     def test_missing_publishsettings(self):
         account_invalid = AzureAccount(
             Config(
-                'bob', 'East US 2', None, None,
-                '../data/config.missing_publishsettings'
+                region_name='East US 2',
+                filename='../data/config.missing_publishsettings'
             )
         )
         account_invalid.publishsettings()
@@ -71,8 +74,8 @@ class TestAzureAccount:
     def test_publishsettings_missing_subscription(self):
         account_invalid = AzureAccount(
             Config(
-                'bob', 'East US 2', None, None,
-                '../data/config.invalid_publishsettings_subscription'
+                region_name='East US 2',
+                filename='../data/config.invalid_publishsettings_subscription'
             )
         )
         account_invalid.publishsettings()
@@ -81,8 +84,8 @@ class TestAzureAccount:
     def test_publishsettings_invalid_cert(self):
         account_invalid = AzureAccount(
             Config(
-                'bob', 'East US 2', None, None,
-                '../data/config.invalid_publishsettings_cert'
+                region_name='East US 2',
+                filename='../data/config.invalid_publishsettings_cert'
             )
         )
         account_invalid.publishsettings()
@@ -102,8 +105,8 @@ class TestAzureAccount:
     def test_subscription_management_cert_not_found(self):
         account_invalid = AzureAccount(
             Config(
-                'bob', 'East US 2', None, None,
-                '../data/config.missing_publishsettings_cert'
+                region_name='East US 2',
+                filename='../data/config.missing_publishsettings_cert'
             )
         )
         account_invalid.publishsettings()
@@ -119,8 +122,8 @@ class TestAzureAccount:
     ):
         account_invalid = AzureAccount(
             Config(
-                'bob', 'East US 2', None, None,
-                '../data/config.missing_publishsettings_id'
+                region_name='East US 2',
+                filename='../data/config.missing_publishsettings_id'
             )
         )
         account_invalid.publishsettings()
@@ -136,8 +139,8 @@ class TestAzureAccount:
     ):
         account_invalid = AzureAccount(
             Config(
-                'bob', 'East US 2', None, None,
-                '../data/config.missing_set_subscription_id'
+                region_name='East US 2',
+                filename='../data/config.missing_set_subscription_id'
             )
         )
         account_invalid.publishsettings()
@@ -153,8 +156,8 @@ class TestAzureAccount:
     ):
         account_invalid = AzureAccount(
             Config(
-                'bob', 'East US 2', None, None,
-                '../data/config.set_subscription_id_missing_id'
+                region_name='East US 2',
+                filename='../data/config.set_subscription_id_missing_id'
             )
         )
         account_invalid.publishsettings()
@@ -163,8 +166,8 @@ class TestAzureAccount:
     def test_subscription_pkcs12_error(self):
         account_invalid = AzureAccount(
             Config(
-                'bob', 'East US 2', None, None,
-                '../data/config.corrupted_p12_cert'
+                region_name='East US 2',
+                filename='../data/config.corrupted_p12_cert'
             )
         )
         account_invalid.publishsettings()
@@ -185,8 +188,8 @@ class TestAzureAccount:
     ):
         account = AzureAccount(
             Config(
-                'bob', 'East US 2', None, None,
-                '../data/config.multiple_subscriptions_no_id'
+                region_name='East US 2',
+                filename='../data/config.multiple_subscriptions_no_id'
             )
         )
         assert account.publishsettings().subscription_id == 'first'
@@ -200,8 +203,8 @@ class TestAzureAccount:
     ):
         account = AzureAccount(
             Config(
-                'bob', 'East US 2', None, None,
-                '../data/config.multiple_subscriptions_set_id'
+                region_name='East US 2',
+                filename='../data/config.multiple_subscriptions_set_id'
             )
         )
         assert account.publishsettings().subscription_id == 'second'

@@ -18,8 +18,7 @@ usage: azurectl -h | --help
                 [--output-style=<style>]
                 [--debug]
            setup <command> [<args>...]
-       azurectl [--config=<file>]
-                [--account=<name>]
+       azurectl [--config=<file> | --account=<name>]
                 [--region=<name>]
                 [--storage-account=<name>]
                 [--storage-container=<name>]
@@ -32,8 +31,9 @@ usage: azurectl -h | --help
 
 global options:
     --account=<name>
-        account name in config file, default is default_account
-        from config file DEFAULT section
+        account name. The given name value is used to select the configuration
+        file of the form <name>.config from the configuration location
+        ~/.config/azurectl.
     --config=<file>
         config file, default is: ~/.config/azurectl/config
     --output-format=<format>
@@ -44,13 +44,13 @@ global options:
         region name in config file, default is default_region
         from config file DEFAULT section
     --storage-account=<name>
-        storage account name in config file. The account name must be
-        part of the storage_accounts setup of the associated region
-        in the configuration file
+        storage account name to use for operations. This will
+        take precedence over the configured default_storage_account
+        from the config file
     --storage-container=<name>
-        storage container name in the config file. The container name
-        must be part of the storage_containers setup of the associated
-        region in the configuration file
+        storage container name to use for operations. This will
+        take precedence over the configured default_storage_container
+        from the config file
     -v --version
         show program version
     help
