@@ -59,7 +59,18 @@ Location of global config file, default is searched in:
 1. __~/.config/azurectl/config__
 2. __~/.azurectl/config__
 
-The azurectl config file is an INI style file structured into sections. There are account and region sections which are handled by the __azurectl setup account command__
+The azurectl config file is an INI style file structured into sections. There are account and region sections which are handled by the __azurectl setup account command__. The minimal structure of the config file has the following mandatory sections:
+
+    [DEFAULT]
+    default_account = account:user
+    default_region = region:region_name
+
+    [region:region_name]
+    default_storage_account = storage_account_name
+    default_storage_container = storage_container_name
+
+    [account:user]
+    publishsettings = /path/to/publish_settings_file
 
 ## __--account=name__
 
