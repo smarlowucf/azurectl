@@ -23,7 +23,9 @@ from azure.storage.blob import BlobService
 # project
 from azurectl_exceptions import (
     AzureVmCreateError,
-    AzureVmDeleteError
+    AzureVmDeleteError,
+    AzureStorageNotReachableByCloudServiceError,
+    AzureImageNotReachableByCloudServiceError
 )
 
 
@@ -102,6 +104,36 @@ class VirtualMachine(object):
         """
             create a virtual disk image instance
         """
+        if not self.__storage_reachable_by_cloud_service(cloud_service_name):
+            message = [
+                'Storage account "%s" is not in the same region',
+                'as the cloud service "%s".',
+                'The storage account region is "%s",',
+                'whereas the cloud service region is "%s".',
+                'Please select a storage account matching',
+                'the cloud service region.'
+            ]
+            raise AzureStorageNotReachableByCloudServiceError(
+                ' '.join(message) % (
+                    self.account_name, cloud_service_name,
+                    self.storage_location, self.service_location
+                )
+            )
+
+        if not self.__image_reachable_by_cloud_service(
+            cloud_service_name, disk_name
+        ):
+            message = [
+                'Image "%s" does not exist in the region "%s"',
+                'of the running cloud service "%s".',
+                'Please select an image available to the cloud service.'
+            ]
+            raise AzureImageNotReachableByCloudServiceError(
+                ' '.join(message) % (
+                    disk_name, self.service_location, cloud_service_name
+                )
+            )
+
         media_link = self.storage.make_blob_url(
             self.container_name, disk_name + '_instance'
         )
@@ -152,3 +184,37 @@ class VirtualMachine(object):
             raise AzureVmDeleteError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
+
+    def __cloud_service_location(self, cloud_service_name):
+        return self.service.get_hosted_service_properties(
+            cloud_service_name
+        ).hosted_service_properties.location
+
+    def __storage_loction(self):
+        return self.service.get_storage_account_properties(
+            self.account_name
+        ).storage_service_properties.location
+
+    def __image_locations(self, disk_name):
+        image_properties = self.service.get_os_image(disk_name)
+        return image_properties.location.split(';')
+
+    def __storage_reachable_by_cloud_service(self, cloud_service_name):
+        self.service_location = self.__cloud_service_location(
+            cloud_service_name
+        )
+        self.storage_location = self.__storage_loction()
+        if self.service_location == self.storage_location:
+            return True
+        else:
+            return False
+
+    def __image_reachable_by_cloud_service(self, cloud_service_name, disk_name):
+        self.service_location = self.__cloud_service_location(
+            cloud_service_name
+        )
+        self.image_locations = self.__image_locations(disk_name)
+        if self.service_location in self.image_locations:
+            return True
+        else:
+            return False
