@@ -166,8 +166,8 @@ class CloudService(object):
         if self.__cloud_service_url_in_use(cloud_service_name, location):
             message = [
                 'The requested cloud service "%s"',
-                'will be registered as public address "%s" in Azure.',
-                'However this address is already in use.',
+                'would be registered as public address "%s" in Azure,',
+                'however this address is already in use.',
                 'Please choose another cloud service name.'
             ]
             raise AzureCloudServiceAddressError(
