@@ -106,17 +106,15 @@ class VirtualMachine(object):
         """
         if not self.__storage_reachable_by_cloud_service(cloud_service_name):
             message = [
-                'Storage account "%s" is not in the same region',
-                'as the cloud service "%s".',
-                'The storage account region is "%s",',
-                'whereas the cloud service region is "%s".',
-                'Please select a storage account matching',
-                'the cloud service region.'
+                'Storage account "%s" is not in the cloud service region "%s".',
+                'Please select a storage account matching the cloud',
+                'service region, or create a cloud service in the storage',
+                'account region "%s"'
             ]
             raise AzureStorageNotReachableByCloudServiceError(
                 ' '.join(message) % (
-                    self.account_name, cloud_service_name,
-                    self.storage_location, self.service_location
+                    self.account_name, self.service_location,
+                    self.storage_location
                 )
             )
 
