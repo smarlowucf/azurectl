@@ -49,12 +49,3 @@ class Defaults(object):
                 'Specified region %s not in lookup table'
             )
         return azure_domain[region]
-
-    @classmethod
-    def get_nameservers(self):
-        """
-            return list of nameservers to use for checking if a name
-            can be resolved into a public address
-        """
-        nameserver_google = '8.8.8.8'
-        return [nameserver_google]

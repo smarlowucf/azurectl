@@ -15,6 +15,3 @@ class TestDefaults:
     @raises(AzureDomainLookupError)
     def test_get_azure_domain_raises(self):
         Defaults.get_azure_domain('region-does-not-exist')
-
-    def test_get_nameservers(self):
-        assert Defaults.get_nameservers() == ['8.8.8.8']

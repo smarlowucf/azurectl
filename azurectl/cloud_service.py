@@ -208,7 +208,6 @@ class CloudService(object):
 
     def __cloud_service_url_in_use(self, cloud_service_name, location):
         dns_resolver = Resolver()
-        dns_resolver.nameservers = Defaults.get_nameservers()
         self.cloud_service_url = \
             cloud_service_name + '.' + Defaults.get_azure_domain(location)
         try:
