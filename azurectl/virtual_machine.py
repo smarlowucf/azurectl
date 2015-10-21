@@ -106,15 +106,12 @@ class VirtualMachine(object):
         """
         if not self.__storage_reachable_by_cloud_service(cloud_service_name):
             message = [
-                'Storage account "%s" is not in the cloud service region "%s".',
-                'Please select a storage account matching the cloud',
-                'service region, or create a cloud service in the storage',
-                'account region "%s"'
+                'The cloud service "%s" and the storage account "%s"',
+                'are not in the same region, cannot launch an instance.'
             ]
             raise AzureStorageNotReachableByCloudServiceError(
                 ' '.join(message) % (
-                    self.account_name, self.service_location,
-                    self.storage_location
+                    cloud_service_name, self.account_name
                 )
             )
 
@@ -122,13 +119,13 @@ class VirtualMachine(object):
             cloud_service_name, disk_name
         ):
             message = [
-                'Image "%s" does not exist in the region "%s"',
-                'of the running cloud service "%s".',
-                'Please select an image available to the cloud service.'
+                'The selected image "%s" is not available',
+                'in the region of the selected cloud service "%s",',
+                'cannot launch instance'
             ]
             raise AzureImageNotReachableByCloudServiceError(
                 ' '.join(message) % (
-                    disk_name, self.service_location, cloud_service_name
+                    disk_name, cloud_service_name
                 )
             )
 
@@ -198,21 +195,21 @@ class VirtualMachine(object):
         return image_properties.location.split(';')
 
     def __storage_reachable_by_cloud_service(self, cloud_service_name):
-        self.service_location = self.__cloud_service_location(
+        service_location = self.__cloud_service_location(
             cloud_service_name
         )
-        self.storage_location = self.__storage_loction()
-        if self.service_location == self.storage_location:
+        storage_location = self.__storage_loction()
+        if service_location == storage_location:
             return True
         else:
             return False
 
     def __image_reachable_by_cloud_service(self, cloud_service_name, disk_name):
-        self.service_location = self.__cloud_service_location(
+        service_location = self.__cloud_service_location(
             cloud_service_name
         )
-        self.image_locations = self.__image_locations(disk_name)
-        if self.service_location in self.image_locations:
+        image_locations = self.__image_locations(disk_name)
+        if service_location in image_locations:
             return True
         else:
             return False
