@@ -165,13 +165,12 @@ class CloudService(object):
 
         if self.__cloud_service_url_in_use(cloud_service_name, location):
             message = [
-                'The requested cloud service "%s"',
-                'would be registered as public address "%s" in Azure,',
-                'however this address is already in use.',
-                'Please choose another cloud service name.'
+                'The cloud service name "%s"',
+                'is already in use in another region',
+                'please choose a different name.'
             ]
             raise AzureCloudServiceAddressError(
-                ' '.join(message) % (cloud_service_name, self.cloud_service_url)
+                ' '.join(message) % cloud_service_name
             )
 
         try:
@@ -208,9 +207,9 @@ class CloudService(object):
 
     def __cloud_service_url_in_use(self, cloud_service_name, location):
         dns_resolver = Resolver()
-        self.cloud_service_url = \
+        cloud_service_url = \
             cloud_service_name + '.' + Defaults.get_azure_domain(location)
         try:
-            return dns_resolver.query(self.cloud_service_url, 'A')
+            return dns_resolver.query(cloud_service_url, 'A')
         except Exception:
             pass
