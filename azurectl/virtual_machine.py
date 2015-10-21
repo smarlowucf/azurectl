@@ -23,7 +23,9 @@ from azure.storage.blob import BlobService
 # project
 from azurectl_exceptions import (
     AzureVmCreateError,
-    AzureVmDeleteError
+    AzureVmDeleteError,
+    AzureStorageNotReachableByCloudServiceError,
+    AzureImageNotReachableByCloudServiceError
 )
 
 
@@ -102,6 +104,31 @@ class VirtualMachine(object):
         """
             create a virtual disk image instance
         """
+        if not self.__storage_reachable_by_cloud_service(cloud_service_name):
+            message = [
+                'The cloud service "%s" and the storage account "%s"',
+                'are not in the same region, cannot launch an instance.'
+            ]
+            raise AzureStorageNotReachableByCloudServiceError(
+                ' '.join(message) % (
+                    cloud_service_name, self.account_name
+                )
+            )
+
+        if not self.__image_reachable_by_cloud_service(
+            cloud_service_name, disk_name
+        ):
+            message = [
+                'The selected image "%s" is not available',
+                'in the region of the selected cloud service "%s",',
+                'cannot launch instance'
+            ]
+            raise AzureImageNotReachableByCloudServiceError(
+                ' '.join(message) % (
+                    disk_name, cloud_service_name
+                )
+            )
+
         media_link = self.storage.make_blob_url(
             self.container_name, disk_name + '_instance'
         )
@@ -152,3 +179,37 @@ class VirtualMachine(object):
             raise AzureVmDeleteError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
+
+    def __cloud_service_location(self, cloud_service_name):
+        return self.service.get_hosted_service_properties(
+            cloud_service_name
+        ).hosted_service_properties.location
+
+    def __storage_loction(self):
+        return self.service.get_storage_account_properties(
+            self.account_name
+        ).storage_service_properties.location
+
+    def __image_locations(self, disk_name):
+        image_properties = self.service.get_os_image(disk_name)
+        return image_properties.location.split(';')
+
+    def __storage_reachable_by_cloud_service(self, cloud_service_name):
+        service_location = self.__cloud_service_location(
+            cloud_service_name
+        )
+        storage_location = self.__storage_loction()
+        if service_location == storage_location:
+            return True
+        else:
+            return False
+
+    def __image_reachable_by_cloud_service(self, cloud_service_name, disk_name):
+        service_location = self.__cloud_service_location(
+            cloud_service_name
+        )
+        image_locations = self.__image_locations(disk_name)
+        if service_location in image_locations:
+            return True
+        else:
+            return False

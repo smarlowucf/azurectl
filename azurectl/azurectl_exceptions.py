@@ -169,6 +169,10 @@ class AzureUnknownCommand(AzureError):
     pass
 
 
+class AzureImageNotReachableByCloudServiceError(AzureError):
+    pass
+
+
 class AzureInvalidCommand(AzureError):
     pass
 
@@ -178,6 +182,10 @@ class AzureContainerListContentError(AzureError):
 
 
 class AzureContainerListError(AzureError):
+    pass
+
+
+class AzureStorageNotReachableByCloudServiceError(AzureError):
     pass
 
 

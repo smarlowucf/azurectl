@@ -72,7 +72,25 @@ class TestVirtualMachine:
 
     @patch('azurectl.virtual_machine.OSVirtualHardDisk')
     @patch('azurectl.virtual_machine.ServiceManagementService.create_virtual_machine_deployment')
-    def test_create_instance(self, mock_vm_create, mock_os_disk):
+    @patch('azurectl.virtual_machine.ServiceManagementService.get_hosted_service_properties')
+    @patch('azurectl.virtual_machine.ServiceManagementService.get_storage_account_properties')
+    @patch('azurectl.virtual_machine.ServiceManagementService.get_os_image')
+    def test_create_instance(
+        self, mock_os_image, mock_storage_properties, mock_service_properties,
+        mock_vm_create, mock_os_disk
+    ):
+        storage_properties = mock.MagicMock()
+        storage_properties.storage_service_properties.location = 'region'
+        mock_storage_properties.return_value = storage_properties
+
+        service_properties = mock.MagicMock()
+        service_properties.hosted_service_properties.location = 'region'
+        mock_service_properties.return_value = service_properties
+
+        image_locations = mock.MagicMock()
+        image_locations.location = 'region'
+        mock_os_image.return_value = image_locations
+
         os_disk = OSVirtualHardDisk('foo', 'foo')
         mock_os_disk.return_value = os_disk
         system_config = self.vm.create_linux_configuration(
@@ -104,6 +122,33 @@ class TestVirtualMachine:
         )
         assert result['instance_name'] == 'some-host'
 
+    @patch('azurectl.virtual_machine.ServiceManagementService.create_virtual_machine_deployment')
+    @patch('azurectl.virtual_machine.ServiceManagementService.get_hosted_service_properties')
+    @patch('azurectl.virtual_machine.ServiceManagementService.get_storage_account_properties')
+    @patch('azurectl.virtual_machine.ServiceManagementService.get_os_image')
+    @raises(AzureVmCreateError)
+    def test_create_instance_raise_vm_create_error(
+        self, mock_os_image, mock_storage_properties, mock_service_properties,
+        mock_vm_create
+    ):
+        storage_properties = mock.MagicMock()
+        storage_properties.storage_service_properties.location = 'region'
+        mock_storage_properties.return_value = storage_properties
+
+        service_properties = mock.MagicMock()
+        service_properties.hosted_service_properties.location = 'region'
+        mock_service_properties.return_value = service_properties
+
+        image_locations = mock.MagicMock()
+        image_locations.location = 'region'
+        mock_os_image.return_value = image_locations
+
+        mock_vm_create.side_effect = AzureVmCreateError
+        result = self.vm.create_instance(
+            'foo', 'some-region', 'foo.vhd',
+            self.vm.create_linux_configuration()
+        )
+
     @patch('azurectl.virtual_machine.ServiceManagementService.delete_deployment')
     def test_delete_instance(self, mock_delete_deployment):
         self.vm.delete_instance('cloud-service', 'foo')
@@ -111,15 +156,48 @@ class TestVirtualMachine:
             'cloud-service', 'foo'
         )
 
-    @patch('azurectl.virtual_machine.ServiceManagementService.create_virtual_machine_deployment')
-    @raises(AzureVmCreateError)
-    def test_create_instance_raise_vm_create_error(self, mock_vm_create):
-        mock_vm_create.side_effect = AzureVmCreateError
+    @patch('azurectl.virtual_machine.ServiceManagementService.get_hosted_service_properties')
+    @patch('azurectl.virtual_machine.ServiceManagementService.get_storage_account_properties')
+    @raises(AzureStorageNotReachableByCloudServiceError)
+    def test_create_instance_raise_storage_not_reachable_error(
+        self, mock_storage_properties, mock_service_properties
+    ):
+        storage_properties = mock.MagicMock()
+        storage_properties.storage_service_properties.location = 'regionA'
+        mock_storage_properties.return_value = storage_properties
+
+        service_properties = mock.MagicMock()
+        service_properties.hosted_service_properties.location = 'regionB'
+        mock_service_properties.return_value = service_properties
+
         result = self.vm.create_instance(
             'foo', 'some-region', 'foo.vhd',
             self.vm.create_linux_configuration()
         )
-        assert result['request_id'] < 0
+
+    @patch('azurectl.virtual_machine.ServiceManagementService.get_hosted_service_properties')
+    @patch('azurectl.virtual_machine.ServiceManagementService.get_storage_account_properties')
+    @patch('azurectl.virtual_machine.ServiceManagementService.get_os_image')
+    @raises(AzureImageNotReachableByCloudServiceError)
+    def test_create_instance_raise_image_not_reachable_error(
+        self, mock_os_image, mock_storage_properties, mock_service_properties
+    ):
+        storage_properties = mock.MagicMock()
+        storage_properties.storage_service_properties.location = 'regionA'
+        mock_storage_properties.return_value = storage_properties
+
+        service_properties = mock.MagicMock()
+        service_properties.hosted_service_properties.location = 'regionA'
+        mock_service_properties.return_value = service_properties
+
+        image_locations = mock.MagicMock()
+        image_locations.location = 'regionB'
+        mock_os_image.return_value = image_locations
+
+        result = self.vm.create_instance(
+            'foo', 'some-region', 'foo.vhd',
+            self.vm.create_linux_configuration()
+        )
 
     @patch('azurectl.virtual_machine.ServiceManagementService.delete_deployment')
     @raises(AzureVmDeleteError)
