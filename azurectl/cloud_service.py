@@ -15,15 +15,18 @@ import base64
 import subprocess
 from tempfile import NamedTemporaryFile
 from azure.servicemanagement import ServiceManagementService
+from dns.resolver import Resolver
 
 # project
 from azurectl_exceptions import (
+    AzureCloudServiceAddressError,
     AzureCloudServiceOpenSSLError,
     AzureCloudServiceAddCertificateError,
     AzureCloudServiceCreateError,
     AzureCloudServiceDeleteError
 )
 from request_result import RequestResult
+from defaults import Defaults
 
 
 class CloudService(object):
@@ -155,15 +158,21 @@ class CloudService(object):
         }
         if label:
             service_record['label'] = label
-        try:
-            self.service.get_hosted_service_properties(
-                cloud_service_name
-            )
-            # Cloud service already exists, return request id: 0
+
+        if self.__get_cloud_service_properties(cloud_service_name):
+            # indicate existing cloud service with request id: 0
             return 0
-        except Exception:
-            # Cloud service does not exist, continue creating a new one
-            pass
+
+        if self.__cloud_service_url_in_use(cloud_service_name, location):
+            message = [
+                'The cloud service name "%s"',
+                'is already in use in another region',
+                'please choose a different name.'
+            ]
+            raise AzureCloudServiceAddressError(
+                ' '.join(message) % cloud_service_name
+            )
+
         try:
             result = self.service.create_hosted_service(**service_record)
             return (result.request_id)
@@ -187,3 +196,20 @@ class CloudService(object):
             raise AzureCloudServiceDeleteError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
+
+    def __get_cloud_service_properties(self, cloud_service_name):
+        try:
+            return self.service.get_hosted_service_properties(
+                cloud_service_name
+            )
+        except Exception:
+            pass
+
+    def __cloud_service_url_in_use(self, cloud_service_name, location):
+        dns_resolver = Resolver()
+        cloud_service_url = \
+            cloud_service_name + '.' + Defaults.get_azure_domain(location)
+        try:
+            return dns_resolver.query(cloud_service_url, 'A')
+        except Exception:
+            pass

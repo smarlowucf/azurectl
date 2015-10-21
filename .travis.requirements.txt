@@ -17,3 +17,4 @@ pyliblzma
 coverage
 pyOpenSSL
 requests
+dnspython

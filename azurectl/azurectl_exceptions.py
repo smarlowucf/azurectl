@@ -25,6 +25,10 @@ class AzureError(Exception):
         return repr(self.message)
 
 
+class AzureCloudServiceAddressError(AzureError):
+    pass
+
+
 class AzureCloudServiceAddCertificateError(AzureError):
     pass
 
@@ -66,6 +70,10 @@ class AzureConfigSectionNotFound(AzureError):
 
 
 class AzureConfigVariableNotFound(AzureError):
+    pass
+
+
+class AzureDomainLookupError(AzureError):
     pass
 
 

@@ -168,16 +168,27 @@ class TestCloudService:
 
     @patch('azurectl.cloud_service.ServiceManagementService.create_hosted_service')
     @patch('azurectl.cloud_service.ServiceManagementService.get_hosted_service_properties')
-    def test_create(self, mock_get_service, mock_create_service):
+    @patch('dns.resolver.Resolver.query')
+    def test_create(self, mock_query, mock_get_service, mock_create_service):
+        mock_query.side_effect = Exception
         mock_get_service.side_effect = AzureError('does-not-exist')
-        self.service.create('cloud-service', 'region', 'my-cloud', 'label')
+        self.service.create('cloud-service', 'West US', 'my-cloud', 'label')
         mock_get_service.assert_called_once_with('cloud-service')
         mock_create_service.assert_called_once_with(
             service_name='cloud-service',
             description='my-cloud',
-            location='region',
+            location='West US',
             label='label'
         )
+
+    @patch('azurectl.cloud_service.ServiceManagementService.create_hosted_service')
+    @patch('azurectl.cloud_service.ServiceManagementService.get_hosted_service_properties')
+    @patch('dns.resolver.Resolver.query')
+    @raises(AzureCloudServiceAddressError)
+    def test_create_cloud_service_in_use(self, mock_query, mock_get_service, mock_create_service):
+        mock_query.return_value = 'some-address-result'
+        mock_get_service.side_effect = AzureError('does-not-exist')
+        self.service.create('cloud-service', 'West US', 'my-cloud', 'label')
 
     @patch('azurectl.cloud_service.ServiceManagementService.delete_hosted_service')
     def test_delete(self, mock_delete_service):
@@ -190,11 +201,13 @@ class TestCloudService:
 
     @patch('azurectl.cloud_service.ServiceManagementService.create_hosted_service')
     @patch('azurectl.cloud_service.ServiceManagementService.get_hosted_service_properties')
+    @patch('dns.resolver.Resolver.query')
     @raises(AzureCloudServiceCreateError)
-    def test_create_service_error(self, mock_get_service, mock_create_service):
+    def test_create_service_error(self, mock_query, mock_get_service, mock_create_service):
+        mock_query.side_effect = Exception
         mock_get_service.side_effect = Exception
         mock_create_service.side_effect = AzureCloudServiceCreateError
-        self.service.create('cloud-service', 'region', 'my-cloud', 'label')
+        self.service.create('cloud-service', 'West US', 'my-cloud', 'label')
 
     @patch('azurectl.cloud_service.ServiceManagementService.create_hosted_service')
     @patch('azurectl.cloud_service.ServiceManagementService.get_hosted_service_properties')
