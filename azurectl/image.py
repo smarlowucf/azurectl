@@ -13,7 +13,6 @@
 #
 from tempfile import NamedTemporaryFile
 from azure.servicemanagement import ServiceManagementService
-from azure.servicemanagement import ComputeManagementService
 from azure.storage.blob import BlobService
 
 # project
@@ -137,12 +136,12 @@ class Image(object):
         Region A, will be replicated in Region D, and will be
         unreplicated from Regions B and C
         '''
-        service = ComputeManagementService(
+        service = ServiceManagementService(
             self.publishsettings.subscription_id,
             self.cert_file.name
         )
         try:
-            result = service.replicate(
+            result = service.replicate_vm_image(
                 name, regions, offer, sku, version
             )
             return(result.request_id)
@@ -152,12 +151,12 @@ class Image(object):
             )
 
     def unreplicate(self, name):
-        service = ComputeManagementService(
+        service = ServiceManagementService(
             self.publishsettings.subscription_id,
             self.cert_file.name
         )
         try:
-            result = service.unreplicate(name)
+            result = service.unreplicate_vm_image(name)
             return(result.request_id)
         except Exception as e:
             raise AzureOsImageUnReplicateError(
@@ -165,12 +164,12 @@ class Image(object):
             )
 
     def publish(self, name, permission):
-        service = ComputeManagementService(
+        service = ServiceManagementService(
             self.publishsettings.subscription_id,
             self.cert_file.name
         )
         try:
-            result = service.share(name, permission)
+            result = service.share_vm_image(name, permission)
             return(result.request_id)
         except Exception as e:
             raise AzureOsImagePublishError(
