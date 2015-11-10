@@ -17,7 +17,7 @@ config = {
         'APScheduler~=3.0.2',
         'pyliblzma~=0.5.3',
         'azure_storage~=0.20.0',
-        'azure_servicemanagement_legacy~=0.20.0',
+        'azure_servicemanagement_legacy~=0.20.1',
         'python-dateutil~=2.4',
         'dnspython~=1.12.0'
     ],
