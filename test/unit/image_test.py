@@ -127,7 +127,7 @@ class TestImage:
         mock_delete_image.side_effect = Exception
         self.image.delete('some-name')
 
-    @patch('azurectl.image.ComputeManagementService.replicate')
+    @patch('azurectl.image.ServiceManagementService.replicate_vm_image')
     def test_replicate(self, mock_replicate):
         mock_replicate.return_value = self.myrequest
         request_id = self.image.replicate(
@@ -138,7 +138,7 @@ class TestImage:
             'some-name', ['a', 'b', 'c'], 'offer', 'sku', 'version'
         )
 
-    @patch('azurectl.image.ComputeManagementService.unreplicate')
+    @patch('azurectl.image.ServiceManagementService.unreplicate_vm_image')
     def test_unreplicate(self, mock_unreplicate):
         mock_unreplicate.return_value = self.myrequest
         request_id = self.image.unreplicate('some-name')
@@ -147,7 +147,7 @@ class TestImage:
             'some-name'
         )
 
-    @patch('azurectl.image.ComputeManagementService.share')
+    @patch('azurectl.image.ServiceManagementService.share_vm_image')
     def test_publish(self, mock_publish):
         mock_publish.return_value = self.myrequest
         request_id = self.image.publish('some-name', 'public')
@@ -157,7 +157,7 @@ class TestImage:
         )
 
     @raises(AzureOsImageReplicateError)
-    @patch('azurectl.image.ComputeManagementService.replicate')
+    @patch('azurectl.image.ServiceManagementService.replicate_vm_image')
     def test_replicate_raises_error(self, mock_replicate):
         mock_replicate.side_effect = AzureOsImageReplicateError
         self.image.replicate(
@@ -165,13 +165,13 @@ class TestImage:
         )
 
     @raises(AzureOsImageUnReplicateError)
-    @patch('azurectl.image.ComputeManagementService.unreplicate')
+    @patch('azurectl.image.ServiceManagementService.unreplicate_vm_image')
     def test_unreplicate_raises_error(self, mock_unreplicate):
         mock_unreplicate.side_effect = AzureOsImageUnReplicateError
         self.image.unreplicate('some-name')
 
     @raises(AzureOsImagePublishError)
-    @patch('azurectl.image.ComputeManagementService.share')
+    @patch('azurectl.image.ServiceManagementService.share_vm_image')
     def test_publish_raises_error(self, mock_publish):
         mock_publish.side_effect = AzureOsImagePublishError
         self.image.publish('some-name', 'public')
