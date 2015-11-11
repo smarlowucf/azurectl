@@ -32,7 +32,7 @@ build: pep8 test
 	# delete version information from setup.py for rpm package
 	# we don't want to have this in the egg info because the rpm
 	# package should handle package/version requirements
-	cat setup.py | sed -e "s@==[0-9.]*'@'@g" > setup.build.py
+	cat setup.py | sed -e "s@~=[0-9.]*'@'@g" > setup.build.py
 	python setup.build.py sdist
 	mv dist/azurectl-${version}.tar.gz dist/python-azurectl-${version}.tar.gz
 	rm setup.build.py

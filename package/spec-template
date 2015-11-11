@@ -17,7 +17,7 @@ BuildRequires:  python-setuptools
 Requires:       python-docopt
 Requires:       python-APScheduler
 Requires:       python-pyliblzma
-Requires:       python-azure-sdk >= 0.20.0
+Requires:       python-azure-sdk >= 0.20.1
 Requires:       python-dateutil
 Requires:       python-dnspython
 Requires:       man
