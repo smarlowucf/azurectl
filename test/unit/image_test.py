@@ -1,6 +1,7 @@
 import sys
 import mock
 from mock import patch
+from mock import call
 from nose.tools import *
 
 import nose_helper
@@ -10,6 +11,8 @@ from azurectl.config import Config
 from azurectl.azurectl_exceptions import *
 from azurectl.image import Image
 
+import random
+import string
 import azurectl
 
 from collections import namedtuple
@@ -184,3 +187,66 @@ class TestImage:
     def test_publish_raises_error(self, mock_publish):
         mock_publish.side_effect = AzureOsImagePublishError
         self.image.publish('some-name', 'public')
+
+    @patch('azurectl.image.ServiceManagementService.update_os_image_from_image_reference')
+    @patch('azurectl.image.ServiceManagementService.get_os_image')
+    @patch('azurectl.defaults.Defaults.set_attribute')
+    def test_update(self, mock_set_attr, mock_get_image, mock_update):
+        os_image = mock.Mock()
+        mock_get_image.return_value = os_image
+        update_record = {
+            'eula': 'eula',
+            'description': 'description',
+            'language': 'en_US',
+            'image_family': 'family',
+            'icon_uri': 'uri',
+            'label': 'label',
+            'small_icon_uri': 'uri',
+            'published_date': 'date',
+            'privacy_uri': 'uri'
+        }
+        self.image.update('some-name', update_record)
+        assert mock_set_attr.call_args_list == [
+            call(os_image, 'description', 'description'),
+            call(os_image, 'eula', 'eula'),
+            call(os_image, 'icon_uri', 'uri'),
+            call(os_image, 'image_family', 'family'),
+            call(os_image, 'label', 'label'),
+            call(os_image, 'language', 'en_US'),
+            call(os_image, 'privacy_uri', 'uri'),
+            call(os_image, 'published_date', 'date'),
+            call(os_image, 'small_icon_uri', 'uri')
+        ]
+        mock_update.assert_called_once_with(
+            'some-name', os_image
+        )
+
+    @patch('azurectl.image.ServiceManagementService.update_os_image_from_image_reference')
+    @patch('azurectl.image.ServiceManagementService.get_os_image')
+    @patch('azurectl.image.Defaults')
+    @raises(AzureOsImageUpdateError)
+    def test_update_raises_value_unchanged(
+        self, mock_defaults, mock_get_image, mock_update
+    ):
+        def mock_get_attribute(a, b):
+            return ''.join(random.sample(string.lowercase, 5))
+        mock_defaults.get_attribute = mock_get_attribute
+        self.image.update('some-name', {})
+
+    @patch('azurectl.image.ServiceManagementService.update_os_image_from_image_reference')
+    @patch('azurectl.image.ServiceManagementService.get_os_image')
+    @raises(AzureOsImageUpdateError)
+    def test_update_raises_image_metadata_request_failed(
+        self, mock_get_image, mock_update
+    ):
+        mock_get_image.side_effect = Exception
+        self.image.update('some-name', {})
+
+    @patch('azurectl.image.ServiceManagementService.update_os_image_from_image_reference')
+    @patch('azurectl.image.ServiceManagementService.get_os_image')
+    @raises(AzureOsImageUpdateError)
+    def test_update_raises_on_update_os_image_from_image_reference(
+        self, mock_get_image, mock_update
+    ):
+        mock_update.side_effect = Exception
+        self.image.update('some-name', {})

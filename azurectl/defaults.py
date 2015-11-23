@@ -49,3 +49,11 @@ class Defaults(object):
                 'Specified region %s not in lookup table'
             )
         return azure_domain[region]
+
+    @classmethod
+    def get_attribute(self, instance, name):
+        return getattr(instance, name)
+
+    @classmethod
+    def set_attribute(self, instance, name, value):
+        return setattr(instance, name, value)

@@ -117,6 +117,10 @@ class AzureOsImagePublishError(AzureError):
     pass
 
 
+class AzureOsImageUpdateError(AzureError):
+    pass
+
+
 class AzureConfigParseError(AzureError):
     pass
 
