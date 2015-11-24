@@ -140,6 +140,10 @@ class Image(object):
             self.publishsettings.subscription_id,
             self.cert_file.name
         )
+        if 'all' in regions:
+            regions = []
+            for location in service.list_locations():
+                regions.append(location.name)
         try:
             result = service.replicate_vm_image(
                 name, regions, offer, sku, version

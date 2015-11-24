@@ -128,10 +128,19 @@ class TestImage:
         self.image.delete('some-name')
 
     @patch('azurectl.image.ServiceManagementService.replicate_vm_image')
-    def test_replicate(self, mock_replicate):
+    @patch('azurectl.image.ServiceManagementService.list_locations')
+    def test_replicate(self, mock_locations, mock_replicate):
+        location_type = namedtuple(
+            'location_type', 'name'
+        )
         mock_replicate.return_value = self.myrequest
+        mock_locations.return_value = [
+            location_type(name='a'),
+            location_type(name='b'),
+            location_type(name='c')
+        ]
         request_id = self.image.replicate(
-            'some-name', ['a', 'b', 'c'], 'offer', 'sku', 'version'
+            'some-name', ['all'], 'offer', 'sku', 'version'
         )
         assert request_id == 42
         mock_replicate.assert_called_once_with(

@@ -43,7 +43,9 @@ options:
     --blob=<blobname>
         filename of disk image as it is stored on the blob storage
     --regions=<regionlist>
-        comma separated list of region names
+        comma separated list of region names. If the region name 'all'
+        is provided, azurectl will replicate to all regions that are
+        valid for your subscription
     --offer=<offer>
         name of the offer
     --sku=<sku>
