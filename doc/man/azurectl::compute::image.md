@@ -31,7 +31,7 @@ Register operating system image from a VHD disk stored in a Microsoft Azure blob
 
 ## __replicate__
 
-Replicate a VM image to multiple target locations. This operation is only for publishers. You have to be registered as image publisher with Microsoft Azure to be able to call this.
+Replicate a VM image to multiple target locations. This operation is only for publishers. You have to be registered as image publisher with Microsoft Azure to be able to call this. If the region name __all__ is provided, azurectl will replicate to all regions that are valid for your subscription.
 
 ## __unreplicate__
 
