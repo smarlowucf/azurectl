@@ -19,6 +19,18 @@ __azurectl__ compute image publish --name=*imagename*
     [--private]
     [--msdn]
 
+__azurectl__ compute image update --name=*imagename*
+
+    [--description=description]
+    [--eula=eula]
+    [--image-family=image_family]
+    [--icon-uri=icon_uri]
+    [--label=label]
+    [--language=language]
+    [--privacy-uri=privacy_uri]
+    [--published-date=date]
+    [--small-icon-uri=small_icon_uri]
+
 # DESCRIPTION
 
 ## __list__
@@ -39,9 +51,11 @@ Unreplicate a VM image from all regions. Like with replication this operation is
 
 ## __publish__
 
-Publicly share an already replicated VM image. This operation is only for
-publishers. You have to be registered as image publisher with Windows
-Azure to be able to call this.
+Publicly share an already replicated VM image. This operation is only for publishers. You have to be registered as image publisher with Windows Azure to be able to call this.
+
+## __update__
+
+Update OS image metadata. Every image in the storage repository contains a set of metadata information describing the image more detailed. The __azurectl compute image list__ command prints this information for every image in the repository matching the account setup. With the update command some of the elements can be changed. Please be aware, publisher data like eula, image-family or published-date can only be changed with an account registered as image publisher with Microsoft Azure.
 
 # OPTIONS
 
@@ -80,3 +94,45 @@ When publising an image this option limits the scope of the shared image to be a
 ## __--msdn__
 
 When publising an image this option limits the scope of the shared image to the Microsoft Developer Network
+
+## __--description__
+
+A long-format text description of the image.
+
+## __--eula__
+
+An URL where an end-user may read the text of the images end user license agreement.
+
+## __--image-family__
+
+An arbitrary classification of the image, in order to categorize versions of an image in the Azure gallery; this is replaced by a combination of offer and sku in the Azure marketplace.
+
+## __--icon-uri__
+
+The location to a 100x100px image file referenced by one of the following capabilities:
+
+* The name of the image file local to the Azure gallery.
+* The URL of the image to use as a large icon in the Azure gallery list.
+
+## __--label__
+
+A one-line __title__ for the image.
+
+## __--language__
+
+The language the OS image is configured with. We recommend the standard country code format, e.g __en_US__
+
+## __--privacy-uri__
+
+An URL where an end-user may read the privacy policy that governs information.
+
+## __--published-date__
+
+The date an appliance is published, in the format __yyyy-mm-dd__.
+
+## __--small-icon-uri__
+
+The location to a 45x45px image file referenced by one of the following capabilities:
+
+* The name of the image file local to the Azure gallery.
+* The URL of the image to use as a small icon in the Azure gallery list.

@@ -20,6 +20,16 @@ usage: azurectl compute image -h | --help
            [--delete-disk]
        azurectl compute image replicate --name=<imagename> --regions=<regionlist> --offer=<offer> --sku=<sku> --image-version=<version>
        azurectl compute image unreplicate --name=<imagename>
+       azurectl compute image update --name=<imagename>
+           [--description=<description>]
+           [--eula=<eula>]
+           [--image-family=<image_family>]
+           [--icon-uri=<icon_uri>]
+           [--label=<label>]
+           [--language=<language>]
+           [--privacy-uri=<privacy_uri>]
+           [--published-date=<date>]
+           [--small-icon-uri=<small_icon_uri>]
        azurectl compute image publish --name=<imagename>
            [--private]
            [--msdn]
@@ -30,6 +40,16 @@ commands:
         list available os images for configured account
     create
         create OS image from VHD disk stored on blob storage container
+    delete
+        delete OS image from VM image repository
+    replicate
+        replicate registered VM image to specified regions
+    unreplicate
+        unreplicate registered VM image from specified regions
+    update
+        update OS image meta data
+    publish
+        publish registered VM image
     help
         show manual page for image command
 
@@ -58,6 +78,7 @@ options:
         restrict publish scope to the Microsoft Developer Network
 """
 # project
+from logger import log
 from cli_task import CliTask
 from azure_account import AzureAccount
 from data_collector import DataCollector
@@ -97,6 +118,8 @@ class ComputeImageTask(CliTask):
             self.__unreplicate()
         elif self.command_args['publish']:
             self.__publish()
+        elif self.command_args['update']:
+            self.__update()
 
     def __help(self):
         if self.command_args['help']:
@@ -168,3 +191,34 @@ class ComputeImageTask(CliTask):
             )
         )
         self.out.display()
+
+    def __update(self):
+        log.info(
+            'Updating image metadata for: %s', self.command_args['--name']
+        )
+        update_elements = {
+            'description':
+                self.command_args['--description'],
+            'eula':
+                self.command_args['--eula'],
+            'image_family':
+                self.command_args['--image-family'],
+            'icon_uri':
+                self.command_args['--icon-uri'],
+            'label':
+                self.command_args['--label'],
+            'language':
+                self.command_args['--language'],
+            'privacy_uri':
+                self.command_args['--privacy-uri'],
+            'published_date':
+                self.command_args['--published-date'],
+            'small_icon_uri':
+                self.command_args['--small-icon-uri']
+        }
+        for name, value in update_elements.iteritems():
+            if value is not None:
+                log.info('--> %s = %s', name, value)
+        self.image.update(
+            self.command_args['--name'], update_elements
+        )

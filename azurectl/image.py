@@ -11,6 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import collections
 from tempfile import NamedTemporaryFile
 from azure.servicemanagement import ServiceManagementService
 from azure.storage.blob import BlobService
@@ -23,8 +24,10 @@ from azurectl_exceptions import (
     AzureOsImageDeleteError,
     AzureOsImageReplicateError,
     AzureOsImageUnReplicateError,
-    AzureOsImagePublishError
+    AzureOsImagePublishError,
+    AzureOsImageUpdateError
 )
+from defaults import Defaults
 
 
 class Image(object):
@@ -126,6 +129,62 @@ class Image(object):
         except Exception as e:
             raise AzureOsImageDeleteError(
                 '%s: %s' % (type(e).__name__, format(e))
+            )
+
+    def update(self, image_name, update_record):
+        service = ServiceManagementService(
+            self.publishsettings.subscription_id,
+            self.cert_file.name
+        )
+        try:
+            os_image = service.get_os_image(image_name)
+        except Exception as e:
+            raise AzureOsImageUpdateError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
+        os_image_attributes = [
+            'description',
+            'eula',
+            'icon_uri',
+            'image_family',
+            'label',
+            'language',
+            'privacy_uri',
+            'published_date',
+            'small_icon_uri'
+        ]
+        ordered_record = collections.OrderedDict(
+            sorted(update_record.items())
+        )
+        for name, value in ordered_record.iteritems():
+            if value is not None:
+                Defaults.set_attribute(os_image, name, value)
+        try:
+            service.update_os_image_from_image_reference(
+                image_name, os_image
+            )
+            os_image_updated = service.get_os_image(
+                image_name
+            )
+        except Exception as e:
+            raise AzureOsImageUpdateError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
+
+        elements_not_changed = []
+        for name in os_image_attributes:
+            value_desired = Defaults.get_attribute(os_image, name)
+            value_current = Defaults.get_attribute(os_image_updated, name)
+            if value_desired != value_current:
+                elements_not_changed.append(name)
+        if elements_not_changed:
+            message = [
+                'The element(s) "%s" could not be updated.' %
+                ','.join(elements_not_changed),
+                'Please check if your account is registered as image publisher'
+            ]
+            raise AzureOsImageUpdateError(
+                ' '.join(message)
             )
 
     def replicate(self, name, regions, offer, sku, version):

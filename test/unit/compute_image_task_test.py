@@ -33,6 +33,7 @@ class TestComputeImageTask:
         self.task.command_args['replicate'] = False
         self.task.command_args['unreplicate'] = False
         self.task.command_args['publish'] = False
+        self.task.command_args['update'] = False
         self.task.command_args['--offer'] = 'offer'
         self.task.command_args['--regions'] = 'a,b,c'
         self.task.command_args['--sku'] = 'sku'
@@ -43,6 +44,15 @@ class TestComputeImageTask:
         self.task.command_args['--label'] = 'label'
         self.task.command_args['--name'] = 'some-image'
         self.task.command_args['--blob'] = 'some-blob'
+        self.task.command_args['--description'] = 'description'
+        self.task.command_args['--eula'] = 'eula'
+        self.task.command_args['--image-family'] = 'family'
+        self.task.command_args['--icon-uri'] = 'uri'
+        self.task.command_args['--label'] = 'label'
+        self.task.command_args['--language'] = 'en_US'
+        self.task.command_args['--privacy-uri'] = 'uri'
+        self.task.command_args['--published-date'] = 'date'
+        self.task.command_args['--small-icon-uri'] = 'uri'
 
     @patch('azurectl.compute_image_task.DataOutput')
     def test_process_compute_image_list(self, mock_out):
@@ -130,4 +140,22 @@ class TestComputeImageTask:
         self.task.process()
         self.task.image.publish.assert_called_once_with(
             self.task.command_args['--name'], 'msdn'
+        )
+
+    def test_process_compute_image_update(self):
+        self.__init_command_args()
+        self.task.command_args['update'] = True
+        self.task.process()
+        self.task.image.update.assert_called_once_with(
+            'some-image', {
+                'eula': 'eula',
+                'description': 'description',
+                'language': 'en_US',
+                'image_family': 'family',
+                'icon_uri': 'uri',
+                'label': 'label',
+                'small_icon_uri': 'uri',
+                'published_date': 'date',
+                'privacy_uri': 'uri'
+            }
         )

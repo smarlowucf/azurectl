@@ -15,3 +15,19 @@ class TestDefaults:
     @raises(AzureDomainLookupError)
     def test_get_azure_domain_raises(self):
         Defaults.get_azure_domain('region-does-not-exist')
+
+    def test_set_attribute(self):
+        class X:
+            def __init__(self):
+                self.name = 'value'
+        instance = X()
+        Defaults.set_attribute(instance, 'name', 'foo')
+        assert instance.name == 'foo'
+
+    def test_get_attribute(self):
+        class X:
+            def __init__(self):
+                self.name = 'value'
+        instance = X()
+        Defaults.get_attribute(instance, 'name')
+        assert instance.name == 'value'
