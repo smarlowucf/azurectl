@@ -20,6 +20,7 @@ Requires:       python-pyliblzma
 Requires:       python-azure-sdk >= 0.20.1
 Requires:       python-dateutil
 Requires:       python-dnspython
+Requires:       python-setuptools
 Requires:       man
 Requires:       openssl
 %if 0%{?suse_version} && 0%{?suse_version} <= 1110
