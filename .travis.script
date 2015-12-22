@@ -5,7 +5,7 @@ git clone https://github.com/SUSE/azure-sdk-for-python.git
 git clone https://github.com/SUSE/azure-storage-python.git
 
 # Install specified branch
-branch_name=os_image_metadata
+branch_name=master
 (
     cd azure-sdk-for-python
     git checkout $branch_name
