@@ -87,6 +87,19 @@ class TestImage:
         mock_list_os_images.side_effect = Exception
         self.image.list()
 
+    @patch('azurectl.image.ServiceManagementService.get_os_image')
+    def test_show(self, mock_get_os_image):
+        mock_response = self.list_os_images[0]
+        mock_get_os_image.return_value = mock_response
+        assert self.image.show(mock_response.name) == mock_response._asdict()
+
+    @patch('azurectl.image.ServiceManagementService.get_os_image')
+    @raises(AzureOsImageShowError)
+    def test_show_raises_error(self, mock_get_os_image):
+        mock_response = self.list_os_images[0]
+        mock_get_os_image.side_effect = Exception
+        self.image.show(mock_response.name)
+
     @raises(AzureBlobServicePropertyError)
     def test_create_raise_blob_error(self):
         self.image.create('some-name', 'some-blob')

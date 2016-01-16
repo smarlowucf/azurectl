@@ -19,6 +19,7 @@ from azure.storage.blob import BlobService
 # project
 from azurectl_exceptions import (
     AzureOsImageListError,
+    AzureOsImageShowError,
     AzureBlobServicePropertyError,
     AzureOsImageCreateError,
     AzureOsImageDeleteError,
@@ -49,6 +50,32 @@ class Image(object):
         self.cert_file.write(self.publishsettings.certificate)
         self.cert_file.flush()
 
+    def _decorate_image_for_results(self, image):
+        return {
+            'affinity_group': image.affinity_group,
+            'category': image.category,
+            'description': image.description,
+            'eula': image.eula,
+            'icon_uri': image.icon_uri,
+            'image_family': image.image_family,
+            'is_premium': image.is_premium,
+            'label': image.label,
+            'language': image.language,
+            'location': image.location,
+            'logical_size_in_gb': image.logical_size_in_gb,
+            'media_link': image.media_link,
+            'name': image.name,
+            'os': image.os,
+            'os_state': image.os_state,
+            'pricing_detail_link': image.pricing_detail_link,
+            'privacy_uri': image.privacy_uri,
+            'published_date': image.published_date,
+            'publisher_name': image.publisher_name,
+            'recommended_vm_size': image.recommended_vm_size,
+            'show_in_gui': image.show_in_gui,
+            'small_icon_uri': image.small_icon_uri
+        }
+
     def list(self):
         result = []
         service = ServiceManagementService(
@@ -57,35 +84,25 @@ class Image(object):
         )
         try:
             for image in service.list_os_images():
-                result.append({
-                    'affinity_group': image.affinity_group,
-                    'category': image.category,
-                    'description': image.description,
-                    'eula': image.eula,
-                    'icon_uri': image.icon_uri,
-                    'image_family': image.image_family,
-                    'is_premium': image.is_premium,
-                    'label': image.label,
-                    'language': image.language,
-                    'location': image.location,
-                    'logical_size_in_gb': image.logical_size_in_gb,
-                    'media_link': image.media_link,
-                    'name': image.name,
-                    'os': image.os,
-                    'os_state': image.os_state,
-                    'pricing_detail_link': image.pricing_detail_link,
-                    'privacy_uri': image.privacy_uri,
-                    'published_date': image.published_date,
-                    'publisher_name': image.publisher_name,
-                    'recommended_vm_size': image.recommended_vm_size,
-                    'show_in_gui': image.show_in_gui,
-                    'small_icon_uri': image.small_icon_uri
-                })
+                result.append(self._decorate_image_for_results(image))
         except Exception as e:
             raise AzureOsImageListError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
         return result
+
+    def show(self, name):
+        service = ServiceManagementService(
+            self.publishsettings.subscription_id,
+            self.cert_file.name
+        )
+        try:
+            image = service.get_os_image(name)
+        except Exception as e:
+            raise AzureOsImageShowError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
+        return self._decorate_image_for_results(image)
 
     def create(self, name, blob_name, label=None, container_name=None):
         if not container_name:

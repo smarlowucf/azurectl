@@ -205,6 +205,10 @@ class AzureOsImageListError(AzureError):
     pass
 
 
+class AzureOsImageShowError(AzureError):
+    pass
+
+
 class AzureSubscriptionIdNotFound(AzureError):
     pass
 

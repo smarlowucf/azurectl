@@ -14,6 +14,7 @@
 """
 usage: azurectl compute image -h | --help
        azurectl compute image list
+       azurectl compute image show --name=<imagename>
        azurectl compute image create --name=<imagename> --blob=<blobname>
            [--label=<imagelabel>]
        azurectl compute image delete --name=<imagename>
@@ -38,6 +39,8 @@ usage: azurectl compute image -h | --help
 commands:
     list
         list available os images for configured account
+    show
+        list information about a single image
     create
         create OS image from VHD disk stored on blob storage container
     delete
@@ -108,6 +111,8 @@ class ComputeImageTask(CliTask):
         self.image = Image(self.account)
         if self.command_args['list']:
             self.__list()
+        if self.command_args['show']:
+            self.__show()
         elif self.command_args['create']:
             self.__create()
         elif self.command_args['delete']:
@@ -152,6 +157,10 @@ class ComputeImageTask(CliTask):
 
     def __list(self):
         self.result.add('images', self.image.list())
+        self.out.display()
+
+    def __show(self):
+        self.result.add('image', self.image.show(self.command_args['--name']))
         self.out.display()
 
     def __replicate(self):

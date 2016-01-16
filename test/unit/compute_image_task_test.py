@@ -34,6 +34,7 @@ class TestComputeImageTask:
         self.task.command_args['unreplicate'] = False
         self.task.command_args['publish'] = False
         self.task.command_args['update'] = False
+        self.task.command_args['show'] = False
         self.task.command_args['--offer'] = 'offer'
         self.task.command_args['--regions'] = 'a,b,c'
         self.task.command_args['--sku'] = 'sku'
@@ -60,6 +61,15 @@ class TestComputeImageTask:
         self.task.command_args['list'] = True
         self.task.process()
         self.task.image.list.assert_called_once_with()
+
+    @patch('azurectl.compute_image_task.DataOutput')
+    def test_process_compute_image_show(self, mock_out):
+        self.__init_command_args()
+        self.task.command_args['show'] = True
+        self.task.process()
+        self.task.image.show.assert_called_once_with(
+            self.task.command_args['--name']
+        )
 
     @patch('azurectl.compute_image_task.DataOutput')
     def test_process_compute_image_delete(self, mock_out):
