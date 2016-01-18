@@ -224,12 +224,12 @@ class TestAccountSetup:
     def test_set_default_account(self):
         self.setup.set_default_account('foo')
         assert self.setup.list()['DEFAULT']['account'] == 'account:foo'
-        assert self.setup.set_default_account('foofoo') == False
+        assert self.setup.set_default_account('foofoo') is False
 
     def test_set_default_region(self):
         self.setup.set_default_region('West US 1')
         assert self.setup.list()['DEFAULT']['region'] == 'region:West US 1'
-        assert self.setup.set_default_region('foofoo') == False
+        assert self.setup.set_default_region('foofoo') is False
 
     def test_remove_account(self):
         self.setup.remove_account('foo')
@@ -240,14 +240,14 @@ class TestAccountSetup:
         assert self.setup.list() == self.delete_region_data
 
     def test_remove_default_account(self):
-        assert self.setup.remove_account('bob') == False
+        assert self.setup.remove_account('bob') is False
 
     def test_remove_default_region(self):
-        assert self.setup.remove_region('East US 2') == False
+        assert self.setup.remove_region('East US 2') is False
 
     def test_remove_section_does_not_exist(self):
-        assert self.setup.remove_account('foofoo') == False
-        assert self.setup.remove_region('foofoo') == False
+        assert self.setup.remove_account('foofoo') is False
+        assert self.setup.remove_region('foofoo') is False
 
     @raises(AzureConfigWriteError)
     @patch('__builtin__.open')
