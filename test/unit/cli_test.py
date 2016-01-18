@@ -55,7 +55,7 @@ class TestCli:
         self.loaded_command = self.cli.load_command()
 
     def test_show_help(self):
-        assert self.cli.show_help() == False
+        assert self.cli.show_help() is False
 
     def test_get_servicename(self):
         assert self.cli.get_servicename() == 'compute'

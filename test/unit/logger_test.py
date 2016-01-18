@@ -24,7 +24,7 @@ class TestLoggerSchedulerFilter:
 
         for ignorable in ignorables:
             record = MyRecord(name=ignorable)
-            assert self.scheduler_filter.filter(record) == False
+            assert self.scheduler_filter.filter(record) is False
 
 
 class TestInfoFilter:

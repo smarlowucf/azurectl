@@ -11,7 +11,7 @@ class TestFileType:
         self.filetype_not_xz = FileType('../data/id_test')
 
     def test_is_xz(self):
-        assert self.filetype_xz.is_xz() == True
+        assert self.filetype_xz.is_xz() is True
 
     def test_not_xz(self):
-        assert self.filetype_not_xz.is_xz() == False
+        assert self.filetype_not_xz.is_xz() is False
