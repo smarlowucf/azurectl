@@ -6,6 +6,8 @@ azurectl - Command Line Interface to manage Microsoft Azure
 
 __azurectl__ compute image list
 
+__azurectl__ compute image show --name=*imagename*
+
 __azurectl__ compute image create --name=*imagename* --blob=*blobname*
 
     [--label=label]
@@ -36,6 +38,10 @@ __azurectl__ compute image update --name=*imagename*
 ## __list__
 
 List registered images and their attributes
+
+##__show__
+
+List information about a single image
 
 ## __create__
 
