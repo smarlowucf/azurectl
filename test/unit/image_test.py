@@ -264,6 +264,28 @@ class TestImage:
             'some-name', self.os_image
         )
 
+    @patch('azurectl.image.ServiceManagementService.get_os_image')
+    @patch('azurectl.defaults.Defaults.set_attribute')
+    @raises(AzureOsImageUpdateError)
+    def test_update_raises_invalid_date_format(
+        self, mock_set_attr, mock_get_image
+    ):
+        self.os_image.published_date = '2016-20-10'
+
+        get_os_image_results = [
+            self.os_image_updated, self.os_image
+        ]
+
+        def side_effect(arg):
+            return get_os_image_results.pop()
+
+        mock_get_image.side_effect = side_effect
+
+        update_record = {
+            'published_date': self.os_image.published_date
+        }
+        self.image.update('some-name', update_record)
+
     @patch('azurectl.image.ServiceManagementService.update_os_image_from_image_reference')
     @patch('azurectl.image.ServiceManagementService.get_os_image')
     @patch('azurectl.image.Defaults')

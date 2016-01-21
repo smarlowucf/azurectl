@@ -12,6 +12,7 @@
 # limitations under the License.
 #
 import os
+import time
 import collections
 from tempfile import NamedTemporaryFile
 from azure.servicemanagement import ServiceManagementService
@@ -174,10 +175,12 @@ class Image(object):
         ordered_record = collections.OrderedDict(
             sorted(update_record.items())
         )
-        for name, value in ordered_record.iteritems():
-            if value is not None:
-                Defaults.set_attribute(os_image, name, value)
         try:
+            for name, value in ordered_record.iteritems():
+                if value is not None:
+                    if '_date' in name:
+                        self.__validate_time_and_date_format(value)
+                    Defaults.set_attribute(os_image, name, value)
             service.update_os_image_from_image_reference(
                 image_name, os_image
             )
@@ -260,3 +263,9 @@ class Image(object):
             raise AzureOsImagePublishError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
+
+    def __validate_time_and_date_format(self, timestring):
+        """
+            Check for time and date format as used in the Azure API
+        """
+        time.strptime(timestring, '%Y-%m-%dT%H:%M:%SZ')
