@@ -11,6 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import os
 import collections
 from tempfile import NamedTemporaryFile
 from azure.servicemanagement import ServiceManagementService
@@ -192,6 +193,10 @@ class Image(object):
         for name in os_image_attributes:
             value_desired = Defaults.get_attribute(os_image, name)
             value_current = Defaults.get_attribute(os_image_updated, name)
+            if '_uri' in name:
+                # The API changes the provided path value. Thus we normalize
+                value_desired = os.path.normpath(value_desired)
+                value_current = os.path.normpath(value_current)
             if value_desired != value_current:
                 elements_not_changed.append(name)
         if elements_not_changed:
