@@ -63,9 +63,9 @@ class TestImage:
         self.os_image.description = 'description'
         self.os_image.language = 'en_US'
         self.os_image.image_family = 'family'
-        self.os_image.icon_uri = 'some-custom-uri-name'
+        self.os_image.icon_uri = 'OpenSuse12_100.png'
         self.os_image.label = 'label'
-        self.os_image.small_icon_uri = 'http://small.icon.uri'
+        self.os_image.small_icon_uri = 'OpenSuse12_45.png'
         self.os_image.published_date = '2016-01-20T00:00:00Z'
         self.os_image.privacy_uri = 'http://privacy.uri'
 
@@ -74,9 +74,9 @@ class TestImage:
         self.os_image_updated.description = 'description'
         self.os_image_updated.language = 'en_US'
         self.os_image_updated.image_family = 'family'
-        self.os_image_updated.icon_uri = 'some-custom-uri-name'
+        self.os_image_updated.icon_uri = 'OpenSuse12_100.png'
         self.os_image_updated.label = 'label'
-        self.os_image_updated.small_icon_uri = 'http://small.icon.uri/'
+        self.os_image_updated.small_icon_uri = 'OpenSuse12_45.png'
         self.os_image_updated.published_date = '2016-01-20T00:00:00Z'
         self.os_image_updated.privacy_uri = 'http://privacy.uri/'
 
