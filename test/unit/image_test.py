@@ -57,6 +57,29 @@ class TestImage:
             show_in_gui=True,
             small_icon_uri='url'
         )]
+
+        self.os_image = mock.Mock()
+        self.os_image.eula = 'eula'
+        self.os_image.description = 'description'
+        self.os_image.language = 'en_US'
+        self.os_image.image_family = 'family'
+        self.os_image.icon_uri = 'OpenSuse12_100.png'
+        self.os_image.label = 'label'
+        self.os_image.small_icon_uri = 'OpenSuse12_45.png'
+        self.os_image.published_date = '2016-01-20'
+        self.os_image.privacy_uri = 'http://privacy.uri'
+
+        self.os_image_updated = mock.Mock()
+        self.os_image_updated.eula = 'eula'
+        self.os_image_updated.description = 'description'
+        self.os_image_updated.language = 'en_US'
+        self.os_image_updated.image_family = 'family'
+        self.os_image_updated.icon_uri = 'OpenSuse12_100.png'
+        self.os_image_updated.label = 'label'
+        self.os_image_updated.small_icon_uri = 'OpenSuse12_45.png'
+        self.os_image_updated.published_date = '2016-01-20T00:00:00Z'
+        self.os_image_updated.privacy_uri = 'http://privacy.uri/'
+
         account = AzureAccount(
             Config(
                 region_name='East US 2', filename='../data/config'
@@ -107,7 +130,9 @@ class TestImage:
     @patch('azurectl.image.ServiceManagementService.add_os_image')
     @patch('azurectl.image.BlobService.get_blob_properties')
     @raises(AzureOsImageCreateError)
-    def test_create_raise_os_image_error(self, mock_get_blob_props, mock_add_os_image):
+    def test_create_raise_os_image_error(
+        self, mock_get_blob_props, mock_add_os_image
+    ):
         mock_add_os_image.side_effect = Exception
         self.image.create('some-name', 'some-blob')
 
@@ -203,48 +228,88 @@ class TestImage:
 
     @patch('azurectl.image.ServiceManagementService.update_os_image_from_image_reference')
     @patch('azurectl.image.ServiceManagementService.get_os_image')
-    @patch('azurectl.defaults.Defaults.set_attribute')
-    def test_update(self, mock_set_attr, mock_get_image, mock_update):
-        os_image = mock.Mock()
-        mock_get_image.return_value = os_image
-        update_record = {
-            'eula': 'eula',
-            'description': 'description',
-            'language': 'en_US',
-            'image_family': 'family',
-            'icon_uri': 'uri',
-            'label': 'label',
-            'small_icon_uri': 'uri',
-            'published_date': 'date',
-            'privacy_uri': 'uri'
-        }
-        self.image.update('some-name', update_record)
-        assert mock_set_attr.call_args_list == [
-            call(os_image, 'description', 'description'),
-            call(os_image, 'eula', 'eula'),
-            call(os_image, 'icon_uri', 'uri'),
-            call(os_image, 'image_family', 'family'),
-            call(os_image, 'label', 'label'),
-            call(os_image, 'language', 'en_US'),
-            call(os_image, 'privacy_uri', 'uri'),
-            call(os_image, 'published_date', 'date'),
-            call(os_image, 'small_icon_uri', 'uri')
+    def test_update(self, mock_get_image, mock_update):
+        get_os_image_results = [
+            self.os_image_updated, self.os_image
         ]
+
+        def side_effect(arg):
+            return get_os_image_results.pop()
+
+        mock_get_image.side_effect = side_effect
+
+        update_record = {
+            'eula': self.os_image.eula,
+            'description': self.os_image.description,
+            'language': self.os_image.language,
+            'image_family': self.os_image.image_family,
+            'icon_uri': self.os_image.icon_uri,
+            'label': self.os_image.label,
+            'small_icon_uri': self.os_image.small_icon_uri,
+            'published_date': self.os_image.published_date,
+            'privacy_uri': self.os_image.privacy_uri
+        }
+
+        self.image.update('some-name', update_record)
+
+        assert self.os_image.description == \
+            self.os_image_updated.description
+        assert self.os_image.eula == \
+            self.os_image_updated.eula
+        assert self.os_image.icon_uri in \
+            self.os_image_updated.icon_uri
+        assert self.os_image.image_family == \
+            self.os_image_updated.image_family
+        assert self.os_image.label == \
+            self.os_image_updated.label
+        assert self.os_image.language == \
+            self.os_image_updated.language
+        assert self.os_image.privacy_uri in \
+            self.os_image_updated.privacy_uri
+        assert self.os_image.published_date == \
+            self.os_image_updated.published_date
+        assert self.os_image.small_icon_uri in \
+            self.os_image_updated.small_icon_uri
+
         mock_update.assert_called_once_with(
-            'some-name', os_image
+            'some-name', self.os_image
+        )
+
+    @patch('azurectl.image.ServiceManagementService.get_os_image')
+    @raises(AzureOsImageUpdateError)
+    def test_update_raises_invalid_date_format(self, mock_get_image):
+        self.os_image.published_date = 'xxx'
+
+        get_os_image_results = [
+            self.os_image_updated, self.os_image
+        ]
+
+        def side_effect(arg):
+            return get_os_image_results.pop()
+
+        mock_get_image.side_effect = side_effect
+        self.image.update(
+            'some-name', {'published_date': self.os_image.published_date}
         )
 
     @patch('azurectl.image.ServiceManagementService.update_os_image_from_image_reference')
     @patch('azurectl.image.ServiceManagementService.get_os_image')
-    @patch('azurectl.image.Defaults')
     @raises(AzureOsImageUpdateError)
-    def test_update_raises_value_unchanged(
-        self, mock_defaults, mock_get_image, mock_update
-    ):
-        def mock_get_attribute(a, b):
-            return ''.join(random.sample(string.lowercase, 5))
-        mock_defaults.get_attribute = mock_get_attribute
-        self.image.update('some-name', {})
+    def test_update_raises_value_unchanged(self, mock_get_image, mock_update):
+        self.os_image.description = 'a'
+        self.os_image_updated.description = 'b'
+
+        get_os_image_results = [
+            self.os_image_updated, self.os_image
+        ]
+
+        def side_effect(arg):
+            return get_os_image_results.pop()
+
+        mock_get_image.side_effect = side_effect
+        self.image.update(
+            'some-name', {'description': self.os_image.description}
+        )
 
     @patch('azurectl.image.ServiceManagementService.update_os_image_from_image_reference')
     @patch('azurectl.image.ServiceManagementService.get_os_image')

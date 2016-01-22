@@ -11,6 +11,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import os
+import dateutil.parser
 import collections
 from tempfile import NamedTemporaryFile
 from azure.servicemanagement import ServiceManagementService
@@ -50,32 +52,6 @@ class Image(object):
         self.cert_file.write(self.publishsettings.certificate)
         self.cert_file.flush()
 
-    def _decorate_image_for_results(self, image):
-        return {
-            'affinity_group': image.affinity_group,
-            'category': image.category,
-            'description': image.description,
-            'eula': image.eula,
-            'icon_uri': image.icon_uri,
-            'image_family': image.image_family,
-            'is_premium': image.is_premium,
-            'label': image.label,
-            'language': image.language,
-            'location': image.location,
-            'logical_size_in_gb': image.logical_size_in_gb,
-            'media_link': image.media_link,
-            'name': image.name,
-            'os': image.os,
-            'os_state': image.os_state,
-            'pricing_detail_link': image.pricing_detail_link,
-            'privacy_uri': image.privacy_uri,
-            'published_date': image.published_date,
-            'publisher_name': image.publisher_name,
-            'recommended_vm_size': image.recommended_vm_size,
-            'show_in_gui': image.show_in_gui,
-            'small_icon_uri': image.small_icon_uri
-        }
-
     def list(self):
         result = []
         service = ServiceManagementService(
@@ -84,7 +60,7 @@ class Image(object):
         )
         try:
             for image in service.list_os_images():
-                result.append(self._decorate_image_for_results(image))
+                result.append(self.__decorate_image_for_results(image))
         except Exception as e:
             raise AzureOsImageListError(
                 '%s: %s' % (type(e).__name__, format(e))
@@ -102,7 +78,7 @@ class Image(object):
             raise AzureOsImageShowError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
-        return self._decorate_image_for_results(image)
+        return self.__decorate_image_for_results(image)
 
     def create(self, name, blob_name, label=None, container_name=None):
         if not container_name:
@@ -159,23 +135,9 @@ class Image(object):
             raise AzureOsImageUpdateError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
-        os_image_attributes = [
-            'description',
-            'eula',
-            'icon_uri',
-            'image_family',
-            'label',
-            'language',
-            'privacy_uri',
-            'published_date',
-            'small_icon_uri'
-        ]
-        ordered_record = collections.OrderedDict(
-            sorted(update_record.items())
+        self.__decorate_os_image_attributes_for_update(
+            os_image, update_record
         )
-        for name, value in ordered_record.iteritems():
-            if value is not None:
-                Defaults.set_attribute(os_image, name, value)
         try:
             service.update_os_image_from_image_reference(
                 image_name, os_image
@@ -187,11 +149,14 @@ class Image(object):
             raise AzureOsImageUpdateError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
-
         elements_not_changed = []
-        for name in os_image_attributes:
+        for name in sorted(update_record.keys()):
             value_desired = Defaults.get_attribute(os_image, name)
             value_current = Defaults.get_attribute(os_image_updated, name)
+            if '_uri' in name:
+                # Use normalized paths to compare, avoids false positives
+                value_desired = os.path.normpath(value_desired)
+                value_current = os.path.normpath(value_current)
             if value_desired != value_current:
                 elements_not_changed.append(name)
         if elements_not_changed:
@@ -255,3 +220,53 @@ class Image(object):
             raise AzureOsImagePublishError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
+
+    def __convert_date_to_azure_format(self, timestring):
+        """
+            Convert the given date string into the format used by the Azure API
+        """
+        try:
+            return dateutil.parser.parse(timestring).strftime(
+                '%Y-%m-%dT%H:%M:%SZ'
+            )
+        except Exception as e:
+            raise AzureOsImageUpdateError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
+
+    def __decorate_os_image_attributes_for_update(self, image, update_record):
+        ordered_update_record = collections.OrderedDict(
+            sorted(update_record.items())
+        )
+        for name, value in ordered_update_record.iteritems():
+            if value is not None:
+                if '_date' in name:
+                    value = self.__convert_date_to_azure_format(value)
+                Defaults.set_attribute(image, name, value)
+        return image
+
+    def __decorate_image_for_results(self, image):
+        return {
+            'affinity_group': image.affinity_group,
+            'category': image.category,
+            'description': image.description,
+            'eula': image.eula,
+            'icon_uri': image.icon_uri,
+            'image_family': image.image_family,
+            'is_premium': image.is_premium,
+            'label': image.label,
+            'language': image.language,
+            'location': image.location,
+            'logical_size_in_gb': image.logical_size_in_gb,
+            'media_link': image.media_link,
+            'name': image.name,
+            'os': image.os,
+            'os_state': image.os_state,
+            'pricing_detail_link': image.pricing_detail_link,
+            'privacy_uri': image.privacy_uri,
+            'published_date': image.published_date,
+            'publisher_name': image.publisher_name,
+            'recommended_vm_size': image.recommended_vm_size,
+            'show_in_gui': image.show_in_gui,
+            'small_icon_uri': image.small_icon_uri
+        }
