@@ -12,7 +12,7 @@
 # limitations under the License.
 #
 import os
-import time
+import dateutil.parser
 import collections
 from tempfile import NamedTemporaryFile
 from azure.servicemanagement import ServiceManagementService
@@ -161,26 +161,10 @@ class Image(object):
             raise AzureOsImageUpdateError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
-        os_image_attributes = [
-            'description',
-            'eula',
-            'icon_uri',
-            'image_family',
-            'label',
-            'language',
-            'privacy_uri',
-            'published_date',
-            'small_icon_uri'
-        ]
-        ordered_record = collections.OrderedDict(
-            sorted(update_record.items())
+        self.__decorate_os_image_attributes_for_update(
+            os_image, update_record
         )
         try:
-            for name, value in ordered_record.iteritems():
-                if value is not None:
-                    if '_date' in name:
-                        self.__validate_time_and_date_format(value)
-                    Defaults.set_attribute(os_image, name, value)
             service.update_os_image_from_image_reference(
                 image_name, os_image
             )
@@ -191,13 +175,12 @@ class Image(object):
             raise AzureOsImageUpdateError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
-
         elements_not_changed = []
-        for name in os_image_attributes:
+        for name in sorted(update_record.keys()):
             value_desired = Defaults.get_attribute(os_image, name)
             value_current = Defaults.get_attribute(os_image_updated, name)
             if '_uri' in name:
-                # The API changes the provided path value. Thus we normalize
+                # Use normalized paths to compare, avoids false positives
                 value_desired = os.path.normpath(value_desired)
                 value_current = os.path.normpath(value_current)
             if value_desired != value_current:
@@ -264,8 +247,26 @@ class Image(object):
                 '%s: %s' % (type(e).__name__, format(e))
             )
 
-    def __validate_time_and_date_format(self, timestring):
+    def __convert_date_to_azure_format(self, timestring):
         """
-            Check for time and date format as used in the Azure API
+            Convert the given date string into the format used by the Azure API
         """
-        time.strptime(timestring, '%Y-%m-%dT%H:%M:%SZ')
+        try:
+            return dateutil.parser.parse(timestring).strftime(
+                '%Y-%m-%dT%H:%M:%SZ'
+            )
+        except Exception as e:
+            raise AzureOsImageUpdateError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
+
+    def __decorate_os_image_attributes_for_update(self, image, update_record):
+        ordered_update_record = collections.OrderedDict(
+            sorted(update_record.items())
+        )
+        for name, value in ordered_update_record.iteritems():
+            if value is not None:
+                if '_date' in name:
+                    value = self.__convert_date_to_azure_format(value)
+                Defaults.set_attribute(image, name, value)
+        return image
