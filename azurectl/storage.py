@@ -50,7 +50,7 @@ class Storage(object):
         self.container = container
         self.upload_status = {'current_bytes': 0, 'total_bytes': 0}
 
-    def upload(self, image, name, max_chunk_size=None):
+    def upload(self, image, name, max_chunk_size=None, max_attempts=5):
         if not os.path.exists(image):
             raise AzureStorageFileNotFound('File %s not found' % image)
         blob_service = BlobService(self.account_name, self.account_key)
@@ -101,24 +101,26 @@ class Storage(object):
             raise AzureStorageUploadError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
-        try:
-            stream = self.__open_upload_stream(image, image_type)
-            if stream:
-                rest_bytes = image_size
-                page_start = 0
-                while True:
-                    requested_bytes = min(
-                        rest_bytes, max_chunk_size
-                    )
-                    if requested_bytes != max_chunk_size:
-                        with open('/dev/zero', 'rb') as zero_stream:
-                            zero_page = zero_stream.read(requested_bytes)
-                    data = stream.read(requested_bytes)
-                    if data:
-                        length = len(data)
-                        rest_bytes -= length
-                        page_end = page_start + length - 1
-                        if not data == zero_page:
+        stream = self.__open_upload_stream(image, image_type)
+        if stream:
+            rest_bytes = image_size
+            page_start = 0
+            while True:
+                requested_bytes = min(
+                    rest_bytes, max_chunk_size
+                )
+                if requested_bytes != max_chunk_size:
+                    with open('/dev/zero', 'rb') as zero_stream:
+                        zero_page = zero_stream.read(requested_bytes)
+                data = stream.read(requested_bytes)
+                if data:
+                    length = len(data)
+                    rest_bytes -= length
+                    page_end = page_start + length - 1
+                    upload_errors = []
+                    while (not data == zero_page and
+                           len(upload_errors) < max_attempts):
+                        try:
                             blob_service.put_page(
                                 self.container,
                                 blob_name,
@@ -127,20 +129,26 @@ class Storage(object):
                                 'update',
                                 x_ms_lease_id=None
                             )
-                        page_start += length
-                        self.__upload_status(
-                            page_start, image_size
+                        except Exception as e:
+                            upload_errors.append(
+                                '%s: %s' % (type(e).__name__, format(e))
+                            )
+                        else:
+                            break
+                    if (len(upload_errors) >= max_attempts):
+                        raise AzureStorageUploadError(
+                            "Too many errors: \n" + "\n".join(upload_errors)
                         )
-                    else:
-                        self.__upload_status(
-                            image_size, image_size
-                        )
-                        break
-                stream.close()
-        except Exception as e:
-            raise AzureStorageUploadError(
-                '%s: %s' % (type(e).__name__, format(e))
-            )
+                    page_start += length
+                    self.__upload_status(
+                        page_start, image_size
+                    )
+                else:
+                    self.__upload_status(
+                        image_size, image_size
+                    )
+                    break
+            stream.close()
 
     def delete(self, image):
         blob_service = BlobService(self.account_name, self.account_key)

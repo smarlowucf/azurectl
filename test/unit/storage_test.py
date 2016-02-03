@@ -45,7 +45,7 @@ class TestStorage:
     @patch('azurectl.storage.BlobService.put_page')
     def test_upload_error_put_page(self, put_page, mock_uncompressed_size):
         mock_uncompressed_size.return_value = 1024
-        self.storage.upload('../data/blob.xz', None, 1024)
+        self.storage.upload('../data/blob.xz', None, 1024, max_attempts=1)
 
     @raises(AzurePageBlobAlignmentViolation)
     @patch('azurectl.storage.XZ.uncompressed_size')
