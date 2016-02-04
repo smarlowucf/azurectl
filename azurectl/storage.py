@@ -38,7 +38,7 @@ class Storage(object):
         self.container = container
         self.upload_status = {'current_bytes': 0, 'total_bytes': 0}
 
-    def upload(self, image, name, max_chunk_size=None, max_attempts=5):
+    def upload(self, image, name=None, max_chunk_size=None, max_attempts=5):
         if not os.path.exists(image):
             raise AzureStorageFileNotFound('File %s not found' % image)
         blob_service = BlobService(self.account_name, self.account_key)
