@@ -18,11 +18,12 @@ from azure.storage.blob import BlobService
 from xz import XZ
 from azurectl_exceptions import (
     AzureStorageFileNotFound,
-    AzurePageBlobAlignmentViolation,
+    AzureStorageStreamError,
     AzureStorageUploadError,
     AzureStorageDeleteError
 )
 from filetype import FileType
+from page_blob import PageBlob
 from logger import log
 
 
@@ -31,19 +32,6 @@ class Storage(object):
         Implements storage operations in Azure storage containers
     """
     def __init__(self, account, container):
-        self.content_encoding = None
-        self.content_language = None
-        self.content_md5 = None
-        self.cache_control = None
-        self.x_ms_blob_content_type = None
-        self.x_ms_blob_content_encoding = None
-        self.x_ms_blob_content_language = None
-        self.x_ms_blob_content_md5 = None
-        self.x_ms_blob_cache_control = None
-        self.x_ms_meta_name_values = None
-        self.x_ms_lease_id = None
-        self.x_ms_blob_sequence_number = None
-
         self.account = account
         self.account_name = account.storage_name()
         self.account_key = account.storage_key()
@@ -58,97 +46,34 @@ class Storage(object):
         if not blob_name:
             blob_name = os.path.basename(image)
 
-        if not max_chunk_size:
-            # BLOB_MAX_CHUNK_DATA_SIZE = 4 MB
-            max_chunk_size = blob_service._BLOB_MAX_CHUNK_DATA_SIZE
-        max_chunk_size = int(max_chunk_size)
-
         image_type = FileType(image)
-        image_size = self.__upload_byte_size(image, image_type)
-
-        # PageBlob must be 512 byte aligned
-        remainder = image_size % 512
-        if remainder != 0:
-            raise AzurePageBlobAlignmentViolation(
-                'Uncompressed size %d is not 512 byte aligned' % image_size
-            )
-
-        zero_page = None
-        self.__upload_status(0, image_size)
+        image_size = self.__upload_byte_size(
+            image, image_type
+        )
         try:
-            with open('/dev/zero', 'rb') as zero_stream:
-                zero_page = zero_stream.read(max_chunk_size)
-            blob_service.put_blob(
-                self.container,
-                blob_name,
-                None,
-                'PageBlob',
-                self.content_encoding,
-                self.content_language,
-                self.content_md5,
-                self.cache_control,
-                self.x_ms_blob_content_type,
-                self.x_ms_blob_content_encoding,
-                self.x_ms_blob_content_language,
-                self.x_ms_blob_content_md5,
-                self.x_ms_blob_cache_control,
-                self.x_ms_meta_name_values,
-                self.x_ms_lease_id,
-                image_size,
-                self.x_ms_blob_sequence_number
-            )
+            stream = self.__open_upload_stream(image, image_type)
         except Exception as e:
+            raise AzureStorageStreamError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
+        try:
+            page_blob = PageBlob(
+                blob_service, blob_name, self.container, image_size
+            )
+            self.__upload_status(0, image_size)
+            while True:
+                bytes_transfered = page_blob.next(
+                    stream, max_chunk_size, max_attempts
+                )
+                self.__upload_status(bytes_transfered, image_size)
+        except StopIteration:
+            stream.close()
+            self.__upload_status(image_size, image_size)
+        except Exception as e:
+            stream.close()
             raise AzureStorageUploadError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
-        stream = self.__open_upload_stream(image, image_type)
-        if stream:
-            rest_bytes = image_size
-            page_start = 0
-            while True:
-                requested_bytes = min(
-                    rest_bytes, max_chunk_size
-                )
-                if requested_bytes != max_chunk_size:
-                    with open('/dev/zero', 'rb') as zero_stream:
-                        zero_page = zero_stream.read(requested_bytes)
-                data = stream.read(requested_bytes)
-                if data:
-                    length = len(data)
-                    rest_bytes -= length
-                    page_end = page_start + length - 1
-                    upload_errors = []
-                    while (not data == zero_page and
-                           len(upload_errors) < max_attempts):
-                        try:
-                            blob_service.put_page(
-                                self.container,
-                                blob_name,
-                                data,
-                                'bytes={0}-{1}'.format(page_start, page_end),
-                                'update',
-                                x_ms_lease_id=None
-                            )
-                        except Exception as e:
-                            upload_errors.append(
-                                '%s: %s' % (type(e).__name__, format(e))
-                            )
-                        else:
-                            break
-                    if (len(upload_errors) >= max_attempts):
-                        raise AzureStorageUploadError(
-                            "Too many errors: \n" + "\n".join(upload_errors)
-                        )
-                    page_start += length
-                    self.__upload_status(
-                        page_start, image_size
-                    )
-                else:
-                    self.__upload_status(
-                        image_size, image_size
-                    )
-                    break
-            stream.close()
 
     def delete(self, image):
         blob_service = BlobService(self.account_name, self.account_key)
