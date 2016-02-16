@@ -221,6 +221,18 @@ class AzurePageBlobAlignmentViolation(AzureError):
     pass
 
 
+class AzurePageBlobSetupError(AzureError):
+    pass
+
+
+class AzurePageBlobZeroPageError(AzureError):
+    pass
+
+
+class AzurePageBlobUpdateError(AzureError):
+    pass
+
+
 class AzureRequestTimeout(AzureError):
     pass
 
@@ -242,6 +254,10 @@ class AzureServiceManagementError(AzureError):
 
 
 class AzureStorageListError(AzureError):
+    pass
+
+
+class AzureStorageStreamError(AzureError):
     pass
 
 

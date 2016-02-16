@@ -12,8 +12,15 @@ class TestXZ:
     def setup(self):
         self.xz = XZ.open('../data/blob.xz')
 
+    def teardown(self):
+        self.xz.close()
+
     def test_read(self):
         assert self.xz.read(128) == 'foo'
+
+    def test_read_already_finished(self):
+        self.xz.finished = True
+        assert self.xz.read(128) is None
 
     def test_read_chunks(self):
         with XZ.open('../data/blob.more.xz') as xz:
