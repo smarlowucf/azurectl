@@ -89,8 +89,11 @@ class Image(object):
         if not label:
             label = name
         try:
-            storage = BlobService(self.account_name, self.account_key,
-                                  host_base=self.blob_service_host_base)
+            storage = BlobService(
+                self.account_name,
+                self.account_key,
+                host_base=self.blob_service_host_base
+            )
             storage.get_blob_properties(
                 container_name, blob_name
             )

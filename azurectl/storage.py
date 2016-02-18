@@ -42,8 +42,11 @@ class Storage(object):
     def upload(self, image, name=None, max_chunk_size=None, max_attempts=5):
         if not os.path.exists(image):
             raise AzureStorageFileNotFound('File %s not found' % image)
-        blob_service = BlobService(self.account_name, self.account_key,
-                                   host_base=self.blob_service_host_base)
+        blob_service = BlobService(
+            self.account_name,
+            self.account_key,
+            host_base=self.blob_service_host_base
+        )
         blob_name = name
         if not blob_name:
             blob_name = os.path.basename(image)
@@ -78,8 +81,11 @@ class Storage(object):
             )
 
     def delete(self, image):
-        blob_service = BlobService(self.account_name, self.account_key,
-                                   host_base=self.blob_service_host_base)
+        blob_service = BlobService(
+            self.account_name,
+            self.account_key,
+            host_base=self.blob_service_host_base
+        )
         try:
             blob_service.delete_blob(self.container, image)
         except Exception as e:

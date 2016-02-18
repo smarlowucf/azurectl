@@ -41,8 +41,11 @@ class Container(object):
 
     def list(self):
         result = []
-        blob_service = BlobService(self.account_name, self.account_key,
-                                   host_base=self.blob_service_host_base)
+        blob_service = BlobService(
+            self.account_name,
+            self.account_key,
+            host_base=self.blob_service_host_base
+        )
         try:
             for container in blob_service.list_containers():
                 result.append(format(container.name))
@@ -54,8 +57,11 @@ class Container(object):
 
     def content(self, container):
         result = {container: []}
-        blob_service = BlobService(self.account_name, self.account_key,
-                                   host_base=self.blob_service_host_base)
+        blob_service = BlobService(
+            self.account_name,
+            self.account_key,
+            host_base=self.blob_service_host_base
+        )
         try:
             for blob in blob_service.list_blobs(container):
                 result[container].append(format(blob.name))
