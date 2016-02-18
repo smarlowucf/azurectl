@@ -20,6 +20,7 @@ from OpenSSL.crypto import (
     FILETYPE_PEM
 )
 from tempfile import NamedTemporaryFile
+from urlparse import urlparse
 from azure.servicemanagement import ServiceManagementService
 import base64
 
@@ -32,6 +33,7 @@ from azurectl_exceptions import (
     AzureSubscriptionIdNotFound,
     AzureSubscriptionParseError,
     AzureManagementCertificateNotFound,
+    AzureServiceManagementUrlNotFound,
     AzureSubscriptionPKCS12DecodeError
 )
 
@@ -55,6 +57,17 @@ class AzureAccount(object):
             return self.config.get_subscription_id()
         except AzureConfigVariableNotFound:
             return self.__get_first_subscription_id()
+
+    def get_management_url(self):
+        subscription = self.__get_subscription(self.subscription_id())
+        try:
+            url = subscription.attributes['ServiceManagementUrl'].value
+        except Exception:
+            raise AzureServiceManagementUrlNotFound(
+                'No PublishProfile.ServiceManagementUrl found in %s' %
+                self.settings
+            )
+        return urlparse(url).hostname
 
     def storage_key(self, name=None):
         self.__build_service_instance()
@@ -97,12 +110,13 @@ class AzureAccount(object):
     def publishsettings(self):
         credentials = namedtuple(
             'credentials',
-            ['private_key', 'certificate', 'subscription_id']
+            ['private_key', 'certificate', 'subscription_id', 'management_url']
         )
         result = credentials(
             private_key=self.__get_private_key(),
             certificate=self.__get_certificate(),
-            subscription_id=self.subscription_id()
+            subscription_id=self.subscription_id(),
+            management_url=self.get_management_url()
         )
         return result
 
@@ -121,7 +135,8 @@ class AzureAccount(object):
         try:
             self.service = ServiceManagementService(
                 publishsettings.subscription_id,
-                self.cert_file.name
+                self.cert_file.name,
+                publishsettings.management_url
             )
         except Exception as e:
             raise AzureServiceManagementError(

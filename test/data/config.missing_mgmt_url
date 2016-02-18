@@ -1,0 +1,10 @@
+[DEFAULT]
+default_account = account:bob
+default_region = region:East US 2
+
+[region:East US 2]
+default_storage_account = bob
+default_storage_container = foo
+
+[account:bob]
+publishsettings = ../data/publishsettings.missing_mgmt_url

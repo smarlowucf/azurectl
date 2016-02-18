@@ -47,7 +47,8 @@ class VirtualMachine(object):
 
         self.service = ServiceManagementService(
             self.publishsettings.subscription_id,
-            self.cert_file.name
+            self.cert_file.name,
+            self.publishsettings.management_url
         )
 
         self.storage = BlobService(

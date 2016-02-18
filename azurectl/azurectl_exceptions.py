@@ -141,6 +141,10 @@ class AzureSubscriptionCertificateDecodeError(AzureError):
     pass
 
 
+class AzureServiceManagementUrlNotFound(AzureError):
+    pass
+
+
 class AzureSubscriptionPKCS12DecodeError(AzureError):
     pass
 

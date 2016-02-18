@@ -41,13 +41,14 @@ class TestVirtualMachine:
         )
         credentials = namedtuple(
             'credentials',
-            ['private_key', 'certificate', 'subscription_id']
+            ['private_key', 'certificate', 'subscription_id', 'management_url']
         )
         account.publishsettings = mock.Mock(
             return_value=credentials(
                 private_key='abc',
                 certificate='abc',
-                subscription_id='4711'
+                subscription_id='4711',
+                management_url='test.url'
             )
         )
         account.storage_key = mock.Mock()
