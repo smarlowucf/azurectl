@@ -51,6 +51,9 @@ class TestVirtualMachine:
                 management_url='test.url'
             )
         )
+        account.get_blob_service_host_base = mock.Mock(
+            return_value='.blob.test.url'
+        )
         account.storage_key = mock.Mock()
         self.account = account
         self.vm = VirtualMachine(account)
@@ -107,7 +110,7 @@ class TestVirtualMachine:
             'some-label'
         )
         mock_os_disk.assert_called_once_with(
-            'foo.vhd', 'https://bob.blob.core.windows.net/foo/foo.vhd_instance'
+            'foo.vhd', 'https://bob.blob.test.url/foo/foo.vhd_instance'
         )
         mock_vm_create.assert_called_once_with(
             deployment_slot='production',

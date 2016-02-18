@@ -48,6 +48,7 @@ class Image(object):
         self.account_key = account.storage_key()
         self.cert_file = NamedTemporaryFile()
         self.publishsettings = self.account.publishsettings()
+        self.blob_service_host_base = self.account.get_blob_service_host_base()
         self.cert_file.write(self.publishsettings.private_key)
         self.cert_file.write(self.publishsettings.certificate)
         self.cert_file.flush()
@@ -88,7 +89,8 @@ class Image(object):
         if not label:
             label = name
         try:
-            storage = BlobService(self.account_name, self.account_key)
+            storage = BlobService(self.account_name, self.account_key,
+                                  host_base=self.blob_service_host_base)
             storage.get_blob_properties(
                 container_name, blob_name
             )

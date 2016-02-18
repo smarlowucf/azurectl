@@ -97,6 +97,9 @@ class TestImage:
                 management_url='test.url'
             )
         )
+        account.get_blob_service_host_base = mock.Mock(
+            return_value='.blob.test.url'
+        )
         account.storage_key = mock.Mock()
         self.image = Image(account)
 
@@ -147,7 +150,7 @@ class TestImage:
         assert request_id == 42
         mock_add_os_image.assert_called_once_with(
             'some-name',
-            'https://bob.blob.core.windows.net/foo/some-blob',
+            'https://bob.blob.test.url/foo/some-blob',
             'some-name',
             'Linux'
         )

@@ -265,6 +265,10 @@ class AzureStorageStreamError(AzureError):
     pass
 
 
+class AzureUnrecognizedManagementUrl(AzureError):
+    pass
+
+
 class AzureVmCreateError(AzureError):
     pass
 

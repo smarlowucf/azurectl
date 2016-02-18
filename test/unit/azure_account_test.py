@@ -153,6 +153,18 @@ class TestAzureAccount:
         )
         account_invalid.publishsettings()
 
+    @patch.dict('azurectl.azure_account.BLOB_SERVICE_HOST_BASE',
+                {'test.url': '.blob.test.url'})
+    def test_get_blob_service_host_base(self):
+        host_base = self.account.get_blob_service_host_base()
+        assert_equal(host_base, '.blob.test.url')
+
+    @raises(AzureUnrecognizedManagementUrl)
+    @patch.dict('azurectl.azure_account.BLOB_SERVICE_HOST_BASE',
+                clear=True)
+    def test_get_blob_service_host_base_with_bad_url(self):
+        host_base = self.account.get_blob_service_host_base()
+
     @raises(AzureSubscriptionIdNotFound)
     @patch('azurectl.azure_account.load_pkcs12')
     @patch('azurectl.azure_account.dump_privatekey')

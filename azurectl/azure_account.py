@@ -34,8 +34,10 @@ from azurectl_exceptions import (
     AzureSubscriptionParseError,
     AzureManagementCertificateNotFound,
     AzureServiceManagementUrlNotFound,
-    AzureSubscriptionPKCS12DecodeError
+    AzureSubscriptionPKCS12DecodeError,
+    AzureUnrecognizedManagementUrl
 )
+from constants import BLOB_SERVICE_HOST_BASE
 
 
 class AzureAccount(object):
@@ -68,6 +70,16 @@ class AzureAccount(object):
                 self.settings
             )
         return urlparse(url).hostname
+
+    def get_blob_service_host_base(self):
+        management_url = self.get_management_url()
+        try:
+            return BLOB_SERVICE_HOST_BASE[management_url]
+        except KeyError:
+            raise AzureUnrecognizedManagementUrl(
+                'No storage service host base for the management url %s' %
+                management_url
+            )
 
     def storage_key(self, name=None):
         self.__build_service_instance()
