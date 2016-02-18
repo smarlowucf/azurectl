@@ -1,4 +1,4 @@
-# Copyright (c) 2015 SUSE Linux GmbH.  All rights reserved.
+# Copyright (c) 2016 SUSE, LLC.  All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,7 +11,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-"""
-    Global version information used in azurectl and the package
-"""
-__VERSION__ = '1.5.0'
+
+# management urls of azure & disconnected regions
+AZURE_MGMT_URL = 'management.core.windows.net'
+MOONCAKE_MGMT_URL = 'management.core.chinacloudapi.cn'
+BLACK_FOREST_MGMT_URL = 'management.core.cloudapi.de'
+
+# Maps management urls to storage service domains for disconnected regions
+BLOB_SERVICE_HOST_BASE = {
+    AZURE_MGMT_URL: '.blob.core.windows.net',
+    MOONCAKE_MGMT_URL: '.blob.core.chinacloudapi.cn',
+    BLACK_FOREST_MGMT_URL: '.blob.core.cloudapi.de'
+}

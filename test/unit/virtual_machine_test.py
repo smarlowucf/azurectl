@@ -41,14 +41,18 @@ class TestVirtualMachine:
         )
         credentials = namedtuple(
             'credentials',
-            ['private_key', 'certificate', 'subscription_id']
+            ['private_key', 'certificate', 'subscription_id', 'management_url']
         )
         account.publishsettings = mock.Mock(
             return_value=credentials(
                 private_key='abc',
                 certificate='abc',
-                subscription_id='4711'
+                subscription_id='4711',
+                management_url='test.url'
             )
+        )
+        account.get_blob_service_host_base = mock.Mock(
+            return_value='.blob.test.url'
         )
         account.storage_key = mock.Mock()
         self.account = account
@@ -106,7 +110,7 @@ class TestVirtualMachine:
             'some-label'
         )
         mock_os_disk.assert_called_once_with(
-            'foo.vhd', 'https://bob.blob.core.windows.net/foo/foo.vhd_instance'
+            'foo.vhd', 'https://bob.blob.test.url/foo/foo.vhd_instance'
         )
         mock_vm_create.assert_called_once_with(
             deployment_slot='production',

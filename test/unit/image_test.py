@@ -87,14 +87,18 @@ class TestImage:
         )
         credentials = namedtuple(
             'credentials',
-            ['private_key', 'certificate', 'subscription_id']
+            ['private_key', 'certificate', 'subscription_id', 'management_url']
         )
         account.publishsettings = mock.Mock(
             return_value=credentials(
                 private_key='abc',
                 certificate='abc',
-                subscription_id='4711'
+                subscription_id='4711',
+                management_url='test.url'
             )
+        )
+        account.get_blob_service_host_base = mock.Mock(
+            return_value='.blob.test.url'
         )
         account.storage_key = mock.Mock()
         self.image = Image(account)
@@ -146,7 +150,7 @@ class TestImage:
         assert request_id == 42
         mock_add_os_image.assert_called_once_with(
             'some-name',
-            'https://bob.blob.core.windows.net/foo/some-blob',
+            'https://bob.blob.test.url/foo/some-blob',
             'some-name',
             'Linux'
         )

@@ -41,17 +41,20 @@ class VirtualMachine(object):
         self.account_key = account.storage_key()
         self.cert_file = NamedTemporaryFile()
         self.publishsettings = self.account.publishsettings()
+        self.blob_service_host_base = self.account.get_blob_service_host_base()
         self.cert_file.write(self.publishsettings.private_key)
         self.cert_file.write(self.publishsettings.certificate)
         self.cert_file.flush()
 
         self.service = ServiceManagementService(
             self.publishsettings.subscription_id,
-            self.cert_file.name
+            self.cert_file.name,
+            self.publishsettings.management_url
         )
 
         self.storage = BlobService(
-            self.account_name, self.account_key
+            self.account_name, self.account_key,
+            host_base=self.blob_service_host_base
         )
 
     def create_linux_configuration(

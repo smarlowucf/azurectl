@@ -141,6 +141,10 @@ class AzureSubscriptionCertificateDecodeError(AzureError):
     pass
 
 
+class AzureServiceManagementUrlNotFound(AzureError):
+    pass
+
+
 class AzureSubscriptionPKCS12DecodeError(AzureError):
     pass
 
@@ -258,6 +262,10 @@ class AzureStorageListError(AzureError):
 
 
 class AzureStorageStreamError(AzureError):
+    pass
+
+
+class AzureUnrecognizedManagementUrl(AzureError):
     pass
 
 

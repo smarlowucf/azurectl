@@ -23,12 +23,13 @@ class TestAzureAccount:
         )
         credentials = namedtuple(
             'credentials',
-            ['private_key', 'certificate', 'subscription_id']
+            ['private_key', 'certificate', 'subscription_id', 'management_url']
         )
         self.publishsettings = credentials(
             private_key='abc',
             certificate='abc',
-            subscription_id='4711'
+            subscription_id='4711',
+            management_url='test.url'
         )
         azurectl.azure_account.load_pkcs12 = mock.Mock()
 
@@ -36,11 +37,17 @@ class TestAzureAccount:
     @patch('azurectl.azure_account.ServiceManagementService')
     @patch('azurectl.azure_account.dump_privatekey')
     @patch('azurectl.azure_account.dump_certificate')
+    @patch('azurectl.azure_account.AzureAccount.get_management_url')
     def test_service_error(
-        self, mock_dump_pkey, mock_dump_certificate, mock_service
+        self,
+        mock_mgmt_url,
+        mock_dump_certificate,
+        mock_dump_pkey,
+        mock_service
     ):
-        mock_dump_pkey.return_value = 'abc'
+        mock_mgmt_url.return_value = 'test.url'
         mock_dump_certificate.return_value = 'abc'
+        mock_dump_pkey.return_value = 'abc'
         mock_service.side_effect = AzureServiceManagementError
         self.account.storage_names()
 
@@ -128,6 +135,36 @@ class TestAzureAccount:
         )
         account_invalid.publishsettings()
 
+    def test_get_management_url(self):
+        mgmt_url = self.account.get_management_url()
+        assert_equal(mgmt_url, 'test.url')
+
+    @raises(AzureServiceManagementUrlNotFound)
+    @patch('azurectl.azure_account.dump_privatekey')
+    @patch('azurectl.azure_account.dump_certificate')
+    def test_get_management_url_missing(
+        self, mock_dump_certificate, mock_dump_pkey
+    ):
+        account_invalid = AzureAccount(
+            Config(
+                region_name='East US 2',
+                filename='../data/config.missing_mgmt_url'
+            )
+        )
+        account_invalid.publishsettings()
+
+    @patch.dict('azurectl.azure_account.BLOB_SERVICE_HOST_BASE',
+                {'test.url': '.blob.test.url'})
+    def test_get_blob_service_host_base(self):
+        host_base = self.account.get_blob_service_host_base()
+        assert_equal(host_base, '.blob.test.url')
+
+    @raises(AzureUnrecognizedManagementUrl)
+    @patch.dict('azurectl.azure_account.BLOB_SERVICE_HOST_BASE',
+                clear=True)
+    def test_get_blob_service_host_base_with_bad_url(self):
+        host_base = self.account.get_blob_service_host_base()
+
     @raises(AzureSubscriptionIdNotFound)
     @patch('azurectl.azure_account.load_pkcs12')
     @patch('azurectl.azure_account.dump_privatekey')
@@ -174,15 +211,24 @@ class TestAzureAccount:
 
     @patch('azurectl.azure_account.dump_privatekey')
     @patch('azurectl.azure_account.dump_certificate')
-    def test_publishsettings(self, mock_dump_certificate, mock_dump_pkey):
-        mock_dump_pkey.return_value = 'abc'
+    @patch('azurectl.azure_account.AzureAccount.get_management_url')
+    def test_publishsettings(
+        self,
+        mock_mgmt_url,
+        mock_dump_certificate,
+        mock_dump_pkey
+    ):
+        mock_mgmt_url.return_value = 'test.url'
         mock_dump_certificate.return_value = 'abc'
+        mock_dump_pkey.return_value = 'abc'
         assert self.account.publishsettings() == self.publishsettings
 
     @patch('azurectl.azure_account.dump_privatekey')
     @patch('azurectl.azure_account.dump_certificate')
+    @patch('azurectl.azure_account.AzureAccount.get_management_url')
     def test_publishsettings_with_multiple_subscriptions_defaults_to_first(
         self,
+        mock_mgmt_url,
         mock_dump_certificate,
         mock_dump_pkey
     ):
@@ -196,8 +242,10 @@ class TestAzureAccount:
 
     @patch('azurectl.azure_account.dump_privatekey')
     @patch('azurectl.azure_account.dump_certificate')
+    @patch('azurectl.azure_account.AzureAccount.get_management_url')
     def test_config_specifies_subscription_in_publishsettings(
         self,
+        mock_mgmt_url,
         mock_dump_certificate,
         mock_dump_pkey
     ):

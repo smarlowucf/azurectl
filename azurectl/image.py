@@ -48,6 +48,7 @@ class Image(object):
         self.account_key = account.storage_key()
         self.cert_file = NamedTemporaryFile()
         self.publishsettings = self.account.publishsettings()
+        self.blob_service_host_base = self.account.get_blob_service_host_base()
         self.cert_file.write(self.publishsettings.private_key)
         self.cert_file.write(self.publishsettings.certificate)
         self.cert_file.flush()
@@ -56,7 +57,8 @@ class Image(object):
         result = []
         service = ServiceManagementService(
             self.publishsettings.subscription_id,
-            self.cert_file.name
+            self.cert_file.name,
+            self.publishsettings.management_url
         )
         try:
             for image in service.list_os_images():
@@ -70,7 +72,8 @@ class Image(object):
     def show(self, name):
         service = ServiceManagementService(
             self.publishsettings.subscription_id,
-            self.cert_file.name
+            self.cert_file.name,
+            self.publishsettings.management_url
         )
         try:
             image = service.get_os_image(name)
@@ -86,7 +89,11 @@ class Image(object):
         if not label:
             label = name
         try:
-            storage = BlobService(self.account_name, self.account_key)
+            storage = BlobService(
+                self.account_name,
+                self.account_key,
+                host_base=self.blob_service_host_base
+            )
             storage.get_blob_properties(
                 container_name, blob_name
             )
@@ -98,7 +105,8 @@ class Image(object):
             media_link = storage.make_blob_url(container_name, blob_name)
             service = ServiceManagementService(
                 self.publishsettings.subscription_id,
-                self.cert_file.name
+                self.cert_file.name,
+                self.publishsettings.management_url
             )
             result = service.add_os_image(
                 label, media_link, name, 'Linux'
@@ -112,7 +120,8 @@ class Image(object):
     def delete(self, name, delete_disk=False):
         service = ServiceManagementService(
             self.publishsettings.subscription_id,
-            self.cert_file.name
+            self.cert_file.name,
+            self.publishsettings.management_url
         )
         try:
             result = service.delete_os_image(
@@ -127,7 +136,8 @@ class Image(object):
     def update(self, image_name, update_record):
         service = ServiceManagementService(
             self.publishsettings.subscription_id,
-            self.cert_file.name
+            self.cert_file.name,
+            self.publishsettings.management_url
         )
         try:
             os_image = service.get_os_image(image_name)
@@ -179,7 +189,8 @@ class Image(object):
         '''
         service = ServiceManagementService(
             self.publishsettings.subscription_id,
-            self.cert_file.name
+            self.cert_file.name,
+            self.publishsettings.management_url
         )
         if 'all' in regions:
             regions = []
@@ -198,7 +209,8 @@ class Image(object):
     def unreplicate(self, name):
         service = ServiceManagementService(
             self.publishsettings.subscription_id,
-            self.cert_file.name
+            self.cert_file.name,
+            self.publishsettings.management_url
         )
         try:
             result = service.unreplicate_vm_image(name)
@@ -211,7 +223,8 @@ class Image(object):
     def publish(self, name, permission):
         service = ServiceManagementService(
             self.publishsettings.subscription_id,
-            self.cert_file.name
+            self.cert_file.name,
+            self.publishsettings.management_url
         )
         try:
             result = service.share_vm_image(name, permission)
