@@ -4,11 +4,10 @@ man_prefix = ${buildroot}/usr/share/man
 
 all:
 	for i in *.md; do \
-		cat $$i | \
-			pandoc -s -t man -f markdown_mmd |\
-			sed -e 's@.TH ""@.TH "AZURECTL" "1" "" "${header}" ""@' |\
-			gzip -f \
-		> `echo $$i | sed -e s@.md@.1.gz@` ;\
+		out=`echo $$i | sed -e s@.md@.1@` ;\
+		pandoc -s -t man -f markdown_mmd $$i > $$out && \
+		sed -i -e 's@.TH ""@.TH "AZURECTL" "1" "" "${header}" ""@' $$out && \
+		gzip -f $$out || exit 1 ;\
 	done
 
 install:
@@ -21,4 +20,5 @@ show:
 	zcat *.gz | nroff -man | less
 
 clean:
+	rm -f *.1
 	rm -f *.1.gz
