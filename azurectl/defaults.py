@@ -50,7 +50,7 @@ class Defaults(object):
         }
         if region not in azure_domain:
             raise AzureDomainLookupError(
-                'Specified region %s not in lookup table'
+                'Specified region %s not in lookup table' % region
             )
         return azure_domain[region]
 
