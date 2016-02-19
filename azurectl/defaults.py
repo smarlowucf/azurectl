@@ -42,11 +42,15 @@ class Defaults(object):
             'South India': 'cloudapp.net',
             'West Europe': 'cloudapp.net',
             'West India': 'cloudapp.net',
-            'West US': 'cloudapp.net'
+            'West US': 'cloudapp.net',
+            'China North': 'chinacloudapp.cn',
+            'China East': 'chinacloudapp.cn',
+            'Germany Central': 'azurecloudapp.de',
+            'Germany Northeast': 'azurecloudapp.de'
         }
         if region not in azure_domain:
             raise AzureDomainLookupError(
-                'Specified region %s not in lookup table'
+                'Specified region %s not in lookup table' % region
             )
         return azure_domain[region]
 
