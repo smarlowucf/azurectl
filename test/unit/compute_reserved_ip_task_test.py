@@ -49,3 +49,13 @@ class TestComputeReservedIpTask:
         self.task.command_args['list'] = True
         self.task.process()
         self.task.reserved_ip.list.assert_called_once_with()
+
+    @patch('azurectl.compute_reserved_ip_task.DataOutput')
+    def test_process_compute_reserved_ip_show(self, mock_out):
+        self.__init_command_args()
+        self.task.command_args['show'] = True
+        self.task.command_args['--name'] = 'test'
+        self.task.process()
+        self.task.reserved_ip.show.assert_called_once_with(
+            self.task.command_args['--name']
+        )

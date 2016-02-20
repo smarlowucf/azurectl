@@ -14,11 +14,14 @@
 """
 usage: azurectl compute reserved_ip -h | --help
        azurectl compute reserved_ip list
+       azurectl compute reserved_ip show --name=<reserved-ip-name>
        azurectl compute reserved_ip help
 
 commands:
     list
         list IP addresses reserved within this account
+    show
+        list information about a single IP address reservation
 
 options:
     --name=<reserved-ip-name>
@@ -53,10 +56,12 @@ class ComputeReservedIpTask(CliTask):
         )
 
         self.account = AzureAccount(self.config)
-
         self.reserved_ip = ReservedIp(self.account)
+
         if self.command_args['list']:
             self.__list()
+        if self.command_args['show']:
+            self.__show()
 
     def __help(self):
         if self.command_args['help']:
@@ -67,4 +72,11 @@ class ComputeReservedIpTask(CliTask):
 
     def __list(self):
         self.result.add('reserved_ips', self.reserved_ip.list())
+        self.out.display()
+
+    def __show(self):
+        self.result.add(
+            'reserved_ip',
+            self.reserved_ip.show(self.command_args['--name'])
+        )
         self.out.display()

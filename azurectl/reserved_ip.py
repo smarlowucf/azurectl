@@ -18,7 +18,8 @@ from azure.servicemanagement import ServiceManagementService
 
 # project
 from azurectl_exceptions import (
-    AzureReservedIpListError
+    AzureReservedIpListError,
+    AzureReservedIpShowError
 )
 from defaults import Defaults
 
@@ -51,6 +52,16 @@ class ReservedIp(object):
                 '%s: %s' % (type(e).__name__, format(e))
             )
         return result
+
+    def show(self, name):
+        service = self.__get_service()
+        try:
+            ip = service.get_reserved_ip_address(name)
+        except Exception as e:
+            raise AzureReservedIpShowError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
+        return self.__decorate_for_results(ip)
 
     def __get_service(self):
         return ServiceManagementService(

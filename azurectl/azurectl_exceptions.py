@@ -217,6 +217,10 @@ class AzureReservedIpListError(AzureError):
     pass
 
 
+class AzureReservedIpShowError(AzureError):
+    pass
+
+
 class AzureSubscriptionIdNotFound(AzureError):
     pass
 
