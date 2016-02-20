@@ -213,6 +213,10 @@ class AzureOsImageShowError(AzureError):
     pass
 
 
+class AzureReservedIpListError(AzureError):
+    pass
+
+
 class AzureSubscriptionIdNotFound(AzureError):
     pass
 
