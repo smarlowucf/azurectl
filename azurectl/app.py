@@ -13,6 +13,7 @@
 #
 # project
 from cli_task import CliTask
+from inflection import *
 
 
 class App(object):
@@ -23,6 +24,6 @@ class App(object):
         app = CliTask(should_load_config=False)
         action = app.cli.get_command()
         service = app.cli.get_servicename()
-        task_class_name = service.title() + action.title() + 'Task'
+        task_class_name = camelize(service) + camelize(action) + 'Task'
         task_class = app.task.__dict__[task_class_name]
         task_class().process()
