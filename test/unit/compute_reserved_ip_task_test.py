@@ -28,11 +28,10 @@ class TestComputeReservedIpTask:
         self.task.command_args = {
             'list': False,
             'show': False,
-            'add': False,
+            'create': False,
             'delete': False,
             'help': False,
-            '--name': None,
-            '--region': None
+            '--name': None
         }
 
     def test_process_compute_reserved_ip_help(self):
@@ -58,4 +57,15 @@ class TestComputeReservedIpTask:
         self.task.process()
         self.task.reserved_ip.show.assert_called_once_with(
             self.task.command_args['--name']
+        )
+
+    @patch('azurectl.compute_reserved_ip_task.DataOutput')
+    def test_process_compute_reserved_ip_create(self, mock_out):
+        self.__init_command_args()
+        self.task.command_args['create'] = True
+        self.task.command_args['--name'] = 'test'
+        self.task.process()
+        self.task.reserved_ip.create.assert_called_once_with(
+            self.task.command_args['--name'],
+            self.task.config.get_region_name()
         )

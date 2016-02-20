@@ -66,6 +66,12 @@ class TestReservedIp:
             'region': 'Region'
         }]
 
+        MyResult = namedtuple(
+            'MyResult',
+            'request_id'
+        )
+        self.myrequest = MyResult(request_id=42)
+
         self.reserved_ip = ReservedIp(account)
 
     @patch('azurectl.reserved_ip.ServiceManagementService.list_reserved_ip_addresses')
@@ -91,3 +97,19 @@ class TestReservedIp:
         mock_response = self.list_ips[0]
         mock_get_ip.side_effect = Exception
         self.reserved_ip.show(mock_response.name)
+
+    @patch('azurectl.reserved_ip.ServiceManagementService.create_reserved_ip_address')
+    def test_create(self, mock_create_ip):
+        mock_create_ip.return_value = self.myrequest
+        request_id = self.reserved_ip.create('some-name', 'East US 2')
+        assert request_id == 42
+        mock_create_ip.assert_called_once_with(
+            'some-name',
+            location='East US 2'
+        )
+
+    @patch('azurectl.reserved_ip.ServiceManagementService.create_reserved_ip_address')
+    @raises(AzureReservedIpCreateError)
+    def test_create_raises_error(self, mock_create_ip):
+        mock_create_ip.side_effect = Exception
+        self.reserved_ip.create('some-name', 'East US 2')

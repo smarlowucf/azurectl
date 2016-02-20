@@ -15,6 +15,7 @@
 usage: azurectl compute reserved_ip -h | --help
        azurectl compute reserved_ip list
        azurectl compute reserved_ip show --name=<reserved-ip-name>
+       azurectl compute reserved_ip create --name=<reserved-ip-name>
        azurectl compute reserved_ip help
 
 commands:
@@ -22,12 +23,13 @@ commands:
         list IP addresses reserved within this account
     show
         list information about a single IP address reservation
+    create
+        add a new IP address reservation in the default or specified region
+        (use the global --region argument)
 
 options:
     --name=<reserved-ip-name>
         name of the reserved IP address
-    --region=<region>
-        region where the IP will be reserved
 """
 # project
 from logger import log
@@ -62,6 +64,8 @@ class ComputeReservedIpTask(CliTask):
             self.__list()
         if self.command_args['show']:
             self.__show()
+        if self.command_args['create']:
+            self.__create()
 
     def __help(self):
         if self.command_args['help']:
@@ -78,5 +82,15 @@ class ComputeReservedIpTask(CliTask):
         self.result.add(
             'reserved_ip',
             self.reserved_ip.show(self.command_args['--name'])
+        )
+        self.out.display()
+
+    def __create(self):
+        self.result.add(
+            'reserved_ip:' + self.command_args['--name'],
+            self.reserved_ip.create(
+                self.command_args['--name'],
+                self.config.get_region_name()
+            )
         )
         self.out.display()
