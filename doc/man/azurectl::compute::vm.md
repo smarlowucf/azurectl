@@ -10,6 +10,7 @@ __azurectl__ compute vm create --cloud-service-name=*name* --image-name=*image*
     [--instance-name=name]
     [--instance-type=type]
     [--label=label]
+    [--reserved-ip-name=reserved-ip-name]
     [--password=password]
     [--ssh-private-key-file=file | --fingerprint=thumbprint]
     [--ssh-port=port]
@@ -65,6 +66,10 @@ The virtual machine type in terms of storage space, memory size, etc. By default
 ## __--label=label__
 
 Custom label for the virtual machine instance.
+
+## --reserved-ip-name=reserved-ip-name__
+
+Name of a reserved IP address to apply as a public IP of this cloud service and the public IP of this instance.
 
 ## __--password=password__
 

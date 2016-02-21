@@ -107,7 +107,8 @@ class TestVirtualMachine:
             'foo.vhd',
             system_config,
             network_config,
-            'some-label'
+            'some-label',
+            reserved_ip_name='test_reserved_ip_name'
         )
         mock_os_disk.assert_called_once_with(
             'foo.vhd', 'https://bob.blob.test.url/foo/foo.vhd_instance'
@@ -120,6 +121,7 @@ class TestVirtualMachine:
             os_virtual_hard_disk=os_disk,
             label='some-label',
             system_config=system_config,
+            reserved_ip_name='test_reserved_ip_name',
             role_name='cloud-service',
             network_config=network_config,
             provision_guest_agent=True

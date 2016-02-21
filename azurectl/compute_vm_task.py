@@ -18,6 +18,7 @@ usage: azurectl compute vm -h | --help
            [--instance-name=<name>]
            [--instance-type=<type>]
            [--label=<label>]
+           [--reserved-ip-name=<reserved-ip-name>]
            [--password=<password>]
            [--ssh-private-key-file=<file> | --fingerprint=<thumbprint>]
            [--ssh-port=<port>]
@@ -57,6 +58,9 @@ options:
         virtual machine type, by default set to: Small
     --label=<label>
         custom label name for the virtual machine instance
+    --reserved-ip-name=<reserved-ip-name>
+        name of a reserved IP address to apply as a public IP of this cloud
+        service and the public IP of this instance.
     --password=<password>
         password for the user to login. If no password is specified
         SSH password based login will be disabled
@@ -150,7 +154,8 @@ class ComputeVmTask(CliTask):
                 network_configuration,
                 self.command_args['--label'],
                 'production',
-                instance_type
+                instance_type,
+                self.command_args['--reserved-ip-name']
             )
         )
         self.out.display()
