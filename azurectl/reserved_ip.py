@@ -18,9 +18,10 @@ from azure.servicemanagement import ServiceManagementService
 
 # project
 from azurectl_exceptions import (
+    AzureReservedIpCreateError,
+    AzureReservedIpDeleteError,
     AzureReservedIpListError,
-    AzureReservedIpShowError,
-    AzureReservedIpCreateError
+    AzureReservedIpShowError
 )
 from defaults import Defaults
 
@@ -70,6 +71,16 @@ class ReservedIp(object):
             result = service.create_reserved_ip_address(name, location=region)
         except Exception as e:
             raise AzureReservedIpCreateError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
+        return result.request_id
+
+    def delete(self, name):
+        service = self.__get_service()
+        try:
+            result = service.delete_reserved_ip_address(name)
+        except Exception as e:
+            raise AzureReservedIpDeleteError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
         return result.request_id

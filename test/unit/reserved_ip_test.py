@@ -113,3 +113,16 @@ class TestReservedIp:
     def test_create_raises_error(self, mock_create_ip):
         mock_create_ip.side_effect = Exception
         self.reserved_ip.create('some-name', 'East US 2')
+
+    @patch('azurectl.reserved_ip.ServiceManagementService.delete_reserved_ip_address')
+    def test_delete(self, mock_delete_ip):
+        mock_delete_ip.return_value = self.myrequest
+        request_id = self.reserved_ip.delete('some-name')
+        assert request_id == 42
+        mock_delete_ip.assert_called_once_with('some-name')
+
+    @patch('azurectl.reserved_ip.ServiceManagementService.delete_reserved_ip_address')
+    @raises(AzureReservedIpDeleteError)
+    def test_delete_raises_error(self, mock_delete_ip):
+        mock_delete_ip.side_effect = Exception
+        self.reserved_ip.delete('some-name')

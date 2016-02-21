@@ -217,6 +217,10 @@ class AzureReservedIpCreateError(AzureError):
     pass
 
 
+class AzureReservedIpDeleteError(AzureError):
+    pass
+
+
 class AzureReservedIpListError(AzureError):
     pass
 

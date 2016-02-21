@@ -69,3 +69,13 @@ class TestComputeReservedIpTask:
             self.task.command_args['--name'],
             self.task.config.get_region_name()
         )
+
+    @patch('azurectl.compute_reserved_ip_task.DataOutput')
+    def test_process_compute_reserved_ip_delete(self, mock_out):
+        self.__init_command_args()
+        self.task.command_args['delete'] = True
+        self.task.command_args['--name'] = 'test'
+        self.task.process()
+        self.task.reserved_ip.delete.assert_called_once_with(
+            self.task.command_args['--name']
+        )
