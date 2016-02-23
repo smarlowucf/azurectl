@@ -14,7 +14,7 @@ class TestComputeReservedIpTask:
     def setup(self):
         sys.argv = [
             sys.argv[0], '--config', '../data/config',
-            'compute', 'reserved_ip', 'list'
+            'compute', 'reserved-ip', 'list'
         ]
         self.task = ComputeReservedIpTask()
         azurectl.compute_reserved_ip_task.ReservedIp = mock.Mock(

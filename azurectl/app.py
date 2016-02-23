@@ -11,6 +11,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+import re
+
 # project
 from cli_task import CliTask
 
@@ -23,11 +26,7 @@ class App(object):
         app = CliTask(should_load_config=False)
         action = app.cli.get_command()
         service = app.cli.get_servicename()
-        task_class_name = ('').join(
-            self.__camelize(service),
-            self.__camelize(action),
-            'Task'
-        )
+        task_class_name = self.__camelize((' ').join([service, action, 'Task']))
         task_class = app.task.__dict__[task_class_name]
         task_class().process()
 

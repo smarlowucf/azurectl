@@ -12,12 +12,12 @@
 # limitations under the License.
 #
 """
-usage: azurectl compute reserved_ip -h | --help
-       azurectl compute reserved_ip list
-       azurectl compute reserved_ip show --name=<reserved-ip-name>
-       azurectl compute reserved_ip create --name=<reserved-ip-name>
-       azurectl compute reserved_ip delete --name=<reserved-ip-name>
-       azurectl compute reserved_ip help
+usage: azurectl compute reserved-ip -h | --help
+       azurectl compute reserved-ip list
+       azurectl compute reserved-ip show --name=<reserved-ip-name>
+       azurectl compute reserved-ip create --name=<reserved-ip-name>
+       azurectl compute reserved-ip delete --name=<reserved-ip-name>
+       azurectl compute reserved-ip help
 
 commands:
     list

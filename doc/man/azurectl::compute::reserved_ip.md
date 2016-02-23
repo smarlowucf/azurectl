@@ -4,13 +4,13 @@ azurectl - Command Line Interface to manage Microsoft Azure
 
 # SYNOPSIS
 
-__azurectl__ compute reserved_ip list
+__azurectl__ compute reserved-ip list
 
-__azurectl__ compute reserved_ip show --name=*reserved_ip_name*
+__azurectl__ compute reserved-ip show --name=*reserved_ip_name*
 
-__azurectl__ compute reserved_ip create --name=*reserved_ip_name*
+__azurectl__ compute reserved-ip create --name=*reserved_ip_name*
 
-__azurectl__ compute reserved_ip delete --name=*reserved_ip_name*
+__azurectl__ compute reserved-ip delete --name=*reserved_ip_name*
 
 
 # DESCRIPTION
