@@ -51,6 +51,7 @@ class TestComputeVmTask:
         self.task.command_args['--instance-type'] = None
         self.task.command_args['--label'] = None
         self.task.command_args['--password'] = None
+        self.task.command_args['--reserved-ip-name'] = None
         self.task.command_args['--ssh-private-key-file'] = '../data/id_test'
         self.task.command_args['--fingerprint'] = None
         self.task.command_args['--ssh-port'] = None
@@ -87,7 +88,8 @@ class TestComputeVmTask:
             {},
             self.task.command_args['--label'],
             'production',
-            'Small'
+            'Small',
+            None
         )
 
     @patch('azurectl.compute_vm_task.DataOutput')

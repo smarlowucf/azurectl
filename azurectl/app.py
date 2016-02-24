@@ -11,6 +11,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+import re
+
 # project
 from cli_task import CliTask
 
@@ -23,6 +26,10 @@ class App(object):
         app = CliTask(should_load_config=False)
         action = app.cli.get_command()
         service = app.cli.get_servicename()
-        task_class_name = service.title() + action.title() + 'Task'
+        task_class_name = self.__camelize((' ').join([service, action, 'Task']))
         task_class = app.task.__dict__[task_class_name]
         task_class().process()
+
+    def __camelize(self, string):
+        words = re.split('[^a-zA-Z0-9]+', string)
+        return ('').join([word.capitalize() for word in words])

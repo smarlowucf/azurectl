@@ -102,7 +102,7 @@ class VirtualMachine(object):
     def create_instance(
         self, cloud_service_name, disk_name, system_config,
         network_config=None, label=None, group='production',
-        machine_size='Small'
+        machine_size='Small', reserved_ip_name=None
     ):
         """
             create a virtual disk image instance
@@ -146,7 +146,8 @@ class VirtualMachine(object):
             'service_name': cloud_service_name,
             'system_config': system_config,
             'os_virtual_hard_disk': instance_disk,
-            'provision_guest_agent': True
+            'provision_guest_agent': True,
+            'reserved_ip_name': reserved_ip_name
         }
         if label:
             instance_record['label'] = label

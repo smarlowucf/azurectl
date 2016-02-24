@@ -125,7 +125,8 @@ class Cli(object):
             )
         try:
             loaded = importlib.import_module(
-                'azurectl.' + service + '_' + command + '_task'
+                'azurectl.' +
+                self.__underscore('_'.join([service, command, 'task']))
             )
         except Exception as e:
             raise AzureUnknownCommand(
@@ -138,3 +139,6 @@ class Cli(object):
     def __load_command_args(self):
         argv = [self.get_servicename(), self.get_command()] + self.command_args
         return docopt(self.loaded.__doc__, argv=argv)
+
+    def __underscore(self, string):
+        return string.replace('-', '_').lower()
