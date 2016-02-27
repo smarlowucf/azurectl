@@ -62,3 +62,16 @@ class CliTask(object):
             self.global_args['--storage-container'],
             self.global_args['--config']
         )
+
+    # validations
+    def validate_min_length(self, cmd_arg, min_length):
+        if len(self.command_args[cmd_arg]) < min_length:
+            raise AzureInvalidCommand(
+                '%s is too short. Length must be at least %d characters.' %
+                (cmd_arg, min_length))
+
+    def validate_max_length(self, cmd_arg, max_length):
+        if len(self.command_args[cmd_arg]) > max_length:
+            raise AzureInvalidCommand(
+                '%s is too long. Length must be at most %d characters.' %
+                (cmd_arg, max_length))
