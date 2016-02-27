@@ -42,3 +42,25 @@ class TestCliTask:
             None, 'region', None, None, 'config'
         )
         mock_loglevel.assert_called_once_with(logging.DEBUG)
+
+    @patch('azurectl.cli_task.Validations.validate_min_length')
+    def test_validate_min_length(self, mock_validation):
+        sys.argv = [
+            sys.argv[0],
+            '--config', 'config',
+            'setup', 'account', 'default', '--name', 'test-name0'
+        ]
+        task = CliTask(should_load_config=False)
+        task.validate_min_length('--name', 5)
+        mock_validation.assert_called_once_with('--name', 'test-name0', 5)
+
+    @patch('azurectl.cli_task.Validations.validate_max_length')
+    def test_validate_max_length(self, mock_validation):
+        sys.argv = [
+            sys.argv[0],
+            '--config', 'config',
+            'setup', 'account', 'default', '--name', 'test-name0'
+        ]
+        task = CliTask(should_load_config=False)
+        task.validate_max_length('--name', 10)
+        mock_validation.assert_called_once_with('--name', 'test-name0', 10)

@@ -16,6 +16,7 @@ class TestCli:
             '--region': None,
             '--storage-container': None,
             'setup': False,
+            'storage': False,
             '-h': False,
             '--output-style': None,
             '--config': None,
