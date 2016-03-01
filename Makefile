@@ -25,7 +25,7 @@ list_tests:
 	@for i in test/unit/*_test.py; do basename $$i;done | sort
 
 %.py:
-	nosetests $@
+	nosetests -s $@
 
 build: pep8 test
 	${MAKE} -C doc/man all

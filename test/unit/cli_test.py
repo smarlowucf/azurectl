@@ -64,11 +64,9 @@ class TestCli:
         assert self.cli.get_command() == 'storage'
 
     def test_get_command_args(self):
-        print self.cli.get_command_args()
         assert self.cli.get_command_args() == self.help_command_args
 
     def test_get_global_args(self):
-        print self.cli.get_global_args()
         assert self.cli.get_global_args() == self.help_global_args
 
     def test_load_command(self):

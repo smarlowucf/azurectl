@@ -97,7 +97,6 @@ class TestContainer:
         parsed = urlparse(
             self.container.sas(container, start, expiry, permissions)
         )
-        print parsed
         assert parsed.scheme == 'https'
         assert parsed.netloc == MOCK_STORAGE_NAME + \
             '.blob.core.windows.net'
