@@ -24,7 +24,9 @@ from azure.storage.sharedaccesssignature import (
 # project
 from azurectl_exceptions import (
     AzureContainerListError,
-    AzureContainerListContentError
+    AzureContainerListContentError,
+    AzureContainerCreateError,
+    AzureContainerDeleteError
 )
 
 ISO8061_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
@@ -54,6 +56,40 @@ class Container(object):
                 '%s: %s' % (type(e).__name__, format(e))
             )
         return result
+
+    def create(self, container):
+        blob_service = BlobService(
+            self.account_name,
+            self.account_key,
+            host_base=self.blob_service_host_base
+        )
+        try:
+            blob_service.create_container(
+                container_name=container,
+                fail_on_exist=True
+            )
+        except Exception as e:
+            raise AzureContainerCreateError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
+        return True
+
+    def delete(self, container):
+        blob_service = BlobService(
+            self.account_name,
+            self.account_key,
+            host_base=self.blob_service_host_base
+        )
+        try:
+            blob_service.delete_container(
+                container_name=container,
+                fail_not_exist=True
+            )
+        except Exception as e:
+            raise AzureContainerDeleteError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
+        return True
 
     def content(self, container):
         result = {container: []}

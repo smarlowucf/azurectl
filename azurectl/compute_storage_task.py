@@ -16,6 +16,8 @@ usage: azurectl compute storage -h | --help
        azurectl compute storage account list
        azurectl compute storage container list
        azurectl compute storage container show
+       azurectl compute storage container create --name=<containername>
+       azurectl compute storage container delete --name=<containername>
        azurectl compute storage container sas
            [--start-datetime=<start>]
            [--expiry-datetime=<expiry>]
@@ -38,6 +40,10 @@ commands:
         list storage container names for configured account
     container show
         show container content for configured account and container
+    container create
+        create container with the specified name
+    container delete
+        delete container with the specified name
     upload
         upload xz compressed blob to the given container
     delete
@@ -58,6 +64,7 @@ options:
     --name=<name>
         blobname: name of the file in the storage pool
         sharename: name of the files share
+        containername: name of the container
     --max-chunk-size=<size>
         max chunk size in bytes for upload, default 4MB
     --start-datetime=<start>
@@ -140,6 +147,10 @@ class ComputeStorageTask(CliTask):
             self.__container_list()
         elif self.command_args['container'] and self.command_args['show']:
             self.__container_content(container_name)
+        elif self.command_args['container'] and self.command_args['create']:
+            self.__container_create(container_name)
+        elif self.command_args['container'] and self.command_args['delete']:
+            self.__container_delete(container_name)
         elif self.command_args['container'] and self.command_args['sas']:
             self.__container_sas(
                 container_name,
@@ -249,6 +260,20 @@ class ComputeStorageTask(CliTask):
             self.container.list()
         )
         self.out.display()
+
+    def __container_create(self, container_name):
+        if self.command_args['--name']:
+            container_name = self.command_args['--name']
+        log.info('Request to create container %s', container_name)
+        self.container.create(container_name)
+        log.info('Created %s container', container_name)
+
+    def __container_delete(self, container_name):
+        if self.command_args['--name']:
+            container_name = self.command_args['--name']
+        log.info('Request to delete container %s', container_name)
+        self.container.delete(container_name)
+        log.info('Deleted %s container', container_name)
 
     def __account_list(self):
         self.result.add('storage_names', self.account.storage_names())

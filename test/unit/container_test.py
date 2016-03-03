@@ -45,6 +45,32 @@ class TestContainer:
         mock_list_containers.return_value = self.name_list
         assert self.container.list() == ['a', 'b']
 
+    @patch('azurectl.container.BlobService.delete_container')
+    def test_delete(self, mock_delete):
+        assert self.container.delete('container_name') is True
+        mock_delete.assert_called_once_with(
+            container_name='container_name', fail_not_exist=True
+        )
+
+    @patch('azurectl.container.BlobService.create_container')
+    def test_create(self, mock_create):
+        assert self.container.create('container_name') is True
+        mock_create.assert_called_once_with(
+            container_name='container_name', fail_on_exist=True
+        )
+
+    @patch('azurectl.container.BlobService.delete_container')
+    @raises(AzureContainerDeleteError)
+    def test_delete_raises(self, mock_delete):
+        mock_delete.side_effect = Exception
+        self.container.delete('container_name')
+
+    @patch('azurectl.container.BlobService.create_container')
+    @raises(AzureContainerCreateError)
+    def test_create_raises(self, mock_create):
+        mock_create.side_effect = Exception
+        self.container.create('container_name')
+
     @raises(AzureContainerListError)
     @patch('azurectl.container.BlobService.list_containers')
     def test_list_raises(self, mock_list_containers):

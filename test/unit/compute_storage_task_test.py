@@ -69,6 +69,24 @@ class TestComputeStorageTask:
         self.task.process()
         self.task.fileshare.list.assert_called_once_with()
 
+    def test_process_compute_storage_container_delete(self):
+        self.__init_command_args()
+        self.task.command_args['container'] = True
+        self.task.command_args['delete'] = True
+        self.task.process()
+        self.task.container.delete.assert_called_once_with(
+            'some-thing'
+        )
+
+    def test_process_compute_storage_container_create(self):
+        self.__init_command_args()
+        self.task.command_args['container'] = True
+        self.task.command_args['create'] = True
+        self.task.process()
+        self.task.container.create.assert_called_once_with(
+            'some-thing'
+        )
+
     def test_process_compute_storage_share_delete(self):
         self.__init_command_args()
         self.task.command_args['share'] = True

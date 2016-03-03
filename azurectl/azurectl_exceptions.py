@@ -185,6 +185,14 @@ class AzureInvalidCommand(AzureError):
     pass
 
 
+class AzureContainerCreateError(AzureError):
+    pass
+
+
+class AzureContainerDeleteError(AzureError):
+    pass
+
+
 class AzureContainerListContentError(AzureError):
     pass
 

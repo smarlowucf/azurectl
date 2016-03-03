@@ -8,6 +8,10 @@ __azurectl__ compute storage container list
 
 __azurectl__ compute storage container show
 
+__azurectl__ compute storage container create --name=<containername>
+
+__azurectl__ compute storage container delete --name=<containername>
+
 __azurectl__ compute storage container sas
 
     [--start-datetime=start] [--expiry-datetime=expiry]
