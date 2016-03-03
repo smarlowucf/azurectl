@@ -52,7 +52,7 @@ class TestVirtualMachine:
             )
         )
         account.get_blob_service_host_base = mock.Mock(
-            return_value='.blob.test.url'
+            return_value='test.url'
         )
         account.storage_key = mock.Mock()
         self.account = account

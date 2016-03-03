@@ -98,7 +98,7 @@ class TestImage:
             )
         )
         account.get_blob_service_host_base = mock.Mock(
-            return_value='.blob.test.url'
+            return_value='test.url'
         )
         account.storage_key = mock.Mock()
         self.image = Image(account)
@@ -132,7 +132,7 @@ class TestImage:
         self.image.create('some-name', 'some-blob')
 
     @patch('azurectl.image.ServiceManagementService.add_os_image')
-    @patch('azurectl.image.BlobService.get_blob_properties')
+    @patch('azurectl.image.BaseBlobService.get_blob_properties')
     @raises(AzureOsImageCreateError)
     def test_create_raise_os_image_error(
         self, mock_get_blob_props, mock_add_os_image
@@ -141,7 +141,7 @@ class TestImage:
         self.image.create('some-name', 'some-blob')
 
     @patch('azurectl.image.ServiceManagementService.add_os_image')
-    @patch('azurectl.image.BlobService.get_blob_properties')
+    @patch('azurectl.image.BaseBlobService.get_blob_properties')
     def test_create(self, mock_get_blob_props, mock_add_os_image):
         mock_add_os_image.return_value = self.myrequest
         request_id = self.image.create(

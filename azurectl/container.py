@@ -11,15 +11,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from azure.storage.blob import BlobService
-from azure.storage import (
-    AccessPolicy,
-    SharedAccessPolicy,
-    SharedAccessSignature
-)
-from azure.storage.sharedaccesssignature import (
-    ResourceType
-)
+from azure.storage.blob.baseblobservice import BaseBlobService
+from azure.storage.sharedaccesssignature import SharedAccessSignature
 
 # project
 from azurectl_exceptions import (
@@ -43,10 +36,10 @@ class Container(object):
 
     def list(self):
         result = []
-        blob_service = BlobService(
+        blob_service = BaseBlobService(
             self.account_name,
             self.account_key,
-            host_base=self.blob_service_host_base
+            endpoint_suffix=self.blob_service_host_base
         )
         try:
             for container in blob_service.list_containers():
@@ -58,10 +51,10 @@ class Container(object):
         return result
 
     def create(self, container):
-        blob_service = BlobService(
+        blob_service = BaseBlobService(
             self.account_name,
             self.account_key,
-            host_base=self.blob_service_host_base
+            endpoint_suffix=self.blob_service_host_base
         )
         try:
             blob_service.create_container(
@@ -75,10 +68,10 @@ class Container(object):
         return True
 
     def delete(self, container):
-        blob_service = BlobService(
+        blob_service = BaseBlobService(
             self.account_name,
             self.account_key,
-            host_base=self.blob_service_host_base
+            endpoint_suffix=self.blob_service_host_base
         )
         try:
             blob_service.delete_container(
@@ -93,10 +86,10 @@ class Container(object):
 
     def content(self, container):
         result = {container: []}
-        blob_service = BlobService(
+        blob_service = BaseBlobService(
             self.account_name,
             self.account_key,
-            host_base=self.blob_service_host_base
+            endpoint_suffix=self.blob_service_host_base
         )
         try:
             for blob in blob_service.list_blobs(container):
@@ -108,17 +101,14 @@ class Container(object):
             )
 
     def sas(self, container, start, expiry, permissions):
-        sap = SharedAccessPolicy(AccessPolicy(
-            start.strftime(ISO8061_FORMAT),
-            expiry.strftime(ISO8061_FORMAT),
-            permissions
-        ))
-
-        sas = SharedAccessSignature(self.account_name, self.account_key)
-        signed_query = sas.generate_signed_query_string(
-            container,
-            ResourceType.RESOURCE_CONTAINER,
-            sap
+        sas = SharedAccessSignature(
+            self.account_name, self.account_key
+        )
+        signed_query = sas.generate_container(
+            container_name=container,
+            permission=permissions,
+            expiry=expiry.strftime(ISO8061_FORMAT),
+            start=start.strftime(ISO8061_FORMAT)
         )
         return 'https://{}.blob.core.windows.net/{}?{}'.format(
             self.account_name, container, signed_query

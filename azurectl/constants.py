@@ -19,7 +19,7 @@ BLACK_FOREST_MGMT_URL = 'management.core.cloudapi.de'
 
 # Maps management urls to storage service domains for disconnected regions
 BLOB_SERVICE_HOST_BASE = {
-    AZURE_MGMT_URL: '.blob.core.windows.net',
-    MOONCAKE_MGMT_URL: '.blob.core.chinacloudapi.cn',
-    BLACK_FOREST_MGMT_URL: '.blob.core.cloudapi.de'
+    AZURE_MGMT_URL: 'core.windows.net',
+    MOONCAKE_MGMT_URL: 'core.chinacloudapi.cn',
+    BLACK_FOREST_MGMT_URL: 'core.cloudapi.de'
 }

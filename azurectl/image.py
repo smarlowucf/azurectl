@@ -16,7 +16,7 @@ import dateutil.parser
 import collections
 from tempfile import NamedTemporaryFile
 from azure.servicemanagement import ServiceManagementService
-from azure.storage.blob import BlobService
+from azure.storage.blob.baseblobservice import BaseBlobService
 
 # project
 from azurectl_exceptions import (
@@ -89,10 +89,10 @@ class Image(object):
         if not label:
             label = name
         try:
-            storage = BlobService(
+            storage = BaseBlobService(
                 self.account_name,
                 self.account_key,
-                host_base=self.blob_service_host_base
+                endpoint_suffix=self.blob_service_host_base
             )
             storage.get_blob_properties(
                 container_name, blob_name

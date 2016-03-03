@@ -37,82 +37,86 @@ class TestStorage:
         self.storage.upload('some-blob', None)
 
     @raises(AzureStorageStreamError)
+    @patch('azurectl.storage.XZ.uncompressed_size')
     @patch('azurectl.storage.XZ.open')
-    def test_upload_error_put_blob(self, mock_xz_open):
+    def test_upload_error_stream_open(
+        self, mock_xz_open, mock_uncompressed_size
+    ):
+        mock_uncompressed_size.return_value = 1024
         mock_xz_open.side_effect = Exception
         self.storage.upload('../data/blob.xz')
 
     @raises(AzureStorageUploadError)
-    @patch('azurectl.storage.PageBlob')
-    @patch('azurectl.storage.XZ.open')
-    def test_upload_raises(self, mock_xz_open, mock_page_blob):
-        stream = mock.Mock
-        stream.close = mock.Mock()
-        mock_xz_open.return_value = stream
-        mock_page_blob.side_effect = Exception
-        self.storage.upload('../data/blob.xz')
-        stream.close.assert_called_once_with()
-
-    @patch('azurectl.storage.PageBlob')
+    @patch('azurectl.storage.BlockBlobService.create_blob_from_stream')
     @patch('azurectl.storage.XZ.uncompressed_size')
     @patch('azurectl.storage.XZ.open')
-    def test_upload(self, mock_xz_open, mock_uncompressed_size, mock_page_blob):
+    def test_upload_create_blob_from_stream_error(
+        self, mock_xz_open, mock_uncompressed_size, mock_create_blob
+    ):
+        mock_uncompressed_size.return_value = 1024
         stream = mock.Mock
         stream.close = mock.Mock()
         mock_xz_open.return_value = stream
-        page_blob = mock.Mock()
-        next_results = [3, 2, 1]
-
-        def side_effect(stream, max_chunk_size, max_attempts):
-            try:
-                return next_results.pop()
-            except:
-                raise StopIteration
-
-        page_blob.next.side_effect = side_effect
-        mock_page_blob.return_value = page_blob
-        mock_uncompressed_size.return_value = 1024
-
+        mock_create_blob.side_effect = Exception
         self.storage.upload('../data/blob.xz')
-
-        assert page_blob.next.call_args_list == [
-            call(stream, None, 5),
-            call(stream, None, 5),
-            call(stream, None, 5),
-            call(stream, None, 5)
-        ]
         stream.close.assert_called_once_with()
 
-    @patch('azurectl.storage.PageBlob')
-    @patch('__builtin__.open')
+    @raises(AzurePageBlobAlignmentViolation)
+    def test_upload_alignment_error(self):
+        self.storage.upload('../data/blob.xz')
+
+    @patch('azurectl.storage.BlockBlobService')
+    @patch('azurectl.storage.XZ.uncompressed_size')
+    @patch('azurectl.storage.XZ.open')
+    def test_upload(self, mock_xz_open, mock_uncompressed_size, mock_blob):
+        blob_service = mock.Mock()
+        blob_service.MAX_CHUNK_GET_SIZE = 1024
+        mock_blob.return_value = blob_service
+        stream = mock.Mock
+        stream.close = mock.Mock()
+        mock_xz_open.return_value = stream
+        mock_uncompressed_size.return_value = 1024
+
+        self.storage.upload(image='../data/blob.xz', max_chunk_size=512)
+        blob_service.create_blob_from_stream.assert_called_once_with(
+            blob_name='blob.xz',
+            container_name='some-container',
+            count=1024,
+            max_retries=5,
+            progress_callback=self.storage._Storage__upload_status,
+            stream=stream
+        )
+        stream.close.assert_called_once_with()
+
+    @patch('azurectl.storage.FileType')
+    @patch('azurectl.storage.BlockBlobService')
     @patch('os.path.getsize')
+    @patch('__builtin__.open')
     def test_upload_uncompressed(
-        self, mock_uncompressed_size, mock_open, mock_page_blob
+        self, mock_open, mock_getsize, mock_blob, mock_file_type
     ):
+        mock_getsize.return_value = 1024
+        file_type = mock.Mock()
+        file_type.is_xz = mock.Mock(
+            return_value=False
+        )
+        mock_file_type.return_value = file_type
+        blob_service = mock.Mock()
+        blob_service.MAX_CHUNK_GET_SIZE = 1024
+        mock_blob.return_value = blob_service
         stream = mock.Mock
         stream.close = mock.Mock()
         mock_open.return_value = stream
-        page_blob = mock.Mock()
-        next_results = [3, 2, 1]
 
-        def side_effect(stream, max_chunk_size, max_attempts):
-            try:
-                return next_results.pop()
-            except:
-                raise StopIteration
-
-        page_blob.next.side_effect = side_effect
-        mock_page_blob.return_value = page_blob
-        mock_uncompressed_size.return_value = 1024
-
-        self.storage.upload('../data/blob.raw')
-
-        assert page_blob.next.call_args_list == [
-            call(stream, None, 5),
-            call(stream, None, 5),
-            call(stream, None, 5),
-            call(stream, None, 5)
-        ]
+        self.storage.upload('../data/blob.xz')
+        blob_service.create_blob_from_stream.assert_called_once_with(
+            blob_name='blob.xz',
+            container_name='some-container',
+            count=1024,
+            max_retries=5,
+            progress_callback=self.storage._Storage__upload_status,
+            stream=stream
+        )
         stream.close.assert_called_once_with()
 
     @raises(AzureStorageDeleteError)
@@ -123,3 +127,10 @@ class TestStorage:
         self.storage.print_upload_status()
         assert self.storage.upload_status == \
             {'current_bytes': 0, 'total_bytes': 0}
+
+    def test_upload_status(self):
+        self.storage._Storage__upload_status(50, 100)
+        assert self.storage.upload_status == {
+            'current_bytes': 50,
+            'total_bytes': 100
+        }
