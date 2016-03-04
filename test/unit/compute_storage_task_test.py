@@ -58,7 +58,7 @@ class TestComputeStorageTask:
         self.task.command_args['--source'] = 'some-file'
         self.task.command_args['--max-chunk-size'] = 1024
         self.task.command_args['--quiet'] = False
-        self.task.command_args['--name'] = 'some-thing'
+        self.task.command_args['--name'] = 'some-name'
         self.task.command_args['help'] = False
 
     @patch('azurectl.compute_storage_task.DataOutput')
@@ -69,13 +69,31 @@ class TestComputeStorageTask:
         self.task.process()
         self.task.fileshare.list.assert_called_once_with()
 
+    def test_process_compute_storage_container_delete(self):
+        self.__init_command_args()
+        self.task.command_args['container'] = True
+        self.task.command_args['delete'] = True
+        self.task.process()
+        self.task.container.delete.assert_called_once_with(
+            self.task.command_args['--name']
+        )
+
+    def test_process_compute_storage_container_create(self):
+        self.__init_command_args()
+        self.task.command_args['container'] = True
+        self.task.command_args['create'] = True
+        self.task.process()
+        self.task.container.create.assert_called_once_with(
+            self.task.command_args['--name']
+        )
+
     def test_process_compute_storage_share_delete(self):
         self.__init_command_args()
         self.task.command_args['share'] = True
         self.task.command_args['delete'] = True
         self.task.process()
         self.task.fileshare.delete.assert_called_once_with(
-            'some-thing'
+            self.task.command_args['--name']
         )
 
     def test_process_compute_storage_share_create(self):
@@ -84,7 +102,7 @@ class TestComputeStorageTask:
         self.task.command_args['create'] = True
         self.task.process()
         self.task.fileshare.create.assert_called_once_with(
-            'some-thing'
+            self.task.command_args['--name']
         )
 
     @patch('azurectl.compute_storage_task.DataOutput')
@@ -102,7 +120,7 @@ class TestComputeStorageTask:
         self.task.command_args['show'] = True
         self.task.process()
         self.task.container.content.assert_called_once_with(
-            self.task.account.storage_container()
+            self.task.command_args['--name']
         )
 
     def test_start_date_validation(self):
@@ -133,7 +151,7 @@ class TestComputeStorageTask:
             self.task.command_args['--expiry-datetime']
         )
         self.task.container.sas.assert_called_once_with(
-            self.task.account.storage_container(), start, expiry, 'rl'
+            self.task.command_args['--name'], start, expiry, 'rl'
         )
 
     @patch('azurectl.compute_storage_task.DataOutput')
@@ -147,7 +165,7 @@ class TestComputeStorageTask:
             self.task.command_args['--expiry-datetime']
         )
         self.task.container.sas.assert_called_once_with(
-            self.task.account.storage_container(), mock.ANY, expiry, 'rl'
+            self.task.command_args['--name'], mock.ANY, expiry, 'rl'
         )
 
     @patch('azurectl.compute_storage_task.DataOutput')
@@ -162,7 +180,7 @@ class TestComputeStorageTask:
         )
         expiry = start + datetime.timedelta(days=30)
         self.task.container.sas.assert_called_once_with(
-            self.task.account.storage_container(), start, expiry, 'rl'
+            self.task.command_args['--name'], start, expiry, 'rl'
         )
 
     @patch('azurectl.compute_storage_task.DataOutput')
@@ -188,7 +206,7 @@ class TestComputeStorageTask:
         self.task.command_args['upload'] = True
         self.task.process()
         self.task.storage.upload.assert_called_once_with(
-            'some-file', 'some-thing', 1024
+            'some-file', self.task.command_args['--name'], 1024
         )
 
     @raises(SystemExit)
@@ -214,7 +232,7 @@ class TestComputeStorageTask:
         self.task.command_args['delete'] = True
         self.task.process()
         self.task.storage.delete.assert_called_once_with(
-            'some-thing'
+            self.task.command_args['--name']
         )
 
     def test_process_compute_storage_help(self):

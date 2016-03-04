@@ -18,7 +18,7 @@ from azure.servicemanagement import ConfigurationSet
 from azure.servicemanagement import PublicKey
 from azure.servicemanagement import LinuxConfigurationSet
 from azure.servicemanagement import OSVirtualHardDisk
-from azure.storage.blob import BlobService
+from azure.storage.blob.baseblobservice import BaseBlobService
 
 # project
 from azurectl_exceptions import (
@@ -52,9 +52,10 @@ class VirtualMachine(object):
             self.publishsettings.management_url
         )
 
-        self.storage = BlobService(
-            self.account_name, self.account_key,
-            host_base=self.blob_service_host_base
+        self.storage = BaseBlobService(
+            self.account_name,
+            self.account_key,
+            endpoint_suffix=self.blob_service_host_base
         )
 
     def create_linux_configuration(
