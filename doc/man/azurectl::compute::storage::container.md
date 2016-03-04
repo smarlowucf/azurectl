@@ -8,12 +8,17 @@ __azurectl__ compute storage container list
 
 __azurectl__ compute storage container show
 
-__azurectl__ compute storage container create --name=<containername>
+    [--name=<containername>]
+
+__azurectl__ compute storage container create
+
+    [--name=<containername>]
 
 __azurectl__ compute storage container delete --name=<containername>
 
 __azurectl__ compute storage container sas
 
+    [--name=<containername>]
     [--start-datetime=start] [--expiry-datetime=expiry]
     [--permissions=permissions]
 
