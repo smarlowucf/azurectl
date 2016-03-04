@@ -14,4 +14,4 @@
 """
     Global version information used in azurectl and the package
 """
-__VERSION__ = '1.6.0'
+__VERSION__ = '1.7.0'
