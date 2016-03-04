@@ -16,9 +16,12 @@ usage: azurectl compute storage -h | --help
        azurectl compute storage account list
        azurectl compute storage container list
        azurectl compute storage container show
-       azurectl compute storage container create --name=<containername>
+           [--name=<containername>]
+       azurectl compute storage container create
+           [--name=<containername>]
        azurectl compute storage container delete --name=<containername>
        azurectl compute storage container sas
+           [--name=<containername>]
            [--start-datetime=<start>]
            [--expiry-datetime=<expiry>]
            [--permissions=<permissions>]
@@ -241,6 +244,8 @@ class ComputeStorageTask(CliTask):
         log.info('Deleted %s', image)
 
     def __container_sas(self, container_name, start, expiry, permissions):
+        if self.command_args['--name']:
+            container_name = self.command_args['--name']
         self.result.add(
             self.account.storage_name() + ':container_sas_url',
             self.container.sas(container_name, start, expiry, permissions)
@@ -248,6 +253,8 @@ class ComputeStorageTask(CliTask):
         self.out.display()
 
     def __container_content(self, container_name):
+        if self.command_args['--name']:
+            container_name = self.command_args['--name']
         self.result.add(
             self.account.storage_name() + ':container_content',
             self.container.content(container_name)
