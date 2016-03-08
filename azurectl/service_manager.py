@@ -20,7 +20,7 @@ from azurectl_exceptions import *
 from defaults import Defaults
 
 
-class AsmObject(object):
+class ServiceManager(object):
 
     def __init__(self, account):
         self.setup_account(account)

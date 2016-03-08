@@ -12,11 +12,11 @@
 # limitations under the License.
 #
 # project
-from asm_object import *
+from service_manager import *
 from container import Container
 
 
-class StorageAccount(AsmObject):
+class StorageAccount(ServiceManager):
     """
         Implements Azure storage account management. This includes the
         following tasks:
