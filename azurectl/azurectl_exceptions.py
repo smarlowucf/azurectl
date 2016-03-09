@@ -25,11 +25,23 @@ class AzureError(Exception):
         return repr(self.message)
 
 
-class AzureCloudServiceAddressError(AzureError):
+class AzureAccountDefaultSectionNotFound(AzureError):
+    pass
+
+
+class AzureAccountLoadFailed(AzureError):
+    pass
+
+
+class AzureBlobServicePropertyError(AzureError):
     pass
 
 
 class AzureCloudServiceAddCertificateError(AzureError):
+    pass
+
+
+class AzureCloudServiceAddressError(AzureError):
     pass
 
 
@@ -45,15 +57,11 @@ class AzureCloudServiceOpenSSLError(AzureError):
     pass
 
 
-class AzureConfigPublishSettingsError(AzureError):
+class AzureCommandNotLoaded(AzureError):
     pass
 
 
 class AzureConfigAccountNotFound(AzureError):
-    pass
-
-
-class AzureConfigRegionNotFound(AzureError):
     pass
 
 
@@ -65,6 +73,18 @@ class AzureConfigAddRegionSectionError(AzureError):
     pass
 
 
+class AzureConfigParseError(AzureError):
+    pass
+
+
+class AzureConfigPublishSettingsError(AzureError):
+    pass
+
+
+class AzureConfigRegionNotFound(AzureError):
+    pass
+
+
 class AzureConfigSectionNotFound(AzureError):
     pass
 
@@ -73,115 +93,7 @@ class AzureConfigVariableNotFound(AzureError):
     pass
 
 
-class AzureDomainLookupError(AzureError):
-    pass
-
-
-class AzureFileShareCreateError(AzureError):
-    pass
-
-
-class AzureFileShareDeleteError(AzureError):
-    pass
-
-
-class AzureFileShareListError(AzureError):
-    pass
-
-
-class AzureUnknownServiceName(AzureError):
-    pass
-
-
-class AzureBlobServicePropertyError(AzureError):
-    pass
-
-
-class AzureOsImageCreateError(AzureError):
-    pass
-
-
-class AzureOsImageDeleteError(AzureError):
-    pass
-
-
-class AzureOsImageReplicateError(AzureError):
-    pass
-
-
-class AzureOsImageUnReplicateError(AzureError):
-    pass
-
-
-class AzureOsImagePublishError(AzureError):
-    pass
-
-
-class AzureOsImageUpdateError(AzureError):
-    pass
-
-
-class AzureConfigParseError(AzureError):
-    pass
-
-
 class AzureConfigWriteError(AzureError):
-    pass
-
-
-class AzureSubscriptionParseError(AzureError):
-    pass
-
-
-class AzureSubscriptionPrivateKeyDecodeError(AzureError):
-    pass
-
-
-class AzureSubscriptionCertificateDecodeError(AzureError):
-    pass
-
-
-class AzureServiceManagementUrlNotFound(AzureError):
-    pass
-
-
-class AzureSubscriptionPKCS12DecodeError(AzureError):
-    pass
-
-
-class AzureHelpNoCommandGiven(AzureError):
-    pass
-
-
-class AzureLoadCommandUndefined(AzureError):
-    pass
-
-
-class AzureAccountDefaultSectionNotFound(AzureError):
-    pass
-
-
-class AzureAccountLoadFailed(AzureError):
-    pass
-
-
-class AzureStorageFileNotFound(AzureError):
-    pass
-
-
-class AzureCommandNotLoaded(AzureError):
-    pass
-
-
-class AzureUnknownCommand(AzureError):
-    pass
-
-
-class AzureImageNotReachableByCloudServiceError(AzureError):
-    pass
-
-
-class AzureInvalidCommand(AzureError):
     pass
 
 
@@ -201,15 +113,47 @@ class AzureContainerListError(AzureError):
     pass
 
 
-class AzureStorageNotReachableByCloudServiceError(AzureError):
+class AzureDomainLookupError(AzureError):
     pass
 
 
-class AzureStorageUploadError(AzureError):
+class AzureFileShareCreateError(AzureError):
     pass
 
 
-class AzureStorageDeleteError(AzureError):
+class AzureFileShareDeleteError(AzureError):
+    pass
+
+
+class AzureFileShareListError(AzureError):
+    pass
+
+
+class AzureHelpNoCommandGiven(AzureError):
+    pass
+
+
+class AzureImageNotReachableByCloudServiceError(AzureError):
+    pass
+
+
+class AzureInvalidCommand(AzureError):
+    pass
+
+
+class AzureLoadCommandUndefined(AzureError):
+    pass
+
+
+class AzureManagementCertificateNotFound(AzureError):
+    pass
+
+
+class AzureOsImageCreateError(AzureError):
+    pass
+
+
+class AzureOsImageDeleteError(AzureError):
     pass
 
 
@@ -217,7 +161,51 @@ class AzureOsImageListError(AzureError):
     pass
 
 
+class AzureOsImagePublishError(AzureError):
+    pass
+
+
+class AzureOsImageReplicateError(AzureError):
+    pass
+
+
 class AzureOsImageShowError(AzureError):
+    pass
+
+
+class AzureOsImageUnReplicateError(AzureError):
+    pass
+
+
+class AzureOsImageUpdateError(AzureError):
+    pass
+
+
+class AzurePageBlobAlignmentViolation(AzureError):
+    pass
+
+
+class AzurePageBlobSetupError(AzureError):
+    pass
+
+
+class AzurePageBlobUpdateError(AzureError):
+    pass
+
+
+class AzurePageBlobZeroPageError(AzureError):
+    pass
+
+
+class AzureRequestError(AzureError):
+    pass
+
+
+class AzureRequestStatusError(AzureError):
+    pass
+
+
+class AzureRequestTimeout(AzureError):
     pass
 
 
@@ -237,42 +225,6 @@ class AzureReservedIpShowError(AzureError):
     pass
 
 
-class AzureSubscriptionIdNotFound(AzureError):
-    pass
-
-
-class AzureManagementCertificateNotFound(AzureError):
-    pass
-
-
-class AzurePageBlobAlignmentViolation(AzureError):
-    pass
-
-
-class AzurePageBlobSetupError(AzureError):
-    pass
-
-
-class AzurePageBlobZeroPageError(AzureError):
-    pass
-
-
-class AzurePageBlobUpdateError(AzureError):
-    pass
-
-
-class AzureRequestTimeout(AzureError):
-    pass
-
-
-class AzureRequestError(AzureError):
-    pass
-
-
-class AzureRequestStatusError(AzureError):
-    pass
-
-
 class AzureSSHKeyFileNotFound(AzureError):
     pass
 
@@ -281,11 +233,79 @@ class AzureServiceManagementError(AzureError):
     pass
 
 
+class AzureServiceManagementUrlNotFound(AzureError):
+    pass
+
+
+class AzureStorageAccountCreateError(AzureError):
+    pass
+
+
+class AzureStorageAccountDeleteError(AzureError):
+    pass
+
+
+class AzureStorageAccountListError(AzureError):
+    pass
+
+
+class AzureStorageAccountShowError(AzureError):
+    pass
+
+
+class AzureStorageAccountUpdateError(AzureError):
+    pass
+
+
+class AzureStorageDeleteError(AzureError):
+    pass
+
+
+class AzureStorageFileNotFound(AzureError):
+    pass
+
+
 class AzureStorageListError(AzureError):
     pass
 
 
+class AzureStorageNotReachableByCloudServiceError(AzureError):
+    pass
+
+
 class AzureStorageStreamError(AzureError):
+    pass
+
+
+class AzureStorageUploadError(AzureError):
+    pass
+
+
+class AzureSubscriptionCertificateDecodeError(AzureError):
+    pass
+
+
+class AzureSubscriptionIdNotFound(AzureError):
+    pass
+
+
+class AzureSubscriptionPKCS12DecodeError(AzureError):
+    pass
+
+
+class AzureSubscriptionParseError(AzureError):
+    pass
+
+
+class AzureSubscriptionPrivateKeyDecodeError(AzureError):
+    pass
+
+
+class AzureUnknownCommand(AzureError):
+    pass
+
+
+class AzureUnknownServiceName(AzureError):
     pass
 
 
