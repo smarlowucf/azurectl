@@ -117,6 +117,14 @@ class AzureContainerListError(AzureError):
     pass
 
 
+class AzureDataDiskCreateError(AzureError):
+    pass
+
+
+class AzureDataDiskNoAvailableLun(AzureError):
+    pass
+
+
 class AzureDomainLookupError(AzureError):
     pass
 
