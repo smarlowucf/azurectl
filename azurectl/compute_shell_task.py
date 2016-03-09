@@ -22,6 +22,7 @@ commands:
 import code
 import os
 from tempfile import NamedTemporaryFile
+from textwrap import dedent
 # project
 from logger import log
 from cli_task import CliTask
@@ -47,10 +48,10 @@ class ComputeShellTask(CliTask):
             account.publishsettings().management_url
         )
 
-        print """
-An instance of azure.servicemanagement.ServiceManagementService has been
-instantiated using the supplied credentials, as `service`.
+        print dedent("""
+            An instance of azure.servicemanagement.ServiceManagementService has
+            been instantiated using the supplied credentials, as `service`.
 
-When you're finished, exit with `exit()`
-        """
+            When you're finished, exit with `exit()`
+        """)
         code.interact(local={'service': self.service})
