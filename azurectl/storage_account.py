@@ -54,7 +54,10 @@ class StorageAccount(ServiceManager):
                 name,
                 (description or current.storage_service_properties.description),
                 (label or current.storage_service_properties.label),
-                account_type=(account_type or current.storage_service_properties.account_type)
+                account_type=(
+                    account_type or
+                    current.storage_service_properties.account_type
+                )
             )
             if regenerate_primary_key:
                 self.service.regenerate_storage_account_keys(name, 'Primary')
