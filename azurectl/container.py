@@ -16,6 +16,7 @@ from azure.storage.sharedaccesssignature import SharedAccessSignature
 
 # project
 from azurectl_exceptions import (
+    AzureCannotInit,
     AzureContainerListError,
     AzureContainerListContentError,
     AzureContainerCreateError,

@@ -40,6 +40,23 @@ class TestContainer:
         )
         self.container = Container(account)
 
+    def test_container_alternate_init(self):
+        container = Container(
+            account_name=self.container.account_name,
+            key=self.container.account_key,
+            blob_service_host_base=self.container.blob_service_host_base
+        )
+        assert_equal(container.account_name, self.container.account_name)
+        assert_equal(container.account_key, self.container.account_key)
+        assert_equal(
+            container.blob_service_host_base,
+            self.container.blob_service_host_base
+        )
+
+    @raises(AzureCannotInit)
+    def test_container_failed_init(self):
+        Container()
+
     @patch('azurectl.container.BaseBlobService.list_containers')
     def test_list(self, mock_list_containers):
         mock_list_containers.return_value = self.name_list
