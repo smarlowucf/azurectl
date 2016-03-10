@@ -29,10 +29,26 @@ class Container(object):
     """
         Information from Azure storage containers
     """
-    def __init__(self, account):
-        self.account_name = account.storage_name()
-        self.account_key = account.storage_key()
-        self.blob_service_host_base = account.get_blob_service_host_base()
+    def __init__(
+        self,
+        account=None,
+        account_name=None,
+        key=None,
+        blob_service_host_base=None
+    ):
+        if account:
+            self.account_name = account.storage_name()
+            self.account_key = account.storage_key()
+            self.blob_service_host_base = account.get_blob_service_host_base()
+        elif (account_name and key and blob_service_host_base):
+            self.account_name = account_name
+            self.account_key = key
+            self.blob_service_host_base = blob_service_host_base
+        else:
+            raise AzureCannotInit('''
+                Either an account, or account_name, key, and service host base
+                are required.
+            ''')
 
     def list(self):
         result = []

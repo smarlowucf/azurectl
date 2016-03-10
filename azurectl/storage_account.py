@@ -111,12 +111,12 @@ class StorageAccount(ServiceManager):
         return result
 
     def __add_containers_to(self, result):
-        container_account = MinimalContainerAccount(
-            result.service_name,
-            result.storage_service_keys.primary,
-            self.account.get_blob_service_host_base()
-        )
-        result.containers = Container(container_account).list()
+        container_args = {
+            'account_name': result.service_name,
+            'key': result.storage_service_keys.primary,
+            'blob_service_host_base': self.account.get_blob_service_host_base()
+        }
+        result.containers = Container(**container_args).list()
         return result
 
     def __decorate(self, result):
@@ -148,13 +148,3 @@ class StorageAccount(ServiceManager):
                 'secondary': result.storage_service_keys.secondary
             }
         return decorated
-
-
-class MinimalContainerAccount(object):
-    """
-        The Minimum required to instantiate Container
-    """
-    def __init__(self, storage_name, storage_key, blob_service_host_base):
-        self.storage_name = lambda: storage_name
-        self.storage_key = lambda: storage_key
-        self.get_blob_service_host_base = lambda: blob_service_host_base
