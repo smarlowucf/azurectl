@@ -18,7 +18,6 @@ class TestConfigFilePath:
     def test_home_path_linux(self):
         with patch.dict('os.environ', {'HOME': 'foo'}):
             paths = ConfigFilePath(platform='lin')
-            print paths.default_new_config()
             assert paths.default_new_config() == \
                 os.environ['HOME'] + '/.config/azurectl/config'
 

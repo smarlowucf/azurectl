@@ -11,6 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from collections import namedtuple
 # project
 from azurectl_exceptions import AzureDomainLookupError
 
@@ -53,6 +54,48 @@ class Defaults(object):
                 'Specified region %s not in lookup table' % region
             )
         return azure_domain[region]
+
+    @classmethod
+    def account_type_for_docopts(self, docopts, return_default=True):
+        for account_type_tuple in self.__get_account_type_tuples():
+            if docopts[account_type_tuple.command]:
+                return account_type_tuple.account_type
+        if return_default:
+            return 'Standard_GRS'
+
+    @classmethod
+    def docopt_for_account_type(self, account_type):
+        for account_type_tuple in self.__get_account_type_tuples():
+            if account_type_tuple.account_type == account_type:
+                return account_type_tuple.command
+
+    @classmethod
+    def __get_account_type_tuples(self):
+        """
+            Maps ASM storage account_type to a backup strategy command
+        """
+        AccountTypeTuple = namedtuple(
+            'AccountTypeTuple',
+            'account_type command'
+        )
+        return [
+            AccountTypeTuple(
+                account_type='Standard_LRS',
+                command='--locally-redundant'
+            ),
+            AccountTypeTuple(
+                account_type='Standard_ZRS',
+                command='--zone-redundant'
+            ),
+            AccountTypeTuple(
+                account_type='Standard_GRS',
+                command='--geo-redundant'
+            ),
+            AccountTypeTuple(
+                account_type='Standard_RAGRS',
+                command='--read-access-geo-redundant'
+            )
+        ]
 
     @classmethod
     def get_attribute(self, instance, name):

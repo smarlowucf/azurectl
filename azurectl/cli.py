@@ -26,6 +26,12 @@ usage: azurectl -h | --help
                 [--output-style=<style>]
                 [--debug]
            compute <command> [<args>...]
+        azurectl [--config=<file> | --account=<name>]
+                [--region=<name>]
+                [--output-format=<format>]
+                [--output-style=<style>]
+                [--debug]
+          storage <command> [<args>...]
        azurectl -v | --version
        azurectl help
 
@@ -92,6 +98,8 @@ class Cli(object):
             return 'compute'
         elif self.all_args['setup']:
             return 'setup'
+        elif (self.all_args['storage'] and not self.all_args['compute']):
+            return 'storage'
         else:
             raise AzureUnknownServiceName(
                 'Unknown/Invalid Servicename'

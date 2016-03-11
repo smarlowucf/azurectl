@@ -18,6 +18,7 @@ import logging
 from cli import Cli
 from config import Config
 from help import Help
+from validations import Validations
 
 
 class CliTask(object):
@@ -61,4 +62,19 @@ class CliTask(object):
             self.global_args['--storage-account'],
             self.global_args['--storage-container'],
             self.global_args['--config']
+        )
+
+    # validations
+    def validate_min_length(self, cmd_arg, min_length):
+        Validations.validate_min_length(
+            cmd_arg,
+            self.command_args[cmd_arg],
+            min_length
+        )
+
+    def validate_max_length(self, cmd_arg, max_length):
+        Validations.validate_max_length(
+            cmd_arg,
+            self.command_args[cmd_arg],
+            max_length
         )

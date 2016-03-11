@@ -37,6 +37,10 @@ class AzureBlobServicePropertyError(AzureError):
     pass
 
 
+class AzureCannotInit(AzureError):
+    pass
+
+
 class AzureCloudServiceAddCertificateError(AzureError):
     pass
 
