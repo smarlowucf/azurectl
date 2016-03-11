@@ -216,8 +216,9 @@ class TestStorageAccount:
         assert result == self.expected_show_result
 
     @patch('azurectl.storage_account.ServiceManagementService.update_storage_account')
+    @patch('azurectl.storage_account.ServiceManagementService.get_storage_account_properties')
     @raises(AzureStorageAccountUpdateError)
-    def test_update_error(self, mock_update_account):
+    def test_update_error(self, mock_account_properties, mock_update_account):
         mock_update_account.side_effect = Exception
         result = self.storage_account.update(
             'mockstorageservice',
