@@ -74,6 +74,16 @@ class TestDataDisk:
             source_media_link=''
         )
 
+    def create_expected_data_disk_output(self, lun):
+        return {
+            'size': '%d GB' % self.disk_size,
+            'label': self.disk_label,
+            'disk-url': self.disk_url,
+            'source-image-url': '',
+            'lun': lun,
+            'host-caching': 'ReadWrite'
+        }
+
     @patch('azurectl.data_disk.ServiceManagementService.add_data_disk')
     def test_create(self, mock_add):
         # given
@@ -218,4 +228,37 @@ class TestDataDisk:
             media_link=self.disk_url,
             disk_label=self.disk_label,
             logical_disk_size_in_gb=self.disk_size
+        )
+
+    @patch('azurectl.data_disk.ServiceManagementService.get_data_disk')
+    def test_show(self, mock_get):
+        # given
+        mock_get.return_value = self.create_mock_data_disk(self.lun)
+        expected = self.create_expected_data_disk_output(self.lun)
+        # when
+        result = self.data_disk.show(
+            self.cloud_service_name,
+            self.instance_name,
+            self.lun
+        )
+        # then
+        mock_get.assert_called_once_with(
+            self.cloud_service_name,
+            self.instance_name,
+            self.cloud_service_name,
+            self.lun
+        )
+        assert_equal(result, expected)
+
+    @patch('azurectl.data_disk.ServiceManagementService.get_data_disk')
+    # then
+    @raises(AzureDataDiskShowError)
+    def test_show_upsteam_exception(self, mock_get):
+        # given
+        mock_get.side_effect = Exception
+        # when
+        self.data_disk.show(
+            self.cloud_service_name,
+            self.instance_name,
+            self.lun
         )

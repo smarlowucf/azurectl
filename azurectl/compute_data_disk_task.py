@@ -19,11 +19,15 @@ usage: azurectl compute data-disk -h | --help
            [--disk-name=<name>]
            [--lun=<lun>]
            [--no-cache|--read-only-cache|--read-write-cache]
+       azurectl compute data-disk show --cloud-service-name=<name> --lun=<lun>
+           [--instance-name=<name>]
        azurectl compute data-disk help
 
 commands:
     create
         add a new, empty data disk to the selected virtual machine
+    show
+        return data about an existing data disk
 
 options:
     --cloud-service-name=<name>
@@ -40,9 +44,9 @@ options:
         name of the disk file created in the current storage container. If
         omitted, a name will be automatically generated.
     --lun=<lun>
-        logical unit number where the disk will be mounted. Must be an integer
-        between 0 and 15. If omitted, the first available LUN will be selected
-        automatically.
+        logical unit number where the disk is mounted. Must be an integer
+        between 0 and 15. If omitted during create, the first available LUN
+        will be selected automatically
     --no-cache
         disable caching on the data disk
     --read-only-cache
@@ -83,6 +87,8 @@ class ComputeDataDiskTask(CliTask):
 
         if self.command_args['create']:
             self.__create()
+        if self.command_args['show']:
+            self.__show()
 
     def __help(self):
         if self.command_args['help']:
@@ -118,5 +124,20 @@ class ComputeDataDiskTask(CliTask):
                 self.command_args['--size'],
                 **optional_args
             )
+        )
+        self.out.display()
+
+    def __show(self):
+        args = [
+            self.command_args['--cloud-service-name'],
+            (
+                self.command_args['--instance-name'] or
+                self.command_args['--cloud-service-name']
+            ),
+            int(self.command_args['--lun'])
+        ]
+        self.result.add(
+            'data-disk:%s:%s:%d' % tuple(args),
+            self.data_disk.show(*args)
         )
         self.out.display()

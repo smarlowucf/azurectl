@@ -46,6 +46,7 @@ class TestComputeDataDiskTask:
         '''
         command_args = {
             'create': False,
+            'show': False,
             'help': False,
             '--cloud-service-name': None,
             '--size': None,
@@ -154,4 +155,37 @@ class TestComputeDataDiskTask:
             self.cloud_service_name,
             self.disk_size,
             host_caching=host_caching
+        )
+
+    def test_show_with_minimal_args(self):
+        # given
+        self.__init_command_args({
+            'show': True,
+            '--cloud-service-name': self.cloud_service_name,
+            '--lun': self.lun
+        })
+        # when
+        self.task.process()
+        # then
+        self.task.data_disk.show.assert_called_once_with(
+            self.cloud_service_name,
+            self.cloud_service_name,
+            self.lun
+        )
+
+    def test_show_with_instance_name(self):
+        # given
+        self.__init_command_args({
+            'show': True,
+            '--cloud-service-name': self.cloud_service_name,
+            '--instance-name': self.instance_name,
+            '--lun': self.lun
+        })
+        # when
+        self.task.process()
+        # then
+        self.task.data_disk.show.assert_called_once_with(
+            self.cloud_service_name,
+            self.instance_name,
+            self.lun
         )

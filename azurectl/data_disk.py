@@ -63,6 +63,26 @@ class DataDisk(ServiceManager):
             )
         return result.request_id
 
+    def show(
+        self,
+        cloud_service_name,
+        instance_name,
+        lun,
+        role_name=None
+    ):
+        try:
+            result = self.service.get_data_disk(
+                cloud_service_name,
+                instance_name,
+                (role_name or cloud_service_name),
+                lun
+            )
+        except Exception as e:
+            raise AzureDataDiskShowError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
+        return self.__decorate(result)
+
     def get_first_available_lun(
         self,
         cloud_service_name,
@@ -101,3 +121,13 @@ class DataDisk(ServiceManager):
             self.account.storage_container() + '/' +
             filename
         )
+
+    def __decorate(self, data_virtual_hard_disk):
+        return {
+            'label': data_virtual_hard_disk.disk_label,
+            'host-caching': data_virtual_hard_disk.host_caching,
+            'disk-url': data_virtual_hard_disk.media_link,
+            'source-image-url': data_virtual_hard_disk.source_media_link,
+            'lun': data_virtual_hard_disk.lun,
+            'size': '%d GB' % data_virtual_hard_disk.logical_disk_size_in_gb
+        }

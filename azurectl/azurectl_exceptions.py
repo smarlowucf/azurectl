@@ -125,6 +125,10 @@ class AzureDataDiskNoAvailableLun(AzureError):
     pass
 
 
+class AzureDataDiskShowError(AzureError):
+    pass
+
+
 class AzureDomainLookupError(AzureError):
     pass
 
