@@ -48,6 +48,7 @@ class TestComputeDataDiskTask:
             'create': False,
             'delete': False,
             'show': False,
+            'list': False,
             'help': False,
             '--cloud-service-name': None,
             '--size': None,
@@ -222,4 +223,33 @@ class TestComputeDataDiskTask:
             self.cloud_service_name,
             self.instance_name,
             self.lun
+        )
+
+    def test_list_with_minimal_args(self):
+        # given
+        self.__init_command_args({
+            'list': True,
+            '--cloud-service-name': self.cloud_service_name
+        })
+        # when
+        self.task.process()
+        # then
+        self.task.data_disk.list.assert_called_once_with(
+            self.cloud_service_name,
+            self.cloud_service_name
+        )
+
+    def test_list_with_instance_name(self):
+        # given
+        self.__init_command_args({
+            'list': True,
+            '--cloud-service-name': self.cloud_service_name,
+            '--instance-name': self.instance_name
+        })
+        # when
+        self.task.process()
+        # then
+        self.task.data_disk.list.assert_called_once_with(
+            self.cloud_service_name,
+            self.instance_name
         )

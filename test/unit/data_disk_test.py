@@ -1,5 +1,6 @@
 import sys
 import mock
+import random
 from azure.common import AzureMissingResourceHttpError
 from collections import namedtuple
 from datetime import datetime
@@ -295,3 +296,23 @@ class TestDataDisk:
             self.instance_name,
             self.lun
         )
+
+    @patch('azurectl.data_disk.ServiceManagementService.get_data_disk')
+    def test_list(self, mock_get):
+        # given
+        number_of_disks = random.randint(0, 15)
+        luns = random.sample(range(16), number_of_disks)
+        luns.sort()
+        mock_disk_set = [AzureMissingResourceHttpError('NOT FOUND', 404)] * 16
+        expected_result = []
+        for lun in luns:
+            mock_disk_set[lun] = self.create_mock_data_disk(lun)
+            expected_result.append(self.create_expected_data_disk_output(lun))
+        mock_get.side_effect = iter(mock_disk_set)
+        # when
+        result = self.data_disk.list(
+            self.cloud_service_name,
+            self.instance_name
+        )
+        # then
+        assert_equal(result, expected_result)

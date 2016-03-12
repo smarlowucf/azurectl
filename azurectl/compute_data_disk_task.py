@@ -21,6 +21,8 @@ usage: azurectl compute data-disk -h | --help
            [--no-cache|--read-only-cache|--read-write-cache]
        azurectl compute data-disk show --cloud-service-name=<name> --lun=<lun>
            [--instance-name=<name>]
+       azurectl compute data-disk list --cloud-service-name=<name>
+           [--instance-name=<name>]
        azurectl compute data-disk delete --cloud-service-name=<name> --lun=<lun>
            [--instance-name=<name>]
        azurectl compute data-disk help
@@ -33,6 +35,8 @@ commands:
     delete
         detach a data disk from the selected virtual machine and destroy the
         data file
+    list
+        return data about all data disks attached to a virtual machine
 
 options:
     --cloud-service-name=<name>
@@ -96,6 +100,8 @@ class ComputeDataDiskTask(CliTask):
             self.__show()
         if self.command_args['delete']:
             self.__delete()
+        if self.command_args['list']:
+            self.__list()
 
     def __help(self):
         if self.command_args['help']:
@@ -161,5 +167,19 @@ class ComputeDataDiskTask(CliTask):
         self.result.add(
             'data-disk:%s:%s:%d' % tuple(args),
             self.data_disk.delete(*args)
+        )
+        self.out.display()
+
+    def __list(self):
+        args = [
+            self.command_args['--cloud-service-name'],
+            (
+                self.command_args['--instance-name'] or
+                self.command_args['--cloud-service-name']
+            )
+        ]
+        self.result.add(
+            'data-disks:%s:%s' % tuple(args),
+            self.data_disk.list(*args)
         )
         self.out.display()

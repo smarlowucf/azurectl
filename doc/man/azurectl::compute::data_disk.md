@@ -16,6 +16,10 @@ __azurectl__ compute data-disk show --cloud-service-name=*name* --lun=*lun*
 
     [--instance-name=name]
 
+__azurectl__ compute data-disk list --cloud-service-name=*name*
+
+    [--instance-name=name]
+
 __azurectl__ compute data-disk delete --cloud-service-name=*name* --lun=*lun*
 
     [--instance-name=name]
@@ -32,6 +36,12 @@ the __--instance-name__ argument may be omitted.
 
 List information about a single data disk, attached to the selected virtual
 machine at the seleted __lun__.
+
+## __list__
+
+List information about all data disks attached to the selected virtual machine.
+
+Note: this is a repetitive operation that make take some time to complete.
 
 ## __delete__
 

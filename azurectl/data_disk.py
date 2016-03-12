@@ -16,6 +16,8 @@ from datetime import datetime
 # project
 from service_manager import *
 
+LUNS = 16  # there are 16 possible luns, numbered 0..15
+
 
 class DataDisk(ServiceManager):
     """
@@ -104,6 +106,25 @@ class DataDisk(ServiceManager):
             )
         return result.request_id
 
+    def list(
+        self,
+        cloud_service_name,
+        instance_name,
+        role_name=None
+    ):
+        disks = []
+        for lun in range(LUNS):
+            try:
+                disks.append(self.service.get_data_disk(
+                    cloud_service_name,
+                    instance_name,
+                    (role_name or cloud_service_name),
+                    lun
+                ))
+            except Exception:
+                pass
+        return [self.__decorate(disk) for disk in disks]
+
     def get_first_available_lun(
         self,
         cloud_service_name,
@@ -111,7 +132,7 @@ class DataDisk(ServiceManager):
         role_name=None
     ):
         lun = 0
-        while lun < 16:  # 15 is the max lun
+        while lun < LUNS:
             try:
                 self.service.get_data_disk(
                     cloud_service_name,
