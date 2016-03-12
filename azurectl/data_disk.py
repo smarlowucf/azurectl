@@ -83,6 +83,27 @@ class DataDisk(ServiceManager):
             )
         return self.__decorate(result)
 
+    def delete(
+        self,
+        cloud_service_name,
+        instance_name,
+        lun,
+        role_name=None
+    ):
+        try:
+            result = self.service.delete_data_disk(
+                cloud_service_name,
+                instance_name,
+                (role_name or cloud_service_name),
+                lun,
+                delete_vhd=True
+            )
+        except Exception as e:
+            raise AzureDataDiskDeleteError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
+        return result.request_id
+
     def get_first_available_lun(
         self,
         cloud_service_name,

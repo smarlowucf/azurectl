@@ -262,3 +262,36 @@ class TestDataDisk:
             self.instance_name,
             self.lun
         )
+
+    @patch('azurectl.data_disk.ServiceManagementService.delete_data_disk')
+    def test_delete(self, mock_delete):
+        # given
+        mock_delete.return_value = self.my_request
+        # when
+        result = self.data_disk.delete(
+            self.cloud_service_name,
+            self.instance_name,
+            self.lun
+        )
+        # then
+        mock_delete.assert_called_once_with(
+            self.cloud_service_name,
+            self.instance_name,
+            self.cloud_service_name,
+            self.lun,
+            delete_vhd=True
+        )
+        assert_equal(result, self.my_request.request_id)
+
+    @patch('azurectl.data_disk.ServiceManagementService.delete_data_disk')
+    # then
+    @raises(AzureDataDiskDeleteError)
+    def test_delete_with_upstream_exception(self, mock_delete):
+        # given
+        mock_delete.side_effect = Exception
+        # when
+        self.data_disk.delete(
+            self.cloud_service_name,
+            self.instance_name,
+            self.lun
+        )

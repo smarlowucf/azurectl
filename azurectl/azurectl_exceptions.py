@@ -121,6 +121,10 @@ class AzureDataDiskCreateError(AzureError):
     pass
 
 
+class AzureDataDiskDeleteError(AzureError):
+    pass
+
+
 class AzureDataDiskNoAvailableLun(AzureError):
     pass
 
