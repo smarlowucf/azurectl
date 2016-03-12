@@ -134,7 +134,13 @@ class VirtualMachine(object):
             )
 
         media_link = self.storage.make_blob_url(
-            self.container_name, disk_name + '_instance'
+            self.container_name, ''.join(
+                [
+                    cloud_service_name,
+                    '_instance_', system_config.host_name,
+                    '_image_', disk_name
+                ]
+            )
         )
         instance_disk = OSVirtualHardDisk(disk_name, media_link)
         instance_record = {

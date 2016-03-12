@@ -57,6 +57,9 @@ class TestVirtualMachine:
         account.storage_key = mock.Mock()
         self.account = account
         self.vm = VirtualMachine(account)
+        self.system_config = self.vm.create_linux_configuration(
+            'some-user', 'some-host'
+        )
 
     def test_create_network_configuration(self):
         endpoint = self.vm.create_network_endpoint('SSH', 22, 22, 'TCP')
@@ -80,8 +83,8 @@ class TestVirtualMachine:
     @patch('azurectl.virtual_machine.ServiceManagementService.get_storage_account_properties')
     @patch('azurectl.virtual_machine.ServiceManagementService.get_os_image')
     def test_create_instance(
-        self, mock_os_image, mock_storage_properties, mock_service_properties,
-        mock_vm_create, mock_os_disk
+        self, mock_os_image, mock_storage_properties,
+        mock_service_properties, mock_vm_create, mock_os_disk
     ):
         storage_properties = mock.MagicMock()
         storage_properties.storage_service_properties.location = 'region'
@@ -97,21 +100,19 @@ class TestVirtualMachine:
 
         os_disk = OSVirtualHardDisk('foo', 'foo')
         mock_os_disk.return_value = os_disk
-        system_config = self.vm.create_linux_configuration(
-            'some-user', 'some-host'
-        )
         endpoint = self.vm.create_network_endpoint('SSH', 22, 22, 'TCP')
         network_config = self.vm.create_network_configuration([endpoint])
         result = self.vm.create_instance(
             'cloud-service',
             'foo.vhd',
-            system_config,
+            self.system_config,
             network_config,
             'some-label',
             reserved_ip_name='test_reserved_ip_name'
         )
         mock_os_disk.assert_called_once_with(
-            'foo.vhd', 'https://bob.blob.test.url/foo/foo.vhd_instance'
+            'foo.vhd',
+            'https://bob.blob.test.url/foo/cloud-service_instance_some-host_image_foo.vhd'
         )
         mock_vm_create.assert_called_once_with(
             deployment_slot='production',
@@ -120,7 +121,7 @@ class TestVirtualMachine:
             service_name='cloud-service',
             os_virtual_hard_disk=os_disk,
             label='some-label',
-            system_config=system_config,
+            system_config=self.system_config,
             reserved_ip_name='test_reserved_ip_name',
             role_name='cloud-service',
             network_config=network_config,
@@ -151,8 +152,7 @@ class TestVirtualMachine:
 
         mock_vm_create.side_effect = AzureVmCreateError
         result = self.vm.create_instance(
-            'foo', 'some-region', 'foo.vhd',
-            self.vm.create_linux_configuration()
+            'cloud-service', 'foo.vhd', self.system_config
         )
 
     @patch('azurectl.virtual_machine.ServiceManagementService.delete_deployment')
@@ -177,8 +177,7 @@ class TestVirtualMachine:
         mock_service_properties.return_value = service_properties
 
         result = self.vm.create_instance(
-            'foo', 'some-region', 'foo.vhd',
-            self.vm.create_linux_configuration()
+            'foo', 'some-region', 'foo.vhd', self.system_config
         )
 
     @patch('azurectl.virtual_machine.ServiceManagementService.get_hosted_service_properties')
@@ -201,8 +200,7 @@ class TestVirtualMachine:
         mock_os_image.return_value = image_locations
 
         result = self.vm.create_instance(
-            'foo', 'some-region', 'foo.vhd',
-            self.vm.create_linux_configuration()
+            'foo', 'some-region', 'foo.vhd', self.system_config
         )
 
     @patch('azurectl.virtual_machine.ServiceManagementService.delete_deployment')
