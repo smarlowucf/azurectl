@@ -14,12 +14,7 @@ install:
 
 .PHONY: test
 test:
-	nosetests --with-coverage --cover-erase --cover-package=azurectl --cover-xml
-	tools/coverage-check
-
-coverage:
-	nosetests --with-coverage --cover-erase --cover-package=azurectl --cover-xml
-	mv test/unit/coverage.xml test/unit/coverage.reference.xml
+	nosetests --with-coverage --cover-min-percentage=100 --cover-erase --cover-package=azurectl --cover-xml
 
 list_tests:
 	@for i in test/unit/*_test.py; do basename $$i;done | sort
