@@ -1,8 +1,8 @@
 import sys
-from nose.tools import *
+
 from mock import patch
 
-import nose_helper
+from test_helper import *
 
 from azurectl.help import Help
 from azurectl.azurectl_exceptions import *

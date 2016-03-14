@@ -14,13 +14,13 @@ install:
 
 .PHONY: test
 test:
-	nosetests --with-coverage --cover-min-percentage=100 --cover-erase --cover-package=azurectl --cover-xml
+	cd test/unit && py.test --no-cov-on-fail --cov=azurectl --cov-report=term-missing --cov-fail-under=100
 
 list_tests:
 	@for i in test/unit/*_test.py; do basename $$i;done | sort
 
 %.py:
-	nosetests -s $@
+	cd test/unit && py.test -s $@
 
 build: pep8 test
 	${MAKE} -C doc/man all

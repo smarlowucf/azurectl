@@ -2,9 +2,9 @@ import sys
 import mock
 from mock import patch
 from mock import call
-from nose.tools import *
 
-import nose_helper
+
+from test_helper import *
 
 from azurectl.azurectl_exceptions import *
 from azurectl.storage import Storage

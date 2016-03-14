@@ -1,4 +1,4 @@
-from nose.tools import *
+
 
 from azurectl.filetype import FileType
 

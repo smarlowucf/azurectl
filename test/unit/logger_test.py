@@ -1,6 +1,6 @@
 from mock import patch
 
-import nose_helper
+from test_helper import *
 
 from azurectl.logger import *
 

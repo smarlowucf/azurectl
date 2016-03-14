@@ -2,10 +2,10 @@ import datetime
 import sys
 import mock
 from mock import patch
-from nose.tools import *
+
 from urlparse import urlparse
 
-import nose_helper
+from test_helper import *
 
 from azurectl.azurectl_exceptions import *
 from azurectl.fileshare import FileShare

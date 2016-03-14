@@ -2,9 +2,9 @@ import dateutil.parser
 import sys
 import mock
 from mock import patch
-from nose.tools import *
 
-import nose_helper
+
+from test_helper import *
 
 import datetime
 import azurectl
@@ -123,20 +123,23 @@ class TestComputeStorageTask:
             self.task.command_args['--name']
         )
 
+    @raises(AzureInvalidCommand)
     def test_start_date_validation(self):
         self.__init_command_args()
         self.task.command_args['--start-datetime'] = 'foo'
-        assert_raises(AzureInvalidCommand, self.task.process)
+        self.task.process()
 
+    @raises(AzureInvalidCommand)
     def test_end_date_validation(self):
         self.__init_command_args()
         self.task.command_args['--expiry-datetime'] = 'foo'
-        assert_raises(AzureInvalidCommand, self.task.process)
+        self.task.process()
 
+    @raises(AzureInvalidCommand)
     def test_permissions_validation(self):
         self.__init_command_args()
         self.task.command_args['--permissions'] = 'a'
-        assert_raises(AzureInvalidCommand, self.task.process)
+        self.task.process()
 
     @patch('azurectl.compute_storage_task.DataOutput')
     def test_process_compute_storage_container_sas(self, mock_out):

@@ -1,8 +1,8 @@
 import mock
 from mock import patch
-from nose.tools import *
 
-import nose_helper
+
+from test_helper import *
 
 from azurectl.azurectl_exceptions import *
 
@@ -137,7 +137,7 @@ class TestAzureAccount:
 
     def test_get_management_url(self):
         mgmt_url = self.account.get_management_url()
-        assert_equal(mgmt_url, 'test.url')
+        assert mgmt_url == 'test.url'
 
     @raises(AzureServiceManagementUrlNotFound)
     @patch('azurectl.azure_account.dump_privatekey')
@@ -157,7 +157,7 @@ class TestAzureAccount:
                 {'test.url': '.blob.test.url'})
     def test_get_blob_service_host_base(self):
         host_base = self.account.get_blob_service_host_base()
-        assert_equal(host_base, '.blob.test.url')
+        assert host_base == '.blob.test.url'
 
     @raises(AzureUnrecognizedManagementUrl)
     @patch.dict('azurectl.azure_account.BLOB_SERVICE_HOST_BASE',
