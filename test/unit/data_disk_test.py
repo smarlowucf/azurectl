@@ -5,9 +5,7 @@ from azure.common import AzureMissingResourceHttpError
 from collections import namedtuple
 from datetime import datetime
 from mock import patch
-from nose.tools import *
-
-import nose_helper
+from test_helper import *
 
 from azurectl.azure_account import AzureAccount
 from azurectl.azurectl_exceptions import *
@@ -100,7 +98,7 @@ class TestDataDisk:
             label=self.disk_label
         )
         # then
-        assert_equal(result, self.my_request.request_id)
+        assert result == self.my_request.request_id
         mock_add.assert_called_once_with(
             self.cloud_service_name,
             self.instance_name,
@@ -143,8 +141,8 @@ class TestDataDisk:
             self.instance_name
         )
         # then
-        assert_equal(mock_get.call_count, 3)
-        assert_equal(result, 2)  # 0 and 1 are taken
+        assert mock_get.call_count == 3
+        assert result == 2  # 0 and 1 are taken
 
     @patch('azurectl.data_disk.ServiceManagementService.get_data_disk')
     @raises(AzureDataDiskNoAvailableLun)
@@ -159,7 +157,7 @@ class TestDataDisk:
             self.instance_name
         )
         # then
-        assert_equal(mock_get.call_count, 16)
+        assert mock_get.call_count == 16
 
     @patch('azurectl.data_disk.DataDisk._DataDisk__get_first_available_lun')
     @patch('azurectl.data_disk.ServiceManagementService.add_data_disk')
@@ -201,7 +199,7 @@ class TestDataDisk:
         # when
         result = self.data_disk._DataDisk__generate_filename(self.instance_name)
         # then
-        assert_equal(result, expected)
+        assert result == expected
 
     @patch('azurectl.data_disk.DataDisk._DataDisk__generate_filename')
     @patch('azurectl.data_disk.ServiceManagementService.add_data_disk')
@@ -249,7 +247,7 @@ class TestDataDisk:
             self.cloud_service_name,
             self.lun
         )
-        assert_equal(result, expected)
+        assert result == expected
 
     @patch('azurectl.data_disk.ServiceManagementService.get_data_disk')
     # then
@@ -282,7 +280,7 @@ class TestDataDisk:
             self.lun,
             delete_vhd=True
         )
-        assert_equal(result, self.my_request.request_id)
+        assert result == self.my_request.request_id
 
     @patch('azurectl.data_disk.ServiceManagementService.delete_data_disk')
     # then
@@ -315,4 +313,4 @@ class TestDataDisk:
             self.instance_name
         )
         # then
-        assert_equal(result, expected_result)
+        assert result == expected_result

@@ -1,9 +1,7 @@
 import sys
 import mock
 from mock import patch
-from nose.tools import *
-
-import nose_helper
+from test_helper import *
 
 import azurectl
 from azurectl.compute_data_disk_task import ComputeDataDiskTask

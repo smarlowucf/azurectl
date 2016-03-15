@@ -92,26 +92,18 @@ class TestDefaults:
     def test_host_caching_for_docopts(self):
         # No cache
         host_caching_docopts = self.__host_caching_docopts('--no-cache')
-        assert_equal(
-            Defaults.host_caching_for_docopts(host_caching_docopts),
-            'None'
-        )
+        assert Defaults.host_caching_for_docopts(host_caching_docopts) == 'None'
         # read-only cache
         host_caching_docopts = self.__host_caching_docopts('--read-only-cache')
-        assert_equal(
-            Defaults.host_caching_for_docopts(host_caching_docopts),
+        assert Defaults.host_caching_for_docopts(host_caching_docopts) == \
             'ReadOnly'
-        )
+
         # read-write cache
         host_caching_docopts = self.__host_caching_docopts('--read-write-cache')
-        assert_equal(
-            Defaults.host_caching_for_docopts(host_caching_docopts),
+        assert Defaults.host_caching_for_docopts(host_caching_docopts) == \
             'ReadWrite'
-        )
 
     def test_default_host_caching_for_docopts(self):
         host_caching_docopts = self.__host_caching_docopts()
-        assert_equal(
-            Defaults.host_caching_for_docopts(host_caching_docopts),
+        assert Defaults.host_caching_for_docopts(host_caching_docopts) == \
             'ReadOnly'
-        )
