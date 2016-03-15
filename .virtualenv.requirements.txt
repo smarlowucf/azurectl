@@ -1,0 +1,19 @@
+#
+# Requirement files for Python Virtual Environments
+#
+# Create a Python virt env with:
+#  * For Python2: virtualenv-2.7 .env2
+#  * For Python3: virtualenv-3.4 .env3
+#
+# After activation of the env, install it with:
+# $ pip install -U pip setuptools
+# $ pip install -r .virtualenv.requirements.txt
+
+
+docopt~=0.6.2
+APScheduler~=3.0.2
+pyliblzma~=0.5.3
+azure_storage~=0.20.0
+azure_servicemanagement_legacy~=0.20.1
+python-dateutil~=2.4
+dnspython~=1.12.0
