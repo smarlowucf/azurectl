@@ -98,6 +98,38 @@ class Defaults(object):
         ]
 
     @classmethod
+    def host_caching_for_docopts(self, docopts, return_default=True):
+        for host_caching_tuple in self.__get_host_caching_tuples():
+            if docopts[host_caching_tuple.command]:
+                return host_caching_tuple.host_caching
+        if return_default:
+            return 'ReadOnly'
+
+    @classmethod
+    def __get_host_caching_tuples(self):
+        """
+            Maps ASM DataDisk host_caching to a caching command
+        """
+        HostCachingTuple = namedtuple(
+            'HostCachingTuple',
+            'host_caching command'
+        )
+        return [
+            HostCachingTuple(
+                host_caching='None',
+                command='--no-cache'
+            ),
+            HostCachingTuple(
+                host_caching='ReadOnly',
+                command='--read-only-cache'
+            ),
+            HostCachingTuple(
+                host_caching='ReadWrite',
+                command='--read-write-cache'
+            )
+        ]
+
+    @classmethod
     def get_attribute(self, instance, name):
         return getattr(instance, name)
 

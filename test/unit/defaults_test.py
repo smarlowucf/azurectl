@@ -17,6 +17,16 @@ class TestDefaults:
             '--read-access-geo-redundant': False
         }
 
+    def __host_caching_docopts(self, selection=None):
+        docopts = {
+            '--no-cache': False,
+            '--read-only-cache': False,
+            '--read-write-cache': False
+        }
+        if selection:
+            docopts[selection] = True
+        return docopts
+
     def test_get_azure_domain(self):
         assert Defaults.get_azure_domain('West US') == 'cloudapp.net'
 
@@ -78,3 +88,30 @@ class TestDefaults:
 
         result = Defaults.docopt_for_account_type('Standard_RAGRS')
         assert result == '--read-access-geo-redundant'
+
+    def test_host_caching_for_docopts(self):
+        # No cache
+        host_caching_docopts = self.__host_caching_docopts('--no-cache')
+        assert_equal(
+            Defaults.host_caching_for_docopts(host_caching_docopts),
+            'None'
+        )
+        # read-only cache
+        host_caching_docopts = self.__host_caching_docopts('--read-only-cache')
+        assert_equal(
+            Defaults.host_caching_for_docopts(host_caching_docopts),
+            'ReadOnly'
+        )
+        # read-write cache
+        host_caching_docopts = self.__host_caching_docopts('--read-write-cache')
+        assert_equal(
+            Defaults.host_caching_for_docopts(host_caching_docopts),
+            'ReadWrite'
+        )
+
+    def test_default_host_caching_for_docopts(self):
+        host_caching_docopts = self.__host_caching_docopts()
+        assert_equal(
+            Defaults.host_caching_for_docopts(host_caching_docopts),
+            'ReadOnly'
+        )
