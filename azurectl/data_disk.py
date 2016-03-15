@@ -36,14 +36,14 @@ class DataDisk(ServiceManager):
         role_name=None
     ):
         if lun not in range(16):
-            lun = self.get_first_available_lun(
+            lun = self.__get_first_available_lun(
                 cloud_service_name,
                 instance_name,
                 role_name=role_name
             )
         args = {
             'media_link': self.__data_disk_url(
-                filename or self.generate_filename(instance_name)
+                filename or self.__generate_filename(instance_name)
             ),
             'logical_disk_size_in_gb': size
         }
@@ -125,7 +125,7 @@ class DataDisk(ServiceManager):
                 pass
         return [self.__decorate(disk) for disk in disks]
 
-    def get_first_available_lun(
+    def __get_first_available_lun(
         self,
         cloud_service_name,
         instance_name,
@@ -148,7 +148,7 @@ class DataDisk(ServiceManager):
             "All LUNs on this VM are occupied."
         )
 
-    def generate_filename(self, instance_name):
+    def __generate_filename(self, instance_name):
         return '%s-data-disk-%s.vhd' % (
             instance_name,
             datetime.isoformat(datetime.utcnow())

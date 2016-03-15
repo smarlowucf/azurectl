@@ -138,7 +138,7 @@ class TestDataDisk:
             AzureMissingResourceHttpError('NOT FOUND', 404)
         ])
         # when
-        result = self.data_disk.get_first_available_lun(
+        result = self.data_disk._DataDisk__get_first_available_lun(
             self.cloud_service_name,
             self.instance_name
         )
@@ -154,14 +154,14 @@ class TestDataDisk:
             self.create_mock_data_disk(i) for i in range(16)
         ])
         # when
-        self.data_disk.get_first_available_lun(
+        self.data_disk._DataDisk__get_first_available_lun(
             self.cloud_service_name,
             self.instance_name
         )
         # then
         assert_equal(mock_get.call_count, 16)
 
-    @patch('azurectl.data_disk.DataDisk.get_first_available_lun')
+    @patch('azurectl.data_disk.DataDisk._DataDisk__get_first_available_lun')
     @patch('azurectl.data_disk.ServiceManagementService.add_data_disk')
     def test_create_without_lun(self, mock_add, mock_lun):
         # given
@@ -199,11 +199,11 @@ class TestDataDisk:
             self.time_string
         )
         # when
-        result = self.data_disk.generate_filename(self.instance_name)
+        result = self.data_disk._DataDisk__generate_filename(self.instance_name)
         # then
         assert_equal(result, expected)
 
-    @patch('azurectl.data_disk.DataDisk.generate_filename')
+    @patch('azurectl.data_disk.DataDisk._DataDisk__generate_filename')
     @patch('azurectl.data_disk.ServiceManagementService.add_data_disk')
     def test_create_without_filename(self, mock_add, mock_generate_filename):
         # given
