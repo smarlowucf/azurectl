@@ -188,7 +188,8 @@ azurectl is compatible with Python 2.7.x and greater
 #### Testing
 
 * mock 
-* nose
+* pytest
+* pytest-cov
 * pandoc 
 
 ### Basics
@@ -234,7 +235,7 @@ but we do not bump the version for every change.
 
 ### Testing
 
-Running the unit tests requires the nose test framework. The complete
+Running the unit tests requires the pytest test framework. The complete
 set of tests can be called as follows:
 
 ```
@@ -292,7 +293,7 @@ For a new command at least two tests need to be written
 * mycmd_test.py
 * service_mycmd_task_test.py
 
-Tests are written using the nose testing framework. Please refer to
+Tests are written using the pytest testing framework. Please refer to
 the `test/unit` directory to see current implementations
 
 

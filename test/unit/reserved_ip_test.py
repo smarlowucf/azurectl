@@ -3,9 +3,9 @@ import mock
 from collections import namedtuple
 from mock import patch
 from mock import call
-from nose.tools import *
 
-import nose_helper
+
+from test_helper import *
 
 from azurectl.azure_account import AzureAccount
 from azurectl.config import Config

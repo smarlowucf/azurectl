@@ -2,9 +2,9 @@ import mock
 import os
 import sys
 from mock import patch
-from nose.tools import *
 
-import nose_helper
+
+from test_helper import *
 
 from azurectl.azurectl_exceptions import *
 from azurectl.setup_account_task import SetupAccountTask

@@ -1,8 +1,8 @@
 import mock
-from nose.tools import *
+
 from mock import patch
 
-import nose_helper
+from test_helper import *
 
 from azurectl.azurectl_exceptions import *
 from azurectl.config_file_path import ConfigFilePath

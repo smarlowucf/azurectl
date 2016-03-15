@@ -2,10 +2,10 @@ import datetime
 import sys
 import mock
 from mock import patch
-from nose.tools import *
+
 from urlparse import urlparse
 
-import nose_helper
+from test_helper import *
 
 from azurectl.azurectl_exceptions import *
 from azurectl.container import Container
@@ -46,12 +46,9 @@ class TestContainer:
             key=self.container.account_key,
             blob_service_host_base=self.container.blob_service_host_base
         )
-        assert_equal(container.account_name, self.container.account_name)
-        assert_equal(container.account_key, self.container.account_key)
-        assert_equal(
-            container.blob_service_host_base,
-            self.container.blob_service_host_base
-        )
+        assert container.account_name == self.container.account_name
+        assert container.account_key == self.container.account_key
+        assert container.blob_service_host_base == self.container.blob_service_host_base
 
     @raises(AzureCannotInit)
     def test_container_failed_init(self):

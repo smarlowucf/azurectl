@@ -1,9 +1,9 @@
 import sys
 from mock import patch
-from nose.tools import *
+
 
 import mock
-import nose_helper
+from test_helper import *
 
 from azurectl.data_output import DataOutput
 from azurectl.data_collector import DataCollector

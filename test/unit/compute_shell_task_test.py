@@ -2,9 +2,9 @@ import sys
 import mock
 from collections import namedtuple
 from mock import patch
-from nose.tools import *
 
-import nose_helper
+
+from test_helper import *
 
 import azurectl
 from azurectl.azure_account import AzureAccount

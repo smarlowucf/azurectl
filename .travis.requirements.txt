@@ -18,3 +18,5 @@ coverage
 pyOpenSSL
 requests
 dnspython
+pytest
+pytest-cov
