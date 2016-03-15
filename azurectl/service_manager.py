@@ -11,17 +11,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import os
-import collections
 from tempfile import NamedTemporaryFile
 from azure.servicemanagement import ServiceManagementService
-# project
-from azurectl_exceptions import *
-from defaults import Defaults
 
 
 class ServiceManager(object):
-
     def __init__(self, account):
         self.setup_account(account)
         self.service = self.get_service()

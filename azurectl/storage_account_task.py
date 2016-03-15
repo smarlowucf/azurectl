@@ -87,7 +87,6 @@ from azure_account import AzureAccount
 from data_collector import DataCollector
 from data_output import DataOutput
 from defaults import Defaults
-from logger import log
 from azurectl_exceptions import AzureInvalidCommand
 from storage_account import StorageAccount
 from help import Help

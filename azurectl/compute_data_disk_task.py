@@ -72,7 +72,6 @@ from data_disk import DataDisk
 from data_output import DataOutput
 from defaults import Defaults
 from help import Help
-from logger import log
 
 
 class ComputeDataDiskTask(CliTask):

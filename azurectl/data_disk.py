@@ -15,7 +15,14 @@ from azure.common import AzureMissingResourceHttpError
 from azure.storage.blob.pageblobservice import PageBlobService
 from datetime import datetime
 # project
-from service_manager import *
+from service_manager import ServiceManager
+from azurectl_exceptions import (
+    AzureDataDiskCreateError,
+    AzureDataDiskShowError,
+    AzureDataDiskDeleteError,
+    AzureDataDiskNoAvailableLun
+)
+
 LUNS = 16  # there are 16 possible luns, numbered 0..15
 
 

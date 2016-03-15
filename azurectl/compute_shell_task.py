@@ -20,11 +20,9 @@ commands:
 
 """
 import code
-import os
 from tempfile import NamedTemporaryFile
 from textwrap import dedent
 # project
-from logger import log
 from cli_task import CliTask
 from azure_account import AzureAccount
 from azure.servicemanagement import ServiceManagementService

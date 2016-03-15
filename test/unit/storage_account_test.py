@@ -16,7 +16,10 @@ import azurectl
 
 
 class TestStorageAccount:
-    def setup(self):
+    @patch('azurectl.service_manager.ServiceManagementService')
+    def setup(self, mock_service):
+        self.service = mock.Mock()
+        mock_service.return_value = self.service
         account = AzureAccount(
             Config(
                 region_name='East US 2', filename='../data/config'
@@ -132,47 +135,44 @@ class TestStorageAccount:
 
         self.storage_account = StorageAccount(account)
 
-    @patch('azurectl.storage_account.ServiceManagementService.list_storage_accounts')
-    def test_list(self, mock_list_accounts):
-        mock_list_accounts.return_value = [self.mock_storage_service]
+    def test_list(self):
+        self.service.list_storage_accounts.return_value = [
+            self.mock_storage_service
+        ]
         result = self.storage_account.list()
         assert result == self.expected_list_result
 
-    @patch('azurectl.storage_account.ServiceManagementService.list_storage_accounts')
     @raises(AzureStorageAccountListError)
-    def test_list_error(self, mock_list_accounts):
-        mock_list_accounts.side_effect = Exception
+    def test_list_error(self):
+        self.service.list_storage_accounts.side_effect = Exception
         self.storage_account.list()
 
-    @patch('azurectl.storage_account.ServiceManagementService.get_storage_account_properties')
-    @patch('azurectl.storage_account.ServiceManagementService.get_storage_account_keys')
     @patch('azurectl.storage_account.Container.list')
-    def test_show(self, mock_container_list, mock_storage_keys, mock_show_account):
-        mock_show_account.return_value = self.mock_storage_service
-        mock_storage_keys.return_value = self.keyed_service
+    def test_show(self, mock_container_list):
+        self.service.get_storage_account_keys.return_value = \
+            self.keyed_service
+        self.service.get_storage_account_properties.return_value = \
+            self.mock_storage_service
         mock_container_list.return_value = self.containers_list
         result = self.storage_account.show(
             self.mock_storage_service.service_name
         )
         assert result == self.expected_show_result
 
-    @patch('azurectl.storage_account.ServiceManagementService.get_storage_account_properties')
     @raises(AzureStorageAccountShowError)
-    def test_show_error(self, mock_show_account):
-        mock_show_account.side_effect = Exception
+    def test_show_error(self):
+        self.service.get_storage_account_properties.side_effect = Exception
         self.storage_account.show('mockstorageservice')
 
-    @patch('azurectl.storage_account.ServiceManagementService.get_storage_account_properties')
-    @patch('azurectl.storage_account.ServiceManagementService.get_storage_account_keys')
     @raises(AzureStorageAccountShowError)
-    def test_show_add_keys_error(self, mock_storage_keys, mock_show_account):
-        mock_show_account.return_value = self.mock_storage_service
-        mock_storage_keys.side_effect = Exception
+    def test_show_add_keys_error(self):
+        self.service.get_storage_account_keys.side_effect = Exception
+        self.service.get_storage_account_properties.return_value = \
+            self.mock_storage_service
         self.storage_account.show('mockstorageservice')
 
-    @patch('azurectl.storage_account.ServiceManagementService.create_storage_account')
-    def test_create(self, mock_create_account):
-        mock_create_account.return_value = self.my_request
+    def test_create(self):
+        self.service.create_storage_account.return_value = self.my_request
         result = self.storage_account.create(
             'mockstorageservice',
             None,
@@ -181,10 +181,9 @@ class TestStorageAccount:
         )
         assert result == self.my_request.request_id
 
-    @patch('azurectl.storage_account.ServiceManagementService.create_storage_account')
     @raises(AzureStorageAccountCreateError)
-    def test_create_error(self, mock_create_account):
-        mock_create_account.side_effect = Exception
+    def test_create_error(self):
+        self.service.create_storage_account.side_effect = Exception
         result = self.storage_account.create(
             'mockstorageservice',
             None,
@@ -192,20 +191,14 @@ class TestStorageAccount:
             '--locally-redundant'
         )
 
-    @patch('azurectl.storage_account.ServiceManagementService.update_storage_account')
-    @patch('azurectl.storage_account.ServiceManagementService.get_storage_account_properties')
-    @patch('azurectl.storage_account.ServiceManagementService.get_storage_account_keys')
     @patch('azurectl.storage_account.Container.list')
-    def test_basic_update(
-        self,
-        mock_container_list,
-        mock_storage_keys,
-        mock_show_account,
-        mock_update_account
-    ):
-        mock_update_account.return_value = self.my_request
-        mock_show_account.return_value = self.mock_storage_service
-        mock_storage_keys.return_value = self.keyed_service
+    def test_basic_update(self, mock_container_list):
+        self.service.update_storage_account.return_value = \
+            self.my_request
+        self.service.get_storage_account_keys.return_value = \
+            self.keyed_service
+        self.service.get_storage_account_properties.return_value = \
+            self.mock_storage_service
         mock_container_list.return_value = self.containers_list
         result = self.storage_account.update(
             'mockstorageservice',
@@ -215,11 +208,9 @@ class TestStorageAccount:
         )
         assert result == self.expected_show_result
 
-    @patch('azurectl.storage_account.ServiceManagementService.update_storage_account')
-    @patch('azurectl.storage_account.ServiceManagementService.get_storage_account_properties')
     @raises(AzureStorageAccountUpdateError)
-    def test_update_error(self, mock_account_properties, mock_update_account):
-        mock_update_account.side_effect = Exception
+    def test_update_error(self):
+        self.service.update_storage_account.side_effect = Exception
         result = self.storage_account.update(
             'mockstorageservice',
             None,
@@ -227,23 +218,16 @@ class TestStorageAccount:
             '--locally-redundant'
         )
 
-    @patch('azurectl.storage_account.ServiceManagementService.regenerate_storage_account_keys')
-    @patch('azurectl.storage_account.ServiceManagementService.update_storage_account')
-    @patch('azurectl.storage_account.ServiceManagementService.get_storage_account_properties')
-    @patch('azurectl.storage_account.ServiceManagementService.get_storage_account_keys')
     @patch('azurectl.storage_account.Container.list')
-    def test_update_keys(
-        self,
-        mock_container_list,
-        mock_storage_keys,
-        mock_show_account,
-        mock_update_account,
-        mock_regenerate_keys
-    ):
-        mock_update_account.return_value = self.my_request
-        mock_regenerate_keys.return_value = self.my_request
-        mock_show_account.return_value = self.mock_storage_service
-        mock_storage_keys.return_value = self.keyed_service
+    def test_update_keys(self, mock_container_list):
+        self.service.regenerate_storage_account_keys.return_value = \
+            self.my_request
+        self.service.update_storage_account.return_value = \
+            self.my_request
+        self.service.get_storage_account_keys.return_value = \
+            self.keyed_service
+        self.service.get_storage_account_properties.return_value = \
+            self.mock_storage_service
         mock_container_list.return_value = self.containers_list
 
         # primary key
@@ -254,7 +238,7 @@ class TestStorageAccount:
             '--locally-redundant',
             regenerate_primary_key=True
         )
-        mock_regenerate_keys.assert_called_with(
+        self.service.regenerate_storage_account_keys.assert_called_with(
             'mockstorageservice',
             'Primary'
         )
@@ -267,21 +251,17 @@ class TestStorageAccount:
             '--locally-redundant',
             regenerate_secondary_key=True
         )
-        mock_regenerate_keys.assert_called_with(
+        self.service.regenerate_storage_account_keys.assert_called_with(
             'mockstorageservice',
             'Secondary'
         )
 
-    @patch('azurectl.storage_account.ServiceManagementService.delete_storage_account')
-    def test_delete(self, mock_delete_account):
-        mock_delete_account.return_value = self.my_request
-
+    def test_delete(self):
+        self.service.delete_storage_account.return_value = self.my_request
         result = self.storage_account.delete('mockstorageservice')
         assert result == self.my_request.request_id
 
-    @patch('azurectl.storage_account.ServiceManagementService.delete_storage_account')
     @raises(AzureStorageAccountDeleteError)
-    def test_delete_error(self, mock_delete_account):
-        mock_delete_account.side_effect = Exception
-
+    def test_delete_error(self):
+        self.service.delete_storage_account.side_effect = Exception
         self.storage_account.delete('mockstorageservice')

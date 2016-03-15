@@ -12,8 +12,16 @@
 # limitations under the License.
 #
 # project
-from service_manager import *
+from service_manager import ServiceManager
 from container import Container
+from defaults import Defaults
+from azurectl_exceptions import (
+    AzureStorageAccountCreateError,
+    AzureStorageAccountUpdateError,
+    AzureStorageAccountDeleteError,
+    AzureStorageAccountShowError,
+    AzureStorageAccountListError
+)
 
 
 class StorageAccount(ServiceManager):
@@ -23,7 +31,6 @@ class StorageAccount(ServiceManager):
         + creation, updates, and deletion of storage accounts
         + listing individual or all storage accounts
     """
-
     def create(self, name, description, label, account_type):
         try:
             result = self.service.create_storage_account(

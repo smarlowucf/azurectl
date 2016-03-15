@@ -11,8 +11,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import os
-import collections
 from tempfile import NamedTemporaryFile
 from azure.servicemanagement import ServiceManagementService
 
@@ -23,7 +21,6 @@ from azurectl_exceptions import (
     AzureReservedIpListError,
     AzureReservedIpShowError
 )
-from defaults import Defaults
 
 
 class ReservedIp(object):

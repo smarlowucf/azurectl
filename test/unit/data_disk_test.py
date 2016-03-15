@@ -16,7 +16,10 @@ import azurectl
 
 
 class TestDataDisk:
-    def setup(self):
+    @patch('azurectl.service_manager.ServiceManagementService')
+    def setup(self, mock_service):
+        self.service = mock.Mock()
+        mock_service.return_value = self.service
         # construct an account
         account = AzureAccount(
             Config(
@@ -83,10 +86,9 @@ class TestDataDisk:
             'host-caching': 'ReadWrite'
         }
 
-    @patch('azurectl.data_disk.ServiceManagementService.add_data_disk')
-    def test_create(self, mock_add):
+    def test_create(self):
         # given
-        mock_add.return_value = self.my_request
+        self.service.add_data_disk.return_value = self.my_request
         # when
         result = self.data_disk.create(
             self.cloud_service_name,
@@ -99,7 +101,7 @@ class TestDataDisk:
         )
         # then
         assert result == self.my_request.request_id
-        mock_add.assert_called_once_with(
+        self.service.add_data_disk.assert_called_once_with(
             self.cloud_service_name,
             self.instance_name,
             self.cloud_service_name,
@@ -110,12 +112,10 @@ class TestDataDisk:
             logical_disk_size_in_gb=self.disk_size
         )
 
-    @patch('azurectl.data_disk.ServiceManagementService.add_data_disk')
-    # then
     @raises(AzureDataDiskCreateError)
-    def test_create_upstream_exception(self, mock_add):
+    def test_create_upstream_exception(self):
         # given
-        mock_add.side_effect = Exception
+        self.service.add_data_disk.side_effect = Exception
         # when
         self.data_disk.create(
             self.cloud_service_name,
@@ -127,10 +127,9 @@ class TestDataDisk:
             label=self.disk_label
         )
 
-    @patch('azurectl.data_disk.ServiceManagementService.get_data_disk')
-    def test_get_first_available_lun(self, mock_get):
+    def test_get_first_available_lun(self):
         # given
-        mock_get.side_effect = iter([
+        self.service.get_data_disk.side_effect = iter([
             self.create_mock_data_disk(0),
             self.create_mock_data_disk(1),
             AzureMissingResourceHttpError('NOT FOUND', 404)
@@ -141,14 +140,13 @@ class TestDataDisk:
             self.instance_name
         )
         # then
-        assert mock_get.call_count == 3
+        assert self.service.get_data_disk.call_count == 3
         assert result == 2  # 0 and 1 are taken
 
-    @patch('azurectl.data_disk.ServiceManagementService.get_data_disk')
     @raises(AzureDataDiskNoAvailableLun)
-    def test_no_available_lun_exception(self, mock_get):
+    def test_no_available_lun_exception(self):
         # given
-        mock_get.side_effect = iter([
+        self.service.get_data_disk.side_effect = iter([
             self.create_mock_data_disk(i) for i in range(16)
         ])
         # when
@@ -157,13 +155,12 @@ class TestDataDisk:
             self.instance_name
         )
         # then
-        assert mock_get.call_count == 16
+        assert self.service.get_data_disk.call_count == 16
 
     @patch('azurectl.data_disk.DataDisk._DataDisk__get_first_available_lun')
-    @patch('azurectl.data_disk.ServiceManagementService.add_data_disk')
-    def test_create_without_lun(self, mock_add, mock_lun):
+    def test_create_without_lun(self, mock_lun):
         # given
-        mock_add.return_value = self.my_request
+        self.service.add_data_disk.return_value = self.my_request
         mock_lun.return_value = 0
         # when
         result = self.data_disk.create(
@@ -176,7 +173,7 @@ class TestDataDisk:
             label=self.disk_label
         )
         # then
-        mock_add.assert_called_once_with(
+        self.service.add_data_disk.assert_called_once_with(
             self.cloud_service_name,
             self.instance_name,
             self.cloud_service_name,
@@ -202,10 +199,9 @@ class TestDataDisk:
         assert result == expected
 
     @patch('azurectl.data_disk.DataDisk._DataDisk__generate_filename')
-    @patch('azurectl.data_disk.ServiceManagementService.add_data_disk')
-    def test_create_without_filename(self, mock_add, mock_generate_filename):
+    def test_create_without_filename(self, mock_generate_filename):
         # given
-        mock_add.return_value = self.my_request
+        self.service.add_data_disk.return_value = self.my_request
         mock_generate_filename.return_value = self.disk_filename
         # when
         result = self.data_disk.create(
@@ -218,7 +214,7 @@ class TestDataDisk:
             label=self.disk_label
         )
         # then
-        mock_add.assert_called_once_with(
+        self.service.add_data_disk.assert_called_once_with(
             self.cloud_service_name,
             self.instance_name,
             self.cloud_service_name,
@@ -229,10 +225,11 @@ class TestDataDisk:
             logical_disk_size_in_gb=self.disk_size
         )
 
-    @patch('azurectl.data_disk.ServiceManagementService.get_data_disk')
-    def test_show(self, mock_get):
+    def test_show(self):
         # given
-        mock_get.return_value = self.create_mock_data_disk(self.lun)
+        self.service.get_data_disk.return_value = self.create_mock_data_disk(
+            self.lun
+        )
         expected = self.create_expected_data_disk_output(self.lun)
         # when
         result = self.data_disk.show(
@@ -241,7 +238,7 @@ class TestDataDisk:
             self.lun
         )
         # then
-        mock_get.assert_called_once_with(
+        self.service.get_data_disk.assert_called_once_with(
             self.cloud_service_name,
             self.instance_name,
             self.cloud_service_name,
@@ -249,12 +246,10 @@ class TestDataDisk:
         )
         assert result == expected
 
-    @patch('azurectl.data_disk.ServiceManagementService.get_data_disk')
-    # then
     @raises(AzureDataDiskShowError)
-    def test_show_upsteam_exception(self, mock_get):
+    def test_show_upsteam_exception(self):
         # given
-        mock_get.side_effect = Exception
+        self.service.get_data_disk.side_effect = Exception
         # when
         self.data_disk.show(
             self.cloud_service_name,
@@ -262,10 +257,9 @@ class TestDataDisk:
             self.lun
         )
 
-    @patch('azurectl.data_disk.ServiceManagementService.delete_data_disk')
-    def test_delete(self, mock_delete):
+    def test_delete(self):
         # given
-        mock_delete.return_value = self.my_request
+        self.service.delete_data_disk.return_value = self.my_request
         # when
         result = self.data_disk.delete(
             self.cloud_service_name,
@@ -273,7 +267,7 @@ class TestDataDisk:
             self.lun
         )
         # then
-        mock_delete.assert_called_once_with(
+        self.service.delete_data_disk.assert_called_once_with(
             self.cloud_service_name,
             self.instance_name,
             self.cloud_service_name,
@@ -282,12 +276,10 @@ class TestDataDisk:
         )
         assert result == self.my_request.request_id
 
-    @patch('azurectl.data_disk.ServiceManagementService.delete_data_disk')
-    # then
     @raises(AzureDataDiskDeleteError)
-    def test_delete_with_upstream_exception(self, mock_delete):
+    def test_delete_with_upstream_exception(self):
         # given
-        mock_delete.side_effect = Exception
+        self.service.delete_data_disk.side_effect = Exception
         # when
         self.data_disk.delete(
             self.cloud_service_name,
@@ -295,8 +287,7 @@ class TestDataDisk:
             self.lun
         )
 
-    @patch('azurectl.data_disk.ServiceManagementService.get_data_disk')
-    def test_list(self, mock_get):
+    def test_list(self):
         # given
         number_of_disks = random.randint(0, 15)
         luns = random.sample(range(16), number_of_disks)
@@ -306,7 +297,7 @@ class TestDataDisk:
         for lun in luns:
             mock_disk_set[lun] = self.create_mock_data_disk(lun)
             expected_result.append(self.create_expected_data_disk_output(lun))
-        mock_get.side_effect = iter(mock_disk_set)
+        self.service.get_data_disk.side_effect = iter(mock_disk_set)
         # when
         result = self.data_disk.list(
             self.cloud_service_name,
