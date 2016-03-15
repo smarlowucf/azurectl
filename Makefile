@@ -4,8 +4,8 @@ all:
 	python setup.py build
 	${MAKE} -C doc/man all
 
-pep8:
-	tools/run-pep8
+flake8:
+	flake8
 
 install:
 	python setup.py install
@@ -22,7 +22,7 @@ list_tests:
 %.py:
 	cd test/unit && py.test -s $@
 
-build: pep8 test
+build: flake8 test
 	${MAKE} -C doc/man all
 	# delete version information from setup.py for rpm package
 	# we don't want to have this in the egg info because the rpm

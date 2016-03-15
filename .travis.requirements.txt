@@ -9,7 +9,7 @@
 #
 # azure
 #
-pep8
+flake8
 python-dateutil
 docopt
 APScheduler

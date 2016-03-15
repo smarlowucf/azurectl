@@ -20,4 +20,4 @@ branch_name=master
     python setup.py install
 )
 
-make pep8 test
+make flake8 test
