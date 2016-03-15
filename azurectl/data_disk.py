@@ -12,10 +12,10 @@
 # limitations under the License.
 #
 from azure.common import AzureMissingResourceHttpError
+from azure.storage.blob.pageblobservice import PageBlobService
 from datetime import datetime
 # project
 from service_manager import *
-
 LUNS = 16  # there are 16 possible luns, numbered 0..15
 
 
@@ -155,14 +155,14 @@ class DataDisk(ServiceManager):
         )
 
     def __data_disk_url(self, filename):
-        return (
-            'https://' +
-            self.account_name +
-            '.blob.' +
-            self.account.get_blob_service_host_base() + '/' +
-            self.account.storage_container() + '/' +
-            filename
+        blob_service = PageBlobService(
+            self.account_name,
+            self.account_key,
+            endpoint_suffix=self.account.get_blob_service_host_base()
         )
+        return blob_service.make_blob_url(
+            self.account.storage_container(),
+            filename)
 
     def __decorate(self, data_virtual_hard_disk):
         return {
