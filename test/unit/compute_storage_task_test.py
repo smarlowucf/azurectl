@@ -45,7 +45,6 @@ class TestComputeStorageTask:
         self.task.command_args['share'] = False
         self.task.command_args['create'] = False
         self.task.command_args['container'] = False
-        self.task.command_args['account'] = False
         self.task.command_args['delete'] = False
         self.task.command_args['upload'] = False
         self.task.command_args['list'] = False
@@ -104,14 +103,6 @@ class TestComputeStorageTask:
         self.task.fileshare.create.assert_called_once_with(
             self.task.command_args['--name']
         )
-
-    @patch('azurectl.compute_storage_task.DataOutput')
-    def test_process_compute_storage_account_list(self, mock_out):
-        self.__init_command_args()
-        self.task.command_args['account'] = True
-        self.task.command_args['list'] = True
-        self.task.process()
-        self.task.account.storage_names.assert_called_once_with()
 
     @patch('azurectl.compute_storage_task.DataOutput')
     def test_process_compute_storage_show(self, mock_out):
@@ -246,15 +237,6 @@ class TestComputeStorageTask:
             'azurectl::compute::storage'
         )
 
-    def test_process_compute_storage_account_help(self):
-        self.__init_command_args()
-        self.task.command_args['help'] = True
-        self.task.command_args['account'] = True
-        self.task.process()
-        self.task.manual.show.assert_called_once_with(
-            'azurectl::compute::storage::account'
-        )
-
     def test_process_compute_storage_container_help(self):
         self.__init_command_args()
         self.task.command_args['help'] = True
@@ -262,4 +244,13 @@ class TestComputeStorageTask:
         self.task.process()
         self.task.manual.show.assert_called_once_with(
             'azurectl::compute::storage::container'
+        )
+
+    def test_process_compute_storage_share_help(self):
+        self.__init_command_args()
+        self.task.command_args['help'] = True
+        self.task.command_args['share'] = True
+        self.task.process()
+        self.task.manual.show.assert_called_once_with(
+            'azurectl::compute::storage::share'
         )

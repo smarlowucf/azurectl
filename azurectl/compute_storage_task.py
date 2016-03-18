@@ -13,7 +13,6 @@
 #
 """
 usage: azurectl compute storage -h | --help
-       azurectl compute storage account list
        azurectl compute storage container list
        azurectl compute storage container show
            [--name=<containername>]
@@ -32,13 +31,11 @@ usage: azurectl compute storage -h | --help
            [--max-chunk-size=<size>]
            [--quiet]
        azurectl compute storage delete --name=<blobname>
-       azurectl compute storage account help
        azurectl compute storage container help
+       azurectl compute storage share help
        azurectl compute storage help
 
 commands:
-    account list
-        list storage account names
     container list
         list storage container names for configured account
     container show
@@ -54,10 +51,10 @@ commands:
         storage share: delete share from the storage account
     create
         create file share in the storage account
-    account help
-        show manual page for account sub command
     container help
         show manual page for container sub command
+    share help
+        show manual page for share sub command
     help
         show manual page for storage command
 
@@ -144,9 +141,7 @@ class ComputeStorageTask(CliTask):
         self.container = Container(self.account)
         self.fileshare = FileShare(self.account)
 
-        if self.command_args['account'] and self.command_args['list']:
-            self.__account_list()
-        elif self.command_args['container'] and self.command_args['list']:
+        if self.command_args['container'] and self.command_args['list']:
             self.__container_list()
         elif self.command_args['container'] and self.command_args['show']:
             self.__container_content(container_name)
@@ -192,10 +187,10 @@ class ComputeStorageTask(CliTask):
     # tasks
 
     def __help(self):
-        if self.command_args['account'] and self.command_args['help']:
-            self.manual.show('azurectl::compute::storage::account')
-        elif self.command_args['container'] and self.command_args['help']:
+        if self.command_args['container'] and self.command_args['help']:
             self.manual.show('azurectl::compute::storage::container')
+        elif self.command_args['share'] and self.command_args['help']:
+            self.manual.show('azurectl::compute::storage::share')
         elif self.command_args['help']:
             self.manual.show('azurectl::compute::storage')
         else:
@@ -281,10 +276,6 @@ class ComputeStorageTask(CliTask):
         log.info('Request to delete container %s', container_name)
         self.container.delete(container_name)
         log.info('Deleted %s container', container_name)
-
-    def __account_list(self):
-        self.result.add('storage_names', self.account.storage_names())
-        self.out.display()
 
     def __share_list(self):
         self.result.add('share_names', self.fileshare.list())
