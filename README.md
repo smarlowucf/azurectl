@@ -16,7 +16,6 @@ Command Line Interface to manage
   * [Usage](#usage)
     - [Examples](#examples)
   * [Contributing](#contributing)
-    - [Dependencies](#dependencies)
     - [Basics](#basics)
     - [Testing] (#testing)
     - [Implementing commands](#implementing-commands)
@@ -171,26 +170,64 @@ azurectl [global-options] <servicename> <command> [command-options]
 
 ## Contributing
 
-### Dependencies
-
 azurectl is compatible with Python 2.7.x and greater
 
-#### Runtime
+The Python project uses `pyvenv` to setup a development environment
+for the desired Python version.
 
-* APScheduler > version 3.0
-* azure
-* docopt
-* futures (for Python 2)
-* pyliblzma
-* dateutil
-* man
+The following procedure describes how to create such an environment:
 
-#### Testing
+1. Install pyvenv
 
-* mock 
-* pytest
-* pytest-cov
-* pandoc 
+   ```
+$ zypper in python-virtualenv
+```
+
+2. Create the virtual environment:
+
+   ```
+$ virtualenv-2.7 .env2
+```
+
+3. Activate the virtual environment:
+
+   ```
+$ source .env2/bin/activate
+```
+
+4. Install azurectl requirements inside the virtual environment:
+
+   ```
+$ pip2.7 install -U pip setuptools
+$ pip2.7 install -r .virtualenv.dev-requirements.txt
+```
+
+5. Install azurectl in "development mode":
+
+   ```
+$ ./setup.py develop
+```
+
+Once the development environment is activated and initialized with
+the project required Python modules, you are ready to work.
+
+The __develop__ target of the `setup.py` script automatically creates
+the application entry point called `azurectl`, which allows to simply
+call the application from the current code base:
+
+   ```
+$ azurectl --help
+```
+
+In order to leave the development mode just call:
+
+```
+$ deactivate
+```
+
+To resume your work, change into your local Git repository and
+run `source .env2/bin/activate` again. Skip step 4 and 5 as
+the requirements are already installed.
 
 ### Basics
 
@@ -420,7 +457,7 @@ import os
 from A import B
 
 # project
-import logger
+from defaults import Defaults
 ```
 
 ## Compatibility
