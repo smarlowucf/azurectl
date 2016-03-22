@@ -16,7 +16,6 @@ Command Line Interface to manage
   * [Usage](#usage)
     - [Examples](#examples)
   * [Contributing](#contributing)
-    - [Dependencies](#dependencies)
     - [Basics](#basics)
     - [Testing] (#testing)
     - [Implementing commands](#implementing-commands)
@@ -171,26 +170,64 @@ azurectl [global-options] <servicename> <command> [command-options]
 
 ## Contributing
 
-### Dependencies
-
 azurectl is compatible with Python 2.7.x and greater
 
-#### Runtime
+The Python project uses `pyvenv` to setup a development environment
+for the desired Python version.
 
-* APScheduler > version 3.0
-* azure
-* docopt
-* futures (for Python 2)
-* pyliblzma
-* dateutil
-* man
+The following procedure describes how to create such an environment:
 
-#### Testing
+1. Install pyvenv
 
-* mock 
-* pytest
-* pytest-cov
-* pandoc 
+   ```
+$ zypper in python-virtualenv
+```
+
+2. Create the virtual environment:
+
+   ```
+$ virtualenv-2.7 .env2
+```
+
+3. Activate the virtual environment:
+
+   ```
+$ source .env2/bin/activate
+```
+
+4. Install azurectl requirements inside the virtual environment:
+
+   ```
+$ pip2.7 install -U pip setuptools
+$ pip2.7 install -r .virtualenv.dev-requirements.txt
+```
+
+5. Install azurectl in "development mode":
+
+   ```
+$ ./setup.py develop
+```
+
+Once the development environment is activated and initialized with
+the project required Python modules, you are ready to work.
+
+The __develop__ target of the `setup.py` script automatically creates
+the application entry point called `azurectl`, which allows to simply
+call the application from the current code base:
+
+   ```
+$ azurectl --help
+```
+
+In order to leave the development mode just call:
+
+```
+$ deactivate
+```
+
+To resume your work, change into your local Git repository and
+run `source .env2/bin/activate` again. Skip step 4 and 5 as
+the requirements are already installed.
 
 ### Basics
 
@@ -209,7 +246,7 @@ obvious issues that would prevent a pull request from being accepted.
 * All patches must be signed, see [Signing GIT patches](#signing-git-patches)
   below
 * All contributed code must conform to
-  [PEP8](https://www.python.org/dev/peps/pep-0008/)
+  [flake8](https://flake8.readthedocs.org/en/latest/warnings.html)
 * All code contributions must be accompanied by a test. Should you not have
   a suitable Publish Settings file to run your test you will receive help.
   However you must make a good effort in providing a test. In general we
@@ -248,11 +285,11 @@ Calling a single test works as follows:
 $ make storage_test.py
 ```
 
-Running the syntax and style check requires the pep8 framework.
+Running the syntax and style check requires the flake8 framework.
 Run the check as follows:
 
 ```
-$ make pep8
+$ make flake8
 ```
 
 Running the application from source without the need to install it
@@ -404,7 +441,8 @@ Digs for gold
 
 ### Code Structure
 
-All code needs to conform to [PEP8](https://www.python.org/dev/peps/pep-0008/).
+All code needs to conform to
+[flake8](https://flake8.readthedocs.org/en/latest/warnings.html).
 In addition __import__ statements should be in alpha-order. The
 "from ... import .." form follows at the end, also in alpha order based on
 the module name from which the import occurs. Modules loaded from azurectl are
@@ -419,7 +457,7 @@ import os
 from A import B
 
 # project
-import logger
+from defaults import Defaults
 ```
 
 ## Compatibility
