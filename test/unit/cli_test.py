@@ -36,9 +36,8 @@ class TestCli:
             '--source': None,
             '--start-datetime': 'now',
             '-h': False,
-            'account': True,
             'compute': True,
-            'container': False,
+            'container': True,
             'create': False,
             'delete': False,
             'help': False,
@@ -50,7 +49,7 @@ class TestCli:
             'upload': False
         }
         sys.argv = [
-            sys.argv[0], 'compute', 'storage', 'account', 'list'
+            sys.argv[0], 'compute', 'storage', 'container', 'list'
         ]
         self.cli = Cli()
         self.loaded_command = self.cli.load_command()
