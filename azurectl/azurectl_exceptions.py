@@ -137,6 +137,22 @@ class AzureDomainLookupError(AzureError):
     pass
 
 
+class AzureEndpointCreateError(AzureError):
+    pass
+
+
+class AzureEndpointDeleteError(AzureError):
+    pass
+
+
+class AzureEndpointListError(AzureError):
+    pass
+
+
+class AzureEndpointShowError(AzureError):
+    pass
+
+
 class AzureFileShareCreateError(AzureError):
     pass
 
