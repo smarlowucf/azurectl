@@ -58,6 +58,7 @@ class TestComputeVmTask:
         self.task.command_args['--user'] = None
         self.task.command_args['create'] = False
         self.task.command_args['delete'] = False
+        self.task.command_args['regions'] = False
         self.task.command_args['types'] = False
         self.task.command_args['help'] = False
 
@@ -67,6 +68,13 @@ class TestComputeVmTask:
         self.task.command_args['types'] = True
         self.task.process()
         self.task.account.instance_types.assert_called_once_with()
+
+    @patch('azurectl.compute_vm_task.DataOutput')
+    def test_process_compute_vm_regions(self, mock_out):
+        self.__init_command_args()
+        self.task.command_args['regions'] = True
+        self.task.process()
+        self.task.account.locations.assert_called_once_with('PersistentVMRole')
 
     @patch('azurectl.compute_vm_task.DataOutput')
     @patch('azurectl.request_result.RequestResult.wait_for_request_completion')

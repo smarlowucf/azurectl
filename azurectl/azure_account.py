@@ -112,6 +112,17 @@ class AzureAccount(object):
             result.append(instance_type)
         return result
 
+    def locations(self, service_filter=None):
+        self.__build_service_instance()
+        results = []
+        for location in self.service.list_locations():
+            if (
+                not service_filter or
+                service_filter in location.available_services
+            ):
+                results.append(location.name)
+        return results
+
     def storage_names(self):
         self.__build_service_instance()
         result = []
