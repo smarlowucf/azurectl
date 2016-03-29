@@ -8,21 +8,17 @@ __azurectl__ setup account add --name=*account_name* --publish-settings-file=*fi
 
     [--subscription-id=*subscriptionid*]
 
-__azurectl__ setup account default --name=*configname*
+__azurectl__ setup account configure --name=*account_name* --publish-settings-file=*file* --region=*region_name* --storage-account-name=*storagename* --container-name=*containername*
 
 __azurectl__ setup account list
 
-__azurectl__ setup account remove --name=*configname*
+__azurectl__ setup account remove --name=*account_name*
 
 # DESCRIPTION
 
 ## __add__
 
-Add an account section with the name specified in __configname__ to the config file.
-
-## __default__
-
-Set the default account to use if no account name is specified
+Create a new account configuration file
 
 ## __list__
 
@@ -33,13 +29,13 @@ List configured account names. If no config file is specified all commands will 
 
 ## __remove__
 
-Remove the configuration section specified in __configname__ from the configuration file. If the section is referenced in the DEFAULT section of the configuration file it cannot be removed without changing the default reference. This can be done with __azurectl setup account default | region default__.
+Remove the referenced account configuration file
 
 # OPTIONS
 
 ## __--name=account_name__
 
-Free form name for the azure account to use
+Free form name for the azure account to use. The name is used to find the corresponding configuration file
 
 ## __--publish-settings-file=file__
 
@@ -50,3 +46,15 @@ The path to the Microsoft Azure publish settings file which you can download fro
 If your Microsoft Azure account includes more than one subscription, your publish setttings file will contain data about all of your subscriptions. Specify a __subscriptionid__ in order to select the appropriate subscription.
 
 If __subscriptionid__ is not supplied the first subscription listed in the publish settings file will be selected by default.
+
+## __--region=region__
+
+Name of the geographic region in Azure
+
+## __--storage-account-name=storagename__
+
+The name of the storage account which must exist in the configured region
+
+## __--container-name=containername__
+
+The name of the container which must exist in the configured storage account

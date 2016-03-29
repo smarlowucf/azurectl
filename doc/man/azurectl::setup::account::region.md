@@ -4,9 +4,11 @@ azurectl - Command Line Interface to manage Microsoft Azure
 
 # SYNOPSIS
 
-__azurectl__ setup account region add --name=*region_name* --storage-account-name=*storagename* --container-name=*containername*
+__azurectl__ setup account region add --region=*region_name* --storage-account-name=*storagename* --container-name=*containername*
+    [--name=*account_name*]
 
-__azurectl__ setup account region default --name=*configname*
+__azurectl__ setup account region default --region=*region_name*
+    [--name=*account_name*]
 
 # DESCRIPTION
 
@@ -32,3 +34,7 @@ The name of the storage account which must exist in the configured region
 ## __--container-name=containername__
 
 The name of the container which must exist in the configured storage account
+
+## __--name=account_name__
+
+Free form name for the azure account to use. The name is used to find the corresponding configuration file for the region setup
