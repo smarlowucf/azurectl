@@ -20,6 +20,9 @@ class TestStorageAccountTask:
         azurectl.storage_account_task.StorageAccount = mock.Mock(
             return_value=mock.Mock()
         )
+        azurectl.storage_account_task.AzureAccount = mock.Mock(
+            return_value=mock.Mock()
+        )
         azurectl.storage_account_task.Help = mock.Mock(
             return_value=mock.Mock()
         )
@@ -32,6 +35,7 @@ class TestStorageAccountTask:
             'list': False,
             'show': False,
             'update': False,
+            'regions': False,
             '--name': None,
             '--description': None,
             '--label': None,
@@ -123,3 +127,10 @@ class TestStorageAccountTask:
         self.__init_command_args()
         self.task.command_args['--name'] = 'punctuation-is.bad'
         self.task.validate_account_name()
+
+    @patch('azurectl.storage_account_task.DataOutput')
+    def test_process_storage_account_regions(self, mock_out):
+        self.__init_command_args()
+        self.task.command_args['regions'] = True
+        self.task.process()
+        self.task.account.locations.assert_called_once_with('Storage')

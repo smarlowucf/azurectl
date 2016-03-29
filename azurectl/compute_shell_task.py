@@ -20,6 +20,7 @@ commands:
 
 """
 import code
+from pprint import pprint
 from tempfile import NamedTemporaryFile
 from textwrap import dedent
 # project
@@ -41,7 +42,7 @@ class ComputeShellTask(CliTask):
         cert_file.write(account.publishsettings().certificate)
         cert_file.flush()
 
-        self.service = ServiceManagementService(
+        service = ServiceManagementService(
             account.publishsettings().subscription_id,
             cert_file.name,
             account.publishsettings().management_url
@@ -50,7 +51,14 @@ class ComputeShellTask(CliTask):
         print dedent("""
             An instance of azure.servicemanagement.ServiceManagementService has
             been instantiated using the supplied credentials, as `service`.
+            azurectl convenience models can be instantiated using the same
+            credentials; e.g. `VirtualMachine(account)`. For convenience, use
+            the `pprint()` function to pretty-print results.
 
             When you're finished, exit with `exit()`
         """)
-        code.interact(local={'service': self.service})
+        code.interact(local={
+            'account': account,
+            'pprint': pprint,
+            'service': service
+        })

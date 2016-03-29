@@ -22,6 +22,8 @@ __azurectl__ compute vm delete --cloud-service-name=*name*
 
 __azurectl__ compute vm types
 
+__azurectl__ compute vm regions
+
 # DESCRIPTION
 
 ## __create__
@@ -40,6 +42,11 @@ List available instance types and their attributes
 * size of OS disk in MB
 * maximum number of data disks to attach
 * size of main memory in MB
+
+## __regions__
+
+List all Azure regions which are accessible via the supplied account
+subscription, and support virtual machines.
 
 # OPTIONS
 

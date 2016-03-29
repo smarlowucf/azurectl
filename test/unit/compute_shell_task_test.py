@@ -51,6 +51,4 @@ class TestComputeShellTask:
     def test_process_compute_shell(self, mock_interact):
         self.task.command_args = {}
         self.task.process()
-        mock_interact.assert_called_once_with(local={
-            'service': self.task.service
-        })
+        assert mock_interact.called

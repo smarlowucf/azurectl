@@ -25,6 +25,7 @@ usage: azurectl compute vm -h | --help
            [--user=<user>]
        azurectl compute vm delete --cloud-service-name=<name>
            [--instance-name=<name>]
+       azurectl compute vm regions
        azurectl compute vm types
        azurectl compute vm help
 
@@ -35,6 +36,9 @@ commands:
         delete a virtual machine instance. If no instance name is
         specified, the cloud service and all its associated instances
         will be deleted
+    regions
+        list regions where a virtual machine can be created with the current
+        subscription
     types
         list available virtual machine types
     help
@@ -121,6 +125,8 @@ class ComputeVmTask(CliTask):
                 self.__delete_cloud_service()
         elif self.command_args['types']:
             self.__list_instance_types()
+        elif self.command_args['regions']:
+            self.__list_locations()
 
     def __help(self):
         if self.command_args['help']:
@@ -131,6 +137,10 @@ class ComputeVmTask(CliTask):
 
     def __list_instance_types(self):
         self.result.add('instance-types', self.account.instance_types())
+        self.out.display()
+
+    def __list_locations(self):
+        self.result.add('regions', self.account.locations('PersistentVMRole'))
         self.out.display()
 
     def __create_instance(self):

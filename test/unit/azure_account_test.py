@@ -326,3 +326,55 @@ class TestAzureAccount:
                 'memory': '1MB'
             }}
         ]
+
+    @patch('azurectl.azure_account.ServiceManagementService.list_locations')
+    def test_locations(self, mock_service):
+        # given
+        self.account.publishsettings = mock.Mock(
+            return_value=self.publishsettings
+        )
+        mock_location = mock.Mock(
+            compute_capabilities={
+                'virtual_machines_role_sizes': [],
+                'web_worker_role_sizes': []
+            },
+            display_name=u'Mock Region',
+            available_services=[u'Compute',
+                    u'Storage',
+                    u'PersistentVMRole',
+                    u'HighMemory']
+        )
+        mock_location.configure_mock(name=u'Mock Region')
+        mock_service.return_value = [mock_location]
+        # when
+        result = self.account.locations()
+        # then
+        assert result == [u'Mock Region']
+
+    @patch('azurectl.azure_account.ServiceManagementService.list_locations')
+    def test_filtered_locations(self, mock_service):
+        # given
+        self.account.publishsettings = mock.Mock(
+            return_value=self.publishsettings
+        )
+        mock_location = mock.Mock(
+            compute_capabilities={
+                'virtual_machines_role_sizes': [],
+                'web_worker_role_sizes': []
+            },
+            display_name=u'Mock Region',
+            available_services=[u'Compute',
+                    u'Storage',
+                    u'PersistentVMRole',
+                    u'HighMemory']
+        )
+        mock_location.configure_mock(name=u'Mock Region')
+        mock_service.return_value = [mock_location]
+        # when
+        result = self.account.locations('Compute')
+        # then
+        assert result == [u'Mock Region']
+        # when
+        result = self.account.locations('foo')
+        # then
+        assert result == []
