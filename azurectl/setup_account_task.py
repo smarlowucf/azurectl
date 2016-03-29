@@ -65,40 +65,18 @@ from help import Help
 from account_setup import AccountSetup
 from data_collector import DataCollector
 from data_output import DataOutput
-from azurectl_exceptions import AzureAccountLoadFailed
-from config_file_path import ConfigFilePath
-from config import Config
 
 
 class SetupAccountTask(CliTask):
     """
         Process setup config commands
     """
-
-    def load_config(self):
-        """
-            Override CliTask's load_config, gracefully handle the case
-            where config file does not exist, so a new one may be added.
-        """
-        try:
-            self.config = Config(
-                self.global_args['--account'],
-                self.global_args['--region'],
-                self.global_args['--storage-account'],
-                self.global_args['--storage-container'],
-                self.global_args['--config']
-            )
-            self.config_file = self.config.config_file
-        except AzureAccountLoadFailed:
-            if self.command_args['configure']:
-                self.config_file = ConfigFilePath().default_new_config()
-            else:
-                raise
-
     def process(self):
         self.manual = Help()
         if self.__help():
             return
+
+        self.load_config()
 
         self.setup = AccountSetup(self.config_file)
 

@@ -106,6 +106,8 @@ class ComputeVmTask(CliTask):
             self.global_args['--output-style']
         )
 
+        self.load_config()
+
         self.account = AzureAccount(self.config)
         self.vm = VirtualMachine(self.account)
         self.cloud_service = CloudService(self.account)

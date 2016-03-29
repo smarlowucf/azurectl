@@ -90,6 +90,8 @@ class ComputeDataDiskTask(CliTask):
             self.global_args['--output-style']
         )
 
+        self.load_config()
+
         self.account = AzureAccount(self.config)
         self.data_disk = DataDisk(self.account)
 
