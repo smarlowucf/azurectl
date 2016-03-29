@@ -4,7 +4,7 @@ import os
 import sys
 
 # Check for PEP 8 conformance
-toolsPath = os.path.dirname(os.path.realpath(__file__)) + '/../tools'
-res = os.system(toolsPath + '/run-pep8')
+basePath = os.path.dirname(os.path.realpath(__file__)) + '/..'
+res = os.system('cd ' + basePath + ' && make flake8')
 if res != 0:
    sys.exit(1)

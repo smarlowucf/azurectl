@@ -15,3 +15,4 @@ setuptools
 pytest
 pytest-cov
 mock
+flake8

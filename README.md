@@ -177,10 +177,10 @@ for the desired Python version.
 
 The following procedure describes how to create such an environment:
 
-1. Install pyvenv
+1. Install pyvenv and development dependencies
 
    ```
-$ zypper in python-virtualenv
+$ zypper in python-virtualenv python-devel libffi-devel-gcc5 libopenssl-devel
 ```
 
 2. Create the virtual environment:
