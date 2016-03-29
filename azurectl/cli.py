@@ -13,8 +13,7 @@
 #
 """
 usage: azurectl -h | --help
-       azurectl [--config=<file>]
-                [--output-format=<format>]
+       azurectl [--output-format=<format>]
                 [--output-style=<style>]
                 [--debug]
            setup <command> [<args>...]

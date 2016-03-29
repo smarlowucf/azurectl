@@ -37,8 +37,6 @@ class TestConfigFilePath:
         assert self.paths.default_config() == \
             os.environ['HOME'] + '/' + self.paths.config_files[0]
 
-    @patch('os.path.isfile')
-    def test_default_new_account_config(self, mock_isfile):
-        mock_isfile.return_value = True
+    def test_default_new_account_config(self):
         assert self.paths.default_new_account_config() == \
             os.environ['HOME'] + '/.config/azurectl/bob.config'

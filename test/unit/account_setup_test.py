@@ -229,6 +229,11 @@ class TestAccountSetup:
         assert self.setup.list()['DEFAULT']['region'] == 'region:West US 1'
         assert self.setup.set_default_region('foofoo') is False
 
+    @patch('os.remove')
+    def test_remove(self, mock_remove):
+        self.setup.remove()
+        mock_remove.assert_called_once_with('../data/config')
+
     def test_remove_account(self):
         self.setup.remove_account('foo')
         assert self.setup.list() == self.delete_account_data

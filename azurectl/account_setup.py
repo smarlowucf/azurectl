@@ -67,6 +67,12 @@ class AccountSetup(object):
                 accounts['accounts'][section] = options
         return accounts
 
+    def remove(self):
+        """
+            remove account configuration file
+        """
+        os.remove(self.filename)
+
     def remove_account(self, name):
         """
             remove specified account section

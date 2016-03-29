@@ -13,8 +13,7 @@ from azurectl.setup_account_task import SetupAccountTask
 class TestSetupAccountTask:
     def setup(self):
         sys.argv = [
-            sys.argv[0], '--config', '../data/config',
-            'setup', 'account', 'list'
+            sys.argv[0], 'setup', 'account', 'list'
         ]
         self.setup = mock.Mock()
         self.setup.list = mock.Mock(
@@ -42,7 +41,6 @@ class TestSetupAccountTask:
         self.task.command_args['configure'] = False
         self.task.command_args['region'] = False
         self.task.command_args['remove'] = False
-        self.task.command_args['default'] = False
         self.task.command_args['help'] = False
 
     @patch('azurectl.setup_account_task.DataOutput.display')
@@ -90,7 +88,7 @@ class TestSetupAccountTask:
         self.task.command_args['region'] = True
         self.task.process()
         self.task.setup.add_region.assert_called_once_with(
-            self.task.command_args['--name'],
+            self.task.command_args['--region'],
             self.task.command_args['--storage-account-name'],
             self.task.command_args['--container-name']
         )
@@ -112,17 +110,7 @@ class TestSetupAccountTask:
         self.__init_command_args()
         self.task.command_args['remove'] = True
         self.task.process()
-        self.task.setup.remove.assert_called_once_with(
-            self.task.command_args['--name']
-        )
-
-    def test_process_setup_default_account(self):
-        self.__init_command_args()
-        self.task.command_args['default'] = True
-        self.task.process()
-        self.task.setup.set_default_account.assert_called_once_with(
-            self.task.command_args['--name']
-        )
+        self.task.setup.remove.assert_called_once_with()
 
     def test_process_setup_default_region(self):
         self.__init_command_args()
@@ -130,7 +118,7 @@ class TestSetupAccountTask:
         self.task.command_args['region'] = True
         self.task.process()
         self.task.setup.set_default_region.assert_called_once_with(
-            self.task.command_args['--name']
+            self.task.command_args['--region']
         )
 
     def test_process_setup_account_help(self):
@@ -139,15 +127,6 @@ class TestSetupAccountTask:
         self.task.process()
         self.task.manual.show.assert_called_once_with(
             'azurectl::setup::account'
-        )
-
-    def test_process_setup_account_configure_help(self):
-        self.__init_command_args()
-        self.task.command_args['help'] = True
-        self.task.command_args['configure'] = True
-        self.task.process()
-        self.task.manual.show.assert_called_once_with(
-            'azurectl::setup::account::configure'
         )
 
     def test_process_setup_account_region_help(self):

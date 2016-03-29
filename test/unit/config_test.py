@@ -28,6 +28,22 @@ class TestConfig:
     def test_get_storage_container_name(self):
         assert self.config.get_storage_container_name() == 'foo'
 
+    @patch('os.path.isfile')
+    def test_get_config_file(self, mock_isfile):
+        mock_isfile.return_value = True
+        with patch.dict('os.environ', {'HOME': 'foo'}):
+            assert Config.get_config_file(
+                account_name='bob', platform='lin'
+            ) == 'foo/.config/azurectl/bob.config'
+        with patch.dict('os.environ', {'HOME': 'foo'}):
+            assert Config.get_config_file(
+                filename='bob', platform='lin'
+            ) == 'bob'
+        with patch.dict('os.environ', {'HOME': 'foo'}):
+            assert Config.get_config_file(
+                platform='lin'
+            ) == 'foo/.config/azurectl/config'
+
     @raises(AzureConfigVariableNotFound)
     def test_get_subscription_id_missing(self):
         assert self.config.get_subscription_id()
@@ -65,7 +81,9 @@ class TestConfig:
         Config(filename='../data/config_parse_error')
 
     @raises(AzureAccountLoadFailed)
-    def test_config_account_name_not_found(self):
+    @patch('os.path.isfile')
+    def test_config_account_name_not_found(self, mock_isfile):
+        mock_isfile.return_value = False
         Config(
             account_name='account-name'
         )
