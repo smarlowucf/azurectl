@@ -83,6 +83,8 @@ class ComputeEndpointTask(CliTask):
             self.global_args['--output-style']
         )
 
+        self.load_config()
+
         self.account = AzureAccount(self.config)
         self.endpoint = Endpoint(self.account)
         self.endpoint.set_instance(

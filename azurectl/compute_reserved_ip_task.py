@@ -59,6 +59,8 @@ class ComputeReservedIpTask(CliTask):
             self.global_args['--output-style']
         )
 
+        self.load_config()
+
         self.account = AzureAccount(self.config)
         self.reserved_ip = ReservedIp(self.account)
 

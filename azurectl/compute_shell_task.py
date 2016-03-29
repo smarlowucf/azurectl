@@ -33,6 +33,7 @@ class ComputeShellTask(CliTask):
         Interactive shell
     """
     def process(self):
+        self.load_config()
 
         account = AzureAccount(self.config)
         cert_file = NamedTemporaryFile()
