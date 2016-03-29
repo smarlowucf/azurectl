@@ -24,6 +24,8 @@ __azurectl__ storage account update --name=*storage_account_name*
 
 __azurectl__ storage account delete --name=*storage_account_name*
 
+__azurectl__ storage account regions
+
 # DESCRIPTION
 
 ## __list__
@@ -56,6 +58,11 @@ __--new-primary-key__ and __--new-secondary-key__ arguments.
 Destroy a named storage account. All containers, and all storage entries within
 those containers, will be destroyed as well. Please not that the operation will
 fail if there are leases held on any storage entries within the account.
+
+## __regions__
+
+List all Azure regions which are accessible via the supplied account
+subscription, and support storage accounts.
 
 # TEXT OPTIONS
 

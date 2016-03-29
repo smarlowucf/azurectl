@@ -26,6 +26,7 @@ usage: azurectl storage account -h | --help
        azurectl storage account show --name=<accountname>
        azurectl storage account list
        azurectl storage account delete --name=<accountname>
+       azurectl storage account regions
        azurectl storage account help
 
 commands:
@@ -43,6 +44,9 @@ commands:
         destroy an existing storage account and all its containers and stored
         items
         Note: deletion will fail if there are leases on any stored resources
+    regions
+        list regions where a storage account can be created with the current
+        subscription
     help
         show manual page for storage account command
 
@@ -128,6 +132,8 @@ class StorageAccountTask(CliTask):
             self.__list()
         elif self.command_args['delete']:
             self.__delete()
+        elif self.command_args['regions']:
+            self.__list_locations()
         self.out.display()
 
     # argument validation
@@ -192,3 +198,6 @@ class StorageAccountTask(CliTask):
             'storage_account:' + self.command_args['--name'],
             self.storage_account.delete(self.command_args['--name'])
         )
+
+    def __list_locations(self):
+        self.result.add('regions', self.account.locations('Storage'))
