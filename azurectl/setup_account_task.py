@@ -13,9 +13,9 @@
 #
 """
 usage: azurectl setup account -h | --help
-       azurectl setup account add --name=<account_name> --publish-settings-file=<file>
+       azurectl setup account configure --name=<account_name> --publish-settings-file=<file>
            [--subscription-id=<subscriptionid>]
-       azurectl setup account configure --name=<account_name> --publish-settings-file=<file> --region=<region_name> --storage-account-name=<storagename> --container-name=<containername>
+           [--region=<region_name> --storage-account-name=<storagename> --container-name=<containername>]
        azurectl setup account list
        azurectl setup account region add --region=<region_name> --storage-account-name=<storagename> --container-name=<containername>
            [--name=<account_name>]
@@ -26,13 +26,11 @@ usage: azurectl setup account -h | --help
        azurectl setup account help
 
 commands:
-    add
-        add a new account config file
     configure
-        add a new account config file with region configuration
+        create new account config file
     list
         list configured account and region sections. Also list
-        information about default references
+        information about default config file
     region add
         add new region section to the config file. If specified
         the given account config file is used, otherwise the default
@@ -97,13 +95,11 @@ class SetupAccountTask(CliTask):
             if self.command_args['remove']:
                 self.__remove()
             elif self.command_args['configure']:
-                self.__configure_account_and_region()
+                self.__configure_account()
             elif self.command_args['region'] and self.command_args['add']:
                 self.__region_add()
             elif self.command_args['region'] and self.command_args['default']:
                 self.__set_region_default()
-            elif self.command_args['add']:
-                self.__account_add()
 
     def __help(self):
         if self.command_args['region'] and self.command_args['help']:
@@ -119,8 +115,8 @@ class SetupAccountTask(CliTask):
             Config.get_config_file(account_name=for_account)
         )
 
-    def __configure_account_and_region(self):
-        self.setup.configure_account_and_region(
+    def __configure_account(self):
+        self.setup.configure_account(
             self.command_args['--name'],
             self.command_args['--publish-settings-file'],
             self.command_args['--region'],
@@ -130,19 +126,8 @@ class SetupAccountTask(CliTask):
         )
         self.setup.write()
         log.info(
-            'Added account %s with region %s',
-            self.command_args['--name'],
-            self.command_args['--region']
+            'Added account %s', self.command_args['--name']
         )
-
-    def __account_add(self):
-        self.setup.add_account(
-            self.command_args['--name'],
-            self.command_args['--publish-settings-file'],
-            self.command_args['--subscription-id']
-        )
-        self.setup.write()
-        log.info('Added account %s', self.command_args['--name'])
 
     def __region_add(self):
         self.setup.add_region(

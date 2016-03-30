@@ -175,8 +175,8 @@ class TestAccountSetup:
     def test_list(self):
         assert self.setup.list() == self.orig_data
 
-    def test_configure_account_and_region(self):
-        self.setup.configure_account_and_region(
+    def test_configure_account(self):
+        self.setup.configure_account(
             'xxx', '../data/publishsettings',
             'some-region', 'storage', 'container',
             '1234'

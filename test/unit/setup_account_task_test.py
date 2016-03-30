@@ -16,9 +16,6 @@ class TestSetupAccountTask:
             sys.argv[0], 'setup', 'account', 'list'
         ]
         self.setup = mock.Mock()
-        #self.setup.list = mock.Mock(
-        #    return_value=['a', 'b']
-        #)
         azurectl.setup_account_task.AccountSetup = mock.Mock(
             return_value=self.setup
         )
@@ -59,27 +56,6 @@ class TestSetupAccountTask:
         mock_account_setup.assert_called_once_with('a')
         setup.list.assert_called_once_with()
 
-    def test_process_setup_account_add(self):
-        self.__init_command_args()
-        self.task.command_args['add'] = True
-        self.task.process()
-        self.task.setup.add_account.assert_called_once_with(
-            self.task.command_args['--name'],
-            self.task.command_args['--publish-settings-file'],
-            False
-        )
-
-    def test_process_setup_account_add_with_subscription_id(self):
-        self.__init_command_args()
-        self.task.command_args['add'] = True
-        self.task.command_args['--subscription-id'] = '1234'
-        self.task.process()
-        self.task.setup.add_account.assert_called_once_with(
-            self.task.command_args['--name'],
-            self.task.command_args['--publish-settings-file'],
-            self.task.command_args['--subscription-id']
-        )
-
     def test_process_setup_region_add(self):
         self.__init_command_args()
         self.task.command_args['add'] = True
@@ -91,11 +67,11 @@ class TestSetupAccountTask:
             self.task.command_args['--container-name']
         )
 
-    def test_process_setup_configure_account_and_region(self):
+    def test_process_setup_configure_account(self):
         self.__init_command_args()
         self.task.command_args['configure'] = True
         self.task.process()
-        self.task.setup.configure_account_and_region.assert_called_once_with(
+        self.task.setup.configure_account.assert_called_once_with(
             self.task.command_args['--name'],
             self.task.command_args['--publish-settings-file'],
             self.task.command_args['--region'],

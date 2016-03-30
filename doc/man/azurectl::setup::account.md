@@ -4,11 +4,10 @@ azurectl - Command Line Interface to manage Microsoft Azure
 
 # SYNOPSIS
 
-__azurectl__ setup account add --name=*account_name* --publish-settings-file=*file*
+__azurectl__ setup account configure --name=*account_name* --publish-settings-file=*file*
 
     [--subscription-id=*subscriptionid*]
-
-__azurectl__ setup account configure --name=*account_name* --publish-settings-file=*file* --region=*region_name* --storage-account-name=*storagename* --container-name=*containername*
+    [--region=*region_name* --storage-account-name=*storagename* --container-name=*containername*]
 
 __azurectl__ setup account list
 
@@ -16,9 +15,9 @@ __azurectl__ setup account remove --name=*account_name*
 
 # DESCRIPTION
 
-## __add__
+## __configure__
 
-Create a new account configuration file
+Create new account configuration file
 
 ## __list__
 
