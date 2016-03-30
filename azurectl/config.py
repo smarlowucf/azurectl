@@ -114,6 +114,13 @@ class Config(object):
         else:
             return paths.default_config()
 
+    @classmethod
+    def get_config_file_list(self):
+        paths = ConfigFilePath()
+        return [
+            paths.default_config()
+        ] + paths.account_config()
+
     def __check_for_section(self, section):
         if section and not self.config.has_section(section):
             raise AzureConfigSectionNotFound(

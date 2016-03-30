@@ -12,8 +12,7 @@ import os
 
 class TestConfigFilePath:
     def setup(self):
-        with patch.dict('os.environ', {'HOME': 'foo'}):
-            self.paths = ConfigFilePath(account_name='bob', platform='lin')
+        self.paths = ConfigFilePath(account_name='bob', platform='lin')
 
     def test_home_path_linux(self):
         with patch.dict('os.environ', {'HOME': 'foo'}):
@@ -32,7 +31,7 @@ class TestConfigFilePath:
                 os.environ['UserProfile'] + '/.config/azurectl/config'
 
     @patch('os.path.isfile')
-    def test_default_path(self, mock_isfile):
+    def test_default_config(self, mock_isfile):
         mock_isfile.return_value = True
         assert self.paths.default_config() == \
             os.environ['HOME'] + '/' + self.paths.config_files[0]
@@ -40,3 +39,11 @@ class TestConfigFilePath:
     def test_default_new_account_config(self):
         assert self.paths.default_new_account_config() == \
             os.environ['HOME'] + '/.config/azurectl/bob.config'
+
+    @patch('glob.iglob')
+    def test_account_config(self, mock_glob):
+        mock_glob.return_value = ['a', 'b', 'c']
+        assert self.paths.account_config() == mock_glob.return_value
+        mock_glob.assert_called_once_with(
+            os.environ['HOME'] + '/.config/azurectl/*.config'
+        )

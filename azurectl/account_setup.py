@@ -47,7 +47,7 @@ class AccountSetup(object):
             list account sections
         """
         accounts = {}
-        accounts['DEFAULT'] = {
+        accounts['account_region_map'] = {
             'account': self.__get_default_account() or '<missing>',
             'region': self.__get_default_region() or '<missing>'
         }

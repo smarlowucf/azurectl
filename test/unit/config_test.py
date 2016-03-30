@@ -44,6 +44,16 @@ class TestConfig:
                 platform='lin'
             ) == 'foo/.config/azurectl/config'
 
+    @patch('azurectl.config.ConfigFilePath')
+    def test_get_config_file_list(self, mock_config_path):
+        paths = mock.Mock()
+        paths.default_config.return_value = 'a'
+        paths.account_config.return_value = ['b', 'c']
+        mock_config_path.return_value = paths
+        assert Config.get_config_file_list() == ['a', 'b', 'c']
+        paths.default_config.assert_called_once_with()
+        paths.account_config.assert_called_once_with()
+
     @raises(AzureConfigVariableNotFound)
     def test_get_subscription_id_missing(self):
         assert self.config.get_subscription_id()

@@ -16,9 +16,9 @@ class TestSetupAccountTask:
             sys.argv[0], 'setup', 'account', 'list'
         ]
         self.setup = mock.Mock()
-        self.setup.list = mock.Mock(
-            return_value=['a', 'b']
-        )
+        #self.setup.list = mock.Mock(
+        #    return_value=['a', 'b']
+        #)
         azurectl.setup_account_task.AccountSetup = mock.Mock(
             return_value=self.setup
         )
@@ -43,23 +43,21 @@ class TestSetupAccountTask:
         self.task.command_args['remove'] = False
         self.task.command_args['help'] = False
 
+    @patch('azurectl.setup_account_task.Config.get_config_file_list')
+    @patch('azurectl.setup_account_task.AccountSetup')
     @patch('azurectl.setup_account_task.DataOutput.display')
     @patch('azurectl.logger.log')
-    def test_process_setup_account_list(self, mock_display, mock_logging):
+    def test_process_setup_account_list(
+        self, mock_log, mock_display, mock_account_setup, mock_config_files
+    ):
+        mock_config_files.return_value = ['a']
+        setup = mock.Mock()
+        mock_account_setup.return_value = setup
         self.__init_command_args()
         self.task.command_args['list'] = True
         self.task.process()
-        self.task.setup.list.assert_called_once_with()
-
-    @patch('azurectl.logger.log.info')
-    def test_process_setup_account_list_empty(self, mock_info):
-        self.__init_command_args()
-        self.task.command_args['list'] = True
-        self.setup.list.return_value = None
-        self.task.process()
-        mock_info.assert_called_once_with(
-            'There are no accounts configured'
-        )
+        mock_account_setup.assert_called_once_with('a')
+        setup.list.assert_called_once_with()
 
     def test_process_setup_account_add(self):
         self.__init_command_args()

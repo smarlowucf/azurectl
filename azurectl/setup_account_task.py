@@ -88,22 +88,22 @@ class SetupAccountTask(CliTask):
             self.global_args['--output-style']
         )
 
-        self.__load_account_setup(
-            self.command_args['--name']
-        )
-
         if self.command_args['list']:
             self.__list()
-        elif self.command_args['remove']:
-            self.__remove()
-        elif self.command_args['configure']:
-            self.__configure_account_and_region()
-        elif self.command_args['region'] and self.command_args['add']:
-            self.__region_add()
-        elif self.command_args['region'] and self.command_args['default']:
-            self.__set_region_default()
-        elif self.command_args['add']:
-            self.__account_add()
+        else:
+            self.__load_account_setup(
+                self.command_args['--name']
+            )
+            if self.command_args['remove']:
+                self.__remove()
+            elif self.command_args['configure']:
+                self.__configure_account_and_region()
+            elif self.command_args['region'] and self.command_args['add']:
+                self.__region_add()
+            elif self.command_args['region'] and self.command_args['default']:
+                self.__set_region_default()
+            elif self.command_args['add']:
+                self.__account_add()
 
     def __help(self):
         if self.command_args['region'] and self.command_args['help']:
@@ -166,9 +166,16 @@ class SetupAccountTask(CliTask):
         log.info('Removed account config file %s', self.setup.filename)
 
     def __list(self):
-        account_info = self.setup.list()
-        if not account_info:
-            log.info('There are no accounts configured')
-        else:
-            self.result.add('setup', account_info)
-            self.out.display()
+        config_files = Config.get_config_file_list()
+        self.result.add(
+            'default_config_file', config_files[0] or '<missing>'
+        )
+
+        for config_file in config_files:
+            if config_file:
+                setup = AccountSetup(config_file)
+                account_info = setup.list()
+                if account_info:
+                    self.result.add(config_file, account_info)
+
+        self.out.display()
