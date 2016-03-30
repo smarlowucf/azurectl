@@ -16,6 +16,7 @@ usage: azurectl setup account -h | --help
        azurectl setup account configure --name=<account_name> --publish-settings-file=<file>
            [--subscription-id=<subscriptionid>]
            [--region=<region_name> --storage-account-name=<storagename> --container-name=<containername>]
+       azurectl setup account default --name=<account_name>
        azurectl setup account list
        azurectl setup account region add --region=<region_name> --storage-account-name=<storagename> --container-name=<containername>
            [--name=<account_name>]
@@ -28,6 +29,8 @@ usage: azurectl setup account -h | --help
 commands:
     configure
         create new account config file
+    default
+        set the given account as default config
     list
         list configured account and region sections. Also list
         information about default config file
@@ -60,6 +63,8 @@ options:
         subscription id, if more than one subscription is included in your
         publish settings file.
 """
+import os
+
 # project
 from cli_task import CliTask
 from logger import log
@@ -88,6 +93,8 @@ class SetupAccountTask(CliTask):
 
         if self.command_args['list']:
             self.__list()
+        elif self.command_args['default'] and not self.command_args['region']:
+            self.__default()
         else:
             self.__load_account_setup(
                 self.command_args['--name']
@@ -113,6 +120,15 @@ class SetupAccountTask(CliTask):
     def __load_account_setup(self, for_account=None):
         self.setup = AccountSetup(
             Config.get_config_file(account_name=for_account)
+        )
+
+    def __default(self):
+        Config.set_default_config_file(
+            account_name=self.command_args['--name']
+        )
+        log.info(
+            'Account %s has been set as default configuration',
+            self.command_args['--name']
         )
 
     def __configure_account(self):
@@ -152,12 +168,16 @@ class SetupAccountTask(CliTask):
 
     def __list(self):
         config_files = Config.get_config_file_list()
+        default_config_file = config_files[0] or '<missing>'
+        if os.path.islink(default_config_file):
+            default_config_file = os.readlink(default_config_file)
+
         self.result.add(
-            'default_config_file', config_files[0] or '<missing>'
+            'default_config_file', default_config_file
         )
 
         for config_file in config_files:
-            if config_file:
+            if config_file and not os.path.islink(config_file):
                 setup = AccountSetup(config_file)
                 account_info = setup.list()
                 if account_info:

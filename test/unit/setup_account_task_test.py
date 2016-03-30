@@ -33,6 +33,7 @@ class TestSetupAccountTask:
         self.task.command_args['--container-name'] = 'foo'
         self.task.command_args['--subscription-id'] = False
         self.task.command_args['--region'] = 'region'
+        self.task.command_args['default'] = False
         self.task.command_args['list'] = False
         self.task.command_args['add'] = False
         self.task.command_args['configure'] = False
@@ -40,13 +41,24 @@ class TestSetupAccountTask:
         self.task.command_args['remove'] = False
         self.task.command_args['help'] = False
 
+    @patch('azurectl.setup_account_task.Config.set_default_config_file')
+    @patch('azurectl.logger.log')
+    def test_process_setup_account_default(self, mock_log, mock_set_default):
+        self.__init_command_args()
+        self.task.command_args['default'] = True
+        self.task.process()
+        mock_set_default.assert_called_once_with(account_name='foo')
+
     @patch('azurectl.setup_account_task.Config.get_config_file_list')
     @patch('azurectl.setup_account_task.AccountSetup')
     @patch('azurectl.setup_account_task.DataOutput.display')
     @patch('azurectl.logger.log')
+    @patch('os.path.islink')
     def test_process_setup_account_list(
-        self, mock_log, mock_display, mock_account_setup, mock_config_files
+        self, mock_islink, mock_log, mock_display,
+        mock_account_setup, mock_config_files
     ):
+        mock_islink.return_value = False
         mock_config_files.return_value = ['a']
         setup = mock.Mock()
         mock_account_setup.return_value = setup
@@ -55,6 +67,28 @@ class TestSetupAccountTask:
         self.task.process()
         mock_account_setup.assert_called_once_with('a')
         setup.list.assert_called_once_with()
+
+    @patch('azurectl.setup_account_task.Config.get_config_file_list')
+    @patch('azurectl.setup_account_task.DataCollector')
+    @patch('azurectl.setup_account_task.DataOutput.display')
+    @patch('azurectl.logger.log')
+    @patch('os.path.islink')
+    @patch('os.readlink')
+    def test_process_setup_account_list_linked_default(
+        self, mock_readlink, mock_islink, mock_log, mock_display,
+        mock_data_collector, mock_config_files
+    ):
+        mock_readlink.return_value = 'link-target'
+        mock_islink.return_value = True
+        mock_config_files.return_value = ['a']
+        result = mock.Mock()
+        mock_data_collector.return_value = result
+        self.__init_command_args()
+        self.task.command_args['list'] = True
+        self.task.process()
+        result.add.assert_called_once_with(
+            'default_config_file', 'link-target'
+        )
 
     def test_process_setup_region_add(self):
         self.__init_command_args()
