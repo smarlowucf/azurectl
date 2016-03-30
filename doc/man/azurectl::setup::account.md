@@ -9,6 +9,8 @@ __azurectl__ setup account configure --name=*account_name* --publish-settings-fi
     [--subscription-id=*subscriptionid*]
     [--region=*region_name* --storage-account-name=*storagename* --container-name=*containername*]
 
+__azurectl__ setup account default --name=*account_name*
+
 __azurectl__ setup account list
 
 __azurectl__ setup account remove --name=*account_name*
@@ -18,6 +20,10 @@ __azurectl__ setup account remove --name=*account_name*
 ## __configure__
 
 Create new account configuration file
+
+## __default__
+
+Create a default configuration which is a symlink to the specified account configuration file. If there is already a default configuration which is not a symlink to an account configuration, the call will fail with an error message.
 
 ## __list__
 
