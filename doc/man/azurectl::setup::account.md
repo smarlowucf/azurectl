@@ -6,8 +6,8 @@ azurectl - Command Line Interface to manage Microsoft Azure
 
 __azurectl__ setup account configure --name=*account_name* --publish-settings-file=*file*
 
-    [--subscription-id=*subscriptionid*]
-    [--region=*region_name* --storage-account-name=*storagename* --container-name=*containername*]
+    [--subscription-id=subscriptionid]
+    [--region=region_name --storage-account-name=storagename --container-name=containername]
 
 __azurectl__ setup account default --name=*account_name*
 

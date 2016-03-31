@@ -5,10 +5,12 @@ azurectl - Command Line Interface to manage Microsoft Azure
 # SYNOPSIS
 
 __azurectl__ setup account region add --region=*region_name* --storage-account-name=*storagename* --container-name=*containername*
-    [--name=*account_name*]
+
+    [--name=account_name]
 
 __azurectl__ setup account region default --region=*region_name*
-    [--name=*account_name*]
+
+    [--name=account_name]
 
 # DESCRIPTION
 
