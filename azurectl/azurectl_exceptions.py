@@ -201,6 +201,10 @@ class AzureOsImageDeleteError(AzureError):
     pass
 
 
+class AzureOsImageDetailsShowError(AzureError):
+    pass
+
+
 class AzureOsImageListError(AzureError):
     pass
 

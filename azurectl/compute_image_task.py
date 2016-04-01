@@ -20,6 +20,9 @@ usage: azurectl compute image -h | --help
        azurectl compute image delete --name=<imagename>
            [--delete-disk]
        azurectl compute image replicate --name=<imagename> --regions=<regionlist> --offer=<offer> --sku=<sku> --image-version=<version>
+           [--wait]
+           [--quiet]
+       azurectl compute image replication-status --name=<imagename>
        azurectl compute image unreplicate --name=<imagename>
        azurectl compute image update --name=<imagename>
            [--description=<description>]
@@ -47,6 +50,9 @@ commands:
         delete OS image from VM image repository
     replicate
         replicate registered VM image to specified regions
+    replication-status
+        show which regions an image is replicated to, and the status of
+        replication, as a percentage of the image data being replicated
     unreplicate
         unreplicate registered VM image from specified regions
     update
@@ -75,11 +81,17 @@ options:
         name of the sku
     --image-version=<version>
         semantic version of the image
+    --wait
+        wait until replication is complete to end execution
+    --quiet
+        suppress progress information during replication
     --private
         restrict publish scope to be private
     --msdn
         restrict publish scope to the Microsoft Developer Network
 """
+from apscheduler.schedulers.background import BackgroundScheduler
+from pytz import utc
 # project
 from logger import log
 from cli_task import CliTask
@@ -121,6 +133,8 @@ class ComputeImageTask(CliTask):
             self.__delete()
         elif self.command_args['replicate']:
             self.__replicate()
+        elif self.command_args['replication-status']:
+            self.__replication_status(self.command_args['--name'])
         elif self.command_args['unreplicate']:
             self.__unreplicate()
         elif self.command_args['publish']:
@@ -166,16 +180,44 @@ class ComputeImageTask(CliTask):
         self.out.display()
 
     def __replicate(self):
+        image_name = self.command_args['--name']
         self.result.add(
             'replicate:' +
             self.command_args['--name'] + ':' + self.command_args['--regions'],
             self.image.replicate(
-                self.command_args['--name'],
+                image_name,
                 self.command_args['--regions'].split(','),
                 self.command_args['--offer'],
                 self.command_args['--sku'],
                 self.command_args['--image-version']
             )
+        )
+        if not self.command_args['--quiet']:
+            self.out.display()
+        if self.command_args['--wait']:
+            if not self.command_args['--quiet']:
+                progress = BackgroundScheduler(timezone=utc)
+                progress.add_job(
+                    lambda: self.image.print_replication_status(image_name),
+                    'interval',
+                    minutes=5
+                )
+            progress.start()
+            try:
+                self.image.wait_for_replication_completion(image_name)
+                self.image.print_replication_status(image_name)
+            except KeyboardInterrupt:
+                raise SystemExit('azurectl aborted by keyboard interrupt')
+            finally:
+                progress.shutdown()
+        if not self.command_args['--quiet']:
+            print
+            log.info('Replicated %s', image_name)
+
+    def __replication_status(self, image_name):
+        self.result.add(
+            'replication-status:' + image_name,
+            self.image.replication_status(image_name)
         )
         self.out.display()
 

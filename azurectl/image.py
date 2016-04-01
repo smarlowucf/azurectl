@@ -11,15 +11,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import os
-import dateutil.parser
 import collections
+import dateutil.parser
+import os
+import time
 from tempfile import NamedTemporaryFile
 from azure.servicemanagement import ServiceManagementService
 from azure.storage.blob.baseblobservice import BaseBlobService
-
 # project
 from azurectl_exceptions import (
+    AzureOsImageDetailsShowError,
     AzureOsImageListError,
     AzureOsImageShowError,
     AzureBlobServicePropertyError,
@@ -31,6 +32,7 @@ from azurectl_exceptions import (
     AzureOsImageUpdateError
 )
 from defaults import Defaults
+from logger import log
 
 
 class Image(object):
@@ -52,6 +54,10 @@ class Image(object):
         self.cert_file.write(self.publishsettings.private_key)
         self.cert_file.write(self.publishsettings.certificate)
         self.cert_file.flush()
+
+        self.sleep_between_requests = 120
+        self.max_failures = 5
+        self.cached_replication_status = None
 
     def list(self):
         result = []
@@ -206,6 +212,58 @@ class Image(object):
                 '%s: %s' % (type(e).__name__, format(e))
             )
 
+    def replication_status(self, name):
+        service = ServiceManagementService(
+            self.publishsettings.subscription_id,
+            self.cert_file.name,
+            self.publishsettings.management_url
+        )
+        try:
+            image_details = service.get_os_image_details(name)
+        except Exception as e:
+            raise AzureOsImageDetailsShowError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
+        self.cached_replication_status = \
+            image_details.replication_progress.replication_progress_elements
+
+        results = []
+        for element in image_details.replication_progress:
+            results.append(
+                self.__decorate_replication_progress_element(element)
+            )
+        return results
+
+    def print_replication_status(self, name):
+        if not self.cached_replication_status:
+            self.replication_status(name)
+        cumulative_progress = 0
+        for element in self.cached_replication_status:
+            cumulative_progress += element.progress
+        log.progress(
+            cumulative_progress,
+            len(self.cached_replication_status) * 100,
+            'Replicating'
+        )
+
+    def wait_for_replication_completion(self, name):
+        failures = 0
+        complete = False
+        while not complete:
+            try:
+                time.sleep(self.sleep_between_requests)
+                complete = self.__replication_is_complete(
+                    self.replication_status(name)
+                )
+                failures = 0
+            except Exception as e:
+                if failures >= self.max_failures:
+                    raise AzureOsImageDetailsShowError(
+                        '%s: %s' % (type(e).__name__, format(e))
+                    )
+                else:
+                    failures += 1
+
     def unreplicate(self, name):
         service = ServiceManagementService(
             self.publishsettings.subscription_id,
@@ -233,6 +291,15 @@ class Image(object):
             raise AzureOsImagePublishError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
+
+    def __replication_is_complete(self, status):
+        """
+            Based on a collection of __decorate_replication_progress_elements,
+            determine if progress is 100 in all regions
+        """
+        return all(
+            [element['replication-progress'] == '100%' for element in status]
+        )
 
     def __convert_date_to_azure_format(self, timestring):
         """
@@ -282,4 +349,10 @@ class Image(object):
             'recommended_vm_size': image.recommended_vm_size,
             'show_in_gui': image.show_in_gui,
             'small_icon_uri': image.small_icon_uri
+        }
+
+    def __decorate_replication_progress_element(self, element):
+        return {
+            'region': element.location,
+            'replication-progress': '{}%'.format(element.progress)
         }
