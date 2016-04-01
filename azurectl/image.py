@@ -11,13 +11,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import os
-import dateutil.parser
 import collections
+import dateutil.parser
+import os
+import time
 from tempfile import NamedTemporaryFile
 from azure.servicemanagement import ServiceManagementService
 from azure.storage.blob.baseblobservice import BaseBlobService
-
 # project
 from azurectl_exceptions import (
     AzureOsImageDetailsShowError,
@@ -53,6 +53,9 @@ class Image(object):
         self.cert_file.write(self.publishsettings.private_key)
         self.cert_file.write(self.publishsettings.certificate)
         self.cert_file.flush()
+
+        self.sleep_between_requests = 300
+        self.max_failures = 4
 
     def list(self):
         result = []
@@ -226,6 +229,29 @@ class Image(object):
             )
         return results
 
+    def wait_for_replication_completion(self, name):
+        service = ServiceManagementService(
+            self.publishsettings.subscription_id,
+            self.cert_file.name,
+            self.publishsettings.management_url
+        )
+        failures = 0
+        complete = False
+        while not complete:
+            try:
+                time.sleep(self.sleep_between_requests)
+                complete = self.__replication_is_complete(
+                    self.replication_status(name)
+                )
+                failures = 0
+            except Exception as e:
+                if failures >= self.max_failures:
+                    raise AzureOsImageDetailsShowError(
+                        '%s: %s' % (type(e).__name__, format(e))
+                    )
+                else:
+                    failures += 1
+
     def unreplicate(self, name):
         service = ServiceManagementService(
             self.publishsettings.subscription_id,
@@ -253,6 +279,15 @@ class Image(object):
             raise AzureOsImagePublishError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
+
+    def __replication_is_complete(self, status):
+        """
+            Based on a collection of __decorate_replication_progress_elements,
+            determine if progress is 100 in all regions
+        """
+        return all(
+            [element['replication-progress'] == '100%' for element in status]
+        )
 
     def __convert_date_to_azure_format(self, timestring):
         """

@@ -20,6 +20,7 @@ usage: azurectl compute image -h | --help
        azurectl compute image delete --name=<imagename>
            [--delete-disk]
        azurectl compute image replicate --name=<imagename> --regions=<regionlist> --offer=<offer> --sku=<sku> --image-version=<version>
+           [--wait]
        azurectl compute image replication-status --name=<imagename>
        azurectl compute image unreplicate --name=<imagename>
        azurectl compute image update --name=<imagename>
@@ -79,6 +80,8 @@ options:
         name of the sku
     --image-version=<version>
         semantic version of the image
+    --wait
+        wait until replication is complete to end execution
     --private
         restrict publish scope to be private
     --msdn
@@ -184,6 +187,10 @@ class ComputeImageTask(CliTask):
             )
         )
         self.out.display()
+        if self.command_args['--wait']:
+            self.image.wait_for_replication_completion(
+                self.command_args['--name']
+            )
 
     def __replication_status(self, image_name):
         self.result.add(

@@ -235,6 +235,41 @@ class TestImage:
         # when
         results = self.image.replication_status(self.fake_image_name)
 
+    @patch('azurectl.image.ServiceManagementService.get_os_image_details')
+    def test_wait_for_replication_completion(self, mock_get_details):
+        # given
+        mock_get_details.side_effect = iter([
+            self.__fake_os_image_details(
+                self.fake_image_name,
+                ['Region 1', 100, 'Region 2', 50]
+            ),
+            self.__fake_os_image_details(
+                self.fake_image_name,
+                ['Region 1', 100, 'Region 2', 100]
+            )
+        ])
+        self.image.sleep_between_requests = 0
+        # when
+        self.image.wait_for_replication_completion(self.fake_image_name)
+        # then
+        assert mock_get_details.call_count == 2
+
+    @patch('azurectl.image.ServiceManagementService.get_os_image_details')
+    # then
+    @raises(AzureOsImageDetailsShowError)
+    def test_wait_for_replication_completion_upstream_exception(
+        self,
+        mock_get_details
+    ):
+        # given
+        mock_get_details.side_effect = Exception
+        self.image.sleep_between_requests = 0
+        self.image.max_failures = 4
+        # when
+        self.image.wait_for_replication_completion(self.fake_image_name)
+        # then
+        assert mock_get_details.call_count == 4
+
     @patch('azurectl.image.ServiceManagementService.unreplicate_vm_image')
     def test_unreplicate(self, mock_unreplicate):
         mock_unreplicate.return_value = self.myrequest

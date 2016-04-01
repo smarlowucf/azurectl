@@ -39,6 +39,7 @@ class TestComputeImageTask:
         self.task.command_args['--offer'] = 'offer'
         self.task.command_args['--regions'] = 'a,b,c'
         self.task.command_args['--sku'] = 'sku'
+        self.task.command_args['--wait'] = False
         self.task.command_args['--private'] = False
         self.task.command_args['--msdn'] = False
         self.task.command_args['--image-version'] = '1.0.0'
@@ -113,6 +114,26 @@ class TestComputeImageTask:
             self.task.command_args['--offer'],
             self.task.command_args['--sku'],
             self.task.command_args['--image-version']
+        )
+
+    @patch('azurectl.compute_image_task.DataOutput')
+    def test_process_compute_image_replicate_wait(self, mock_out):
+        # given
+        self.__init_command_args()
+        self.task.command_args['replicate'] = True
+        self.task.command_args['--wait'] = True
+        # when
+        self.task.process()
+        # then
+        self.task.image.replicate.assert_called_once_with(
+            self.task.command_args['--name'],
+            self.task.command_args['--regions'].split(','),
+            self.task.command_args['--offer'],
+            self.task.command_args['--sku'],
+            self.task.command_args['--image-version']
+        )
+        self.task.image.wait_for_replication_completion.assert_called_once_with(
+            self.task.command_args['--name']
         )
 
     @patch('azurectl.compute_image_task.DataOutput')
