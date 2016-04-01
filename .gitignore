@@ -55,3 +55,6 @@ target/
 
 # man pages
 *.1.gz
+
+# Azure SDK from git
+azure-sdk-for-python

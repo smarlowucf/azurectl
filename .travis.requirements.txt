@@ -2,10 +2,9 @@
 # Install it with pip install -r .travis.requirements.txt
 #
 # Note:
-# The azure SDK is currently taken from the development branch
-# See .travis.script for details. We can switch using azure from
-# pip once Microsoft has released the new version which is planned
-# to happen in August 2015
+# The azure SDK is taken from the master branch
+# For details read azure-sdk-for-python-readme-suse.patch from
+# the Cloud:Tools/python-azure-sdk rpm package
 #
 # azure
 #
@@ -20,3 +19,4 @@ requests
 dnspython
 pytest
 pytest-cov
+azure-storage
