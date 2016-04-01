@@ -47,7 +47,7 @@ class AccountSetup(object):
             list account sections
         """
         accounts = {}
-        accounts['DEFAULT'] = {
+        accounts['account_region_map'] = {
             'account': self.__get_default_account() or '<missing>',
             'region': self.__get_default_region() or '<missing>'
         }
@@ -66,6 +66,12 @@ class AccountSetup(object):
             else:
                 accounts['accounts'][section] = options
         return accounts
+
+    def remove(self):
+        """
+            remove account configuration file
+        """
+        os.remove(self.filename)
 
     def remove_account(self, name):
         """
@@ -95,23 +101,24 @@ class AccountSetup(object):
             return False
         return True
 
-    def configure_account_and_region(
+    def configure_account(
         self,
         account_name,
         publish_settings,
-        region_name,
-        default_storage_account,
-        default_storage_container,
+        region_name=None,
+        default_storage_account=None,
+        default_storage_container=None,
         subscription_id=None
     ):
         self.add_account(
             account_name, publish_settings, subscription_id
         )
-        self.add_region(
-            region_name,
-            default_storage_account,
-            default_storage_container
-        )
+        if region_name:
+            self.add_region(
+                region_name,
+                default_storage_account,
+                default_storage_container
+            )
 
     def add_account(
         self,

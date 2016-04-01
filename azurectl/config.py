@@ -24,7 +24,9 @@ from azurectl_exceptions import (
     AzureAccountLoadFailed,
     AzureConfigVariableNotFound,
     AzureConfigSectionNotFound,
-    AzureConfigParseError
+    AzureConfigParseError,
+    AzureConfigAccountFileNotFound,
+    AzureConfigDefaultLinkError
 )
 from config_file_path import ConfigFilePath
 
@@ -104,6 +106,50 @@ class Config(object):
     def get_account_name(self):
         return self.account_name.replace('account:', '')
 
+    @classmethod
+    def get_config_file(self, account_name=None, filename=None, platform=None):
+        paths = ConfigFilePath(account_name, platform)
+        if filename:
+            return filename
+        elif account_name:
+            return paths.default_new_account_config()
+        else:
+            return paths.default_config()
+
+    @classmethod
+    def get_config_file_list(self):
+        paths = ConfigFilePath()
+        return [
+            paths.default_config()
+        ] + paths.account_config()
+
+    @classmethod
+    def set_default_config_file(self, account_name, platform=None):
+        paths = ConfigFilePath(account_name, platform)
+        account_config_file = paths.default_new_account_config()
+        if not os.path.exists(account_config_file):
+            raise AzureConfigAccountFileNotFound(
+                'Account config file %s not found' % account_config_file
+            )
+
+        default_config_file = paths.default_config()
+        if not default_config_file:
+            default_config_file = paths.default_new_config()
+
+        default_exists = os.path.exists(default_config_file)
+        default_islink = os.path.islink(default_config_file)
+
+        if default_exists and not default_islink:
+            raise AzureConfigDefaultLinkError(
+                'Can not link %s as default, %s exists and is not a symlink' %
+                (account_config_file, default_config_file)
+            )
+
+        if default_exists:
+            os.remove(default_config_file)
+
+        os.symlink(account_config_file, default_config_file)
+
     def __check_for_section(self, section):
         if section and not self.config.has_section(section):
             raise AzureConfigSectionNotFound(
@@ -134,15 +180,15 @@ class Config(object):
     def __lookup_config_file(self, platform, account_name, filename):
         paths = ConfigFilePath(account_name, platform)
         if filename:
-            # lookup config file as provided by the --config option
+            # lookup a custom config file
             if not os.path.isfile(filename):
                 raise AzureAccountLoadFailed(
                     'Could not find config file: %s' % filename
                 )
         elif account_name:
-            # lookup config file as provided by the --account option
+            # lookup an account config file
             filename = paths.default_new_account_config()
-            if not filename:
+            if not os.path.isfile(filename):
                 raise AzureAccountLoadFailed(
                     'Could not find account config file: %s %s: %s' %
                     (

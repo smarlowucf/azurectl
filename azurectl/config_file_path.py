@@ -13,6 +13,7 @@
 #
 import os
 import sys
+import glob
 
 
 class ConfigFilePath(object):
@@ -49,20 +50,28 @@ class ConfigFilePath(object):
             The fully qualified path of the config file when
             using an account name
         """
-        full_qualified_config = self.__full_qualified_config(
-            self.account_config_file
-        )
-        if os.path.isfile(full_qualified_config):
-            return full_qualified_config
+        return self.__full_qualified_config(self.account_config_file)
 
     def default_config(self):
         """
-            Find and return the path of the first config_file that exists
+            Find and return the path of the first config file that exists
         """
         for filename in self.config_files:
             full_qualified_config = self.__full_qualified_config(filename)
             if os.path.isfile(full_qualified_config):
                 return full_qualified_config
+
+    def account_config(self):
+        """
+            Find and return the path to the account config files that exists
+        """
+        glob_match = '/'.join(
+            [
+                self.__home_path(),
+                self.config_directories_in_home[0] + '*.config'
+            ]
+        )
+        return list(glob.iglob(glob_match))
 
     def __home_path(self):
         homeEnvVar = 'HOME'

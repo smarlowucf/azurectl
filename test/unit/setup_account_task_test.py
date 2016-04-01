@@ -13,13 +13,9 @@ from azurectl.setup_account_task import SetupAccountTask
 class TestSetupAccountTask:
     def setup(self):
         sys.argv = [
-            sys.argv[0], '--config', '../data/config',
-            'setup', 'account', 'list'
+            sys.argv[0], 'setup', 'account', 'list'
         ]
         self.setup = mock.Mock()
-        self.setup.list = mock.Mock(
-            return_value=['a', 'b']
-        )
         azurectl.setup_account_task.AccountSetup = mock.Mock(
             return_value=self.setup
         )
@@ -37,51 +33,61 @@ class TestSetupAccountTask:
         self.task.command_args['--container-name'] = 'foo'
         self.task.command_args['--subscription-id'] = False
         self.task.command_args['--region'] = 'region'
+        self.task.command_args['default'] = False
         self.task.command_args['list'] = False
         self.task.command_args['add'] = False
         self.task.command_args['configure'] = False
         self.task.command_args['region'] = False
         self.task.command_args['remove'] = False
-        self.task.command_args['default'] = False
         self.task.command_args['help'] = False
 
+    @patch('azurectl.setup_account_task.Config.set_default_config_file')
+    @patch('azurectl.logger.log')
+    def test_process_setup_account_default(self, mock_log, mock_set_default):
+        self.__init_command_args()
+        self.task.command_args['default'] = True
+        self.task.process()
+        mock_set_default.assert_called_once_with(account_name='foo')
+
+    @patch('azurectl.setup_account_task.Config.get_config_file_list')
+    @patch('azurectl.setup_account_task.AccountSetup')
     @patch('azurectl.setup_account_task.DataOutput.display')
     @patch('azurectl.logger.log')
-    def test_process_setup_account_list(self, mock_display, mock_logging):
+    @patch('os.path.islink')
+    def test_process_setup_account_list(
+        self, mock_islink, mock_log, mock_display,
+        mock_account_setup, mock_config_files
+    ):
+        mock_islink.return_value = False
+        mock_config_files.return_value = ['a']
+        setup = mock.Mock()
+        mock_account_setup.return_value = setup
         self.__init_command_args()
         self.task.command_args['list'] = True
         self.task.process()
-        self.task.setup.list.assert_called_once_with()
+        mock_account_setup.assert_called_once_with('a')
+        setup.list.assert_called_once_with()
 
-    @patch('azurectl.logger.log.info')
-    def test_process_setup_account_list_empty(self, mock_info):
+    @patch('azurectl.setup_account_task.Config.get_config_file_list')
+    @patch('azurectl.setup_account_task.DataCollector')
+    @patch('azurectl.setup_account_task.DataOutput.display')
+    @patch('azurectl.logger.log')
+    @patch('os.path.islink')
+    @patch('os.readlink')
+    def test_process_setup_account_list_linked_default(
+        self, mock_readlink, mock_islink, mock_log, mock_display,
+        mock_data_collector, mock_config_files
+    ):
+        mock_readlink.return_value = 'link-target'
+        mock_islink.return_value = True
+        mock_config_files.return_value = ['a']
+        result = mock.Mock()
+        mock_data_collector.return_value = result
         self.__init_command_args()
         self.task.command_args['list'] = True
-        self.setup.list.return_value = None
         self.task.process()
-        mock_info.assert_called_once_with(
-            'There are no accounts configured'
-        )
-
-    def test_process_setup_account_add(self):
-        self.__init_command_args()
-        self.task.command_args['add'] = True
-        self.task.process()
-        self.task.setup.add_account.assert_called_once_with(
-            self.task.command_args['--name'],
-            self.task.command_args['--publish-settings-file'],
-            False
-        )
-
-    def test_process_setup_account_add_with_subscription_id(self):
-        self.__init_command_args()
-        self.task.command_args['add'] = True
-        self.task.command_args['--subscription-id'] = '1234'
-        self.task.process()
-        self.task.setup.add_account.assert_called_once_with(
-            self.task.command_args['--name'],
-            self.task.command_args['--publish-settings-file'],
-            self.task.command_args['--subscription-id']
+        result.add.assert_called_once_with(
+            'default_config_file', 'link-target'
         )
 
     def test_process_setup_region_add(self):
@@ -90,16 +96,16 @@ class TestSetupAccountTask:
         self.task.command_args['region'] = True
         self.task.process()
         self.task.setup.add_region.assert_called_once_with(
-            self.task.command_args['--name'],
+            self.task.command_args['--region'],
             self.task.command_args['--storage-account-name'],
             self.task.command_args['--container-name']
         )
 
-    def test_process_setup_configure_account_and_region(self):
+    def test_process_setup_configure_account(self):
         self.__init_command_args()
         self.task.command_args['configure'] = True
         self.task.process()
-        self.task.setup.configure_account_and_region.assert_called_once_with(
+        self.task.setup.configure_account.assert_called_once_with(
             self.task.command_args['--name'],
             self.task.command_args['--publish-settings-file'],
             self.task.command_args['--region'],
@@ -112,17 +118,7 @@ class TestSetupAccountTask:
         self.__init_command_args()
         self.task.command_args['remove'] = True
         self.task.process()
-        self.task.setup.remove.assert_called_once_with(
-            self.task.command_args['--name']
-        )
-
-    def test_process_setup_default_account(self):
-        self.__init_command_args()
-        self.task.command_args['default'] = True
-        self.task.process()
-        self.task.setup.set_default_account.assert_called_once_with(
-            self.task.command_args['--name']
-        )
+        self.task.setup.remove.assert_called_once_with()
 
     def test_process_setup_default_region(self):
         self.__init_command_args()
@@ -130,7 +126,7 @@ class TestSetupAccountTask:
         self.task.command_args['region'] = True
         self.task.process()
         self.task.setup.set_default_region.assert_called_once_with(
-            self.task.command_args['--name']
+            self.task.command_args['--region']
         )
 
     def test_process_setup_account_help(self):
@@ -139,15 +135,6 @@ class TestSetupAccountTask:
         self.task.process()
         self.task.manual.show.assert_called_once_with(
             'azurectl::setup::account'
-        )
-
-    def test_process_setup_account_configure_help(self):
-        self.__init_command_args()
-        self.task.command_args['help'] = True
-        self.task.command_args['configure'] = True
-        self.task.process()
-        self.task.manual.show.assert_called_once_with(
-            'azurectl::setup::account::configure'
         )
 
     def test_process_setup_account_region_help(self):

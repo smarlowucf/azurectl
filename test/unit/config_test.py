@@ -28,6 +28,82 @@ class TestConfig:
     def test_get_storage_container_name(self):
         assert self.config.get_storage_container_name() == 'foo'
 
+    @patch('os.path.isfile')
+    def test_get_config_file(self, mock_isfile):
+        mock_isfile.return_value = True
+        with patch.dict('os.environ', {'HOME': 'foo'}):
+            assert Config.get_config_file(
+                account_name='bob', platform='lin'
+            ) == 'foo/.config/azurectl/bob.config'
+        with patch.dict('os.environ', {'HOME': 'foo'}):
+            assert Config.get_config_file(
+                filename='bob', platform='lin'
+            ) == 'bob'
+        with patch.dict('os.environ', {'HOME': 'foo'}):
+            assert Config.get_config_file(
+                platform='lin'
+            ) == 'foo/.config/azurectl/config'
+
+    @patch('azurectl.config.ConfigFilePath')
+    def test_get_config_file_list(self, mock_config_path):
+        paths = mock.Mock()
+        paths.default_config.return_value = 'a'
+        paths.account_config.return_value = ['b', 'c']
+        mock_config_path.return_value = paths
+        assert Config.get_config_file_list() == ['a', 'b', 'c']
+        paths.default_config.assert_called_once_with()
+        paths.account_config.assert_called_once_with()
+
+    @patch('azurectl.config.ConfigFilePath')
+    @patch('os.remove')
+    @patch('os.symlink')
+    @patch('os.path.exists')
+    @patch('os.path.islink')
+    def test_set_default_config_file(
+        self, mock_islink, mock_exists, mock_symlink, mock_remove,
+        mock_config_path
+    ):
+        paths = mock.Mock()
+        paths.default_new_account_config.return_value = 'account-config'
+        paths.default_config.return_value = None
+        paths.default_new_config.return_value = 'default-config'
+        mock_config_path.return_value = paths
+        mock_exists.return_value = True
+        mock_islink.return_value = True
+        Config.set_default_config_file('account-name')
+        mock_config_path.assert_called_once_with('account-name', None)
+        mock_remove.assert_called_once_with('default-config')
+        mock_symlink.assert_called_once_with(
+            'account-config', 'default-config'
+        )
+
+    @patch('azurectl.config.ConfigFilePath')
+    @patch('os.path.exists')
+    @raises(AzureConfigAccountFileNotFound)
+    def test_set_default_config_file_acount_config_does_not_exist(
+        self, mock_exists, mock_config_path
+    ):
+        paths = mock.Mock()
+        paths.default_new_account_config.return_value = 'account-config'
+        mock_config_path.return_value = paths
+        mock_exists.return_value = False
+        Config.set_default_config_file('account-name')
+
+    @patch('azurectl.config.ConfigFilePath')
+    @patch('os.path.exists')
+    @patch('os.path.islink')
+    @raises(AzureConfigDefaultLinkError)
+    def test_set_default_config_file_exists_as_file(
+        self, mock_islink, mock_exists, mock_config_path
+    ):
+        paths = mock.Mock()
+        paths.default_new_account_config.return_value = 'account-config'
+        paths.default_config.return_value = 'default-config'
+        mock_config_path.return_value = paths
+        mock_exists.return_value = True
+        mock_islink.return_value = False
+        Config.set_default_config_file('account-name')
+
     @raises(AzureConfigVariableNotFound)
     def test_get_subscription_id_missing(self):
         assert self.config.get_subscription_id()
@@ -65,7 +141,9 @@ class TestConfig:
         Config(filename='../data/config_parse_error')
 
     @raises(AzureAccountLoadFailed)
-    def test_config_account_name_not_found(self):
+    @patch('os.path.isfile')
+    def test_config_account_name_not_found(self, mock_isfile):
+        mock_isfile.return_value = False
         Config(
             account_name='account-name'
         )

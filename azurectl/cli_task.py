@@ -19,11 +19,6 @@ from cli import Cli
 from config import Config
 from help import Help
 from validations import Validations
-from config_file_path import ConfigFilePath
-
-from azurectl_exceptions import (
-    AzureAccountLoadFailed
-)
 
 
 class CliTask(object):
@@ -57,24 +52,15 @@ class CliTask(object):
             log.setLevel(logging.DEBUG)
 
     def load_config(self):
-        try:
-            self.config = Config(
-                self.global_args['--account'],
-                self.global_args['--region'],
-                self.global_args['--storage-account'],
-                self.global_args['--storage-container'],
-                self.global_args['--config']
-            )
-            self.config_file = self.config.config_file
-        except AzureAccountLoadFailed as e:
-            if 'configure' in self.command_args:
-                self.config_file = ConfigFilePath().default_new_config()
-            else:
-                raise AzureAccountLoadFailed(
-                    format(e)
-                )
+        self.config = Config(
+            self.global_args['--account'],
+            self.global_args['--region'],
+            self.global_args['--storage-account'],
+            self.global_args['--storage-container'],
+            self.global_args['--config']
+        )
+        self.config_file = self.config.config_file
 
-    # validations
     def validate_min_length(self, cmd_arg, min_length):
         Validations.validate_min_length(
             cmd_arg,

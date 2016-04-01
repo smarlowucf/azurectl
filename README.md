@@ -102,30 +102,30 @@ directory (__HOMEPATH__ setting on Windows.)
 
 2. ~/.azurectl/config
 
-An alternate location for the configuration file can be specified with the
+A custom configuration file can be specified with the
 `--config` command line option.
 
 The configuration file uses the INI format. Each section provides information
-for a given account. The default section is named __default__ and is used
-when no account name is specified with the `--account` command line option.
+for account or region information. The default section is named __DEFAULT__ and
+is used to combine an account with a region section.
 
-Each configured account in the configuration file must contain the 
+In order to configure and manage Azure accounts, azurectl provides the
+__setup__ command. Each account configuration will be stored as extra
+account configuration file. The __setup account default__ subcommmand
+allows to link the specified account as the default configuration file.
 
-* default storage account name
-* default storage container name
-* path to the Publish Settings file
-
-In order to create or manage the account sections in the config file,
-azurectl provides the __setup__ command. The default account section
-as described above could be created using the following command
+Use the following commands to configure an Azure account and make
+it the default configuration.
 
 ```
 $ azurectl setup account configure \
-  --name default \
+  --name my_account \
   --publish-settings-file /path/to/publish/settings/file \
   --region region
   --storage-account-name storage_account_name \
   --container-name container_name
+
+$ azurectl setup account default --name my_account
 ```
 
 ### Usage

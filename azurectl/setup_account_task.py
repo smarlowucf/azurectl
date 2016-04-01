@@ -13,43 +13,48 @@
 #
 """
 usage: azurectl setup account -h | --help
-       azurectl setup account configure --name=<account_name> --publish-settings-file=<file> --region=<region_name> --storage-account-name=<storagename> --container-name=<containername>
-       azurectl setup account add --name=<account_name> --publish-settings-file=<file>
+       azurectl setup account configure --name=<account_name> --publish-settings-file=<file>
            [--subscription-id=<subscriptionid>]
-       azurectl setup account default --name=<configname>
+           [--region=<region_name> --storage-account-name=<storagename> --container-name=<containername>]
+       azurectl setup account default --name=<account_name>
        azurectl setup account list
-       azurectl setup account region add --name=<region_name> --storage-account-name=<storagename> --container-name=<containername>
-       azurectl setup account region default --name=<configname>
-       azurectl setup account remove --name=<configname>
-       azurectl setup account configure help
+       azurectl setup account region add --region=<region_name> --storage-account-name=<storagename> --container-name=<containername>
+           [--name=<account_name>]
+       azurectl setup account region default --region=<region_name>
+           [--name=<account_name>]
+       azurectl setup account remove --name=<account_name>
        azurectl setup account region help
        azurectl setup account help
 
 commands:
-    add
-        add a new account section to the config file
     configure
-        add a new account and region configuration to the config file
+        create new account config file
     default
-        set a new default account to use if not explicitly specified
+        set the given account as default config
     list
         list configured account and region sections. Also list
-        information about default references
+        information about default config file
     region add
-        add a new region section to the config file
+        add new region section to the config file. If specified
+        the given account config file is used, otherwise the default
+        config file
     region default
-        set a new default region to use if not explicitly specified
+        set new default region in config file. If specified
+        the given account config file is used, otherwise the default
+        config file
     remove
-        remove specified section from config file
+        remove specified account config file
+    region help
+        show manual page for account region subcommand
     help
-        show manual page for config command
+        show manual page for account command
 
 options:
     --container-name=<containername>
         specify default container name used with the storage account
         in the selected region.
-    --name=<configname>
-        section name to identify this account
+    --name=<account_name>
+        account name used for account config file lookup
     --publish-settings-file=<file>
         path to the Microsoft Azure account publish settings file
     --storage-account-name=<storagename>
@@ -58,6 +63,8 @@ options:
         subscription id, if more than one subscription is included in your
         publish settings file.
 """
+import os
+
 # project
 from cli_task import CliTask
 from logger import log
@@ -65,6 +72,7 @@ from help import Help
 from account_setup import AccountSetup
 from data_collector import DataCollector
 from data_output import DataOutput
+from config import Config
 
 
 class SetupAccountTask(CliTask):
@@ -76,10 +84,6 @@ class SetupAccountTask(CliTask):
         if self.__help():
             return
 
-        self.load_config()
-
-        self.setup = AccountSetup(self.config_file)
-
         self.result = DataCollector()
         self.out = DataOutput(
             self.result,
@@ -89,26 +93,23 @@ class SetupAccountTask(CliTask):
 
         if self.command_args['list']:
             self.__list()
-        elif self.command_args['remove']:
-            self.__remove()
-        elif self.command_args['configure']:
-            self.__configure_account_and_region()
-        elif self.command_args['add'] and self.command_args['region']:
-            self.__region_add()
-        elif self.command_args['add']:
-            self.__account_add()
-        elif self.command_args['default'] and self.command_args['region']:
-            self.__set_region_default()
-        elif self.command_args['default']:
-            self.__set_account_default()
-
-        if not self.command_args['list']:
-            self.setup.write()
+        elif self.command_args['default'] and not self.command_args['region']:
+            self.__default()
+        else:
+            self.__load_account_setup(
+                self.command_args['--name']
+            )
+            if self.command_args['remove']:
+                self.__remove()
+            elif self.command_args['configure']:
+                self.__configure_account()
+            elif self.command_args['region'] and self.command_args['add']:
+                self.__region_add()
+            elif self.command_args['region'] and self.command_args['default']:
+                self.__set_region_default()
 
     def __help(self):
-        if self.command_args['configure'] and self.command_args['help']:
-            self.manual.show('azurectl::setup::account::configure')
-        elif self.command_args['region'] and self.command_args['help']:
+        if self.command_args['region'] and self.command_args['help']:
             self.manual.show('azurectl::setup::account::region')
         elif self.command_args['help']:
             self.manual.show('azurectl::setup::account')
@@ -116,8 +117,22 @@ class SetupAccountTask(CliTask):
             return False
         return self.manual
 
-    def __configure_account_and_region(self):
-        self.setup.configure_account_and_region(
+    def __load_account_setup(self, for_account=None):
+        self.setup = AccountSetup(
+            Config.get_config_file(account_name=for_account)
+        )
+
+    def __default(self):
+        Config.set_default_config_file(
+            account_name=self.command_args['--name']
+        )
+        log.info(
+            'Account %s has been set as default configuration',
+            self.command_args['--name']
+        )
+
+    def __configure_account(self):
+        self.setup.configure_account(
             self.command_args['--name'],
             self.command_args['--publish-settings-file'],
             self.command_args['--region'],
@@ -125,56 +140,47 @@ class SetupAccountTask(CliTask):
             self.command_args['--container-name'],
             self.command_args['--subscription-id']
         )
+        self.setup.write()
         log.info(
-            'Added account %s with region %s',
-            self.command_args['--name'],
-            self.command_args['--region']
+            'Added account %s', self.command_args['--name']
         )
-
-    def __account_add(self):
-        self.setup.add_account(
-            self.command_args['--name'],
-            self.command_args['--publish-settings-file'],
-            self.command_args['--subscription-id']
-        )
-        log.info('Added account %s', self.command_args['--name'])
 
     def __region_add(self):
         self.setup.add_region(
-            self.command_args['--name'],
+            self.command_args['--region'],
             self.command_args['--storage-account-name'],
             self.command_args['--container-name']
         )
-        log.info('Added region %s', self.command_args['--name'])
-
-    def __set_account_default(self):
-        if self.setup.set_default_account(
-            self.command_args['--name']
-        ):
-            log.info(
-                'Account %s is now set as default account',
-                self.command_args['--name']
-            )
+        self.setup.write()
+        log.info('Added region %s', self.command_args['--region'])
 
     def __set_region_default(self):
-        if self.setup.set_default_region(
-            self.command_args['--name']
-        ):
+        if self.setup.set_default_region(self.command_args['--region']):
+            self.setup.write()
             log.info(
-                'Region %s is now set as default account',
-                self.command_args['--name']
+                'Region %s is now set as default',
+                self.command_args['--region'],
             )
 
-    def __list(self):
-        account_info = self.setup.list()
-        if not account_info:
-            log.info('There are no accounts configured')
-        else:
-            self.result.add('setup', account_info)
-            self.out.display()
-
     def __remove(self):
-        if self.setup.remove(
-            self.command_args['--name']
-        ):
-            log.info('Removed config section %s', self.command_args['--name'])
+        self.setup.remove()
+        log.info('Removed account config file %s', self.setup.filename)
+
+    def __list(self):
+        config_files = Config.get_config_file_list()
+        default_config_file = config_files[0] or '<missing>'
+        if os.path.islink(default_config_file):
+            default_config_file = os.readlink(default_config_file)
+
+        self.result.add(
+            'default_config_file', default_config_file
+        )
+
+        for config_file in config_files:
+            if config_file and not os.path.islink(config_file):
+                setup = AccountSetup(config_file)
+                account_info = setup.list()
+                if account_info:
+                    self.result.add(config_file, account_info)
+
+        self.out.display()

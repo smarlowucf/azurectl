@@ -65,6 +65,14 @@ class AzureCommandNotLoaded(AzureError):
     pass
 
 
+class AzureConfigDefaultLinkError(AzureError):
+    pass
+
+
+class AzureConfigAccountFileNotFound(AzureError):
+    pass
+
+
 class AzureConfigAccountNotFound(AzureError):
     pass
 

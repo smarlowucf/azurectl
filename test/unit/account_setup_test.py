@@ -19,7 +19,7 @@ class TestAccountSetup:
     def setup(self):
         self.setup = AccountSetup('../data/config')
         self.orig_data = {
-            'DEFAULT': {
+            'account_region_map': {
                 'account': 'account:bob',
                 'region': 'region:East US 2'
             },
@@ -43,7 +43,7 @@ class TestAccountSetup:
             }
         }
         self.delete_account_data = {
-            'DEFAULT': {
+            'account_region_map': {
                 'account': 'account:bob',
                 'region': 'region:East US 2'
             },
@@ -64,7 +64,7 @@ class TestAccountSetup:
             }
         }
         self.delete_region_data = {
-            'DEFAULT': {
+            'account_region_map': {
                 'account': 'account:bob',
                 'region': 'region:East US 2'
             },
@@ -84,7 +84,7 @@ class TestAccountSetup:
             }
         }
         self.add_account_data = {
-            'DEFAULT': {
+            'account_region_map': {
                 'account': 'account:bob',
                 'region': 'region:East US 2'
             },
@@ -112,7 +112,7 @@ class TestAccountSetup:
             }
         }
         self.add_region_data = {
-            'DEFAULT': {
+            'account_region_map': {
                 'account': 'account:bob',
                 'region': 'region:East US 2'
             },
@@ -140,7 +140,7 @@ class TestAccountSetup:
             }
         }
         self.configure_data = {
-            'DEFAULT': {
+            'account_region_map': {
                 'account': 'account:bob',
                 'region': 'region:East US 2'
             },
@@ -175,8 +175,8 @@ class TestAccountSetup:
     def test_list(self):
         assert self.setup.list() == self.orig_data
 
-    def test_configure_account_and_region(self):
-        self.setup.configure_account_and_region(
+    def test_configure_account(self):
+        self.setup.configure_account(
             'xxx', '../data/publishsettings',
             'some-region', 'storage', 'container',
             '1234'
@@ -200,14 +200,14 @@ class TestAccountSetup:
         setup.add_account(
             'some-account', '../data/publishsettings', '1234'
         )
-        assert setup.list()['DEFAULT']['account'] == 'account:some-account'
+        assert setup.list()['account_region_map']['account'] == 'account:some-account'
 
     def test_add_first_region_as_default(self):
         setup = AccountSetup('../data/config.new')
         setup.add_region(
             'earth', 'storage', 'container'
         )
-        assert setup.list()['DEFAULT']['region'] == 'region:earth'
+        assert setup.list()['account_region_map']['region'] == 'region:earth'
 
     @patch('__builtin__.open')
     @patch('os.path.exists')
@@ -221,13 +221,18 @@ class TestAccountSetup:
 
     def test_set_default_account(self):
         self.setup.set_default_account('foo')
-        assert self.setup.list()['DEFAULT']['account'] == 'account:foo'
+        assert self.setup.list()['account_region_map']['account'] == 'account:foo'
         assert self.setup.set_default_account('foofoo') is False
 
     def test_set_default_region(self):
         self.setup.set_default_region('West US 1')
-        assert self.setup.list()['DEFAULT']['region'] == 'region:West US 1'
+        assert self.setup.list()['account_region_map']['region'] == 'region:West US 1'
         assert self.setup.set_default_region('foofoo') is False
+
+    @patch('os.remove')
+    def test_remove(self, mock_remove):
+        self.setup.remove()
+        mock_remove.assert_called_once_with('../data/config')
 
     def test_remove_account(self):
         self.setup.remove_account('foo')
