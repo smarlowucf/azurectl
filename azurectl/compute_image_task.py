@@ -21,6 +21,7 @@ usage: azurectl compute image -h | --help
            [--delete-disk]
        azurectl compute image replicate --name=<imagename> --regions=<regionlist> --offer=<offer> --sku=<sku> --image-version=<version>
            [--wait]
+           [--quiet]
        azurectl compute image replication-status --name=<imagename>
        azurectl compute image unreplicate --name=<imagename>
        azurectl compute image update --name=<imagename>
@@ -82,11 +83,15 @@ options:
         semantic version of the image
     --wait
         wait until replication is complete to end execution
+    --quiet
+        suppress progress information during replication
     --private
         restrict publish scope to be private
     --msdn
         restrict publish scope to the Microsoft Developer Network
 """
+from apscheduler.schedulers.background import BackgroundScheduler
+from pytz import utc
 # project
 from logger import log
 from cli_task import CliTask
@@ -175,22 +180,39 @@ class ComputeImageTask(CliTask):
         self.out.display()
 
     def __replicate(self):
+        image_name = self.command_args['--name']
         self.result.add(
             'replicate:' +
             self.command_args['--name'] + ':' + self.command_args['--regions'],
             self.image.replicate(
-                self.command_args['--name'],
+                image_name,
                 self.command_args['--regions'].split(','),
                 self.command_args['--offer'],
                 self.command_args['--sku'],
                 self.command_args['--image-version']
             )
         )
-        self.out.display()
+        if not self.command_args['--quiet']:
+            self.out.display()
         if self.command_args['--wait']:
-            self.image.wait_for_replication_completion(
-                self.command_args['--name']
-            )
+            if not self.command_args['--quiet']:
+                progress = BackgroundScheduler(timezone=utc)
+                progress.add_job(
+                    lambda: self.image.print_replication_status(image_name),
+                    'interval',
+                    minutes=5
+                )
+            progress.start()
+            try:
+                self.image.wait_for_replication_completion(image_name)
+                self.image.print_replication_status(image_name)
+            except KeyboardInterrupt:
+                raise SystemExit('azurectl aborted by keyboard interrupt')
+            finally:
+                progress.shutdown()
+        if not self.command_args['--quiet']:
+            print
+            log.info('Replicated %s', image_name)
 
     def __replication_status(self, image_name):
         self.result.add(

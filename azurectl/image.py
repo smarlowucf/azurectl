@@ -32,6 +32,7 @@ from azurectl_exceptions import (
     AzureOsImageUpdateError
 )
 from defaults import Defaults
+from logger import log
 
 
 class Image(object):
@@ -54,8 +55,9 @@ class Image(object):
         self.cert_file.write(self.publishsettings.certificate)
         self.cert_file.flush()
 
-        self.sleep_between_requests = 300
-        self.max_failures = 4
+        self.sleep_between_requests = 120
+        self.max_failures = 5
+        self.cached_replication_status = None
 
     def list(self):
         result = []
@@ -222,12 +224,29 @@ class Image(object):
             raise AzureOsImageDetailsShowError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
+        self.cached_replication_status = \
+            image_details.replication_progress.replication_progress_elements
+
         results = []
         for element in image_details.replication_progress:
             results.append(
                 self.__decorate_replication_progress_element(element)
             )
         return results
+
+    def print_replication_status(self, name):
+        if not self.cached_replication_status:
+            self.replication_status(name)
+        cumulative_progress = 0
+        for element in self.cached_replication_status:
+            cumulative_progress += element.progress
+        average_progress = \
+            cumulative_progress / len(self.cached_replication_status)
+        log.progress(
+            cumulative_progress,
+            len(self.cached_replication_status) * 100,
+            'Replicating'
+        )
 
     def wait_for_replication_completion(self, name):
         service = ServiceManagementService(

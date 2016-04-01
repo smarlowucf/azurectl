@@ -227,6 +227,22 @@ class TestImage:
         assert results == expected_results
 
     @patch('azurectl.image.ServiceManagementService.get_os_image_details')
+    def test_replication_status_populates_cache(self, mock_get_details):
+        # given
+        fake_details = self.__fake_os_image_details(
+            self.fake_image_name,
+            ['Region 1', 100, 'Region 2', 50]
+        )
+        mock_get_details.return_value = fake_details
+        self.image.cached_replication_status = None
+        # when
+        self.image.replication_status(self.fake_image_name)
+        # then
+        mock_get_details.assert_called_once_with(self.fake_image_name)
+        assert self.image.cached_replication_status == \
+            fake_details.replication_progress.replication_progress_elements
+
+    @patch('azurectl.image.ServiceManagementService.get_os_image_details')
     # then
     @raises(AzureOsImageDetailsShowError)
     def test_replication_status_upstream_exception(self, mock_get_details):
@@ -234,6 +250,41 @@ class TestImage:
         mock_get_details.side_effect = Exception
         # when
         results = self.image.replication_status(self.fake_image_name)
+
+    @patch('azurectl.image.log')
+    def test_print_replication_status(self, mock_log):
+        # given
+        fake_details = self.__fake_os_image_details(
+            self.fake_image_name,
+            ['Region 1', 100, 'Region 2', 50]
+        )
+        self.image.cached_replication_status = \
+            fake_details.replication_progress.replication_progress_elements
+        # when
+        self.image.print_replication_status(self.fake_image_name)
+        # then
+        mock_log.progress.assert_called_once_with(150, 200, 'Replicating')
+
+    @patch('azurectl.image.log')
+    @patch('azurectl.image.ServiceManagementService.get_os_image_details')
+    def test_print_replication_status_populates_cache(
+            self,
+            mock_get_details,
+            mock_log
+                                                      ):
+        # given
+        fake_details = self.__fake_os_image_details(
+            self.fake_image_name,
+            ['Region 1', 100, 'Region 2', 50]
+        )
+        mock_get_details.return_value = fake_details
+        self.image.cached_replication_status = None
+        # when
+        self.image.print_replication_status(self.fake_image_name)
+        # then
+        mock_get_details.assert_called_once_with(self.fake_image_name)
+        assert self.image.cached_replication_status == \
+            fake_details.replication_progress.replication_progress_elements
 
     @patch('azurectl.image.ServiceManagementService.get_os_image_details')
     def test_wait_for_replication_completion(self, mock_get_details):
@@ -268,7 +319,7 @@ class TestImage:
         # when
         self.image.wait_for_replication_completion(self.fake_image_name)
         # then
-        assert mock_get_details.call_count == 4
+        assert mock_get_details.call_count == self.image.max_failures
 
     @patch('azurectl.image.ServiceManagementService.unreplicate_vm_image')
     def test_unreplicate(self, mock_unreplicate):
