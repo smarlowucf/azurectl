@@ -240,8 +240,6 @@ class Image(object):
         cumulative_progress = 0
         for element in self.cached_replication_status:
             cumulative_progress += element.progress
-        average_progress = \
-            cumulative_progress / len(self.cached_replication_status)
         log.progress(
             cumulative_progress,
             len(self.cached_replication_status) * 100,
@@ -249,11 +247,6 @@ class Image(object):
         )
 
     def wait_for_replication_completion(self, name):
-        service = ServiceManagementService(
-            self.publishsettings.subscription_id,
-            self.cert_file.name,
-            self.publishsettings.management_url
-        )
         failures = 0
         complete = False
         while not complete:
