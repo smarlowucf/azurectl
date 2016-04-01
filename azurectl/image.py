@@ -20,6 +20,7 @@ from azure.storage.blob.baseblobservice import BaseBlobService
 
 # project
 from azurectl_exceptions import (
+    AzureOsImageDetailsShowError,
     AzureOsImageListError,
     AzureOsImageShowError,
     AzureBlobServicePropertyError,
@@ -206,6 +207,25 @@ class Image(object):
                 '%s: %s' % (type(e).__name__, format(e))
             )
 
+    def replication_status(self, name):
+        service = ServiceManagementService(
+            self.publishsettings.subscription_id,
+            self.cert_file.name,
+            self.publishsettings.management_url
+        )
+        try:
+            image_details = service.get_os_image_details(name)
+        except Exception as e:
+            raise AzureOsImageDetailsShowError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
+        results = []
+        for element in image_details.replication_progress:
+            results.append(
+                self.__decorate_replication_progress_element(element)
+            )
+        return results
+
     def unreplicate(self, name):
         service = ServiceManagementService(
             self.publishsettings.subscription_id,
@@ -282,4 +302,10 @@ class Image(object):
             'recommended_vm_size': image.recommended_vm_size,
             'show_in_gui': image.show_in_gui,
             'small_icon_uri': image.small_icon_uri
+        }
+
+    def __decorate_replication_progress_element(self, element):
+        return {
+            'region': element.location,
+            'replication-progress': '{}%'.format(element.progress)
         }

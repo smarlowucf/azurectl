@@ -31,6 +31,7 @@ class TestComputeImageTask:
         self.task.command_args['create'] = False
         self.task.command_args['delete'] = False
         self.task.command_args['replicate'] = False
+        self.task.command_args['replication-status'] = False
         self.task.command_args['unreplicate'] = False
         self.task.command_args['publish'] = False
         self.task.command_args['update'] = False
@@ -112,6 +113,15 @@ class TestComputeImageTask:
             self.task.command_args['--offer'],
             self.task.command_args['--sku'],
             self.task.command_args['--image-version']
+        )
+
+    @patch('azurectl.compute_image_task.DataOutput')
+    def test_process_compute_image_replication_status(self, mock_out):
+        self.__init_command_args()
+        self.task.command_args['replication-status'] = True
+        self.task.process()
+        self.task.image.replication_status.assert_called_once_with(
+            self.task.command_args['--name']
         )
 
     @patch('azurectl.compute_image_task.DataOutput')

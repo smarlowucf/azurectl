@@ -20,6 +20,7 @@ usage: azurectl compute image -h | --help
        azurectl compute image delete --name=<imagename>
            [--delete-disk]
        azurectl compute image replicate --name=<imagename> --regions=<regionlist> --offer=<offer> --sku=<sku> --image-version=<version>
+       azurectl compute image replication-status --name=<imagename>
        azurectl compute image unreplicate --name=<imagename>
        azurectl compute image update --name=<imagename>
            [--description=<description>]
@@ -47,6 +48,9 @@ commands:
         delete OS image from VM image repository
     replicate
         replicate registered VM image to specified regions
+    replication-status
+        show which regions an image is replicated to, and the status of
+        replication, as a percentage of the image data being replicated
     unreplicate
         unreplicate registered VM image from specified regions
     update
@@ -121,6 +125,8 @@ class ComputeImageTask(CliTask):
             self.__delete()
         elif self.command_args['replicate']:
             self.__replicate()
+        elif self.command_args['replication-status']:
+            self.__replication_status(self.command_args['--name'])
         elif self.command_args['unreplicate']:
             self.__unreplicate()
         elif self.command_args['publish']:
@@ -176,6 +182,13 @@ class ComputeImageTask(CliTask):
                 self.command_args['--sku'],
                 self.command_args['--image-version']
             )
+        )
+        self.out.display()
+
+    def __replication_status(self, image_name):
+        self.result.add(
+            'replication-status:' + image_name,
+            self.image.replication_status(image_name)
         )
         self.out.display()
 
