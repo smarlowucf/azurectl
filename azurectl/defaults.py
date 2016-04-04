@@ -58,7 +58,8 @@ class Defaults(object):
     @classmethod
     def account_type_for_docopts(self, docopts, return_default=True):
         for account_type_tuple in self.__get_account_type_tuples():
-            if docopts[account_type_tuple.command]:
+            selection = account_type_tuple.command
+            if selection in docopts and docopts[selection]:
                 return account_type_tuple.account_type
         if return_default:
             return 'Standard_GRS'

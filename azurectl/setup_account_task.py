@@ -15,7 +15,7 @@
 usage: azurectl setup account -h | --help
        azurectl setup account configure --name=<account_name> --publish-settings-file=<file>
            [--subscription-id=<subscriptionid>]
-           [--region=<region_name> --storage-account-name=<storagename> --container-name=<containername>]
+           [--region=<region_name> --storage-account-name=<storagename> --container-name=<containername> --create]
        azurectl setup account default --name=<account_name>
        azurectl setup account list
        azurectl setup account region add --region=<region_name> --storage-account-name=<storagename> --container-name=<containername>
@@ -53,6 +53,9 @@ options:
     --container-name=<containername>
         specify default container name used with the storage account
         in the selected region.
+    --create
+        process storage and container configuration and create the
+        storage account and the container in Azure
     --name=<account_name>
         account name used for account config file lookup
     --publish-settings-file=<file>
@@ -73,6 +76,15 @@ from account_setup import AccountSetup
 from data_collector import DataCollector
 from data_output import DataOutput
 from config import Config
+from container import Container
+from storage_account import StorageAccount
+from azure_account import AzureAccount
+from defaults import Defaults
+from request_result import RequestResult
+
+from azurectl_exceptions import (
+    AzureAccountConfigurationError
+)
 
 
 class SetupAccountTask(CliTask):
@@ -144,6 +156,47 @@ class SetupAccountTask(CliTask):
         log.info(
             'Added account %s', self.command_args['--name']
         )
+        if self.command_args['--create']:
+            self.global_args['--account'] = self.command_args['--name']
+            self.load_config()
+            self.account = AzureAccount(self.config)
+            self.__load_account_setup(
+                self.command_args['--name']
+            )
+
+            try:
+                storage_account = StorageAccount(self.account)
+                storage_account_request_id = storage_account.create(
+                    name=self.command_args['--storage-account-name'],
+                    description=self.command_args['--name'],
+                    label=self.command_args['--storage-account-name'],
+                    account_type=Defaults.account_type_for_docopts(
+                        self.command_args
+                    )
+                )
+                if storage_account_request_id > 0:
+                    request_result = RequestResult(storage_account_request_id)
+                    request_result.wait_for_request_completion(
+                        storage_account.service
+                    )
+                log.info(
+                    'Created %s storage account',
+                    self.command_args['--storage-account-name']
+                )
+
+                container = Container(self.account)
+                container.create(
+                    self.command_args['--container-name']
+                )
+                log.info(
+                    'Created %s container',
+                    self.command_args['--container-name']
+                )
+            except Exception as e:
+                self.__remove()
+                raise AzureAccountConfigurationError(
+                    '%s: %s' % (type(e).__name__, format(e))
+                )
 
     def __region_add(self):
         self.setup.add_region(
