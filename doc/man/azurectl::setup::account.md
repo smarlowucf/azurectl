@@ -7,7 +7,7 @@ azurectl - Command Line Interface to manage Microsoft Azure
 __azurectl__ setup account configure --name=*account_name* --publish-settings-file=*file*
 
     [--subscription-id=subscriptionid]
-    [--region=region_name --storage-account-name=storagename --container-name=containername]
+    [--region=region_name --storage-account-name=storagename --container-name=containername --create]
 
 __azurectl__ setup account default --name=*account_name*
 
@@ -63,3 +63,7 @@ The name of the storage account which must exist in the configured region
 ## __--container-name=containername__
 
 The name of the container which must exist in the configured storage account
+
+## __--create__
+
+Optional paramter for the account configuration. Allows to create the storage account and its container in Azure
