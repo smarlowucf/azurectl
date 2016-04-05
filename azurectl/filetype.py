@@ -11,6 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import os
 import re
 import subprocess
 
@@ -20,6 +21,7 @@ class FileType(object):
         map file magic information to type methods
     """
     def __init__(self, file_name):
+        self.file_name = file_name
         file_info = subprocess.Popen(
             ['file', file_name],
             stdout=subprocess.PIPE,
@@ -31,3 +33,10 @@ class FileType(object):
         if re.match('.*: XZ compressed', self.filetype):
             return True
         return False
+
+    def basename(self):
+        name = os.path.basename(self.file_name)
+        if self.is_xz():
+            name = re.sub('\.(xz|lzma)$', '', name)
+            name = re.sub('\.(tgz|tlz)$', '.tar', name)
+        return name

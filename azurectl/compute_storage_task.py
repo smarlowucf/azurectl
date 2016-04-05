@@ -27,7 +27,8 @@ usage: azurectl compute storage -h | --help
        azurectl compute storage share list
        azurectl compute storage share create --name=<sharename>
        azurectl compute storage share delete --name=<sharename>
-       azurectl compute storage upload --source=<file> --name=<blobname>
+       azurectl compute storage upload --source=<file>
+           [--name=<blobname>]
            [--max-chunk-size=<size>]
            [--quiet]
        azurectl compute storage delete --name=<blobname>
