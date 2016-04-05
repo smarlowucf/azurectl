@@ -17,18 +17,14 @@ from azure.servicemanagement import ServiceManagementService
 
 class ServiceManager(object):
     def __init__(self, account):
-        self.setup_account(account)
-        self.service = self.get_service()
-
-    def setup_account(self, account):
         self.account = account
-        self.account_name = account.storage_name()
-        self.account_key = account.storage_key()
         self.cert_file = NamedTemporaryFile()
         self.publishsettings = self.account.publishsettings()
         self.cert_file.write(self.publishsettings.private_key)
         self.cert_file.write(self.publishsettings.certificate)
         self.cert_file.flush()
+
+        self.service = self.get_service()
 
     def get_service(self):
         return ServiceManagementService(
