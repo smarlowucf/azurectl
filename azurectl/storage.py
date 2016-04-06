@@ -47,14 +47,13 @@ class Storage(object):
             self.account_key,
             endpoint_suffix=self.blob_service_host_base
         )
-        blob_name = name
-        if not blob_name:
-            blob_name = os.path.basename(image)
 
         image_type = FileType(image)
-        image_size = self.__upload_byte_size(
-            image, image_type
-        )
+        blob_name = (name or image_type.basename())
+        if not name:
+            log.info('blob-name: %s', blob_name)
+        image_size = self.__upload_byte_size(image, image_type)
+
         try:
             stream = self.__open_upload_stream(image, image_type)
         except Exception as e:
