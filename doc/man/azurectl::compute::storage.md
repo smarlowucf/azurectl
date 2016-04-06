@@ -4,7 +4,11 @@ azurectl - Command Line Interface to manage Microsoft Azure
 
 # SYNOPSIS
 
-__azurectl__ compute storage upload --source=*file* --name=*blobname*
+__azurectl__ compute storage upload --source=*file*
+
+    [--name=<blobname>]
+    [--max-chunk-size=<size>]
+    [--quiet]
 
 __azurectl__ compute storage delete --name=*blobname*
 
@@ -21,6 +25,11 @@ While any kind of data can be uploaded to the blob storage the purpose of this c
 Delete a file from a container
 
 # OPTIONS
+
+## __--name=blobname__
+
+Name of the uploaded file in the storage pool. If not specified the name
+is the same as the file used for upload
 
 ## __--max-chunk-size=byte_size__
 
