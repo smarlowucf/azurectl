@@ -126,6 +126,7 @@ class TestSetupAccountTask:
         self.task.command_args['configure'] = True
         self.task.command_args['--create'] = True
         storage_account = mock.Mock()
+        storage_account.exists.return_value = False
         storage_account.create.side_effect = Exception
         self.task.load_config = mock.Mock()
         self.task.config = mock.Mock()
@@ -144,9 +145,11 @@ class TestSetupAccountTask:
         self.task.command_args['configure'] = True
         self.task.command_args['--create'] = True
         storage_account = mock.Mock()
+        storage_account.exists.return_value = False
         storage_account.create.return_value = 42
         mock_storage.return_value = storage_account
         container = mock.Mock()
+        container.exists.return_value = False
         mock_container.return_value = container
         self.task.load_config = mock.Mock()
         self.task.config = mock.Mock()
@@ -173,6 +176,35 @@ class TestSetupAccountTask:
             storage_account.service
         )
         container.create.assert_called_once_with('container-name')
+
+    @patch('azurectl.setup_account_task.AzureAccount')
+    @patch('azurectl.setup_account_task.Config')
+    @patch('azurectl.setup_account_task.StorageAccount')
+    @patch('azurectl.setup_account_task.Container')
+    def test_process_setup_configure_and_create_account_existing(
+        self, mock_container, mock_storage, mock_config, mock_azure_account
+    ):
+        self.__init_command_args()
+        self.task.command_args['configure'] = True
+        self.task.command_args['--create'] = True
+        storage_account = mock.Mock()
+        storage_account.exists.return_value = True
+        mock_storage.return_value = storage_account
+        container = mock.Mock()
+        container.exists.return_value = True
+        mock_container.return_value = container
+        self.task.load_config = mock.Mock()
+        self.task.config = mock.Mock()
+
+        self.task.process()
+        self.task.setup.configure_account.assert_called_once_with(
+            self.task.command_args['--name'],
+            self.task.command_args['--publish-settings-file'],
+            self.task.command_args['--region'],
+            self.task.command_args['--storage-account-name'],
+            self.task.command_args['--container-name'],
+            self.task.command_args['--subscription-id']
+        )
 
     def test_process_setup_account_remove(self):
         self.__init_command_args()

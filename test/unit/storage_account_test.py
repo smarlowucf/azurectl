@@ -142,6 +142,13 @@ class TestStorageAccount:
         result = self.storage_account.list()
         assert result == self.expected_list_result
 
+    def test_exists_false(self):
+        self.service.get_storage_account_properties.side_effect = Exception
+        assert self.storage_account.exists('some-name') is False
+
+    def test_exists_true(self):
+        assert self.storage_account.exists('some-name') is True
+
     @raises(AzureStorageAccountListError)
     def test_list_error(self):
         self.service.list_storage_accounts.side_effect = Exception

@@ -67,6 +67,18 @@ class Container(object):
             )
         return result
 
+    def exists(self, container):
+        blob_service = BaseBlobService(
+            self.account_name,
+            self.account_key,
+            endpoint_suffix=self.blob_service_host_base
+        )
+        try:
+            blob_service.get_container_properties(container)
+            return True
+        except Exception:
+            return False
+
     def create(self, container):
         blob_service = BaseBlobService(
             self.account_name,

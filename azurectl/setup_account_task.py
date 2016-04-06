@@ -165,33 +165,41 @@ class SetupAccountTask(CliTask):
             )
 
             try:
+                storage_account_name = self.command_args['--storage-account-name']
                 storage_account = StorageAccount(self.account)
-                storage_account_request_id = storage_account.create(
-                    name=self.command_args['--storage-account-name'],
-                    description=self.command_args['--name'],
-                    label=self.command_args['--storage-account-name'],
-                    account_type=Defaults.account_type_for_docopts(
-                        self.command_args
+                if not storage_account.exists(storage_account_name):
+                    storage_account_request_id = storage_account.create(
+                        name=storage_account_name,
+                        description=self.command_args['--name'],
+                        label=self.command_args['--storage-account-name'],
+                        account_type=Defaults.account_type_for_docopts(
+                            self.command_args
+                        )
                     )
-                )
-                if storage_account_request_id > 0:
                     request_result = RequestResult(storage_account_request_id)
                     request_result.wait_for_request_completion(
                         storage_account.service
                     )
-                log.info(
-                    'Created %s storage account',
-                    self.command_args['--storage-account-name']
-                )
+                    log.info(
+                        'Created %s storage account', storage_account_name
+                    )
+                else:
+                    log.info(
+                        'Storage account %s already exists',
+                        storage_account_name
+                    )
 
+                container_name = self.command_args['--container-name']
                 container = Container(self.account)
-                container.create(
-                    self.command_args['--container-name']
-                )
-                log.info(
-                    'Created %s container',
-                    self.command_args['--container-name']
-                )
+                if not container.exists(container_name):
+                    container.create(container_name)
+                    log.info(
+                        'Created %s container', container_name
+                    )
+                else:
+                    log.info(
+                        'Container %s already exists', container_name
+                    )
             except Exception as e:
                 self.__remove()
                 raise AzureAccountConfigurationError(
