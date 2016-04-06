@@ -1,23 +1,5 @@
 #!/bin/bash
 
-# Clone Azure SDK development fork on github
-git clone https://github.com/SUSE/azure-sdk-for-python.git
-git clone https://github.com/SUSE/azure-storage-python.git
-
-# Install specified branch
-branch_name=master
-(
-    cd azure-sdk-for-python
-    git checkout $branch_name
-    python setup.py build
-    python setup.py install
-)
-branch_name=master
-(
-    cd azure-storage-python
-    git checkout $branch_name
-    python setup.py build
-    python setup.py install
-)
+./.install-azure-sdk-from-git
 
 make flake8 test

@@ -202,7 +202,22 @@ $ pip2.7 install -U pip setuptools
 $ pip2.7 install -r .virtualenv.dev-requirements.txt
 ```
 
-5. Install azurectl in "development mode":
+5. __Optional__ install of a custom Azure SDK version
+
+   The installation of the azurectl requirements happens according to the
+   pip registry. However azurectl depends on the Microsoft SDK. If the
+   code you are about to implement for azurectl also requires changes in
+   the SDK or requires to use an SDK version which is not yet released,
+   it might be needed to pull in the latest code from the Azure SDK git
+   repositories. By default the helper script below will checkout the
+   SUSE forked version of the Microsoft Azure SDK which represents the
+   state of the master branch for which azurectl has been tested.
+
+   ```
+$ ./.install-azure-sdk-from-git
+```
+
+6. Install azurectl in "development mode":
 
    ```
 $ ./setup.py develop

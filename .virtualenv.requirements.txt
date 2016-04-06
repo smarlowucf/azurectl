@@ -13,8 +13,8 @@
 docopt
 APScheduler
 pyliblzma
-azure_storage
-azure_servicemanagement_legacy
+azure-storage
+azure-servicemanagement-legacy
 python-dateutil
 dnspython
 
