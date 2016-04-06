@@ -85,6 +85,13 @@ class StorageAccount(ServiceManager):
             )
         return result.request_id
 
+    def exists(self, name):
+        try:
+            self.service.get_storage_account_properties(name)
+            return True
+        except Exception:
+            return False
+
     def show(self, name):
         try:
             result = self.service.get_storage_account_properties(name)

@@ -25,6 +25,10 @@ class AzureError(Exception):
         return repr(self.message)
 
 
+class AzureAccountConfigurationError(AzureError):
+    pass
+
+
 class AzureAccountDefaultSectionNotFound(AzureError):
     pass
 

@@ -120,3 +120,12 @@ class TestContainer:
         assert 'sp=rl&' in parsed.query
         assert 'sr=c&' in parsed.query
         assert 'sig=' in parsed.query  # can't actively validate the signature
+
+    @patch('azurectl.container.BaseBlobService.get_container_properties')
+    def test_exists_false(self, mock_properties):
+        mock_properties.side_effect = Exception
+        assert self.container.exists('container_name') is False
+
+    @patch('azurectl.container.BaseBlobService.get_container_properties')
+    def test_exists_true(self, mock_properties):
+        assert self.container.exists('container_name') is True

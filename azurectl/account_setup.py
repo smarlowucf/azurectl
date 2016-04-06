@@ -12,6 +12,7 @@
 # limitations under the License.
 #
 from ConfigParser import ConfigParser
+from config import Config
 import os
 
 # project
@@ -71,7 +72,14 @@ class AccountSetup(object):
         """
             remove account configuration file
         """
+        default_config_file = Config.get_config_file()
         os.remove(self.filename)
+        if default_config_file and os.path.islink(default_config_file):
+            link_target = os.readlink(default_config_file)
+            if not os.path.exists(link_target):
+                # account configuration was also configured as default account
+                # remove the now broken default config symlink too
+                os.remove(default_config_file)
 
     def remove_account(self, name):
         """

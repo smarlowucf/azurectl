@@ -30,7 +30,6 @@ class DataDisk(ServiceManager):
     """
         Implements virtual machine data disk (non-root/boot disk) management.
     """
-
     def create(
         self,
         cloud_service_name,
@@ -163,8 +162,8 @@ class DataDisk(ServiceManager):
 
     def __data_disk_url(self, filename):
         blob_service = PageBlobService(
-            self.account_name,
-            self.account_key,
+            self.account.storage_name(),
+            self.account.storage_key(),
             endpoint_suffix=self.account.get_blob_service_host_base()
         )
         return blob_service.make_blob_url(

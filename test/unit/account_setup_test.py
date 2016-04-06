@@ -1,6 +1,7 @@
 import sys
 import mock
 from mock import patch
+from mock import call
 from test_helper import *
 
 from azurectl.azurectl_exceptions import (
@@ -230,9 +231,23 @@ class TestAccountSetup:
         assert self.setup.set_default_region('foofoo') is False
 
     @patch('os.remove')
-    def test_remove(self, mock_remove):
+    @patch('azurectl.config.Config.get_config_file')
+    @patch('os.path.islink')
+    @patch('os.path.exists')
+    @patch('os.readlink')
+    def test_remove(
+        self, mock_readlink, mock_exists, mock_islink,
+        mock_default_config, mock_remove
+    ):
+        mock_default_config.return_value = 'default-config'
+        mock_readlink.return_value = 'link-target'
+        mock_islink.return_value = True
+        mock_exists.return_value = False
         self.setup.remove()
-        mock_remove.assert_called_once_with('../data/config')
+        assert mock_remove.call_args_list == [
+            call('../data/config'),
+            call('default-config')
+        ]
 
     def test_remove_account(self):
         self.setup.remove_account('foo')

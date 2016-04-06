@@ -27,10 +27,11 @@ class TestSetupAccountTask:
     def __init_command_args(self):
         self.task.command_args = {}
         self.task.command_args['--color'] = False
-        self.task.command_args['--name'] = 'foo'
+        self.task.command_args['--create'] = False
+        self.task.command_args['--name'] = 'some-name'
         self.task.command_args['--publish-settings-file'] = 'file'
-        self.task.command_args['--storage-account-name'] = 'foo'
-        self.task.command_args['--container-name'] = 'foo'
+        self.task.command_args['--storage-account-name'] = 'storage-name'
+        self.task.command_args['--container-name'] = 'container-name'
         self.task.command_args['--subscription-id'] = False
         self.task.command_args['--region'] = 'region'
         self.task.command_args['default'] = False
@@ -47,7 +48,7 @@ class TestSetupAccountTask:
         self.__init_command_args()
         self.task.command_args['default'] = True
         self.task.process()
-        mock_set_default.assert_called_once_with(account_name='foo')
+        mock_set_default.assert_called_once_with(account_name='some-name')
 
     @patch('azurectl.setup_account_task.Config.get_config_file_list')
     @patch('azurectl.setup_account_task.AccountSetup')
@@ -104,6 +105,97 @@ class TestSetupAccountTask:
     def test_process_setup_configure_account(self):
         self.__init_command_args()
         self.task.command_args['configure'] = True
+        self.task.process()
+        self.task.setup.configure_account.assert_called_once_with(
+            self.task.command_args['--name'],
+            self.task.command_args['--publish-settings-file'],
+            self.task.command_args['--region'],
+            self.task.command_args['--storage-account-name'],
+            self.task.command_args['--container-name'],
+            self.task.command_args['--subscription-id']
+        )
+
+    @patch('azurectl.setup_account_task.AzureAccount')
+    @patch('azurectl.setup_account_task.Config')
+    @patch('azurectl.setup_account_task.StorageAccount')
+    @raises(AzureAccountConfigurationError)
+    def test_process_setup_configure_and_create_account_failed(
+        self, mock_storage, mock_config, mock_azure_account
+    ):
+        self.__init_command_args()
+        self.task.command_args['configure'] = True
+        self.task.command_args['--create'] = True
+        storage_account = mock.Mock()
+        storage_account.exists.return_value = False
+        storage_account.create.side_effect = Exception
+        self.task.load_config = mock.Mock()
+        self.task.config = mock.Mock()
+        self.task.process()
+
+    @patch('azurectl.setup_account_task.AzureAccount')
+    @patch('azurectl.setup_account_task.Config')
+    @patch('azurectl.setup_account_task.StorageAccount')
+    @patch('azurectl.setup_account_task.Container')
+    @patch('azurectl.setup_account_task.RequestResult')
+    def test_process_setup_configure_and_create_account(
+        self, mock_request, mock_container, mock_storage,
+        mock_config, mock_azure_account
+    ):
+        self.__init_command_args()
+        self.task.command_args['configure'] = True
+        self.task.command_args['--create'] = True
+        storage_account = mock.Mock()
+        storage_account.exists.return_value = False
+        storage_account.create.return_value = 42
+        mock_storage.return_value = storage_account
+        container = mock.Mock()
+        container.exists.return_value = False
+        mock_container.return_value = container
+        self.task.load_config = mock.Mock()
+        self.task.config = mock.Mock()
+        request_result = mock.Mock()
+        mock_request.return_value = request_result
+
+        self.task.process()
+        self.task.setup.configure_account.assert_called_once_with(
+            self.task.command_args['--name'],
+            self.task.command_args['--publish-settings-file'],
+            self.task.command_args['--region'],
+            self.task.command_args['--storage-account-name'],
+            self.task.command_args['--container-name'],
+            self.task.command_args['--subscription-id']
+        )
+        storage_account.create.assert_called_once_with(
+            account_type='Standard_GRS',
+            description='some-name',
+            label='storage-name',
+            name='storage-name'
+        )
+        mock_request.assert_called_once_with(42)
+        request_result.wait_for_request_completion.assert_called_once_with(
+            storage_account.service
+        )
+        container.create.assert_called_once_with('container-name')
+
+    @patch('azurectl.setup_account_task.AzureAccount')
+    @patch('azurectl.setup_account_task.Config')
+    @patch('azurectl.setup_account_task.StorageAccount')
+    @patch('azurectl.setup_account_task.Container')
+    def test_process_setup_configure_and_create_account_existing(
+        self, mock_container, mock_storage, mock_config, mock_azure_account
+    ):
+        self.__init_command_args()
+        self.task.command_args['configure'] = True
+        self.task.command_args['--create'] = True
+        storage_account = mock.Mock()
+        storage_account.exists.return_value = True
+        mock_storage.return_value = storage_account
+        container = mock.Mock()
+        container.exists.return_value = True
+        mock_container.return_value = container
+        self.task.load_config = mock.Mock()
+        self.task.config = mock.Mock()
+
         self.task.process()
         self.task.setup.configure_account.assert_called_once_with(
             self.task.command_args['--name'],
