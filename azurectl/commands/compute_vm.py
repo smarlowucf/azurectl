@@ -86,8 +86,8 @@ from ..account.service import AzureAccount
 from ..utils.collector import DataCollector
 from ..utils.output import DataOutput
 from ..logger import log
-from ..virtual_machine import VirtualMachine
-from ..cloud_service import CloudService
+from ..instance.virtual_machine import VirtualMachine
+from ..instance.cloud_service import CloudService
 from ..request_result import RequestResult
 from ..help import Help
 

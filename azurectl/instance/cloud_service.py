@@ -18,15 +18,15 @@ from azure.servicemanagement import ServiceManagementService
 from dns.resolver import Resolver
 
 # project
-from azurectl_exceptions import (
+from ..azurectl_exceptions import (
     AzureCloudServiceAddressError,
     AzureCloudServiceOpenSSLError,
     AzureCloudServiceAddCertificateError,
     AzureCloudServiceCreateError,
     AzureCloudServiceDeleteError
 )
-from request_result import RequestResult
-from defaults import Defaults
+from ..request_result import RequestResult
+from ..defaults import Defaults
 
 
 class CloudService(object):

@@ -8,7 +8,7 @@ from test_helper import *
 from azurectl.account.service import AzureAccount
 from azurectl.config.parser import Config
 from azurectl.azurectl_exceptions import *
-from azurectl.cloud_service import CloudService
+from azurectl.instance.cloud_service import CloudService
 
 import azurectl
 
@@ -57,10 +57,10 @@ class TestCloudService:
         account.storage_key = mock.Mock()
         self.service = CloudService(account)
 
-    @patch('azurectl.cloud_service.CloudService.get_pem_certificate')
-    @patch('azurectl.cloud_service.CloudService.get_fingerprint')
-    @patch('azurectl.cloud_service.ServiceManagementService.add_service_certificate')
-    @patch('azurectl.cloud_service.RequestResult')
+    @patch('azurectl.instance.cloud_service.CloudService.get_pem_certificate')
+    @patch('azurectl.instance.cloud_service.CloudService.get_fingerprint')
+    @patch('azurectl.instance.cloud_service.ServiceManagementService.add_service_certificate')
+    @patch('azurectl.instance.cloud_service.RequestResult')
     @patch('subprocess.Popen')
     @patch('base64.b64encode')
     def test_add_certificate(
@@ -146,7 +146,7 @@ class TestCloudService:
     def test_get_pem_certificate_raise_openssl_error(self):
         self.service.get_pem_certificate('foo')
 
-    @patch('azurectl.cloud_service.CloudService.get_pem_certificate')
+    @patch('azurectl.instance.cloud_service.CloudService.get_pem_certificate')
     @patch('subprocess.Popen')
     @raises(AzureCloudServiceOpenSSLError)
     def test_add_certificate_raise_openssl_error(self, mock_popen, mock_getpem):
@@ -161,14 +161,14 @@ class TestCloudService:
             'cloud-service', '../data/id_test'
         )
 
-    @patch('azurectl.cloud_service.ServiceManagementService.add_service_certificate')
+    @patch('azurectl.instance.cloud_service.ServiceManagementService.add_service_certificate')
     @raises(AzureCloudServiceAddCertificateError)
     def test_add_certificate_raise_add_error(self, mock_add_cert):
         mock_add_cert.side_effect = AzureCloudServiceAddCertificateError
         self.service.add_certificate('cloud-service', '../data/id_test')
 
-    @patch('azurectl.cloud_service.ServiceManagementService.create_hosted_service')
-    @patch('azurectl.cloud_service.ServiceManagementService.get_hosted_service_properties')
+    @patch('azurectl.instance.cloud_service.ServiceManagementService.create_hosted_service')
+    @patch('azurectl.instance.cloud_service.ServiceManagementService.get_hosted_service_properties')
     @patch('dns.resolver.Resolver.query')
     def test_create(self, mock_query, mock_get_service, mock_create_service):
         mock_query.side_effect = Exception
@@ -182,8 +182,8 @@ class TestCloudService:
             label='label'
         )
 
-    @patch('azurectl.cloud_service.ServiceManagementService.create_hosted_service')
-    @patch('azurectl.cloud_service.ServiceManagementService.get_hosted_service_properties')
+    @patch('azurectl.instance.cloud_service.ServiceManagementService.create_hosted_service')
+    @patch('azurectl.instance.cloud_service.ServiceManagementService.get_hosted_service_properties')
     @patch('dns.resolver.Resolver.query')
     @raises(AzureCloudServiceAddressError)
     def test_create_cloud_service_in_use(self, mock_query, mock_get_service, mock_create_service):
@@ -191,7 +191,7 @@ class TestCloudService:
         mock_get_service.side_effect = AzureError('does-not-exist')
         self.service.create('cloud-service', 'West US', 'my-cloud', 'label')
 
-    @patch('azurectl.cloud_service.ServiceManagementService.delete_hosted_service')
+    @patch('azurectl.instance.cloud_service.ServiceManagementService.delete_hosted_service')
     def test_delete(self, mock_delete_service):
         mock_delete_service.return_value = self.myrequest
         request_id = self.service.delete('cloud-service')
@@ -200,8 +200,8 @@ class TestCloudService:
         )
         assert request_id == 42
 
-    @patch('azurectl.cloud_service.ServiceManagementService.create_hosted_service')
-    @patch('azurectl.cloud_service.ServiceManagementService.get_hosted_service_properties')
+    @patch('azurectl.instance.cloud_service.ServiceManagementService.create_hosted_service')
+    @patch('azurectl.instance.cloud_service.ServiceManagementService.get_hosted_service_properties')
     @patch('dns.resolver.Resolver.query')
     @raises(AzureCloudServiceCreateError)
     def test_create_service_error(self, mock_query, mock_get_service, mock_create_service):
@@ -210,15 +210,15 @@ class TestCloudService:
         mock_create_service.side_effect = AzureCloudServiceCreateError
         self.service.create('cloud-service', 'West US', 'my-cloud', 'label')
 
-    @patch('azurectl.cloud_service.ServiceManagementService.create_hosted_service')
-    @patch('azurectl.cloud_service.ServiceManagementService.get_hosted_service_properties')
+    @patch('azurectl.instance.cloud_service.ServiceManagementService.create_hosted_service')
+    @patch('azurectl.instance.cloud_service.ServiceManagementService.get_hosted_service_properties')
     def test_create_service_exists(self, mock_get_service, mock_create_service):
         request_id = self.service.create(
             'cloud-service', 'region', 'my-cloud', 'label'
         )
         assert request_id == 0
 
-    @patch('azurectl.cloud_service.ServiceManagementService.delete_hosted_service')
+    @patch('azurectl.instance.cloud_service.ServiceManagementService.delete_hosted_service')
     @raises(AzureCloudServiceDeleteError)
     def test_delete_service_error(self, mock_delete_service):
         mock_delete_service.side_effect = AzureCloudServiceDeleteError

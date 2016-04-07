@@ -99,7 +99,7 @@ from base import CliTask
 from ..account.service import AzureAccount
 from ..utils.collector import DataCollector
 from ..utils.output import DataOutput
-from ..image import Image
+from ..instance.image import Image
 from ..help import Help
 
 

@@ -15,7 +15,7 @@ from azure.servicemanagement.models import (
 from azurectl.account.service import AzureAccount
 from azurectl.config.parser import Config
 from azurectl.azurectl_exceptions import *
-from azurectl.image import Image
+from azurectl.instance.image import Image
 
 
 import azurectl
@@ -119,24 +119,24 @@ class TestImage:
             )
         return fake
 
-    @patch('azurectl.image.ServiceManagementService.list_os_images')
+    @patch('azurectl.instance.image.ServiceManagementService.list_os_images')
     def test_list(self, mock_list_os_images):
         mock_list_os_images.return_value = self.list_os_images
         assert self.image.list() == [self.list_os_images.pop()._asdict()]
 
-    @patch('azurectl.image.ServiceManagementService.list_os_images')
+    @patch('azurectl.instance.image.ServiceManagementService.list_os_images')
     @raises(AzureOsImageListError)
     def test_list_raises_error(self, mock_list_os_images):
         mock_list_os_images.side_effect = Exception
         self.image.list()
 
-    @patch('azurectl.image.ServiceManagementService.get_os_image')
+    @patch('azurectl.instance.image.ServiceManagementService.get_os_image')
     def test_show(self, mock_get_os_image):
         mock_response = self.list_os_images[0]
         mock_get_os_image.return_value = mock_response
         assert self.image.show(mock_response.name) == mock_response._asdict()
 
-    @patch('azurectl.image.ServiceManagementService.get_os_image')
+    @patch('azurectl.instance.image.ServiceManagementService.get_os_image')
     @raises(AzureOsImageShowError)
     def test_show_raises_error(self, mock_get_os_image):
         mock_response = self.list_os_images[0]
@@ -147,8 +147,8 @@ class TestImage:
     def test_create_raise_blob_error(self):
         self.image.create('some-name', 'some-blob')
 
-    @patch('azurectl.image.ServiceManagementService.add_os_image')
-    @patch('azurectl.image.BaseBlobService.get_blob_properties')
+    @patch('azurectl.instance.image.ServiceManagementService.add_os_image')
+    @patch('azurectl.instance.image.BaseBlobService.get_blob_properties')
     @raises(AzureOsImageCreateError)
     def test_create_raise_os_image_error(
         self, mock_get_blob_props, mock_add_os_image
@@ -156,8 +156,8 @@ class TestImage:
         mock_add_os_image.side_effect = Exception
         self.image.create('some-name', 'some-blob')
 
-    @patch('azurectl.image.ServiceManagementService.add_os_image')
-    @patch('azurectl.image.BaseBlobService.get_blob_properties')
+    @patch('azurectl.instance.image.ServiceManagementService.add_os_image')
+    @patch('azurectl.instance.image.BaseBlobService.get_blob_properties')
     def test_create(self, mock_get_blob_props, mock_add_os_image):
         mock_add_os_image.return_value = self.myrequest
         request_id = self.image.create(
@@ -171,7 +171,7 @@ class TestImage:
             'Linux'
         )
 
-    @patch('azurectl.image.ServiceManagementService.delete_os_image')
+    @patch('azurectl.instance.image.ServiceManagementService.delete_os_image')
     def test_delete(self, mock_delete_image):
         mock_delete_image.return_value = self.myrequest
         request_id = self.image.delete(
@@ -182,14 +182,14 @@ class TestImage:
             'some-name', False
         )
 
-    @patch('azurectl.image.ServiceManagementService.delete_os_image')
+    @patch('azurectl.instance.image.ServiceManagementService.delete_os_image')
     @raises(AzureOsImageDeleteError)
     def test_delete_raise_os_delete_error(self, mock_delete_image):
         mock_delete_image.side_effect = Exception
         self.image.delete('some-name')
 
-    @patch('azurectl.image.ServiceManagementService.replicate_vm_image')
-    @patch('azurectl.image.ServiceManagementService.list_locations')
+    @patch('azurectl.instance.image.ServiceManagementService.replicate_vm_image')
+    @patch('azurectl.instance.image.ServiceManagementService.list_locations')
     def test_replicate(self, mock_locations, mock_replicate):
         location_type = namedtuple(
             'location_type', 'name'
@@ -208,7 +208,7 @@ class TestImage:
             'some-name', ['a', 'b', 'c'], 'offer', 'sku', 'version'
         )
 
-    @patch('azurectl.image.ServiceManagementService.get_os_image_details')
+    @patch('azurectl.instance.image.ServiceManagementService.get_os_image_details')
     def test_replication_status(self, mock_get_details):
         # given
         fake_image_details = self.__fake_os_image_details(
@@ -226,7 +226,7 @@ class TestImage:
         mock_get_details.assert_called_once_with(self.fake_image_name)
         assert results == expected_results
 
-    @patch('azurectl.image.ServiceManagementService.get_os_image_details')
+    @patch('azurectl.instance.image.ServiceManagementService.get_os_image_details')
     def test_replication_status_populates_cache(self, mock_get_details):
         # given
         fake_details = self.__fake_os_image_details(
@@ -242,7 +242,7 @@ class TestImage:
         assert self.image.cached_replication_status == \
             fake_details.replication_progress.replication_progress_elements
 
-    @patch('azurectl.image.ServiceManagementService.get_os_image_details')
+    @patch('azurectl.instance.image.ServiceManagementService.get_os_image_details')
     # then
     @raises(AzureOsImageDetailsShowError)
     def test_replication_status_upstream_exception(self, mock_get_details):
@@ -251,7 +251,7 @@ class TestImage:
         # when
         results = self.image.replication_status(self.fake_image_name)
 
-    @patch('azurectl.image.log')
+    @patch('azurectl.instance.image.log')
     def test_print_replication_status(self, mock_log):
         # given
         fake_details = self.__fake_os_image_details(
@@ -265,8 +265,8 @@ class TestImage:
         # then
         mock_log.progress.assert_called_once_with(150, 200, 'Replicating')
 
-    @patch('azurectl.image.log')
-    @patch('azurectl.image.ServiceManagementService.get_os_image_details')
+    @patch('azurectl.instance.image.log')
+    @patch('azurectl.instance.image.ServiceManagementService.get_os_image_details')
     def test_print_replication_status_populates_cache(
             self,
             mock_get_details,
@@ -286,7 +286,7 @@ class TestImage:
         assert self.image.cached_replication_status == \
             fake_details.replication_progress.replication_progress_elements
 
-    @patch('azurectl.image.ServiceManagementService.get_os_image_details')
+    @patch('azurectl.instance.image.ServiceManagementService.get_os_image_details')
     def test_wait_for_replication_completion(self, mock_get_details):
         # given
         mock_get_details.side_effect = iter([
@@ -305,7 +305,7 @@ class TestImage:
         # then
         assert mock_get_details.call_count == 2
 
-    @patch('azurectl.image.ServiceManagementService.get_os_image_details')
+    @patch('azurectl.instance.image.ServiceManagementService.get_os_image_details')
     # then
     @raises(AzureOsImageDetailsShowError)
     def test_wait_for_replication_completion_upstream_exception(
@@ -321,7 +321,7 @@ class TestImage:
         # then
         assert mock_get_details.call_count == self.image.max_failures
 
-    @patch('azurectl.image.ServiceManagementService.unreplicate_vm_image')
+    @patch('azurectl.instance.image.ServiceManagementService.unreplicate_vm_image')
     def test_unreplicate(self, mock_unreplicate):
         mock_unreplicate.return_value = self.myrequest
         request_id = self.image.unreplicate('some-name')
@@ -330,7 +330,7 @@ class TestImage:
             'some-name'
         )
 
-    @patch('azurectl.image.ServiceManagementService.share_vm_image')
+    @patch('azurectl.instance.image.ServiceManagementService.share_vm_image')
     def test_publish(self, mock_publish):
         mock_publish.return_value = self.myrequest
         request_id = self.image.publish('some-name', 'public')
@@ -340,7 +340,7 @@ class TestImage:
         )
 
     @raises(AzureOsImageReplicateError)
-    @patch('azurectl.image.ServiceManagementService.replicate_vm_image')
+    @patch('azurectl.instance.image.ServiceManagementService.replicate_vm_image')
     def test_replicate_raises_error(self, mock_replicate):
         mock_replicate.side_effect = AzureOsImageReplicateError
         self.image.replicate(
@@ -348,19 +348,19 @@ class TestImage:
         )
 
     @raises(AzureOsImageUnReplicateError)
-    @patch('azurectl.image.ServiceManagementService.unreplicate_vm_image')
+    @patch('azurectl.instance.image.ServiceManagementService.unreplicate_vm_image')
     def test_unreplicate_raises_error(self, mock_unreplicate):
         mock_unreplicate.side_effect = AzureOsImageUnReplicateError
         self.image.unreplicate('some-name')
 
     @raises(AzureOsImagePublishError)
-    @patch('azurectl.image.ServiceManagementService.share_vm_image')
+    @patch('azurectl.instance.image.ServiceManagementService.share_vm_image')
     def test_publish_raises_error(self, mock_publish):
         mock_publish.side_effect = AzureOsImagePublishError
         self.image.publish('some-name', 'public')
 
-    @patch('azurectl.image.ServiceManagementService.update_os_image_from_image_reference')
-    @patch('azurectl.image.ServiceManagementService.get_os_image')
+    @patch('azurectl.instance.image.ServiceManagementService.update_os_image_from_image_reference')
+    @patch('azurectl.instance.image.ServiceManagementService.get_os_image')
     def test_update(self, mock_get_image, mock_update):
         get_os_image_results = [
             self.os_image_updated, self.os_image
@@ -408,7 +408,7 @@ class TestImage:
             'some-name', self.os_image
         )
 
-    @patch('azurectl.image.ServiceManagementService.get_os_image')
+    @patch('azurectl.instance.image.ServiceManagementService.get_os_image')
     @raises(AzureOsImageUpdateError)
     def test_update_raises_invalid_date_format(self, mock_get_image):
         self.os_image.published_date = 'xxx'
@@ -425,8 +425,8 @@ class TestImage:
             'some-name', {'published_date': self.os_image.published_date}
         )
 
-    @patch('azurectl.image.ServiceManagementService.update_os_image_from_image_reference')
-    @patch('azurectl.image.ServiceManagementService.get_os_image')
+    @patch('azurectl.instance.image.ServiceManagementService.update_os_image_from_image_reference')
+    @patch('azurectl.instance.image.ServiceManagementService.get_os_image')
     @raises(AzureOsImageUpdateError)
     def test_update_raises_value_unchanged(self, mock_get_image, mock_update):
         self.os_image.description = 'a'
@@ -444,8 +444,8 @@ class TestImage:
             'some-name', {'description': self.os_image.description}
         )
 
-    @patch('azurectl.image.ServiceManagementService.update_os_image_from_image_reference')
-    @patch('azurectl.image.ServiceManagementService.get_os_image')
+    @patch('azurectl.instance.image.ServiceManagementService.update_os_image_from_image_reference')
+    @patch('azurectl.instance.image.ServiceManagementService.get_os_image')
     @raises(AzureOsImageUpdateError)
     def test_update_raises_image_metadata_request_failed(
         self, mock_get_image, mock_update
@@ -453,8 +453,8 @@ class TestImage:
         mock_get_image.side_effect = Exception
         self.image.update('some-name', {})
 
-    @patch('azurectl.image.ServiceManagementService.update_os_image_from_image_reference')
-    @patch('azurectl.image.ServiceManagementService.get_os_image')
+    @patch('azurectl.instance.image.ServiceManagementService.update_os_image_from_image_reference')
+    @patch('azurectl.instance.image.ServiceManagementService.get_os_image')
     @raises(AzureOsImageUpdateError)
     def test_update_raises_on_update_os_image_from_image_reference(
         self, mock_get_image, mock_update

@@ -18,8 +18,9 @@ import time
 from tempfile import NamedTemporaryFile
 from azure.servicemanagement import ServiceManagementService
 from azure.storage.blob.baseblobservice import BaseBlobService
+
 # project
-from azurectl_exceptions import (
+from ..azurectl_exceptions import (
     AzureOsImageDetailsShowError,
     AzureOsImageListError,
     AzureOsImageShowError,
@@ -31,8 +32,8 @@ from azurectl_exceptions import (
     AzureOsImagePublishError,
     AzureOsImageUpdateError
 )
-from defaults import Defaults
-from logger import log
+from ..defaults import Defaults
+from ..logger import log
 
 
 class Image(object):
