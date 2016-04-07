@@ -14,13 +14,13 @@
 from azure.servicemanagement import ConfigurationSetInputEndpoint
 
 # project
-from azurectl_exceptions import (
+from ..azurectl_exceptions import (
     AzureEndpointCreateError,
     AzureEndpointDeleteError,
     AzureEndpointListError,
     AzureEndpointShowError
 )
-from service_manager import ServiceManager
+from .service_manager import ServiceManager
 
 
 class Endpoint(ServiceManager):

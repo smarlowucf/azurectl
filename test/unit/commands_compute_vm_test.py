@@ -77,7 +77,7 @@ class TestComputeVmTask:
         self.task.account.locations.assert_called_once_with('PersistentVMRole')
 
     @patch('azurectl.commands.compute_vm.DataOutput')
-    @patch('azurectl.request_result.RequestResult.wait_for_request_completion')
+    @patch('azurectl.management.request_result.RequestResult.wait_for_request_completion')
     def test_process_compute_vm_create(self, mock_wait_completion, mock_out):
         self.__init_command_args()
         self.task.command_args['create'] = True
@@ -101,7 +101,7 @@ class TestComputeVmTask:
         )
 
     @patch('azurectl.commands.compute_vm.DataOutput')
-    @patch('azurectl.request_result.RequestResult.wait_for_request_completion')
+    @patch('azurectl.management.request_result.RequestResult.wait_for_request_completion')
     def test_process_compute_vm_create_with_fingerprint(
         self, mock_wait_completion, mock_out
     ):

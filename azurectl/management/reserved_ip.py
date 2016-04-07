@@ -15,7 +15,7 @@ from tempfile import NamedTemporaryFile
 from azure.servicemanagement import ServiceManagementService
 
 # project
-from azurectl_exceptions import (
+from ..azurectl_exceptions import (
     AzureReservedIpCreateError,
     AzureReservedIpDeleteError,
     AzureReservedIpListError,

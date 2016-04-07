@@ -39,7 +39,7 @@ from base import CliTask
 from ..account.service import AzureAccount
 from ..utils.collector import DataCollector
 from ..utils.output import DataOutput
-from ..reserved_ip import ReservedIp
+from ..management.reserved_ip import ReservedIp
 from ..help import Help
 
 

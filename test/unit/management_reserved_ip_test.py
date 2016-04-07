@@ -10,7 +10,7 @@ from test_helper import *
 from azurectl.account.service import AzureAccount
 from azurectl.config.parser import Config
 from azurectl.azurectl_exceptions import *
-from azurectl.reserved_ip import ReservedIp
+from azurectl.management.reserved_ip import ReservedIp
 
 import azurectl
 
@@ -74,31 +74,31 @@ class TestReservedIp:
 
         self.reserved_ip = ReservedIp(account)
 
-    @patch('azurectl.reserved_ip.ServiceManagementService.list_reserved_ip_addresses')
+    @patch('azurectl.management.reserved_ip.ServiceManagementService.list_reserved_ip_addresses')
     def test_list(self, mock_list_ips):
         mock_list_ips.return_value = self.list_ips
         assert self.reserved_ip.list() == self.result_list
 
-    @patch('azurectl.reserved_ip.ServiceManagementService.list_reserved_ip_addresses')
+    @patch('azurectl.management.reserved_ip.ServiceManagementService.list_reserved_ip_addresses')
     @raises(AzureReservedIpListError)
     def test_list_raises_error(self, mock_list_ips):
         mock_list_ips.side_effect = Exception
         self.reserved_ip.list()
 
-    @patch('azurectl.reserved_ip.ServiceManagementService.get_reserved_ip_address')
+    @patch('azurectl.management.reserved_ip.ServiceManagementService.get_reserved_ip_address')
     def test_show(self, mock_get_ip):
         mock_response = self.list_ips[0]
         mock_get_ip.return_value = mock_response
         assert self.reserved_ip.show(mock_response.name) == self.result_list[0]
 
-    @patch('azurectl.reserved_ip.ServiceManagementService.get_reserved_ip_address')
+    @patch('azurectl.management.reserved_ip.ServiceManagementService.get_reserved_ip_address')
     @raises(AzureReservedIpShowError)
     def test_show_raises_error(self, mock_get_ip):
         mock_response = self.list_ips[0]
         mock_get_ip.side_effect = Exception
         self.reserved_ip.show(mock_response.name)
 
-    @patch('azurectl.reserved_ip.ServiceManagementService.create_reserved_ip_address')
+    @patch('azurectl.management.reserved_ip.ServiceManagementService.create_reserved_ip_address')
     def test_create(self, mock_create_ip):
         mock_create_ip.return_value = self.myrequest
         request_id = self.reserved_ip.create('some-name', 'East US 2')
@@ -108,20 +108,20 @@ class TestReservedIp:
             location='East US 2'
         )
 
-    @patch('azurectl.reserved_ip.ServiceManagementService.create_reserved_ip_address')
+    @patch('azurectl.management.reserved_ip.ServiceManagementService.create_reserved_ip_address')
     @raises(AzureReservedIpCreateError)
     def test_create_raises_error(self, mock_create_ip):
         mock_create_ip.side_effect = Exception
         self.reserved_ip.create('some-name', 'East US 2')
 
-    @patch('azurectl.reserved_ip.ServiceManagementService.delete_reserved_ip_address')
+    @patch('azurectl.management.reserved_ip.ServiceManagementService.delete_reserved_ip_address')
     def test_delete(self, mock_delete_ip):
         mock_delete_ip.return_value = self.myrequest
         request_id = self.reserved_ip.delete('some-name')
         assert request_id == 42
         mock_delete_ip.assert_called_once_with('some-name')
 
-    @patch('azurectl.reserved_ip.ServiceManagementService.delete_reserved_ip_address')
+    @patch('azurectl.management.reserved_ip.ServiceManagementService.delete_reserved_ip_address')
     @raises(AzureReservedIpDeleteError)
     def test_delete_raises_error(self, mock_delete_ip):
         mock_delete_ip.side_effect = Exception

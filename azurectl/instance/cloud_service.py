@@ -25,7 +25,7 @@ from ..azurectl_exceptions import (
     AzureCloudServiceCreateError,
     AzureCloudServiceDeleteError
 )
-from ..request_result import RequestResult
+from ..management.request_result import RequestResult
 from ..defaults import Defaults
 
 

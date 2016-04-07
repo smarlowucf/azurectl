@@ -63,7 +63,7 @@ from base import CliTask
 from ..account.service import AzureAccount
 from ..utils.collector import DataCollector
 from ..utils.output import DataOutput
-from ..endpoint import Endpoint
+from ..management.endpoint import Endpoint
 from ..help import Help
 
 

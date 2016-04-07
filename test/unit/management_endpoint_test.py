@@ -19,12 +19,12 @@ from azure.servicemanagement.models import (
 from azurectl.account.service import AzureAccount
 from azurectl.azurectl_exceptions import *
 from azurectl.config.parser import Config
-from azurectl.endpoint import Endpoint
+from azurectl.management.endpoint import Endpoint
 import azurectl
 
 
 class TestEndpoint:
-    @patch('azurectl.service_manager.ServiceManagementService')
+    @patch('azurectl.management.service_manager.ServiceManagementService')
     def setup(self, mock_service):
         self.service = mock.Mock()
         mock_service.return_value = self.service

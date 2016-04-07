@@ -14,9 +14,10 @@
 from azure.common import AzureMissingResourceHttpError
 from azure.storage.blob.pageblobservice import PageBlobService
 from datetime import datetime
+
 # project
-from service_manager import ServiceManager
-from azurectl_exceptions import (
+from .service_manager import ServiceManager
+from ..azurectl_exceptions import (
     AzureDataDiskCreateError,
     AzureDataDiskShowError,
     AzureDataDiskDeleteError,

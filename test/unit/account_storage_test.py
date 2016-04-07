@@ -16,7 +16,7 @@ import azurectl
 
 
 class TestStorageAccount:
-    @patch('azurectl.service_manager.ServiceManagementService')
+    @patch('azurectl.management.service_manager.ServiceManagementService')
     def setup(self, mock_service):
         self.service = mock.Mock()
         mock_service.return_value = self.service

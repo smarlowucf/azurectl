@@ -34,7 +34,7 @@ from base import CliTask
 from ..account.service import AzureAccount
 from ..utils.collector import DataCollector
 from ..utils.output import DataOutput
-from ..request_result import RequestResult
+from ..management.request_result import RequestResult
 from ..help import Help
 
 

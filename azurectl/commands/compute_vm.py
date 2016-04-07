@@ -88,7 +88,7 @@ from ..utils.output import DataOutput
 from ..logger import log
 from ..instance.virtual_machine import VirtualMachine
 from ..instance.cloud_service import CloudService
-from ..request_result import RequestResult
+from ..management.request_result import RequestResult
 from ..help import Help
 
 

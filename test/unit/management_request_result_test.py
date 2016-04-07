@@ -6,7 +6,7 @@ from mock import patch
 from test_helper import *
 
 from azurectl.azurectl_exceptions import *
-from azurectl.request_result import RequestResult
+from azurectl.management.request_result import RequestResult
 
 import azurectl
 
@@ -22,7 +22,7 @@ class TestRequestResult:
         self.request_result.status(self.service)
         self.service.get_operation_status.assert_called_once_with(42)
 
-    @patch('azurectl.request_result.time.sleep')
+    @patch('azurectl.management.request_result.time.sleep')
     @raises(AzureRequestTimeout)
     def test_wait_for_request_completion_timeout(self, mock_time):
         MyStatus = namedtuple(
@@ -34,7 +34,7 @@ class TestRequestResult:
         self.request_result.wait_for_request_completion(self.service)
         self.service.get_operation_status.assert_called_once_with(42)
 
-    @patch('azurectl.request_result.time.sleep')
+    @patch('azurectl.management.request_result.time.sleep')
     @raises(AzureRequestError)
     def test_wait_for_request_completion_error(self, mock_time):
         MyStatus = namedtuple(

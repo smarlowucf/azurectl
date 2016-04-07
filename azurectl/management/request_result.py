@@ -14,7 +14,7 @@
 import time
 
 # project
-from azurectl_exceptions import (
+from ..azurectl_exceptions import (
     AzureRequestStatusError,
     AzureRequestTimeout,
     AzureRequestError

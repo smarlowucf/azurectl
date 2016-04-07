@@ -10,13 +10,13 @@ from test_helper import *
 from azurectl.account.service import AzureAccount
 from azurectl.azurectl_exceptions import *
 from azurectl.config.parser import Config
-from azurectl.data_disk import DataDisk
+from azurectl.management.data_disk import DataDisk
 
 import azurectl
 
 
 class TestDataDisk:
-    @patch('azurectl.service_manager.ServiceManagementService')
+    @patch('azurectl.management.service_manager.ServiceManagementService')
     def setup(self, mock_service):
         self.service = mock.Mock()
         mock_service.return_value = self.service
@@ -157,7 +157,7 @@ class TestDataDisk:
         # then
         assert self.service.get_data_disk.call_count == 16
 
-    @patch('azurectl.data_disk.DataDisk._DataDisk__get_first_available_lun')
+    @patch('azurectl.management.data_disk.DataDisk._DataDisk__get_first_available_lun')
     def test_create_without_lun(self, mock_lun):
         # given
         self.service.add_data_disk.return_value = self.my_request
@@ -184,7 +184,7 @@ class TestDataDisk:
             logical_disk_size_in_gb=self.disk_size
         )
 
-    @patch('azurectl.data_disk.datetime')
+    @patch('azurectl.management.data_disk.datetime')
     def test_generate_filename(self, mock_timestamp):
         # given
         mock_timestamp.utcnow = mock.Mock(return_value=self.timestamp)
@@ -198,7 +198,7 @@ class TestDataDisk:
         # then
         assert result == expected
 
-    @patch('azurectl.data_disk.DataDisk._DataDisk__generate_filename')
+    @patch('azurectl.management.data_disk.DataDisk._DataDisk__generate_filename')
     def test_create_without_filename(self, mock_generate_filename):
         # given
         self.service.add_data_disk.return_value = self.my_request

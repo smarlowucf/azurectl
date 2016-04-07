@@ -80,7 +80,7 @@ from ..storage.container import Container
 from ..account.storage import StorageAccount
 from ..account.service import AzureAccount
 from ..defaults import Defaults
-from ..request_result import RequestResult
+from ..management.request_result import RequestResult
 
 from ..azurectl_exceptions import (
     AzureAccountConfigurationError

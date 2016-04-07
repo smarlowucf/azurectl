@@ -12,7 +12,7 @@
 # limitations under the License.
 #
 # project
-from ..service_manager import ServiceManager
+from ..management.service_manager import ServiceManager
 from ..storage.container import Container
 from ..defaults import Defaults
 from ..azurectl_exceptions import (
