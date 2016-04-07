@@ -5,7 +5,7 @@ from mock import patch
 
 from test_helper import *
 
-from azurectl.azure_account import AzureAccount
+from azurectl.account.service import AzureAccount
 from azurectl.config import Config
 from azurectl.azurectl_exceptions import *
 from azurectl.cloud_service import CloudService

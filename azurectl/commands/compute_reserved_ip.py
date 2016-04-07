@@ -36,7 +36,7 @@ options:
 """
 # project
 from base import CliTask
-from ..azure_account import AzureAccount
+from ..account.service import AzureAccount
 from ..utils.collector import DataCollector
 from ..utils.output import DataOutput
 from ..reserved_ip import ReservedIp

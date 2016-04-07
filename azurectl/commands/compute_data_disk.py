@@ -65,7 +65,7 @@ options:
         enable cached reads from and writes to the data disk
 """
 # project
-from ..azure_account import AzureAccount
+from ..account.service import AzureAccount
 from base import CliTask
 from ..utils.collector import DataCollector
 from ..data_disk import DataDisk

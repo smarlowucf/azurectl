@@ -25,7 +25,7 @@ from azure.servicemanagement import ServiceManagementService
 import base64
 
 # project
-from azurectl_exceptions import (
+from ..azurectl_exceptions import (
     AzureConfigVariableNotFound,
     AzureServiceManagementError,
     AzureSubscriptionPrivateKeyDecodeError,
@@ -37,7 +37,7 @@ from azurectl_exceptions import (
     AzureSubscriptionPKCS12DecodeError,
     AzureUnrecognizedManagementUrl
 )
-from constants import BLOB_SERVICE_HOST_BASE
+from ..constants import BLOB_SERVICE_HOST_BASE
 
 
 class AzureAccount(object):

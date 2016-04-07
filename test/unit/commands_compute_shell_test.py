@@ -7,7 +7,7 @@ from mock import patch
 from test_helper import *
 
 import azurectl
-from azurectl.azure_account import AzureAccount
+from azurectl.account.service import AzureAccount
 from azurectl.commands.compute_shell import ComputeShellTask
 from azurectl.config import Config
 

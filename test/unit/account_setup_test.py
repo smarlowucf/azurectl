@@ -11,7 +11,7 @@ from azurectl.azurectl_exceptions import (
     AzureConfigPublishSettingsError,
     AzureConfigWriteError
 )
-from azurectl.account_setup import AccountSetup
+from azurectl.account.setup import AccountSetup
 
 import azurectl
 

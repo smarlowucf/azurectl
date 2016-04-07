@@ -72,13 +72,13 @@ import os
 from base import CliTask
 from ..logger import log
 from ..help import Help
-from ..account_setup import AccountSetup
+from ..account.setup import AccountSetup
 from ..utils.collector import DataCollector
 from ..utils.output import DataOutput
 from ..config import Config
 from ..container import Container
-from ..storage_account import StorageAccount
-from ..azure_account import AzureAccount
+from ..account.storage import StorageAccount
+from ..account.service import AzureAccount
 from ..defaults import Defaults
 from ..request_result import RequestResult
 

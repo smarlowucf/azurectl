@@ -12,10 +12,10 @@
 # limitations under the License.
 #
 # project
-from service_manager import ServiceManager
-from container import Container
-from defaults import Defaults
-from azurectl_exceptions import (
+from ..service_manager import ServiceManager
+from ..container import Container
+from ..defaults import Defaults
+from ..azurectl_exceptions import (
     AzureStorageAccountCreateError,
     AzureStorageAccountUpdateError,
     AzureStorageAccountDeleteError,

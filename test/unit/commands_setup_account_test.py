@@ -120,7 +120,7 @@ class TestSetupAccountTask:
     @patch('azurectl.commands.setup_account.StorageAccount')
     @raises(AzureAccountConfigurationError)
     def test_process_setup_configure_and_create_account_failed(
-        self, mock_storage, mock_config, mock_azure_account
+        self, mock_storage, mock_config, mock_account_azure
     ):
         self.__init_command_args()
         self.task.command_args['configure'] = True
@@ -139,7 +139,7 @@ class TestSetupAccountTask:
     @patch('azurectl.commands.setup_account.RequestResult')
     def test_process_setup_configure_and_create_account(
         self, mock_request, mock_container, mock_storage,
-        mock_config, mock_azure_account
+        mock_config, mock_account_azure
     ):
         self.__init_command_args()
         self.task.command_args['configure'] = True
@@ -182,7 +182,7 @@ class TestSetupAccountTask:
     @patch('azurectl.commands.setup_account.StorageAccount')
     @patch('azurectl.commands.setup_account.Container')
     def test_process_setup_configure_and_create_account_existing(
-        self, mock_container, mock_storage, mock_config, mock_azure_account
+        self, mock_container, mock_storage, mock_config, mock_account_azure
     ):
         self.__init_command_args()
         self.task.command_args['configure'] = True

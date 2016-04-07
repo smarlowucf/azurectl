@@ -12,18 +12,18 @@
 # limitations under the License.
 #
 from ConfigParser import ConfigParser
-from config import Config
 import os
 
 # project
-from azurectl_exceptions import (
+from ..config import Config
+from ..azurectl_exceptions import (
     AzureConfigParseError,
     AzureConfigAddAccountSectionError,
     AzureConfigAddRegionSectionError,
     AzureConfigPublishSettingsError,
     AzureConfigWriteError
 )
-from logger import log
+from ..logger import log
 
 
 class AccountSetup(object):

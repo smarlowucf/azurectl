@@ -8,7 +8,7 @@ from azurectl.azurectl_exceptions import *
 
 import azurectl
 
-from azurectl.azure_account import AzureAccount
+from azurectl.account.service import AzureAccount
 from azurectl.config import Config
 
 from collections import namedtuple
@@ -31,13 +31,13 @@ class TestAzureAccount:
             subscription_id='4711',
             management_url='test.url'
         )
-        azurectl.azure_account.load_pkcs12 = mock.Mock()
+        azurectl.account.service.load_pkcs12 = mock.Mock()
 
     @raises(AzureServiceManagementError)
-    @patch('azurectl.azure_account.ServiceManagementService')
-    @patch('azurectl.azure_account.dump_privatekey')
-    @patch('azurectl.azure_account.dump_certificate')
-    @patch('azurectl.azure_account.AzureAccount.get_management_url')
+    @patch('azurectl.account.service.ServiceManagementService')
+    @patch('azurectl.account.service.dump_privatekey')
+    @patch('azurectl.account.service.dump_certificate')
+    @patch('azurectl.account.service.AzureAccount.get_management_url')
     def test_service_error(
         self,
         mock_mgmt_url,
@@ -98,8 +98,8 @@ class TestAzureAccount:
         account_invalid.publishsettings()
 
     @raises(AzureSubscriptionCertificateDecodeError)
-    @patch('azurectl.azure_account.dump_privatekey')
-    @patch('azurectl.azure_account.dump_certificate')
+    @patch('azurectl.account.service.dump_privatekey')
+    @patch('azurectl.account.service.dump_certificate')
     def test_subscription_cert_decode_error(
         self, mock_dump_certificate, mock_dump_pkey
     ):
@@ -119,9 +119,9 @@ class TestAzureAccount:
         account_invalid.publishsettings()
 
     @raises(AzureSubscriptionIdNotFound)
-    @patch('azurectl.azure_account.load_pkcs12')
-    @patch('azurectl.azure_account.dump_privatekey')
-    @patch('azurectl.azure_account.dump_certificate')
+    @patch('azurectl.account.service.load_pkcs12')
+    @patch('azurectl.account.service.dump_privatekey')
+    @patch('azurectl.account.service.dump_certificate')
     @patch('base64.b64decode')
     def test_subscription_id_missing(
         self, base64_decode, mock_dump_certificate,
@@ -140,8 +140,8 @@ class TestAzureAccount:
         assert mgmt_url == 'test.url'
 
     @raises(AzureServiceManagementUrlNotFound)
-    @patch('azurectl.azure_account.dump_privatekey')
-    @patch('azurectl.azure_account.dump_certificate')
+    @patch('azurectl.account.service.dump_privatekey')
+    @patch('azurectl.account.service.dump_certificate')
     def test_get_management_url_missing(
         self, mock_dump_certificate, mock_dump_pkey
     ):
@@ -153,22 +153,22 @@ class TestAzureAccount:
         )
         account_invalid.publishsettings()
 
-    @patch.dict('azurectl.azure_account.BLOB_SERVICE_HOST_BASE',
+    @patch.dict('azurectl.account.service.BLOB_SERVICE_HOST_BASE',
                 {'test.url': '.blob.test.url'})
     def test_get_blob_service_host_base(self):
         host_base = self.account.get_blob_service_host_base()
         assert host_base == '.blob.test.url'
 
     @raises(AzureUnrecognizedManagementUrl)
-    @patch.dict('azurectl.azure_account.BLOB_SERVICE_HOST_BASE',
+    @patch.dict('azurectl.account.service.BLOB_SERVICE_HOST_BASE',
                 clear=True)
     def test_get_blob_service_host_base_with_bad_url(self):
         host_base = self.account.get_blob_service_host_base()
 
     @raises(AzureSubscriptionIdNotFound)
-    @patch('azurectl.azure_account.load_pkcs12')
-    @patch('azurectl.azure_account.dump_privatekey')
-    @patch('azurectl.azure_account.dump_certificate')
+    @patch('azurectl.account.service.load_pkcs12')
+    @patch('azurectl.account.service.dump_privatekey')
+    @patch('azurectl.account.service.dump_certificate')
     @patch('base64.b64decode')
     def test_config_subscription_id_not_found_in_publishsettings(
         self, base64_decode, mock_dump_certificate,
@@ -183,9 +183,9 @@ class TestAzureAccount:
         account_invalid.publishsettings()
 
     @raises(AzureSubscriptionIdNotFound)
-    @patch('azurectl.azure_account.load_pkcs12')
-    @patch('azurectl.azure_account.dump_privatekey')
-    @patch('azurectl.azure_account.dump_certificate')
+    @patch('azurectl.account.service.load_pkcs12')
+    @patch('azurectl.account.service.dump_privatekey')
+    @patch('azurectl.account.service.dump_certificate')
     @patch('base64.b64decode')
     def test_config_subscription_id_missing(
         self, base64_decode, mock_dump_certificate,
@@ -209,9 +209,9 @@ class TestAzureAccount:
         )
         account_invalid.publishsettings()
 
-    @patch('azurectl.azure_account.dump_privatekey')
-    @patch('azurectl.azure_account.dump_certificate')
-    @patch('azurectl.azure_account.AzureAccount.get_management_url')
+    @patch('azurectl.account.service.dump_privatekey')
+    @patch('azurectl.account.service.dump_certificate')
+    @patch('azurectl.account.service.AzureAccount.get_management_url')
     def test_publishsettings(
         self,
         mock_mgmt_url,
@@ -223,9 +223,9 @@ class TestAzureAccount:
         mock_dump_pkey.return_value = 'abc'
         assert self.account.publishsettings() == self.publishsettings
 
-    @patch('azurectl.azure_account.dump_privatekey')
-    @patch('azurectl.azure_account.dump_certificate')
-    @patch('azurectl.azure_account.AzureAccount.get_management_url')
+    @patch('azurectl.account.service.dump_privatekey')
+    @patch('azurectl.account.service.dump_certificate')
+    @patch('azurectl.account.service.AzureAccount.get_management_url')
     def test_publishsettings_with_multiple_subscriptions_defaults_to_first(
         self,
         mock_mgmt_url,
@@ -240,9 +240,9 @@ class TestAzureAccount:
         )
         assert account.publishsettings().subscription_id == 'first'
 
-    @patch('azurectl.azure_account.dump_privatekey')
-    @patch('azurectl.azure_account.dump_certificate')
-    @patch('azurectl.azure_account.AzureAccount.get_management_url')
+    @patch('azurectl.account.service.dump_privatekey')
+    @patch('azurectl.account.service.dump_certificate')
+    @patch('azurectl.account.service.AzureAccount.get_management_url')
     def test_config_specifies_subscription_in_publishsettings(
         self,
         mock_mgmt_url,
@@ -257,7 +257,7 @@ class TestAzureAccount:
         )
         assert account.publishsettings().subscription_id == 'second'
 
-    @patch('azurectl.azure_account.ServiceManagementService.get_storage_account_keys')
+    @patch('azurectl.account.service.ServiceManagementService.get_storage_account_keys')
     def test_storage_key(self, mock_get_keys):
         self.account.publishsettings = mock.Mock(
             return_value=self.publishsettings
@@ -273,7 +273,7 @@ class TestAzureAccount:
         assert self.account.storage_key() == 'foo'
 
     @raises(AzureServiceManagementError)
-    @patch('azurectl.azure_account.ServiceManagementService.get_storage_account_keys')
+    @patch('azurectl.account.service.ServiceManagementService.get_storage_account_keys')
     def test_storage_key_error(self, mock_get_keys):
         self.account.publishsettings = mock.Mock(
             return_value=self.publishsettings
@@ -281,7 +281,7 @@ class TestAzureAccount:
         mock_get_keys.side_effect = AzureServiceManagementError
         self.account.storage_key()
 
-    @patch('azurectl.azure_account.ServiceManagementService.list_storage_accounts')
+    @patch('azurectl.account.service.ServiceManagementService.list_storage_accounts')
     def test_storage_names(self, mock_service):
         self.account.publishsettings = mock.Mock(
             return_value=self.publishsettings
@@ -298,7 +298,7 @@ class TestAzureAccount:
         self.account.storage_names()
         assert self.account.get_service() == self.account.service
 
-    @patch('azurectl.azure_account.ServiceManagementService.list_role_sizes')
+    @patch('azurectl.account.service.ServiceManagementService.list_role_sizes')
     def test_instance_types(self, mock_service):
         self.account.publishsettings = mock.Mock(
             return_value=self.publishsettings
@@ -327,7 +327,7 @@ class TestAzureAccount:
             }}
         ]
 
-    @patch('azurectl.azure_account.ServiceManagementService.list_locations')
+    @patch('azurectl.account.service.ServiceManagementService.list_locations')
     def test_locations(self, mock_service):
         # given
         self.account.publishsettings = mock.Mock(
@@ -351,7 +351,7 @@ class TestAzureAccount:
         # then
         assert result == [u'Mock Region']
 
-    @patch('azurectl.azure_account.ServiceManagementService.list_locations')
+    @patch('azurectl.account.service.ServiceManagementService.list_locations')
     def test_filtered_locations(self, mock_service):
         # given
         self.account.publishsettings = mock.Mock(

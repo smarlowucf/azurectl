@@ -27,7 +27,7 @@ from textwrap import dedent
 
 # project
 from base import CliTask
-from ..azure_account import AzureAccount
+from ..account.service import AzureAccount
 
 
 class ComputeShellTask(CliTask):

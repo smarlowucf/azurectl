@@ -7,10 +7,10 @@ from mock import call
 
 from test_helper import *
 
-from azurectl.azure_account import AzureAccount
+from azurectl.account.service import AzureAccount
 from azurectl.config import Config
 from azurectl.azurectl_exceptions import *
-from azurectl.storage_account import StorageAccount
+from azurectl.account.storage import StorageAccount
 
 import azurectl
 
@@ -154,7 +154,7 @@ class TestStorageAccount:
         self.service.list_storage_accounts.side_effect = Exception
         self.storage_account.list()
 
-    @patch('azurectl.storage_account.Container.list')
+    @patch('azurectl.account.storage.Container.list')
     def test_show(self, mock_container_list):
         self.service.get_storage_account_keys.return_value = \
             self.keyed_service
@@ -198,7 +198,7 @@ class TestStorageAccount:
             '--locally-redundant'
         )
 
-    @patch('azurectl.storage_account.Container.list')
+    @patch('azurectl.account.storage.Container.list')
     def test_basic_update(self, mock_container_list):
         self.service.update_storage_account.return_value = \
             self.my_request
@@ -225,7 +225,7 @@ class TestStorageAccount:
             '--locally-redundant'
         )
 
-    @patch('azurectl.storage_account.Container.list')
+    @patch('azurectl.account.storage.Container.list')
     def test_update_keys(self, mock_container_list):
         self.service.regenerate_storage_account_keys.return_value = \
             self.my_request
