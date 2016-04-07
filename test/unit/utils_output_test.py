@@ -5,8 +5,8 @@ from mock import patch
 import mock
 from test_helper import *
 
-from azurectl.data_output import DataOutput
-from azurectl.data_collector import DataCollector
+from azurectl.utils.output import DataOutput
+from azurectl.utils.collector import DataCollector
 from azurectl.logger import log
 import json
 

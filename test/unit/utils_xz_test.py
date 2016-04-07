@@ -4,7 +4,7 @@ from mock import patch
 from test_helper import *
 import mock
 
-from azurectl.xz import XZ
+from azurectl.utils.xz import XZ
 from azurectl.azurectl_exceptions import *
 
 

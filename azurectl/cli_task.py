@@ -18,7 +18,7 @@ import logging
 from cli import Cli
 from config import Config
 from help import Help
-from validations import Validations
+from utils.validations import Validations
 
 
 class CliTask(object):

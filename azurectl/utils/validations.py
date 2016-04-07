@@ -12,7 +12,7 @@
 # limitations under the License.
 #
 # project
-from azurectl_exceptions import AzureInvalidCommand
+from ..azurectl_exceptions import AzureInvalidCommand
 
 
 class Validations(object):

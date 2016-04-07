@@ -67,9 +67,9 @@ options:
 # project
 from azure_account import AzureAccount
 from cli_task import CliTask
-from data_collector import DataCollector
+from utils.collector import DataCollector
 from data_disk import DataDisk
-from data_output import DataOutput
+from utils.output import DataOutput
 from defaults import Defaults
 from help import Help
 

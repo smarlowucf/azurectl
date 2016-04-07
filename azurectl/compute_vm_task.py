@@ -83,8 +83,8 @@ options:
 # project
 from cli_task import CliTask
 from azure_account import AzureAccount
-from data_collector import DataCollector
-from data_output import DataOutput
+from utils.collector import DataCollector
+from utils.output import DataOutput
 from logger import log
 from virtual_machine import VirtualMachine
 from cloud_service import CloudService

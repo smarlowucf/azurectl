@@ -88,8 +88,8 @@ import string
 # project
 from cli_task import CliTask
 from azure_account import AzureAccount
-from data_collector import DataCollector
-from data_output import DataOutput
+from utils.collector import DataCollector
+from utils.output import DataOutput
 from defaults import Defaults
 from azurectl_exceptions import AzureInvalidCommand
 from storage_account import StorageAccount

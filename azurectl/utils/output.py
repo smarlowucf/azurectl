@@ -14,7 +14,9 @@
 import json
 import os
 from tempfile import NamedTemporaryFile
-from logger import log
+
+# project
+from ..logger import log
 
 
 class DataOutput(object):

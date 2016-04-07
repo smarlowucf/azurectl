@@ -3,7 +3,7 @@ import mock
 from mock import patch, create_autospec
 from test_helper import *
 # mocks
-from azurectl.data_output import DataOutput
+from azurectl.utils.output import DataOutput
 from azurectl.endpoint import Endpoint
 from azurectl.help import Help
 # project

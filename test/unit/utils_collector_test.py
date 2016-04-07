@@ -3,7 +3,7 @@ import sys
 
 from test_helper import *
 
-from azurectl.data_collector import DataCollector
+from azurectl.utils.collector import DataCollector
 
 
 class TestDataCollector:

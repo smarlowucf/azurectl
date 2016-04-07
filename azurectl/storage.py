@@ -15,14 +15,14 @@ import os
 from azure.storage.blob.pageblobservice import PageBlobService
 
 # project
-from xz import XZ
+from utils.xz import XZ
 from azurectl_exceptions import (
     AzureStorageFileNotFound,
     AzureStorageStreamError,
     AzureStorageUploadError,
     AzureStorageDeleteError
 )
-from filetype import FileType
+from utils.filetype import FileType
 from page_blob import PageBlob
 from logger import log
 

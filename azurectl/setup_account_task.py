@@ -73,8 +73,8 @@ from cli_task import CliTask
 from logger import log
 from help import Help
 from account_setup import AccountSetup
-from data_collector import DataCollector
-from data_output import DataOutput
+from utils.collector import DataCollector
+from utils.output import DataOutput
 from config import Config
 from container import Container
 from storage_account import StorageAccount

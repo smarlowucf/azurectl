@@ -6,7 +6,7 @@ from mock import patch
 from test_helper import *
 
 import azurectl
-from azurectl.validations import Validations
+from azurectl.utils.validations import Validations
 from azurectl.azurectl_exceptions import *
 
 

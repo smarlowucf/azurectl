@@ -96,8 +96,8 @@ from pytz import utc
 from logger import log
 from cli_task import CliTask
 from azure_account import AzureAccount
-from data_collector import DataCollector
-from data_output import DataOutput
+from utils.collector import DataCollector
+from utils.output import DataOutput
 from image import Image
 from help import Help
 
