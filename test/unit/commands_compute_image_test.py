@@ -6,7 +6,7 @@ from mock import patch
 from test_helper import *
 
 import azurectl
-from azurectl.compute_image_task import ComputeImageTask
+from azurectl.commands.compute_image import ComputeImageTask
 
 
 class TestComputeImageTask:
@@ -17,8 +17,8 @@ class TestComputeImageTask:
         ]
         self.task = ComputeImageTask()
         self.image = mock.Mock()
-        azurectl.compute_image_task.Image = mock.Mock(return_value = self.image)
-        azurectl.compute_image_task.Help = mock.Mock(
+        azurectl.commands.compute_image.Image = mock.Mock(return_value = self.image)
+        azurectl.commands.compute_image.Help = mock.Mock(
             return_value=mock.Mock()
         )
 
@@ -57,14 +57,14 @@ class TestComputeImageTask:
         self.task.command_args['--published-date'] = 'date'
         self.task.command_args['--small-icon-uri'] = 'uri'
 
-    @patch('azurectl.compute_image_task.DataOutput')
+    @patch('azurectl.commands.compute_image.DataOutput')
     def test_process_compute_image_list(self, mock_out):
         self.__init_command_args()
         self.task.command_args['list'] = True
         self.task.process()
         self.task.image.list.assert_called_once_with()
 
-    @patch('azurectl.compute_image_task.DataOutput')
+    @patch('azurectl.commands.compute_image.DataOutput')
     def test_process_compute_image_show(self, mock_out):
         self.__init_command_args()
         self.task.command_args['show'] = True
@@ -73,7 +73,7 @@ class TestComputeImageTask:
             self.task.command_args['--name']
         )
 
-    @patch('azurectl.compute_image_task.DataOutput')
+    @patch('azurectl.commands.compute_image.DataOutput')
     def test_process_compute_image_delete(self, mock_out):
         self.__init_command_args()
         self.task.command_args['delete'] = True
@@ -83,7 +83,7 @@ class TestComputeImageTask:
             self.task.command_args['--delete-disk']
         )
 
-    @patch('azurectl.compute_image_task.DataOutput')
+    @patch('azurectl.commands.compute_image.DataOutput')
     def test_process_compute_image_create(self, mock_out):
         self.__init_command_args()
         self.task.command_args['create'] = True
@@ -103,7 +103,7 @@ class TestComputeImageTask:
             'azurectl::compute::image'
         )
 
-    @patch('azurectl.compute_image_task.DataOutput')
+    @patch('azurectl.commands.compute_image.DataOutput')
     def test_process_compute_image_replicate(self, mock_out):
         self.__init_command_args()
         self.task.command_args['replicate'] = True
@@ -116,8 +116,8 @@ class TestComputeImageTask:
             self.task.command_args['--image-version']
         )
 
-    @patch('azurectl.compute_image_task.BackgroundScheduler')
-    @patch('azurectl.compute_image_task.DataOutput')
+    @patch('azurectl.commands.compute_image.BackgroundScheduler')
+    @patch('azurectl.commands.compute_image.DataOutput')
     def test_process_compute_image_replicate_wait(self, mock_out, mock_bg):
         # given
         self.__init_command_args()
@@ -137,8 +137,8 @@ class TestComputeImageTask:
             self.task.command_args['--name']
         )
 
-    @patch('azurectl.compute_image_task.BackgroundScheduler')
-    @patch('azurectl.compute_image_task.DataOutput')
+    @patch('azurectl.commands.compute_image.BackgroundScheduler')
+    @patch('azurectl.commands.compute_image.DataOutput')
     # then
     @raises(SystemExit)
     def test_process_compute_image_replicate_wait_interrupted(
@@ -155,7 +155,7 @@ class TestComputeImageTask:
         # when
         self.task.process()
 
-    @patch('azurectl.compute_image_task.DataOutput')
+    @patch('azurectl.commands.compute_image.DataOutput')
     def test_process_compute_image_replication_status(self, mock_out):
         self.__init_command_args()
         self.task.command_args['replication-status'] = True
@@ -164,7 +164,7 @@ class TestComputeImageTask:
             self.task.command_args['--name']
         )
 
-    @patch('azurectl.compute_image_task.DataOutput')
+    @patch('azurectl.commands.compute_image.DataOutput')
     def test_process_compute_image_unreplicate(self, mock_out):
         self.__init_command_args()
         self.task.command_args['unreplicate'] = True
@@ -173,7 +173,7 @@ class TestComputeImageTask:
             self.task.command_args['--name']
         )
 
-    @patch('azurectl.compute_image_task.DataOutput')
+    @patch('azurectl.commands.compute_image.DataOutput')
     def test_process_compute_image_publish_public(self, mock_out):
         self.__init_command_args()
         self.task.command_args['publish'] = True
@@ -182,7 +182,7 @@ class TestComputeImageTask:
             self.task.command_args['--name'], 'public'
         )
 
-    @patch('azurectl.compute_image_task.DataOutput')
+    @patch('azurectl.commands.compute_image.DataOutput')
     def test_process_compute_image_publish_private(self, mock_out):
         self.__init_command_args()
         self.task.command_args['publish'] = True
@@ -192,7 +192,7 @@ class TestComputeImageTask:
             self.task.command_args['--name'], 'private'
         )
 
-    @patch('azurectl.compute_image_task.DataOutput')
+    @patch('azurectl.commands.compute_image.DataOutput')
     def test_process_compute_image_publish_msdn(self, mock_out):
         self.__init_command_args()
         self.task.command_args['publish'] = True

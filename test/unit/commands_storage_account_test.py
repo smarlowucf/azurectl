@@ -6,7 +6,7 @@ from mock import patch
 from test_helper import *
 
 import azurectl
-from azurectl.storage_account_task import StorageAccountTask
+from azurectl.commands.storage_account import StorageAccountTask
 from azurectl.azurectl_exceptions import *
 
 
@@ -17,13 +17,13 @@ class TestStorageAccountTask:
             'storage', 'account', 'list'
         ]
         self.task = StorageAccountTask()
-        azurectl.storage_account_task.StorageAccount = mock.Mock(
+        azurectl.commands.storage_account.StorageAccount = mock.Mock(
             return_value=mock.Mock()
         )
-        azurectl.storage_account_task.AzureAccount = mock.Mock(
+        azurectl.commands.storage_account.AzureAccount = mock.Mock(
             return_value=mock.Mock()
         )
-        azurectl.storage_account_task.Help = mock.Mock(
+        azurectl.commands.storage_account.Help = mock.Mock(
             return_value=mock.Mock()
         )
 
@@ -55,14 +55,14 @@ class TestStorageAccountTask:
             'azurectl::storage::account'
         )
 
-    @patch('azurectl.storage_account_task.DataOutput')
+    @patch('azurectl.commands.storage_account.DataOutput')
     def test_process_storage_account_list(self, mock_out):
         self.__init_command_args()
         self.task.command_args['list'] = True
         self.task.process()
         self.task.storage_account.list.assert_called_once_with()
 
-    @patch('azurectl.storage_account_task.DataOutput')
+    @patch('azurectl.commands.storage_account.DataOutput')
     def test_process_storage_account_show(self, mock_out):
         self.__init_command_args()
         self.task.command_args['show'] = True
@@ -72,7 +72,7 @@ class TestStorageAccountTask:
             self.task.command_args['--name']
         )
 
-    @patch('azurectl.storage_account_task.DataOutput')
+    @patch('azurectl.commands.storage_account.DataOutput')
     def test_process_storage_account_create(self, mock_out):
         self.__init_command_args()
         self.task.command_args['create'] = True
@@ -88,7 +88,7 @@ class TestStorageAccountTask:
             'Standard_LRS'
         )
 
-    @patch('azurectl.storage_account_task.DataOutput')
+    @patch('azurectl.commands.storage_account.DataOutput')
     def test_process_storage_account_update(self, mock_out):
         self.__init_command_args()
         self.task.command_args['update'] = True
@@ -106,7 +106,7 @@ class TestStorageAccountTask:
             None
         )
 
-    @patch('azurectl.storage_account_task.DataOutput')
+    @patch('azurectl.commands.storage_account.DataOutput')
     def test_process_storage_account_delete(self, mock_out):
         self.__init_command_args()
         self.task.command_args['delete'] = True
@@ -117,18 +117,18 @@ class TestStorageAccountTask:
         )
 
     @raises(AzureInvalidCommand)
-    def test_storage_account_task_invalid_caps(self):
+    def test_storage_account_command_invalid_caps(self):
         self.__init_command_args()
         self.task.command_args['--name'] = 'CAPSAREINVALID'
         self.task.validate_account_name()
 
     @raises(AzureInvalidCommand)
-    def test_storage_account_task_invalid_punctuation(self):
+    def test_storage_account_command_invalid_punctuation(self):
         self.__init_command_args()
         self.task.command_args['--name'] = 'punctuation-is.bad'
         self.task.validate_account_name()
 
-    @patch('azurectl.storage_account_task.DataOutput')
+    @patch('azurectl.commands.storage_account.DataOutput')
     def test_process_storage_account_regions(self, mock_out):
         self.__init_command_args()
         self.task.command_args['regions'] = True

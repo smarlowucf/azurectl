@@ -6,7 +6,7 @@ from mock import patch
 from test_helper import *
 
 import azurectl
-from azurectl.compute_vm_task import ComputeVmTask
+from azurectl.commands.compute_vm import ComputeVmTask
 from azurectl.azurectl_exceptions import *
 
 
@@ -25,20 +25,20 @@ class TestComputeVmTask:
         vm.create_linux_configuration = mock.Mock(
             return_value={}
         )
-        azurectl.compute_vm_task.VirtualMachine = mock.Mock(
+        azurectl.commands.compute_vm.VirtualMachine = mock.Mock(
             return_value=vm
         )
         cloud_service = mock.Mock()
         cloud_service.create = mock.Mock(
             return_value=42
         )
-        azurectl.compute_vm_task.CloudService = mock.Mock(
+        azurectl.commands.compute_vm.CloudService = mock.Mock(
             return_value=cloud_service
         )
-        azurectl.compute_vm_task.Help = mock.Mock(
+        azurectl.commands.compute_vm.Help = mock.Mock(
             return_value=mock.Mock()
         )
-        azurectl.compute_vm_task.AzureAccount = mock.Mock(
+        azurectl.commands.compute_vm.AzureAccount = mock.Mock(
             return_value=mock.Mock()
         )
 
@@ -62,21 +62,21 @@ class TestComputeVmTask:
         self.task.command_args['types'] = False
         self.task.command_args['help'] = False
 
-    @patch('azurectl.compute_vm_task.DataOutput')
+    @patch('azurectl.commands.compute_vm.DataOutput')
     def test_process_compute_vm_types(self, mock_out):
         self.__init_command_args()
         self.task.command_args['types'] = True
         self.task.process()
         self.task.account.instance_types.assert_called_once_with()
 
-    @patch('azurectl.compute_vm_task.DataOutput')
+    @patch('azurectl.commands.compute_vm.DataOutput')
     def test_process_compute_vm_regions(self, mock_out):
         self.__init_command_args()
         self.task.command_args['regions'] = True
         self.task.process()
         self.task.account.locations.assert_called_once_with('PersistentVMRole')
 
-    @patch('azurectl.compute_vm_task.DataOutput')
+    @patch('azurectl.commands.compute_vm.DataOutput')
     @patch('azurectl.request_result.RequestResult.wait_for_request_completion')
     def test_process_compute_vm_create(self, mock_wait_completion, mock_out):
         self.__init_command_args()
@@ -100,7 +100,7 @@ class TestComputeVmTask:
             None
         )
 
-    @patch('azurectl.compute_vm_task.DataOutput')
+    @patch('azurectl.commands.compute_vm.DataOutput')
     @patch('azurectl.request_result.RequestResult.wait_for_request_completion')
     def test_process_compute_vm_create_with_fingerprint(
         self, mock_wait_completion, mock_out

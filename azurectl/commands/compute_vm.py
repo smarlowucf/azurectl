@@ -81,15 +81,15 @@ options:
         user name for login, by default set to: azureuser
 """
 # project
-from cli_task import CliTask
-from azure_account import AzureAccount
-from utils.collector import DataCollector
-from utils.output import DataOutput
-from logger import log
-from virtual_machine import VirtualMachine
-from cloud_service import CloudService
-from request_result import RequestResult
-from help import Help
+from base import CliTask
+from ..azure_account import AzureAccount
+from ..utils.collector import DataCollector
+from ..utils.output import DataOutput
+from ..logger import log
+from ..virtual_machine import VirtualMachine
+from ..cloud_service import CloudService
+from ..request_result import RequestResult
+from ..help import Help
 
 
 class ComputeVmTask(CliTask):

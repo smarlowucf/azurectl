@@ -6,7 +6,7 @@ from mock import patch
 from test_helper import *
 
 import azurectl
-from azurectl.compute_reserved_ip_task import ComputeReservedIpTask
+from azurectl.commands.compute_reserved_ip import ComputeReservedIpTask
 from azurectl.azurectl_exceptions import *
 
 
@@ -17,10 +17,10 @@ class TestComputeReservedIpTask:
             'compute', 'reserved-ip', 'list'
         ]
         self.task = ComputeReservedIpTask()
-        azurectl.compute_reserved_ip_task.ReservedIp = mock.Mock(
+        azurectl.commands.compute_reserved_ip.ReservedIp = mock.Mock(
             return_value=mock.Mock()
         )
-        azurectl.compute_reserved_ip_task.Help = mock.Mock(
+        azurectl.commands.compute_reserved_ip.Help = mock.Mock(
             return_value=mock.Mock()
         )
 
@@ -42,14 +42,14 @@ class TestComputeReservedIpTask:
             'azurectl::compute::reserved_ip'
         )
 
-    @patch('azurectl.compute_reserved_ip_task.DataOutput')
+    @patch('azurectl.commands.compute_reserved_ip.DataOutput')
     def test_process_compute_reserved_ip_list(self, mock_out):
         self.__init_command_args()
         self.task.command_args['list'] = True
         self.task.process()
         self.task.reserved_ip.list.assert_called_once_with()
 
-    @patch('azurectl.compute_reserved_ip_task.DataOutput')
+    @patch('azurectl.commands.compute_reserved_ip.DataOutput')
     def test_process_compute_reserved_ip_show(self, mock_out):
         self.__init_command_args()
         self.task.command_args['show'] = True
@@ -59,7 +59,7 @@ class TestComputeReservedIpTask:
             self.task.command_args['--name']
         )
 
-    @patch('azurectl.compute_reserved_ip_task.DataOutput')
+    @patch('azurectl.commands.compute_reserved_ip.DataOutput')
     def test_process_compute_reserved_ip_create(self, mock_out):
         self.__init_command_args()
         self.task.command_args['create'] = True
@@ -70,7 +70,7 @@ class TestComputeReservedIpTask:
             self.task.config.get_region_name()
         )
 
-    @patch('azurectl.compute_reserved_ip_task.DataOutput')
+    @patch('azurectl.commands.compute_reserved_ip.DataOutput')
     def test_process_compute_reserved_ip_delete(self, mock_out):
         self.__init_command_args()
         self.task.command_args['delete'] = True

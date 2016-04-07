@@ -92,14 +92,15 @@ options:
 """
 from apscheduler.schedulers.background import BackgroundScheduler
 from pytz import utc
+
 # project
-from logger import log
-from cli_task import CliTask
-from azure_account import AzureAccount
-from utils.collector import DataCollector
-from utils.output import DataOutput
-from image import Image
-from help import Help
+from ..logger import log
+from base import CliTask
+from ..azure_account import AzureAccount
+from ..utils.collector import DataCollector
+from ..utils.output import DataOutput
+from ..image import Image
+from ..help import Help
 
 
 class ComputeImageTask(CliTask):

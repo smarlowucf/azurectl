@@ -30,12 +30,12 @@ options:
         request id number returned from azurectl for asynchronous request
 """
 # project
-from cli_task import CliTask
-from azure_account import AzureAccount
-from utils.collector import DataCollector
-from utils.output import DataOutput
-from request_result import RequestResult
-from help import Help
+from base import CliTask
+from ..azure_account import AzureAccount
+from ..utils.collector import DataCollector
+from ..utils.output import DataOutput
+from ..request_result import RequestResult
+from ..help import Help
 
 
 class ComputeRequestTask(CliTask):

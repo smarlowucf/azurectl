@@ -69,20 +69,20 @@ options:
 import os
 
 # project
-from cli_task import CliTask
-from logger import log
-from help import Help
-from account_setup import AccountSetup
-from utils.collector import DataCollector
-from utils.output import DataOutput
-from config import Config
-from container import Container
-from storage_account import StorageAccount
-from azure_account import AzureAccount
-from defaults import Defaults
-from request_result import RequestResult
+from base import CliTask
+from ..logger import log
+from ..help import Help
+from ..account_setup import AccountSetup
+from ..utils.collector import DataCollector
+from ..utils.output import DataOutput
+from ..config import Config
+from ..container import Container
+from ..storage_account import StorageAccount
+from ..azure_account import AzureAccount
+from ..defaults import Defaults
+from ..request_result import RequestResult
 
-from azurectl_exceptions import (
+from ..azurectl_exceptions import (
     AzureAccountConfigurationError
 )
 

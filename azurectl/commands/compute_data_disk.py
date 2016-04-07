@@ -65,13 +65,13 @@ options:
         enable cached reads from and writes to the data disk
 """
 # project
-from azure_account import AzureAccount
-from cli_task import CliTask
-from utils.collector import DataCollector
-from data_disk import DataDisk
-from utils.output import DataOutput
-from defaults import Defaults
-from help import Help
+from ..azure_account import AzureAccount
+from base import CliTask
+from ..utils.collector import DataCollector
+from ..data_disk import DataDisk
+from ..utils.output import DataOutput
+from ..defaults import Defaults
+from ..help import Help
 
 
 class ComputeDataDiskTask(CliTask):

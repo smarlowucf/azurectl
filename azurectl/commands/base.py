@@ -15,10 +15,10 @@ import sys
 import logging
 
 # project
-from cli import Cli
-from config import Config
-from help import Help
-from utils.validations import Validations
+from ..cli import Cli
+from ..config import Config
+from ..help import Help
+from ..utils.validations import Validations
 
 
 class CliTask(object):
@@ -28,7 +28,7 @@ class CliTask(object):
         for the task
     """
     def __init__(self):
-        from logger import log
+        from ..logger import log
 
         self.cli = Cli()
 

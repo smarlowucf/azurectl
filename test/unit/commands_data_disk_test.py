@@ -1,40 +1,42 @@
 import sys
 import mock
-from mock import patch, create_autospec
+from mock import patch
 from test_helper import *
-# mocks
-from azurectl.utils.output import DataOutput
-from azurectl.endpoint import Endpoint
-from azurectl.help import Help
-# project
+
 import azurectl
-from azurectl.compute_endpoint_task import ComputeEndpointTask
+from azurectl.commands.compute_data_disk import ComputeDataDiskTask
 from azurectl.azurectl_exceptions import *
 
 
-class TestComputeEndpointTask:
+class TestComputeDataDiskTask:
     def setup(self):
         # instantiate the command task
         sys.argv = [
             sys.argv[0], '--config', '../data/config',
-            'compute', 'endpoint', 'help'
+            'compute', 'data-disk', 'help'
         ]
-        self.task = ComputeEndpointTask()
-        # mock out the Endpoint class the commands interface with
-        azurectl.compute_endpoint_task.Endpoint = create_autospec(Endpoint)
+        self.task = ComputeDataDiskTask()
+        # mock out the DataDisk class the commands interface with
+        azurectl.commands.compute_data_disk.DataDisk = mock.Mock(
+            return_value=mock.Mock()
+        )
         # mock out the help class
-        azurectl.compute_endpoint_task.Help = create_autospec(Help)
+        azurectl.commands.compute_data_disk.Help = mock.Mock(
+            return_value=mock.Mock()
+        )
         # mock out the output class
-        azurectl.compute_endpoint_task.DataOutput = create_autospec(DataOutput)
+        azurectl.commands.compute_data_disk.DataOutput = mock.Mock(
+            return_value=mock.Mock()
+        )
         # variables used in multiple tests
         self.cloud_service_name = 'mockcloudservice'
-        self.endpoint_name = 'HTTPS'
-        self.port = '443'
-        self.instance_port = '10000'
         self.instance_name = 'mockcloudserviceinstance1'
-        self.udp_endpoint_name = 'SNMP'
-        self.udp_port = '161'
-        self.idle_timeout = '10'
+        self.lun = 0
+        self.cache_method = 'ReadWrite'
+        self.disk_filename = 'mockcloudserviceinstance1-data-disk-0.vhd'
+        self.disk_url = ('https://foo/bar/' + self.disk_filename)
+        self.disk_label = 'Mock data disk'
+        self.disk_size = 42
 
     def __init_command_args(self, overrides=None):
         '''
@@ -47,12 +49,14 @@ class TestComputeEndpointTask:
             'list': False,
             'help': False,
             '--cloud-service-name': None,
-            '--name': None,
+            '--size': None,
             '--instance-name': None,
-            '--port': None,
-            '--instance-port': None,
-            '--idle-timeout': None,
-            '--udp': False,
+            '--label': None,
+            '--disk-name': None,
+            '--lun': None,
+            '--no-cache': False,
+            '--read-only-cache': False,
+            '--read-write-cache': False
         }
         if overrides:
             command_args.update(overrides)
@@ -67,7 +71,7 @@ class TestComputeEndpointTask:
         self.task.process()
         # then
         self.task.manual.show.assert_called_once_with(
-            'azurectl::compute::endpoint'
+            'azurectl::compute::data_disk'
         )
 
     def test_create_with_minimal_args(self):
@@ -75,22 +79,15 @@ class TestComputeEndpointTask:
         self.__init_command_args({
             'create': True,
             '--cloud-service-name': self.cloud_service_name,
-            '--name': self.endpoint_name,
-            '--port': self.port
+            '--size': self.disk_size
         })
         # when
         self.task.process()
         # then
-        self.task.endpoint.set_instance.assert_called_once_with(
+        self.task.data_disk.create.assert_called_once_with(
             self.cloud_service_name,
-            self.cloud_service_name
-        )
-        self.task.endpoint.create.assert_called_once_with(
-            self.endpoint_name,
-            self.port,
-            self.port,
-            'tcp',
-            '4'
+            self.cloud_service_name,
+            self.disk_size
         )
 
     def test_create_with_instance_name(self):
@@ -99,71 +96,65 @@ class TestComputeEndpointTask:
             'create': True,
             '--cloud-service-name': self.cloud_service_name,
             '--instance-name': self.instance_name,
-            '--name': self.endpoint_name,
-            '--port': self.port
+            '--size': self.disk_size
         })
         # when
         self.task.process()
         # then
-        self.task.endpoint.set_instance.assert_called_once_with(
+        self.task.data_disk.create.assert_called_once_with(
             self.cloud_service_name,
-            self.instance_name
-        )
-        self.task.endpoint.create.assert_called_once_with(
-            self.endpoint_name,
-            self.port,
-            self.port,
-            'tcp',
-            '4'
+            self.instance_name,
+            self.disk_size
         )
 
-    def test_create_udp_endpoint(self):
+    def test_create_with_optional_args(self):
         # given
         self.__init_command_args({
             'create': True,
             '--cloud-service-name': self.cloud_service_name,
-            '--name': self.udp_endpoint_name,
-            '--port': self.udp_port,
-            '--instance-port': self.instance_port,
-            '--udp': True
+            '--instance-name': self.instance_name,
+            '--size': self.disk_size,
+            '--label': self.disk_label,
+            '--disk-name': self.disk_filename,
+            '--lun': str(self.lun)
         })
         # when
         self.task.process()
         # then
-        self.task.endpoint.set_instance.assert_called_once_with(
+        self.task.data_disk.create.assert_called_once_with(
             self.cloud_service_name,
-            self.cloud_service_name
-        )
-        self.task.endpoint.create.assert_called_once_with(
-            self.udp_endpoint_name,
-            self.udp_port,
-            self.instance_port,
-            'udp',
-            '4'
+            self.instance_name,
+            self.disk_size,
+            label=self.disk_label,
+            filename=self.disk_filename,
+            lun=self.lun
         )
 
-    def test_create_with_timeout(self):
+    def test_create_with_cache_method(self):
+        sets = [
+            ['--no-cache', 'None'],
+            ['--read-only-cache', 'ReadOnly'],
+            ['--read-write-cache', 'ReadWrite']
+        ]
+        for cache_method_arg, host_caching in sets:
+            self.check_create_with_cache_method(cache_method_arg, host_caching)
+
+    def check_create_with_cache_method(self, cache_method_arg, host_caching):
         # given
         self.__init_command_args({
             'create': True,
             '--cloud-service-name': self.cloud_service_name,
-            '--name': self.endpoint_name,
-            '--port': self.port,
-            '--idle-timeout': self.idle_timeout
+            '--size': self.disk_size
         })
+        self.task.command_args[cache_method_arg] = True
         # when
         self.task.process()
         # then
-        self.task.endpoint.set_instance.assert_called_once_with(
+        self.task.data_disk.create.assert_called_with(
             self.cloud_service_name,
-            self.cloud_service_name
-        )
-        self.task.endpoint.create.assert_called_once_with(
-            self.endpoint_name,
-            self.port,
-            self.port,
-            'tcp',
-            self.idle_timeout
+            self.cloud_service_name,
+            self.disk_size,
+            host_caching=host_caching
         )
 
     def test_show_with_minimal_args(self):
@@ -171,16 +162,16 @@ class TestComputeEndpointTask:
         self.__init_command_args({
             'show': True,
             '--cloud-service-name': self.cloud_service_name,
-            '--name': self.endpoint_name
+            '--lun': self.lun
         })
         # when
         self.task.process()
         # then
-        self.task.endpoint.set_instance.assert_called_once_with(
+        self.task.data_disk.show.assert_called_once_with(
             self.cloud_service_name,
-            self.cloud_service_name
+            self.cloud_service_name,
+            self.lun
         )
-        self.task.endpoint.show.assert_called_once_with(self.endpoint_name)
 
     def test_show_with_instance_name(self):
         # given
@@ -188,32 +179,32 @@ class TestComputeEndpointTask:
             'show': True,
             '--cloud-service-name': self.cloud_service_name,
             '--instance-name': self.instance_name,
-            '--name': self.endpoint_name
+            '--lun': self.lun
         })
         # when
         self.task.process()
         # then
-        self.task.endpoint.set_instance.assert_called_once_with(
+        self.task.data_disk.show.assert_called_once_with(
             self.cloud_service_name,
-            self.instance_name
+            self.instance_name,
+            self.lun
         )
-        self.task.endpoint.show.assert_called_once_with(self.endpoint_name)
 
     def test_delete_with_minimal_args(self):
         # given
         self.__init_command_args({
             'delete': True,
             '--cloud-service-name': self.cloud_service_name,
-            '--name': self.endpoint_name
+            '--lun': self.lun
         })
         # when
         self.task.process()
         # then
-        self.task.endpoint.set_instance.assert_called_once_with(
+        self.task.data_disk.delete.assert_called_once_with(
             self.cloud_service_name,
-            self.cloud_service_name
+            self.cloud_service_name,
+            self.lun
         )
-        self.task.endpoint.delete.assert_called_once_with(self.endpoint_name)
 
     def test_delete_with_instance_name(self):
         # given
@@ -221,16 +212,16 @@ class TestComputeEndpointTask:
             'delete': True,
             '--cloud-service-name': self.cloud_service_name,
             '--instance-name': self.instance_name,
-            '--name': self.endpoint_name
+            '--lun': self.lun
         })
         # when
         self.task.process()
         # then
-        self.task.endpoint.set_instance.assert_called_once_with(
+        self.task.data_disk.delete.assert_called_once_with(
             self.cloud_service_name,
-            self.instance_name
+            self.instance_name,
+            self.lun
         )
-        self.task.endpoint.delete.assert_called_once_with(self.endpoint_name)
 
     def test_list_with_minimal_args(self):
         # given
@@ -241,11 +232,10 @@ class TestComputeEndpointTask:
         # when
         self.task.process()
         # then
-        self.task.endpoint.set_instance.assert_called_once_with(
+        self.task.data_disk.list.assert_called_once_with(
             self.cloud_service_name,
             self.cloud_service_name
         )
-        assert self.task.endpoint.list.called
 
     def test_list_with_instance_name(self):
         # given
@@ -257,8 +247,7 @@ class TestComputeEndpointTask:
         # when
         self.task.process()
         # then
-        self.task.endpoint.set_instance.assert_called_once_with(
+        self.task.data_disk.list.assert_called_once_with(
             self.cloud_service_name,
             self.instance_name
         )
-        assert self.task.endpoint.list.called

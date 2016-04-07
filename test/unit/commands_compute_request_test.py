@@ -7,7 +7,7 @@ from test_helper import *
 
 import azurectl
 from azurectl.azurectl_exceptions import *
-from azurectl.compute_request_task import ComputeRequestTask
+from azurectl.commands.compute_request import ComputeRequestTask
 
 
 class TestComputeRequestTask:
@@ -17,13 +17,13 @@ class TestComputeRequestTask:
             'compute', 'request', 'status', '--id', '1234'
         ]
         self.task = ComputeRequestTask()
-        azurectl.compute_request_task.RequestResult = mock.Mock(
+        azurectl.commands.compute_request.RequestResult = mock.Mock(
             return_value=mock.Mock()
         )
-        azurectl.compute_request_task.Help = mock.Mock(
+        azurectl.commands.compute_request.Help = mock.Mock(
             return_value=mock.Mock()
         )
-        azurectl.compute_request_task.AzureAccount = mock.Mock(
+        azurectl.commands.compute_request.AzureAccount = mock.Mock(
             return_value=mock.Mock()
         )
         self.__init_command_args()
@@ -43,7 +43,7 @@ class TestComputeRequestTask:
             self.task.service
         )
 
-    @patch('azurectl.compute_vm_task.DataOutput')
+    @patch('azurectl.commands.compute_vm.DataOutput')
     def test_process_compute_request_status(self, mock_out):
         self.__init_command_args()
         self.task.command_args['status'] = True

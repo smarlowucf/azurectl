@@ -85,15 +85,16 @@ options:
         through the existing secondary key.
 """
 import string
+
 # project
-from cli_task import CliTask
-from azure_account import AzureAccount
-from utils.collector import DataCollector
-from utils.output import DataOutput
-from defaults import Defaults
-from azurectl_exceptions import AzureInvalidCommand
-from storage_account import StorageAccount
-from help import Help
+from base import CliTask
+from ..azure_account import AzureAccount
+from ..utils.collector import DataCollector
+from ..utils.output import DataOutput
+from ..defaults import Defaults
+from ..azurectl_exceptions import AzureInvalidCommand
+from ..storage_account import StorageAccount
+from ..help import Help
 
 
 class StorageAccountTask(CliTask):

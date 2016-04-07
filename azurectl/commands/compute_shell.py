@@ -19,14 +19,15 @@ commands:
         start a python shell within the azure context
 
 """
+from azure.servicemanagement import ServiceManagementService
 import code
 from pprint import pprint
 from tempfile import NamedTemporaryFile
 from textwrap import dedent
+
 # project
-from cli_task import CliTask
-from azure_account import AzureAccount
-from azure.servicemanagement import ServiceManagementService
+from base import CliTask
+from ..azure_account import AzureAccount
 
 
 class ComputeShellTask(CliTask):

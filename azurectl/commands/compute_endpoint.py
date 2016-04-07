@@ -59,12 +59,12 @@ options:
         the default transport protocol is TCP
 """
 # project
-from cli_task import CliTask
-from azure_account import AzureAccount
-from utils.collector import DataCollector
-from utils.output import DataOutput
-from endpoint import Endpoint
-from help import Help
+from base import CliTask
+from ..azure_account import AzureAccount
+from ..utils.collector import DataCollector
+from ..utils.output import DataOutput
+from ..endpoint import Endpoint
+from ..help import Help
 
 
 class ComputeEndpointTask(CliTask):

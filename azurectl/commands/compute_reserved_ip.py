@@ -35,12 +35,12 @@ options:
         name of the reserved IP address
 """
 # project
-from cli_task import CliTask
-from azure_account import AzureAccount
-from utils.collector import DataCollector
-from utils.output import DataOutput
-from reserved_ip import ReservedIp
-from help import Help
+from base import CliTask
+from ..azure_account import AzureAccount
+from ..utils.collector import DataCollector
+from ..utils.output import DataOutput
+from ..reserved_ip import ReservedIp
+from ..help import Help
 
 
 class ComputeReservedIpTask(CliTask):

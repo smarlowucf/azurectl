@@ -8,7 +8,7 @@ from test_helper import *
 
 import azurectl
 from azurectl.azure_account import AzureAccount
-from azurectl.compute_shell_task import ComputeShellTask
+from azurectl.commands.compute_shell import ComputeShellTask
 from azurectl.config import Config
 
 
@@ -41,13 +41,13 @@ class TestComputeShellTask:
         )
         account.storage_key = mock.Mock()
 
-        azurectl.compute_shell_task.AzureAccount = mock.Mock(
+        azurectl.commands.compute_shell.AzureAccount = mock.Mock(
             return_value=account
         )
 
         self.task = ComputeShellTask()
 
-    @patch('azurectl.compute_shell_task.code.interact')
+    @patch('azurectl.commands.compute_shell.code.interact')
     def test_process_compute_shell(self, mock_interact):
         self.task.command_args = {}
         self.task.process()

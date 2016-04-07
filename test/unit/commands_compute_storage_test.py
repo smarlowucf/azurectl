@@ -9,7 +9,7 @@ from test_helper import *
 import datetime
 import azurectl
 from azurectl.azurectl_exceptions import *
-from azurectl.compute_storage_task import ComputeStorageTask
+from azurectl.commands.compute_storage import ComputeStorageTask
 
 
 class TestComputeStorageTask:
@@ -20,21 +20,21 @@ class TestComputeStorageTask:
             '--source', 'blob',
             '--name', 'name'
         ]
-        azurectl.compute_storage_task.AzureAccount.storage_names = mock.Mock(
+        azurectl.commands.compute_storage.AzureAccount.storage_names = mock.Mock(
             return_value=mock.Mock()
         )
         self.storage = mock.Mock()
         self.storage.upload = mock.Mock()
-        azurectl.compute_storage_task.Storage = mock.Mock(
+        azurectl.commands.compute_storage.Storage = mock.Mock(
             return_value=self.storage
         )
-        azurectl.compute_storage_task.Container = mock.Mock(
+        azurectl.commands.compute_storage.Container = mock.Mock(
             return_value=mock.Mock()
         )
-        azurectl.compute_storage_task.FileShare = mock.Mock(
+        azurectl.commands.compute_storage.FileShare = mock.Mock(
             return_value=mock.Mock()
         )
-        azurectl.compute_storage_task.Help = mock.Mock(
+        azurectl.commands.compute_storage.Help = mock.Mock(
             return_value=mock.Mock()
         )
         self.task = ComputeStorageTask()
@@ -60,7 +60,7 @@ class TestComputeStorageTask:
         self.task.command_args['--name'] = 'some-name'
         self.task.command_args['help'] = False
 
-    @patch('azurectl.compute_storage_task.DataOutput')
+    @patch('azurectl.commands.compute_storage.DataOutput')
     def test_process_compute_storage_share_list(self, mock_out):
         self.__init_command_args()
         self.task.command_args['share'] = True
@@ -104,7 +104,7 @@ class TestComputeStorageTask:
             self.task.command_args['--name']
         )
 
-    @patch('azurectl.compute_storage_task.DataOutput')
+    @patch('azurectl.commands.compute_storage.DataOutput')
     def test_process_compute_storage_show(self, mock_out):
         self.__init_command_args()
         self.task.command_args['container'] = True
@@ -132,7 +132,7 @@ class TestComputeStorageTask:
         self.task.command_args['--permissions'] = 'a'
         self.task.process()
 
-    @patch('azurectl.compute_storage_task.DataOutput')
+    @patch('azurectl.commands.compute_storage.DataOutput')
     def test_process_compute_storage_container_sas(self, mock_out):
         self.__init_command_args()
         self.task.command_args['container'] = True
@@ -148,7 +148,7 @@ class TestComputeStorageTask:
             self.task.command_args['--name'], start, expiry, 'rl'
         )
 
-    @patch('azurectl.compute_storage_task.DataOutput')
+    @patch('azurectl.commands.compute_storage.DataOutput')
     def test_process_compute_storage_container_sas_now(self, mock_out):
         self.__init_command_args()
         self.task.command_args['--start-datetime'] = 'now'
@@ -162,7 +162,7 @@ class TestComputeStorageTask:
             self.task.command_args['--name'], mock.ANY, expiry, 'rl'
         )
 
-    @patch('azurectl.compute_storage_task.DataOutput')
+    @patch('azurectl.commands.compute_storage.DataOutput')
     def test_process_compute_storage_container_sas_expire(self, mock_out):
         self.__init_command_args()
         self.task.command_args['--expiry-datetime'] = '30 days from start'
@@ -177,7 +177,7 @@ class TestComputeStorageTask:
             self.task.command_args['--name'], start, expiry, 'rl'
         )
 
-    @patch('azurectl.compute_storage_task.DataOutput')
+    @patch('azurectl.commands.compute_storage.DataOutput')
     def test_process_compute_storage_container_list(self, mock_out):
         self.__init_command_args()
         self.task.command_args['container'] = True
@@ -185,7 +185,7 @@ class TestComputeStorageTask:
         self.task.process()
         self.task.container.list.assert_called_once_with()
 
-    @patch('azurectl.compute_storage_task.DataOutput')
+    @patch('azurectl.commands.compute_storage.DataOutput')
     def test_process_compute_storage_container_from_cfg_list(self, mock_out):
         self.__init_command_args()
         self.task.command_args['container'] = True
@@ -193,8 +193,8 @@ class TestComputeStorageTask:
         self.task.process()
         self.task.container.list.assert_called_once_with()
 
-    @patch('azurectl.compute_storage_task.BackgroundScheduler')
-    @patch('azurectl.compute_storage_task.DataOutput')
+    @patch('azurectl.commands.compute_storage.BackgroundScheduler')
+    @patch('azurectl.commands.compute_storage.DataOutput')
     def test_process_compute_storage_upload(self, mock_out, mock_job):
         self.__init_command_args()
         self.task.command_args['upload'] = True
@@ -204,8 +204,8 @@ class TestComputeStorageTask:
         )
 
     @raises(SystemExit)
-    @patch('azurectl.compute_storage_task.BackgroundScheduler')
-    @patch('azurectl.compute_storage_task.DataOutput')
+    @patch('azurectl.commands.compute_storage.BackgroundScheduler')
+    @patch('azurectl.commands.compute_storage.DataOutput')
     def test_process_compute_storage_upload_interrupted(self, mock_out, mock_job):
         self.__init_command_args()
         self.task.command_args['upload'] = True
@@ -213,7 +213,7 @@ class TestComputeStorageTask:
         self.task.process()
 
     @raises(SystemExit)
-    @patch('azurectl.compute_storage_task.BackgroundScheduler')
+    @patch('azurectl.commands.compute_storage.BackgroundScheduler')
     def test_process_compute_storage_upload_quiet_interrupted(self, mock_job):
         self.__init_command_args()
         self.task.command_args['upload'] = True

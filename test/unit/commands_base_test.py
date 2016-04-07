@@ -9,13 +9,13 @@ from test_helper import *
 
 import azurectl
 
-from azurectl.cli_task import CliTask
+from azurectl.commands.base import CliTask
 from azurectl.azurectl_exceptions import *
 
 
 class TestCliTask:
     @raises(SystemExit)
-    @patch('azurectl.cli_task.Help.show')
+    @patch('azurectl.commands.base.Help.show')
     def test_show_help(self, help_show):
         sys.argv = [
             sys.argv[0], 'help'
@@ -23,7 +23,7 @@ class TestCliTask:
         CliTask()
         help_show.assert_called_once_with('azurectl')
 
-    @patch('azurectl.cli_task.Cli.show_help')
+    @patch('azurectl.commands.base.Cli.show_help')
     @patch('azurectl.logger.log.setLevel')
     def test_cli_init(self, mock_loglevel, mock_show_help):
         sys.argv = [
@@ -37,7 +37,7 @@ class TestCliTask:
         task = CliTask()
         mock_loglevel.assert_called_once_with(logging.DEBUG)
 
-    @patch('azurectl.cli_task.Validations.validate_min_length')
+    @patch('azurectl.commands.base.Validations.validate_min_length')
     def test_validate_min_length(self, mock_validation):
         sys.argv = [
             sys.argv[0],
@@ -48,7 +48,7 @@ class TestCliTask:
         task.validate_min_length('--name', 5)
         mock_validation.assert_called_once_with('--name', 'test-name0', 5)
 
-    @patch('azurectl.cli_task.Validations.validate_max_length')
+    @patch('azurectl.commands.base.Validations.validate_max_length')
     def test_validate_max_length(self, mock_validation):
         sys.argv = [
             sys.argv[0],
@@ -59,8 +59,8 @@ class TestCliTask:
         task.validate_max_length('--name', 10)
         mock_validation.assert_called_once_with('--name', 'test-name0', 10)
 
-    @patch('azurectl.cli_task.Cli.show_help')
-    @patch('azurectl.cli_task.Config')
+    @patch('azurectl.commands.base.Cli.show_help')
+    @patch('azurectl.commands.base.Config')
     @patch('azurectl.logger.log.setLevel')
     def test_load_config(
         self, mock_loglevel, mock_config, mock_show_help

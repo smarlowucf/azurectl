@@ -92,16 +92,16 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from pytz import utc
 
 # project
-from cli_task import CliTask
-from azure_account import AzureAccount
-from utils.collector import DataCollector
-from utils.output import DataOutput
-from logger import log
-from azurectl_exceptions import AzureInvalidCommand
-from storage import Storage
-from container import Container
-from fileshare import FileShare
-from help import Help
+from base import CliTask
+from ..azure_account import AzureAccount
+from ..utils.collector import DataCollector
+from ..utils.output import DataOutput
+from ..logger import log
+from ..azurectl_exceptions import AzureInvalidCommand
+from ..storage import Storage
+from ..container import Container
+from ..fileshare import FileShare
+from ..help import Help
 
 
 class ComputeStorageTask(CliTask):

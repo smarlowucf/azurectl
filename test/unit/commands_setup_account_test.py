@@ -7,7 +7,7 @@ from test_helper import *
 
 import azurectl
 from azurectl.azurectl_exceptions import *
-from azurectl.setup_account_task import SetupAccountTask
+from azurectl.commands.setup_account import SetupAccountTask
 
 
 class TestSetupAccountTask:
@@ -16,10 +16,10 @@ class TestSetupAccountTask:
             sys.argv[0], 'setup', 'account', 'list'
         ]
         self.setup = mock.Mock()
-        azurectl.setup_account_task.AccountSetup = mock.Mock(
+        azurectl.commands.setup_account.AccountSetup = mock.Mock(
             return_value=self.setup
         )
-        azurectl.setup_account_task.Help = mock.Mock(
+        azurectl.commands.setup_account.Help = mock.Mock(
             return_value=mock.Mock()
         )
         self.task = SetupAccountTask()
@@ -42,7 +42,7 @@ class TestSetupAccountTask:
         self.task.command_args['remove'] = False
         self.task.command_args['help'] = False
 
-    @patch('azurectl.setup_account_task.Config.set_default_config_file')
+    @patch('azurectl.commands.setup_account.Config.set_default_config_file')
     @patch('azurectl.logger.log')
     def test_process_setup_account_default(self, mock_log, mock_set_default):
         self.__init_command_args()
@@ -50,9 +50,9 @@ class TestSetupAccountTask:
         self.task.process()
         mock_set_default.assert_called_once_with(account_name='some-name')
 
-    @patch('azurectl.setup_account_task.Config.get_config_file_list')
-    @patch('azurectl.setup_account_task.AccountSetup')
-    @patch('azurectl.setup_account_task.DataOutput.display')
+    @patch('azurectl.commands.setup_account.Config.get_config_file_list')
+    @patch('azurectl.commands.setup_account.AccountSetup')
+    @patch('azurectl.commands.setup_account.DataOutput.display')
     @patch('azurectl.logger.log')
     @patch('os.path.islink')
     def test_process_setup_account_list(
@@ -69,9 +69,9 @@ class TestSetupAccountTask:
         mock_account_setup.assert_called_once_with('a')
         setup.list.assert_called_once_with()
 
-    @patch('azurectl.setup_account_task.Config.get_config_file_list')
-    @patch('azurectl.setup_account_task.DataCollector')
-    @patch('azurectl.setup_account_task.DataOutput.display')
+    @patch('azurectl.commands.setup_account.Config.get_config_file_list')
+    @patch('azurectl.commands.setup_account.DataCollector')
+    @patch('azurectl.commands.setup_account.DataOutput.display')
     @patch('azurectl.logger.log')
     @patch('os.path.islink')
     @patch('os.readlink')
@@ -115,9 +115,9 @@ class TestSetupAccountTask:
             self.task.command_args['--subscription-id']
         )
 
-    @patch('azurectl.setup_account_task.AzureAccount')
-    @patch('azurectl.setup_account_task.Config')
-    @patch('azurectl.setup_account_task.StorageAccount')
+    @patch('azurectl.commands.setup_account.AzureAccount')
+    @patch('azurectl.commands.setup_account.Config')
+    @patch('azurectl.commands.setup_account.StorageAccount')
     @raises(AzureAccountConfigurationError)
     def test_process_setup_configure_and_create_account_failed(
         self, mock_storage, mock_config, mock_azure_account
@@ -132,11 +132,11 @@ class TestSetupAccountTask:
         self.task.config = mock.Mock()
         self.task.process()
 
-    @patch('azurectl.setup_account_task.AzureAccount')
-    @patch('azurectl.setup_account_task.Config')
-    @patch('azurectl.setup_account_task.StorageAccount')
-    @patch('azurectl.setup_account_task.Container')
-    @patch('azurectl.setup_account_task.RequestResult')
+    @patch('azurectl.commands.setup_account.AzureAccount')
+    @patch('azurectl.commands.setup_account.Config')
+    @patch('azurectl.commands.setup_account.StorageAccount')
+    @patch('azurectl.commands.setup_account.Container')
+    @patch('azurectl.commands.setup_account.RequestResult')
     def test_process_setup_configure_and_create_account(
         self, mock_request, mock_container, mock_storage,
         mock_config, mock_azure_account
@@ -177,10 +177,10 @@ class TestSetupAccountTask:
         )
         container.create.assert_called_once_with('container-name')
 
-    @patch('azurectl.setup_account_task.AzureAccount')
-    @patch('azurectl.setup_account_task.Config')
-    @patch('azurectl.setup_account_task.StorageAccount')
-    @patch('azurectl.setup_account_task.Container')
+    @patch('azurectl.commands.setup_account.AzureAccount')
+    @patch('azurectl.commands.setup_account.Config')
+    @patch('azurectl.commands.setup_account.StorageAccount')
+    @patch('azurectl.commands.setup_account.Container')
     def test_process_setup_configure_and_create_account_existing(
         self, mock_container, mock_storage, mock_config, mock_azure_account
     ):
