@@ -8,7 +8,7 @@ from urlparse import urlparse
 from test_helper import *
 
 from azurectl.azurectl_exceptions import *
-from azurectl.fileshare import FileShare
+from azurectl.storage.fileshare import FileShare
 
 import azurectl
 
@@ -40,35 +40,35 @@ class TestFileShare:
         )
         self.files = FileShare(account)
 
-    @patch('azurectl.fileshare.FileService.list_shares')
+    @patch('azurectl.storage.fileshare.FileService.list_shares')
     def test_list(self, mock_list_shares):
         mock_list_shares.return_value = self.name_list
         assert self.files.list() == ['a', 'b']
 
-    @patch('azurectl.fileshare.FileService.create_share')
+    @patch('azurectl.storage.fileshare.FileService.create_share')
     def test_create(self, mock_create_shares):
         self.files.create('foo')
         mock_create_shares.assert_called_once_with('foo')
 
-    @patch('azurectl.fileshare.FileService.delete_share')
+    @patch('azurectl.storage.fileshare.FileService.delete_share')
     def test_delete(self, mock_delete_shares):
         self.files.delete('foo')
         mock_delete_shares.assert_called_once_with('foo')
 
     @raises(AzureFileShareCreateError)
-    @patch('azurectl.fileshare.FileService.create_share')
+    @patch('azurectl.storage.fileshare.FileService.create_share')
     def test_raise_create_failed(self, mock_create_shares):
         mock_create_shares.side_effect = AzureFileShareCreateError('Boom')
         self.files.create('foo')
 
     @raises(AzureFileShareListError)
-    @patch('azurectl.fileshare.FileService.list_shares')
+    @patch('azurectl.storage.fileshare.FileService.list_shares')
     def test_raise_list_failed(self, mock_list_shares):
         mock_list_shares.side_effect = AzureFileShareListError('Boom')
         self.files.list()
 
     @raises(AzureFileShareDeleteError)
-    @patch('azurectl.fileshare.FileService.delete_share')
+    @patch('azurectl.storage.fileshare.FileService.delete_share')
     def test_raise_delete_failed(self, mock_delete_shares):
         mock_delete_shares.side_effect = AzureFileShareDeleteError('Boom')
         self.files.delete('foo')

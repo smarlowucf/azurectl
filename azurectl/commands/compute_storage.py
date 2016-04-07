@@ -98,9 +98,9 @@ from ..utils.collector import DataCollector
 from ..utils.output import DataOutput
 from ..logger import log
 from ..azurectl_exceptions import AzureInvalidCommand
-from ..storage import Storage
-from ..container import Container
-from ..fileshare import FileShare
+from ..storage.storage import Storage
+from ..storage.container import Container
+from ..storage.fileshare import FileShare
 from ..help import Help
 
 

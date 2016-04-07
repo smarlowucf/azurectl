@@ -7,7 +7,7 @@ from mock import call
 from test_helper import *
 
 from azurectl.azurectl_exceptions import *
-from azurectl.page_blob import PageBlob
+from azurectl.storage.page_blob import PageBlob
 
 import azurectl
 

@@ -15,7 +15,7 @@ from azure.storage.blob.baseblobservice import BaseBlobService
 from azure.storage.sharedaccesssignature import SharedAccessSignature
 
 # project
-from azurectl_exceptions import (
+from ..azurectl_exceptions import (
     AzureCannotInit,
     AzureContainerListError,
     AzureContainerListContentError,

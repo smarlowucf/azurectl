@@ -76,7 +76,7 @@ from ..account.setup import AccountSetup
 from ..utils.collector import DataCollector
 from ..utils.output import DataOutput
 from ..config.parser import Config
-from ..container import Container
+from ..storage.container import Container
 from ..account.storage import StorageAccount
 from ..account.service import AzureAccount
 from ..defaults import Defaults

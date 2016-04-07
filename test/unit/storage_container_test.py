@@ -8,7 +8,7 @@ from urlparse import urlparse
 from test_helper import *
 
 from azurectl.azurectl_exceptions import *
-from azurectl.container import Container
+from azurectl.storage.container import Container
 
 import azurectl
 
@@ -54,51 +54,51 @@ class TestContainer:
     def test_container_failed_init(self):
         Container()
 
-    @patch('azurectl.container.BaseBlobService.list_containers')
+    @patch('azurectl.storage.container.BaseBlobService.list_containers')
     def test_list(self, mock_list_containers):
         mock_list_containers.return_value = self.name_list
         assert self.container.list() == ['a', 'b']
 
-    @patch('azurectl.container.BaseBlobService.delete_container')
+    @patch('azurectl.storage.container.BaseBlobService.delete_container')
     def test_delete(self, mock_delete):
         assert self.container.delete('container_name') is True
         mock_delete.assert_called_once_with(
             container_name='container_name', fail_not_exist=True
         )
 
-    @patch('azurectl.container.BaseBlobService.create_container')
+    @patch('azurectl.storage.container.BaseBlobService.create_container')
     def test_create(self, mock_create):
         assert self.container.create('container_name') is True
         mock_create.assert_called_once_with(
             container_name='container_name', fail_on_exist=True
         )
 
-    @patch('azurectl.container.BaseBlobService.delete_container')
+    @patch('azurectl.storage.container.BaseBlobService.delete_container')
     @raises(AzureContainerDeleteError)
     def test_delete_raises(self, mock_delete):
         mock_delete.side_effect = Exception
         self.container.delete('container_name')
 
-    @patch('azurectl.container.BaseBlobService.create_container')
+    @patch('azurectl.storage.container.BaseBlobService.create_container')
     @raises(AzureContainerCreateError)
     def test_create_raises(self, mock_create):
         mock_create.side_effect = Exception
         self.container.create('container_name')
 
     @raises(AzureContainerListError)
-    @patch('azurectl.container.BaseBlobService.list_containers')
+    @patch('azurectl.storage.container.BaseBlobService.list_containers')
     def test_list_raises(self, mock_list_containers):
         mock_list_containers.side_effect = AzureContainerListError
         self.container.list()
 
-    @patch('azurectl.container.BaseBlobService.list_blobs')
+    @patch('azurectl.storage.container.BaseBlobService.list_blobs')
     def test_content(self, mock_list_blobs):
         mock_list_blobs.return_value = self.name_list
         assert self.container.content('some-container') == \
             {'some-container': ['a', 'b']}
 
     @raises(AzureContainerListContentError)
-    @patch('azurectl.container.BaseBlobService.list_blobs')
+    @patch('azurectl.storage.container.BaseBlobService.list_blobs')
     def test_content_raises(self, mock_list_blobs):
         mock_list_blobs.side_effect = AzureContainerListContentError
         self.container.content('some-container')
@@ -121,11 +121,11 @@ class TestContainer:
         assert 'sr=c&' in parsed.query
         assert 'sig=' in parsed.query  # can't actively validate the signature
 
-    @patch('azurectl.container.BaseBlobService.get_container_properties')
+    @patch('azurectl.storage.container.BaseBlobService.get_container_properties')
     def test_exists_false(self, mock_properties):
         mock_properties.side_effect = Exception
         assert self.container.exists('container_name') is False
 
-    @patch('azurectl.container.BaseBlobService.get_container_properties')
+    @patch('azurectl.storage.container.BaseBlobService.get_container_properties')
     def test_exists_true(self, mock_properties):
         assert self.container.exists('container_name') is True

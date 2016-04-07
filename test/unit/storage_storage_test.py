@@ -7,7 +7,7 @@ from mock import call
 from test_helper import *
 
 from azurectl.azurectl_exceptions import *
-from azurectl.storage import Storage
+from azurectl.storage.storage import Storage
 
 import azurectl
 
@@ -37,14 +37,14 @@ class TestStorage:
         self.storage.upload('some-blob', None)
 
     @raises(AzureStorageStreamError)
-    @patch('azurectl.storage.XZ.open')
+    @patch('azurectl.storage.storage.XZ.open')
     def test_upload_error_put_blob(self, mock_xz_open):
         mock_xz_open.side_effect = Exception
         self.storage.upload('../data/blob.xz')
 
     @raises(AzureStorageUploadError)
-    @patch('azurectl.storage.PageBlob')
-    @patch('azurectl.storage.XZ.open')
+    @patch('azurectl.storage.storage.PageBlob')
+    @patch('azurectl.storage.storage.XZ.open')
     def test_upload_raises(self, mock_xz_open, mock_page_blob):
         stream = mock.Mock
         stream.close = mock.Mock()
@@ -53,9 +53,9 @@ class TestStorage:
         self.storage.upload('../data/blob.xz')
         stream.close.assert_called_once_with()
 
-    @patch('azurectl.storage.PageBlob')
-    @patch('azurectl.storage.XZ.uncompressed_size')
-    @patch('azurectl.storage.XZ.open')
+    @patch('azurectl.storage.storage.PageBlob')
+    @patch('azurectl.storage.storage.XZ.uncompressed_size')
+    @patch('azurectl.storage.storage.XZ.open')
     def test_upload(self, mock_xz_open, mock_uncompressed_size, mock_page_blob):
         stream = mock.Mock
         stream.close = mock.Mock()
@@ -83,7 +83,7 @@ class TestStorage:
         ]
         stream.close.assert_called_once_with()
 
-    @patch('azurectl.storage.PageBlob')
+    @patch('azurectl.storage.storage.PageBlob')
     @patch('__builtin__.open')
     @patch('os.path.getsize')
     def test_upload_uncompressed(
