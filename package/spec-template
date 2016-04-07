@@ -54,8 +54,7 @@ done
 %files
 %defattr(-,root,root,-)
 %{_bindir}/azurectl
-%{python_sitelib}/azurectl-%{version}-py%{py_ver}.egg-info
-%{python_sitelib}/azurectl
+%{python_sitelib}/*
 %config /etc/bash_completion.d/azurectl.sh
 %doc %{_mandir}/man1/*
 %changelog

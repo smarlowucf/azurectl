@@ -5,7 +5,7 @@ all:
 	${MAKE} -C doc/man all
 
 flake8:
-	flake8 -v
+	flake8
 
 install:
 	python setup.py install
