@@ -18,7 +18,7 @@ from azure.servicemanagement.models import (
 # project
 from azurectl.account.service import AzureAccount
 from azurectl.azurectl_exceptions import *
-from azurectl.config import Config
+from azurectl.config.parser import Config
 from azurectl.endpoint import Endpoint
 import azurectl
 

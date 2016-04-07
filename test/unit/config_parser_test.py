@@ -5,7 +5,7 @@ from mock import patch
 from test_helper import *
 
 from azurectl.azurectl_exceptions import *
-from azurectl.config import Config
+from azurectl.config.parser import Config
 
 import os
 
@@ -44,7 +44,7 @@ class TestConfig:
                 platform='lin'
             ) == 'foo/.config/azurectl/config'
 
-    @patch('azurectl.config.ConfigFilePath')
+    @patch('azurectl.config.parser.ConfigFilePath')
     def test_get_config_file_list(self, mock_config_path):
         paths = mock.Mock()
         paths.default_config.return_value = 'a'
@@ -54,7 +54,7 @@ class TestConfig:
         paths.default_config.assert_called_once_with()
         paths.account_config.assert_called_once_with()
 
-    @patch('azurectl.config.ConfigFilePath')
+    @patch('azurectl.config.parser.ConfigFilePath')
     @patch('os.remove')
     @patch('os.symlink')
     @patch('os.path.exists')
@@ -77,7 +77,7 @@ class TestConfig:
             'account-config', 'default-config'
         )
 
-    @patch('azurectl.config.ConfigFilePath')
+    @patch('azurectl.config.parser.ConfigFilePath')
     @patch('os.path.exists')
     @raises(AzureConfigAccountFileNotFound)
     def test_set_default_config_file_acount_config_does_not_exist(
@@ -89,7 +89,7 @@ class TestConfig:
         mock_exists.return_value = False
         Config.set_default_config_file('account-name')
 
-    @patch('azurectl.config.ConfigFilePath')
+    @patch('azurectl.config.parser.ConfigFilePath')
     @patch('os.path.exists')
     @patch('os.path.islink')
     @raises(AzureConfigDefaultLinkError)

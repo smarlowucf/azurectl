@@ -9,7 +9,7 @@ from azurectl.azurectl_exceptions import *
 import azurectl
 
 from azurectl.account.service import AzureAccount
-from azurectl.config import Config
+from azurectl.config.parser import Config
 
 from collections import namedtuple
 

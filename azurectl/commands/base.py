@@ -16,7 +16,7 @@ import logging
 
 # project
 from ..cli import Cli
-from ..config import Config
+from ..config.parser import Config
 from ..help import Help
 from ..utils.validations import Validations
 

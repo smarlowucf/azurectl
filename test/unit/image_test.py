@@ -13,7 +13,7 @@ from azure.servicemanagement.models import (
     ReplicationProgressElement
 )
 from azurectl.account.service import AzureAccount
-from azurectl.config import Config
+from azurectl.config.parser import Config
 from azurectl.azurectl_exceptions import *
 from azurectl.image import Image
 

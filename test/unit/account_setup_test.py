@@ -231,7 +231,7 @@ class TestAccountSetup:
         assert self.setup.set_default_region('foofoo') is False
 
     @patch('os.remove')
-    @patch('azurectl.config.Config.get_config_file')
+    @patch('azurectl.config.parser.Config.get_config_file')
     @patch('os.path.islink')
     @patch('os.path.exists')
     @patch('os.readlink')

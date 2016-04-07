@@ -9,7 +9,7 @@ from test_helper import *
 
 from azurectl.account.service import AzureAccount
 from azurectl.azurectl_exceptions import *
-from azurectl.config import Config
+from azurectl.config.parser import Config
 from azurectl.data_disk import DataDisk
 
 import azurectl

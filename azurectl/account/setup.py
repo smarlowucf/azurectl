@@ -15,7 +15,7 @@ from ConfigParser import ConfigParser
 import os
 
 # project
-from ..config import Config
+from ..config.parser import Config
 from ..azurectl_exceptions import (
     AzureConfigParseError,
     AzureConfigAddAccountSectionError,

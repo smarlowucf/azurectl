@@ -8,7 +8,7 @@ from mock import call
 from test_helper import *
 
 from azurectl.account.service import AzureAccount
-from azurectl.config import Config
+from azurectl.config.parser import Config
 from azurectl.azurectl_exceptions import *
 from azurectl.reserved_ip import ReservedIp
 
