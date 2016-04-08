@@ -72,7 +72,7 @@ class TestCli:
     def test_load_command(self):
         assert self.cli.load_command() == self.loaded_command
 
-    @raises(AzureUnknownCommand)
+    @raises(SystemExit)
     def test_load_command_unknown(self):
         self.cli.loaded = False
         self.cli.all_args['<command>'] = 'foo'

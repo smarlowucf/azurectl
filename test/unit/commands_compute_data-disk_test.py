@@ -4,28 +4,31 @@ from mock import patch
 from test_helper import *
 
 import azurectl
-from azurectl.commands.compute_data_disk import ComputeDataDiskTask
+import importlib
 from azurectl.azurectl_exceptions import *
 
 
 class TestComputeDataDiskTask:
     def setup(self):
+        data_disk = importlib.import_module(
+            'azurectl.commands.compute_data-disk'
+        )
         # instantiate the command task
         sys.argv = [
             sys.argv[0], '--config', '../data/config',
             'compute', 'data-disk', 'help'
         ]
-        self.task = ComputeDataDiskTask()
+        self.task = data_disk.ComputeDataDiskTask()
         # mock out the DataDisk class the commands interface with
-        azurectl.commands.compute_data_disk.DataDisk = mock.Mock(
+        data_disk.DataDisk = mock.Mock(
             return_value=mock.Mock()
         )
         # mock out the help class
-        azurectl.commands.compute_data_disk.Help = mock.Mock(
+        data_disk.Help = mock.Mock(
             return_value=mock.Mock()
         )
         # mock out the output class
-        azurectl.commands.compute_data_disk.DataOutput = mock.Mock(
+        data_disk.DataOutput = mock.Mock(
             return_value=mock.Mock()
         )
         # variables used in multiple tests

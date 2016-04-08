@@ -63,13 +63,16 @@ global options:
 """
 import importlib
 from docopt import docopt
+import glob
+import re
+import os
 
 # project
+from defaults import Defaults
 from azurectl_exceptions import (
     AzureUnknownServiceName,
     AzureCommandNotLoaded,
-    AzureLoadCommandUndefined,
-    AzureUnknownCommand
+    AzureLoadCommandUndefined
 )
 from version import __VERSION__
 
@@ -130,22 +133,37 @@ class Cli(object):
             raise AzureLoadCommandUndefined(
                 'No command specified for %s service' % service
             )
-        try:
-            loaded = importlib.import_module(
-                'azurectl.commands.' +
-                self.__underscore('_'.join([service, command]))
-            )
-        except Exception as e:
-            raise AzureUnknownCommand(
-                'Loading command %s for %s service failed with: %s: %s' %
-                (command, service, type(e).__name__, format(e))
-            )
-        self.loaded = loaded
+        command_source_file = Defaults.project_file(
+            'commands/' + service + '_' + command + '.py'
+        )
+        if not os.path.exists(command_source_file):
+            from .logger import log
+            log.info('Did you mean')
+            for service_command in self.__get_command_implementations(service):
+                log.info('--> azurectl %s', service_command)
+            raise SystemExit
+        self.loaded = importlib.import_module(
+            'azurectl.commands.' + service + '_' + command
+        )
         return self.loaded
+
+    def __get_command_implementations(self, service):
+        command_implementations = []
+        glob_match = Defaults.project_file('/') + 'commands/*.py'
+        for source_file in glob.iglob(glob_match):
+            with open(source_file, 'r') as source:
+                for line in source:
+                    if re.search('usage: (.*)', line):
+                        command_path = os.path.basename(
+                            source_file
+                        ).replace('.py', '').split('_')
+                        if command_path[0] == service:
+                            command_implementations.append(
+                                ' '.join(command_path)
+                            )
+                        break
+        return command_implementations
 
     def __load_command_args(self):
         argv = [self.get_servicename(), self.get_command()] + self.command_args
         return docopt(self.loaded.__doc__, argv=argv)
-
-    def __underscore(self, string):
-        return string.replace('-', '_').lower()

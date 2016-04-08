@@ -12,6 +12,8 @@
 # limitations under the License.
 #
 from collections import namedtuple
+from pkg_resources import resource_filename
+
 # project
 from azurectl_exceptions import AzureDomainLookupError
 
@@ -56,6 +58,10 @@ class Defaults(object):
                 'Specified region %s not in lookup table' % region
             )
         return azure_domain[region]
+
+    @classmethod
+    def project_file(self, filename):
+        return resource_filename('azurectl', filename)
 
     @classmethod
     def account_type_for_docopts(self, docopts, return_default=True):
