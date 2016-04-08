@@ -132,8 +132,8 @@ class Cli(object):
             )
         try:
             loaded = importlib.import_module(
-                'azurectl.' +
-                self.__underscore('_'.join([service, command, 'task']))
+                'azurectl.commands.' +
+                self.__underscore('_'.join([service, command]))
             )
         except Exception as e:
             raise AzureUnknownCommand(

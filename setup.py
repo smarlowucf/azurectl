@@ -29,6 +29,17 @@ config = {
     'entry_points': {
         'console_scripts': ['azurectl=azurectl.azurectl:main'],
     },
+    'include_package_data': True,
+    'zip_safe': False,
+    'classifiers': [
+        # http://pypi.python.org/pypi?%3Aaction=list_classifiers
+        'Development Status :: 5 - Production/Stable',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: Apache License, Version 2.0',
+        'Operating System :: POSIX :: Linux',
+        'Programming Language :: Python :: 2.7',
+        'Topic :: System :: Operating System'
+    ]
 }
 
 setup(**config)

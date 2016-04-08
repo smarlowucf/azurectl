@@ -5,7 +5,7 @@ from mock import patch
 from test_helper import *
 
 from azurectl.azurectl_exceptions import *
-from azurectl.config_file_path import ConfigFilePath
+from azurectl.config.file_path import ConfigFilePath
 
 import os
 

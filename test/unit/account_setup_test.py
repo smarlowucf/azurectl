@@ -11,7 +11,7 @@ from azurectl.azurectl_exceptions import (
     AzureConfigPublishSettingsError,
     AzureConfigWriteError
 )
-from azurectl.account_setup import AccountSetup
+from azurectl.account.setup import AccountSetup
 
 import azurectl
 
@@ -231,7 +231,7 @@ class TestAccountSetup:
         assert self.setup.set_default_region('foofoo') is False
 
     @patch('os.remove')
-    @patch('azurectl.config.Config.get_config_file')
+    @patch('azurectl.config.parser.Config.get_config_file')
     @patch('os.path.islink')
     @patch('os.path.exists')
     @patch('os.readlink')

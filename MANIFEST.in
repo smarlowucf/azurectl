@@ -1,0 +1,26 @@
+# Manifest describing source package contents
+
+graft completion
+graft azurectl/account
+graft azurectl/commands
+graft azurectl/config
+graft azurectl/instance
+graft azurectl/management
+graft azurectl/storage
+graft azurectl/utils
+
+graft package
+
+include doc/man/*.1.gz
+
+include Makefile
+include README*
+include LICENSE
+
+include .bumpversion.cfg
+include .travis*
+
+include .virtualenv.requirements.txt
+include .virtualenv.dev-requirements.txt
+
+global-exclude *.py[cod] __pycache__ *.so *.dylib
