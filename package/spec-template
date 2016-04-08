@@ -9,8 +9,6 @@ Summary:        Command Line Interface to manage Microsoft Azure services
 License:        GPL-2.0
 Group:          Development/Languages/Python
 Source:         python-azurectl-%{version}.tar.gz
-Source1:        python-azurectl-completion-%{version}.tar.gz
-Source2:        python-azurectl-man-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 BuildRequires:  python-devel
 BuildRequires:  python-setuptools
@@ -36,7 +34,7 @@ It allows uploading, registering and maintaining OS images for
 multiple Azure Account Subscriptions.
 
 %prep
-%setup -q -n azurectl-%{version} -b1 -b2
+%setup -q -n azurectl-%{version}
 
 %build
 python setup.build.py build

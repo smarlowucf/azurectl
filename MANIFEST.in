@@ -1,5 +1,6 @@
 # Manifest describing source package contents
 
+graft completion
 graft azurectl/account
 graft azurectl/commands
 graft azurectl/config
@@ -9,6 +10,8 @@ graft azurectl/storage
 graft azurectl/utils
 
 graft package
+
+include doc/man/*.1.gz
 
 include Makefile
 include README*

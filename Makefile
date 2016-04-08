@@ -22,8 +22,16 @@ list_tests:
 %.py:
 	cd test/unit && py.test -s $@
 
-build: flake8 test
+.PHONY: completion
+completion:
+	mkdir -p completion && tools/completion_generator > completion/azurectl.sh
+
+.PHONY: doc
+doc:
 	${MAKE} -C doc/man all
+
+build: flake8 test completion doc
+	rm -f dist/*
 	# delete version information from setup.py for rpm package
 	# we don't want to have this in the egg info because the rpm
 	# package should handle package/version requirements
@@ -35,19 +43,10 @@ build: flake8 test
 		tools/changelog_descending > dist/python-azurectl.changes
 	cat package/spec-template | sed -e s'@%%VERSION@${version}@' \
 		> dist/python-azurectl.spec
-	mkdir -p dist/azurectl-${version}/completion
-	tools/completion_generator \
-		> dist/azurectl-${version}/completion/azurectl.sh
-	tar -C dist -czf dist/python-azurectl-completion-${version}.tar.gz \
-		azurectl-${version}/completion
-	mkdir -p dist/azurectl-${version}/doc/man
-	cp -a doc/man/*.1.gz dist/azurectl-${version}/doc/man
-	tar -C dist -czf dist/python-azurectl-man-${version}.tar.gz \
-		azurectl-${version}/doc/man
 	rm -rf dist/azurectl-${version}
-	${MAKE} -C doc/man clean
 
 clean:
+	${MAKE} -C doc/man clean
 	find -name *.pyc | xargs rm -f
 	rm -rf azurectl.egg-info
 	rm -rf build
