@@ -61,14 +61,17 @@ class AzureAccount(object):
             return self.__get_first_subscription_id()
 
     def get_management_url(self):
-        subscription = self.__get_subscription(self.subscription_id())
         try:
-            url = subscription.attributes['ServiceManagementUrl'].value
-        except Exception:
-            raise AzureServiceManagementUrlNotFound(
-                'No PublishProfile.ServiceManagementUrl found in %s' %
-                self.settings
-            )
+            url = self.config.get_management_url()
+        except AzureConfigVariableNotFound:
+            subscription = self.__get_subscription(self.subscription_id())
+            try:
+                url = subscription.attributes['ServiceManagementUrl'].value
+            except Exception:
+                raise AzureServiceManagementUrlNotFound(
+                    'No PublishProfile.ServiceManagementUrl found in %s' %
+                    self.settings
+                )
         return urlparse(url).hostname
 
     def get_blob_service_host_base(self):

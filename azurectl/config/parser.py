@@ -100,6 +100,9 @@ class Config(object):
     def get_publishsettings_file_name(self):
         return self.__get_account_option('publishsettings')
 
+    def get_management_url(self):
+        return self.__get_account_option('management_url')
+
     def get_region_name(self):
         return self.region_name.replace('region:', '')
 
