@@ -77,7 +77,7 @@ from ..utils.collector import DataCollector
 from ..utils.output import DataOutput
 from ..config.parser import Config
 from ..storage.container import Container
-from ..account.storage import StorageAccount
+from ..storage.account import StorageAccount
 from ..account.service import AzureAccount
 from ..defaults import Defaults
 from ..management.request_result import RequestResult
