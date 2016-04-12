@@ -31,7 +31,7 @@ class TestCliTask:
             '--debug',
             '--region', 'region',
             '--config', 'config',
-            'compute', 'storage', 'container', 'list'
+            'storage', 'container', 'list'
         ]
         mock_show_help.return_value = False
         task = CliTask()
@@ -70,7 +70,7 @@ class TestCliTask:
             '--debug',
             '--region', 'region',
             '--config', 'config',
-            'compute', 'storage', 'container', 'list'
+            'storage', 'container', 'list'
         ]
         mock_show_help.return_value = False
         task = CliTask()

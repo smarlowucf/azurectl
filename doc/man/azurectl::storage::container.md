@@ -4,19 +4,19 @@ azurectl - Command Line Interface to manage Microsoft Azure
 
 # SYNOPSIS
 
-__azurectl__ compute storage container list
+__azurectl__ storage container list
 
-__azurectl__ compute storage container show
-
-    [--name=<containername>]
-
-__azurectl__ compute storage container create
+__azurectl__ storage container show
 
     [--name=<containername>]
 
-__azurectl__ compute storage container delete --name=<containername>
+__azurectl__ storage container create
 
-__azurectl__ compute storage container sas
+    [--name=<containername>]
+
+__azurectl__ storage container delete --name=<containername>
+
+__azurectl__ storage container sas
 
     [--name=<containername>]
     [--start-datetime=start] [--expiry-datetime=expiry]

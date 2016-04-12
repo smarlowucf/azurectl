@@ -4,13 +4,13 @@ azurectl - Command Line Interface to manage Microsoft Azure
 
 # SYNOPSIS
 
-__azurectl__ compute storage upload --source=*file*
+__azurectl__ storage disk upload --source=*file*
 
     [--name=<blobname>]
     [--max-chunk-size=<size>]
     [--quiet]
 
-__azurectl__ compute storage delete --name=*blobname*
+__azurectl__ storage disk delete --name=*blobname*
 
 # DESCRIPTION
 
