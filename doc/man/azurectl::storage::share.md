@@ -4,11 +4,11 @@ azurectl - Command Line Interface to manage Microsoft Azure
 
 # SYNOPSIS
 
-__azurectl__ compute storage share list
+__azurectl__ storage share list
 
-__azurectl__ compute storage share create --name=*sharename*
+__azurectl__ storage share create --name=*sharename*
 
-__azurectl__ compute storage share delete --name=*sharename*
+__azurectl__ storage share delete --name=*sharename*
 
 # DESCRIPTION
 
