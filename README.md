@@ -331,8 +331,8 @@ Adding new commands to the project consists out of four steps
 
 1. Write tests
 2. Write the implementation classes providing the functionality you need
-3. Write a task class providing the command line processing and output
-   using the implementation classes (file name must end with `_task`).
+3. Write a command class providing the command line processing and output
+   using the implementation classes.
 4. Write a manual page
 
 
@@ -343,7 +343,7 @@ The following is a simple template to illustrate the implementation
 For a new command at least two tests need to be written
 
 * mycmd_test.py
-* service_mycmd_task_test.py
+* commands_service_mycmd_test.py
 
 Tests are written using the pytest testing framework. Please refer to
 the `test/unit` directory to see current implementations
@@ -352,27 +352,23 @@ the `test/unit` directory to see current implementations
 #### Class implementing desired functionality: mycmd.py
 
 ```python
-from azurectl_exceptions import *
+from azurectl_exceptions import (
+    exception_class_from_azurectl_exceptions
+)
 
-class MyCmd:
+class MyCmd(object):
     def __init__(self, account):
-        self.account = account
+        self.account_name = account.storage_name()
+        self.account_key = account.storage_key()
 
     def dig_for_gold(self):
-        try:
-            return "no gold found in: " + self.account.default_account
-        except Exception as e:
-            # make sure AzureGoldError exception exists in exceptions.py
-            raise AzureGoldError(
-                '%s: %s' %(type(e).__name__, format(e))
-            )
+        pass
 ```
 
 
-#### Command line class: mycmd_task.py
+#### Command line class: commands/mycmd.py
 
-azurectl autoloads all task classes it can find. The established naming
-convention is that the file ends with `_task.py`. The class must implement
+azurectl autoloads the requested command classes. The class must implement
 the `process()` method. This method is called to process the command
 and its arguments.
 
@@ -389,16 +385,15 @@ commands:
     help
         show manual page
 """
+# project
+from base import CliTask
+from ..account.service import AzureAccount
+from ..utils.collector import DataCollector
+from ..utils.output import DataOutput
+from ..logger import log
+from ..help import Help
 
-from azure_account import AzureAccount
-from azurectl_exceptions import *
-from cli_task import CliTask
-from data_collector import DataCollector
-from data_output import DataOutput
-from help import Help
-from logger import log
-
-from mycmd import MyCmd
+from ..mycmd import MyCmd
 
 class ServiceMyCmdTask(CliTask):
     def process(self):
@@ -413,13 +408,15 @@ class ServiceMyCmdTask(CliTask):
             self.global_args['--output-style']
         )
 
-        self.account = AzureAccount(self.account_name, self.config_file)
+        self.load_config()
+
+        self.account = AzureAccount(self.config)
+
         self.mycmd = MyCmd(self.account)
+
         if self.command_args['dig-for-gold']:
             self.result.add('nuggets', self.mycmd.dig_for_gold())
             self.out.display()
-        else
-            raise AzureUnknownCommand(self.command_args)
 
     def __help(self):
         if self.command_args['help']:
