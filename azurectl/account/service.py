@@ -11,7 +11,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from collections import namedtuple
 from xml.dom import minidom
 from OpenSSL.crypto import (
     dump_privatekey,
@@ -46,7 +45,9 @@ class AzureAccount(object):
     """
     def __init__(self, config):
         self.config = config
-        self.service = None
+        self.__service = None
+        self.__cert_file = NamedTemporaryFile()
+        self.__certificate_filename = None
 
     def storage_name(self):
         return self.config.get_storage_account_name()
@@ -85,11 +86,11 @@ class AzureAccount(object):
             )
 
     def storage_key(self, name=None):
-        self.__build_service_instance()
+        service = self.get_management_service()
         if not name:
             name = self.storage_name()
         try:
-            account_keys = self.service.get_storage_account_keys(name)
+            account_keys = service.get_storage_account_keys(name)
         except Exception as e:
             raise AzureServiceManagementError(
                 '%s: %s' % (type(e).__name__, format(e))
@@ -97,9 +98,9 @@ class AzureAccount(object):
         return account_keys.storage_service_keys.primary
 
     def instance_types(self):
-        self.__build_service_instance()
+        service = self.get_management_service()
         result = []
-        for rolesize in self.service.list_role_sizes():
+        for rolesize in service.list_role_sizes():
             memory = rolesize.memory_in_mb
             cores = rolesize.cores
             disks = rolesize.max_data_disk_count
@@ -116,9 +117,9 @@ class AzureAccount(object):
         return result
 
     def locations(self, service_filter=None):
-        self.__build_service_instance()
+        service = self.get_management_service()
         results = []
-        for location in self.service.list_locations():
+        for location in service.list_locations():
             if (
                 not service_filter or
                 service_filter in location.available_services
@@ -127,42 +128,37 @@ class AzureAccount(object):
         return results
 
     def storage_names(self):
-        self.__build_service_instance()
+        service = self.get_management_service()
         result = []
-        for storage in self.service.list_storage_accounts():
+        for storage in service.list_storage_accounts():
             result.append(storage.service_name)
         return result
 
-    def publishsettings(self):
-        credentials = namedtuple(
-            'credentials',
-            ['private_key', 'certificate', 'subscription_id', 'management_url']
-        )
-        result = credentials(
-            private_key=self.__get_private_key(),
-            certificate=self.__get_certificate(),
-            subscription_id=self.subscription_id(),
-            management_url=self.get_management_url()
-        )
-        return result
+    def certificate_filename(self):
+        if not self.__certificate_filename:
+            self.__build_certificate_file()
+            self.__certificate_filename = self.__cert_file.name
+        return self.__certificate_filename
 
-    def get_service(self):
-        self.__build_service_instance()
-        return self.service
+    def __build_certificate_file(self):
+        self.__cert_file.write(self.__get_private_key())
+        self.__cert_file.write(self.__get_certificate())
+        self.__cert_file.flush()
 
-    def __build_service_instance(self):
-        if self.service:
-            return
-        publishsettings = self.publishsettings()
-        self.cert_file = NamedTemporaryFile()
-        self.cert_file.write(publishsettings.private_key)
-        self.cert_file.write(publishsettings.certificate)
-        self.cert_file.flush()
+    def get_management_service(self):
+        if not self.__service:
+            self.__service = self.__build_management_service_instance()
+        return self.__service
+
+    def __build_management_service_instance(self):
+        subscription_id = self.subscription_id()
+        certificate_filename = self.certificate_filename()
+        management_url = self.get_management_url()
         try:
-            self.service = ServiceManagementService(
-                publishsettings.subscription_id,
-                self.cert_file.name,
-                publishsettings.management_url
+            return ServiceManagementService(
+                subscription_id,
+                certificate_filename,
+                management_url
             )
         except Exception as e:
             raise AzureServiceManagementError(

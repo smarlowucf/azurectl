@@ -4,7 +4,7 @@ from mock import patch, create_autospec
 from test_helper import *
 # mocks
 from azurectl.utils.output import DataOutput
-from azurectl.management.endpoint import Endpoint
+from azurectl.instance.endpoint import Endpoint
 from azurectl.help import Help
 # project
 import azurectl

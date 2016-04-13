@@ -19,33 +19,20 @@ from azure.servicemanagement.models import (
 from azurectl.account.service import AzureAccount
 from azurectl.azurectl_exceptions import *
 from azurectl.config.parser import Config
-from azurectl.management.endpoint import Endpoint
+from azurectl.instance.endpoint import Endpoint
 import azurectl
 
 
 class TestEndpoint:
-    @patch('azurectl.management.service_manager.ServiceManagementService')
-    def setup(self, mock_service):
-        self.service = mock.Mock()
-        mock_service.return_value = self.service
+    def setup(self):
         # construct an account
         account = AzureAccount(
             Config(
                 region_name='East US 2', filename='../data/config'
             )
         )
-        credentials = namedtuple(
-            'credentials',
-            ['private_key', 'certificate', 'subscription_id', 'management_url']
-        )
-        account.publishsettings = mock.Mock(
-            return_value=credentials(
-                private_key='abc',
-                certificate='abc',
-                subscription_id='4711',
-                management_url='test.url'
-            )
-        )
+        self.service = mock.Mock()
+        account.get_management_service = mock.Mock(return_value=self.service)
         account.get_blob_service_host_base = mock.Mock(
             return_value='test.url'
         )

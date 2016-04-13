@@ -24,18 +24,7 @@ class TestComputeShellTask:
                 region_name='East US 2', filename='../data/config'
             )
         )
-        credentials = namedtuple(
-            'credentials',
-            ['private_key', 'certificate', 'subscription_id', 'management_url']
-        )
-        account.publishsettings = mock.Mock(
-            return_value=credentials(
-                private_key='abc',
-                certificate='abc',
-                subscription_id='4711',
-                management_url='test.url'
-            )
-        )
+        account.get_management_service = mock.Mock()
         account.get_blob_service_host_base = mock.Mock(
             return_value='.blob.test.url'
         )

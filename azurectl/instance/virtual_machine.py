@@ -11,8 +11,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from tempfile import NamedTemporaryFile
-from azure.servicemanagement import ServiceManagementService
 from azure.servicemanagement import ConfigurationSetInputEndpoint
 from azure.servicemanagement import ConfigurationSet
 from azure.servicemanagement import PublicKey
@@ -39,19 +37,9 @@ class VirtualMachine(object):
         self.container_name = account.storage_container()
         self.account_name = account.storage_name()
         self.account_key = account.storage_key()
-        self.cert_file = NamedTemporaryFile()
-        self.publishsettings = self.account.publishsettings()
         self.blob_service_host_base = self.account.get_blob_service_host_base()
-        self.cert_file.write(self.publishsettings.private_key)
-        self.cert_file.write(self.publishsettings.certificate)
-        self.cert_file.flush()
 
-        self.service = ServiceManagementService(
-            self.publishsettings.subscription_id,
-            self.cert_file.name,
-            self.publishsettings.management_url
-        )
-
+        self.service = self.account.get_management_service()
         self.storage = BaseBlobService(
             self.account_name,
             self.account_key,

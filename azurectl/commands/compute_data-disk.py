@@ -68,7 +68,7 @@ options:
 from ..account.service import AzureAccount
 from base import CliTask
 from ..utils.collector import DataCollector
-from ..management.data_disk import DataDisk
+from ..instance.data_disk import DataDisk
 from ..utils.output import DataOutput
 from ..defaults import Defaults
 from ..help import Help

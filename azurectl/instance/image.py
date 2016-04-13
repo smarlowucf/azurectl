@@ -15,8 +15,6 @@ import collections
 import dateutil.parser
 import os
 import time
-from tempfile import NamedTemporaryFile
-from azure.servicemanagement import ServiceManagementService
 from azure.storage.blob.baseblobservice import BaseBlobService
 
 # project
@@ -49,26 +47,16 @@ class Image(object):
         self.account = account
         self.account_name = account.storage_name()
         self.account_key = account.storage_key()
-        self.cert_file = NamedTemporaryFile()
-        self.publishsettings = self.account.publishsettings()
         self.blob_service_host_base = self.account.get_blob_service_host_base()
-        self.cert_file.write(self.publishsettings.private_key)
-        self.cert_file.write(self.publishsettings.certificate)
-        self.cert_file.flush()
-
+        self.service = self.account.get_management_service()
         self.sleep_between_requests = 120
         self.max_failures = 5
         self.cached_replication_status = None
 
     def list(self):
         result = []
-        service = ServiceManagementService(
-            self.publishsettings.subscription_id,
-            self.cert_file.name,
-            self.publishsettings.management_url
-        )
         try:
-            for image in service.list_os_images():
+            for image in self.service.list_os_images():
                 result.append(self.__decorate_image_for_results(image))
         except Exception as e:
             raise AzureOsImageListError(
@@ -77,13 +65,8 @@ class Image(object):
         return result
 
     def show(self, name):
-        service = ServiceManagementService(
-            self.publishsettings.subscription_id,
-            self.cert_file.name,
-            self.publishsettings.management_url
-        )
         try:
-            image = service.get_os_image(name)
+            image = self.service.get_os_image(name)
         except Exception as e:
             raise AzureOsImageShowError(
                 '%s: %s' % (type(e).__name__, format(e))
@@ -110,12 +93,7 @@ class Image(object):
             )
         try:
             media_link = storage.make_blob_url(container_name, blob_name)
-            service = ServiceManagementService(
-                self.publishsettings.subscription_id,
-                self.cert_file.name,
-                self.publishsettings.management_url
-            )
-            result = service.add_os_image(
+            result = self.service.add_os_image(
                 label, media_link, name, 'Linux'
             )
             return (result.request_id)
@@ -125,13 +103,8 @@ class Image(object):
             )
 
     def delete(self, name, delete_disk=False):
-        service = ServiceManagementService(
-            self.publishsettings.subscription_id,
-            self.cert_file.name,
-            self.publishsettings.management_url
-        )
         try:
-            result = service.delete_os_image(
+            result = self.service.delete_os_image(
                 name, delete_disk
             )
             return(result.request_id)
@@ -141,13 +114,8 @@ class Image(object):
             )
 
     def update(self, image_name, update_record):
-        service = ServiceManagementService(
-            self.publishsettings.subscription_id,
-            self.cert_file.name,
-            self.publishsettings.management_url
-        )
         try:
-            os_image = service.get_os_image(image_name)
+            os_image = self.service.get_os_image(image_name)
         except Exception as e:
             raise AzureOsImageUpdateError(
                 '%s: %s' % (type(e).__name__, format(e))
@@ -156,10 +124,10 @@ class Image(object):
             os_image, update_record
         )
         try:
-            service.update_os_image_from_image_reference(
+            self.service.update_os_image_from_image_reference(
                 image_name, os_image
             )
-            os_image_updated = service.get_os_image(
+            os_image_updated = self.service.get_os_image(
                 image_name
             )
         except Exception as e:
@@ -194,17 +162,12 @@ class Image(object):
         Region A, will be replicated in Region D, and will be
         unreplicated from Regions B and C
         '''
-        service = ServiceManagementService(
-            self.publishsettings.subscription_id,
-            self.cert_file.name,
-            self.publishsettings.management_url
-        )
         if 'all' in regions:
             regions = []
-            for location in service.list_locations():
+            for location in self.service.list_locations():
                 regions.append(location.name)
         try:
-            result = service.replicate_vm_image(
+            result = self.service.replicate_vm_image(
                 name, regions, offer, sku, version
             )
             return(result.request_id)
@@ -214,13 +177,8 @@ class Image(object):
             )
 
     def replication_status(self, name):
-        service = ServiceManagementService(
-            self.publishsettings.subscription_id,
-            self.cert_file.name,
-            self.publishsettings.management_url
-        )
         try:
-            image_details = service.get_os_image_details(name)
+            image_details = self.service.get_os_image_details(name)
         except Exception as e:
             raise AzureOsImageDetailsShowError(
                 '%s: %s' % (type(e).__name__, format(e))
@@ -266,13 +224,8 @@ class Image(object):
                     failures += 1
 
     def unreplicate(self, name):
-        service = ServiceManagementService(
-            self.publishsettings.subscription_id,
-            self.cert_file.name,
-            self.publishsettings.management_url
-        )
         try:
-            result = service.unreplicate_vm_image(name)
+            result = self.service.unreplicate_vm_image(name)
             return(result.request_id)
         except Exception as e:
             raise AzureOsImageUnReplicateError(
@@ -280,13 +233,8 @@ class Image(object):
             )
 
     def publish(self, name, permission):
-        service = ServiceManagementService(
-            self.publishsettings.subscription_id,
-            self.cert_file.name,
-            self.publishsettings.management_url
-        )
         try:
-            result = service.share_vm_image(name, permission)
+            result = self.service.share_vm_image(name, permission)
             return(result.request_id)
         except Exception as e:
             raise AzureOsImagePublishError(

@@ -19,10 +19,8 @@ commands:
         start a python shell within the azure context
 
 """
-from azure.servicemanagement import ServiceManagementService
 import code
 from pprint import pprint
-from tempfile import NamedTemporaryFile
 from textwrap import dedent
 
 # project
@@ -38,16 +36,8 @@ class ComputeShellTask(CliTask):
         self.load_config()
 
         account = AzureAccount(self.config)
-        cert_file = NamedTemporaryFile()
-        cert_file.write(account.publishsettings().private_key)
-        cert_file.write(account.publishsettings().certificate)
-        cert_file.flush()
 
-        service = ServiceManagementService(
-            account.publishsettings().subscription_id,
-            cert_file.name,
-            account.publishsettings().management_url
-        )
+        service = account.get_management_service()
 
         print dedent("""
             An instance of azure.servicemanagement.ServiceManagementService has
