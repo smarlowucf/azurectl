@@ -165,7 +165,7 @@ azurectl [global-options] <servicename> <command> [command-options]
 * List available storage account names
 
   ```
-  $ azurectl compute storage account list
+  $ azurectl storage account list
   ```
 
 ## Contributing
