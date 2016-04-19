@@ -152,7 +152,6 @@ class TestAzureAccount:
         )
         account_invalid.get_management_url()
 
-
     @patch('azurectl.account.service.dump_privatekey')
     @patch('azurectl.account.service.dump_certificate')
     @patch('azurectl.account.service.AzureAccount.get_management_url')
@@ -216,6 +215,35 @@ class TestAzureAccount:
             )
         )
         account_invalid.get_management_url()
+
+    def test_config_without_publishsettings(self):
+        account = AzureAccount(
+            Config(
+                region_name='East US 2',
+                filename='../data/config.no_publishsettings'
+            )
+        )
+        assert account.get_management_url() == 'test.url'
+        assert account.certificate_filename() == '../data/pemfile'
+        assert account.subscription_id() == 'id1234'
+
+    @raises(AzureConfigVariableNotFound)
+    def test_config_must_have_management_url_or_publishsettings(self):
+        account = AzureAccount(
+            Config(
+                filename='../data/config.publishsettings_undefined'
+            )
+        )
+        account.get_management_url()
+
+    @raises(AzureConfigVariableNotFound)
+    def test_config_must_have_management_pem_file_or_publishsettings(self):
+        account = AzureAccount(
+            Config(
+                filename='../data/config.publishsettings_undefined'
+            )
+        )
+        account.certificate_filename()
 
     def test_storage_key(self):
         primary = namedtuple(

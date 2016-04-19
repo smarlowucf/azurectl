@@ -9,6 +9,10 @@ __azurectl__ setup account configure --name=*account_name* --publish-settings-fi
     [--subscription-id=subscriptionid]
     [--region=region_name --storage-account-name=storagename --container-name=containername --create]
 
+__azurectl__ setup account configure --name=*account_name* --management-pem-file=*file* --management-url=*url* --subscription-id=*subscriptionid*
+
+    [--region=region_name --storage-account-name=storagename --container-name=containername --create]
+
 __azurectl__ setup account default --name=*account_name*
 
 __azurectl__ setup account list
@@ -46,11 +50,27 @@ Free form name for the azure account to use. The name is used to find the corres
 
 The path to the Microsoft Azure publish settings file which you can download from the Microsoft management console
 
+## __--management-pem-file=file__
+
+If a management certificate has been created for this account, specify the absolute path of the pem file used to create the certificate.
+
+## __--management-url=url__
+
+If a management certificate is being used in lieu of a publish settings file, the URL of the management API needs to be specified manually as well.
+
+Common URLs are:
+
+* Azure: https://management.core.windows.net
+* Azure China: https://management.core.chinacloudapi.cn
+* Azure Black Forest: https://management.core.cloudapi.de
+
 ## __--subscription-id=subscriptionid__
 
 If your Microsoft Azure account includes more than one subscription, your publish setttings file will contain data about all of your subscriptions. Specify a __subscriptionid__ in order to select the appropriate subscription.
 
 If __subscriptionid__ is not supplied the first subscription listed in the publish settings file will be selected by default.
+
+If using a management certificate, a __subscriptionid__ must be supplied.
 
 ## __--region=region__
 

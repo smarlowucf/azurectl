@@ -65,6 +65,13 @@ class AzureAccount(object):
         try:
             url = self.config.get_management_url()
         except AzureConfigVariableNotFound:
+            try:
+                self.config.get_publishsettings_file_name()
+            except AzureConfigVariableNotFound:
+                raise AzureConfigVariableNotFound(
+                    "Account config must define either " +
+                    "management_url or publishsettings"
+                )
             subscription = self.__get_subscription(self.subscription_id())
             try:
                 url = subscription.attributes['ServiceManagementUrl'].value
@@ -136,8 +143,19 @@ class AzureAccount(object):
 
     def certificate_filename(self):
         if not self.__certificate_filename:
-            self.__build_certificate_file()
-            self.__certificate_filename = self.__cert_file.name
+            try:
+                self.__certificate_filename = \
+                    self.config.get_management_pem_filename()
+            except AzureConfigVariableNotFound:
+                try:
+                    self.config.get_publishsettings_file_name()
+                except AzureConfigVariableNotFound:
+                    raise AzureConfigVariableNotFound(
+                        "Account config must define either " +
+                        "management_pem_file or publishsettings"
+                    )
+                self.__build_certificate_file()
+                self.__certificate_filename = self.__cert_file.name
         return self.__certificate_filename
 
     def __build_certificate_file(self):

@@ -32,7 +32,9 @@ class TestSetupAccountTask:
         self.task.command_args['--publish-settings-file'] = 'file'
         self.task.command_args['--storage-account-name'] = 'storage-name'
         self.task.command_args['--container-name'] = 'container-name'
-        self.task.command_args['--subscription-id'] = False
+        self.task.command_args['--subscription-id'] = None
+        self.task.command_args['--management-pem-file'] = None
+        self.task.command_args['--management-url'] = None
         self.task.command_args['--region'] = 'region'
         self.task.command_args['default'] = False
         self.task.command_args['list'] = False
@@ -112,7 +114,9 @@ class TestSetupAccountTask:
             self.task.command_args['--region'],
             self.task.command_args['--storage-account-name'],
             self.task.command_args['--container-name'],
-            self.task.command_args['--subscription-id']
+            self.task.command_args['--subscription-id'],
+            self.task.command_args['--management-pem-file'],
+            self.task.command_args['--management-url']
         )
 
     @patch('azurectl.commands.setup_account.AzureAccount')
@@ -163,7 +167,9 @@ class TestSetupAccountTask:
             self.task.command_args['--region'],
             self.task.command_args['--storage-account-name'],
             self.task.command_args['--container-name'],
-            self.task.command_args['--subscription-id']
+            self.task.command_args['--subscription-id'],
+            self.task.command_args['--management-pem-file'],
+            self.task.command_args['--management-url']
         )
         storage_account.create.assert_called_once_with(
             account_type='Standard_GRS',
@@ -203,7 +209,9 @@ class TestSetupAccountTask:
             self.task.command_args['--region'],
             self.task.command_args['--storage-account-name'],
             self.task.command_args['--container-name'],
-            self.task.command_args['--subscription-id']
+            self.task.command_args['--subscription-id'],
+            self.task.command_args['--management-pem-file'],
+            self.task.command_args['--management-url']
         )
 
     def test_process_setup_account_remove(self):
