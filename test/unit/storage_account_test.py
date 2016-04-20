@@ -10,33 +10,20 @@ from test_helper import *
 from azurectl.account.service import AzureAccount
 from azurectl.config.parser import Config
 from azurectl.azurectl_exceptions import *
-from azurectl.account.storage import StorageAccount
+from azurectl.storage.account import StorageAccount
 
 import azurectl
 
 
 class TestStorageAccount:
-    @patch('azurectl.management.service_manager.ServiceManagementService')
-    def setup(self, mock_service):
-        self.service = mock.Mock()
-        mock_service.return_value = self.service
+    def setup(self):
         account = AzureAccount(
             Config(
                 region_name='East US 2', filename='../data/config'
             )
         )
-        credentials = namedtuple(
-            'credentials',
-            ['private_key', 'certificate', 'subscription_id', 'management_url']
-        )
-        account.publishsettings = mock.Mock(
-            return_value=credentials(
-                private_key='abc',
-                certificate='abc',
-                subscription_id='4711',
-                management_url='test.url'
-            )
-        )
+        self.service = mock.Mock()
+        account.get_management_service = mock.Mock(return_value=self.service)
         account.get_blob_service_host_base = mock.Mock(
             return_value='.blob.test.url'
         )
@@ -154,7 +141,7 @@ class TestStorageAccount:
         self.service.list_storage_accounts.side_effect = Exception
         self.storage_account.list()
 
-    @patch('azurectl.account.storage.Container.list')
+    @patch('azurectl.storage.account.Container.list')
     def test_show(self, mock_container_list):
         self.service.get_storage_account_keys.return_value = \
             self.keyed_service
@@ -198,7 +185,7 @@ class TestStorageAccount:
             '--locally-redundant'
         )
 
-    @patch('azurectl.account.storage.Container.list')
+    @patch('azurectl.storage.account.Container.list')
     def test_basic_update(self, mock_container_list):
         self.service.update_storage_account.return_value = \
             self.my_request
@@ -225,7 +212,7 @@ class TestStorageAccount:
             '--locally-redundant'
         )
 
-    @patch('azurectl.account.storage.Container.list')
+    @patch('azurectl.storage.account.Container.list')
     def test_update_keys(self, mock_container_list):
         self.service.regenerate_storage_account_keys.return_value = \
             self.my_request

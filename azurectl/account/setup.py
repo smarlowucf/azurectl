@@ -112,15 +112,25 @@ class AccountSetup(object):
     def configure_account(
         self,
         account_name,
-        publish_settings,
+        publish_settings=None,
         region_name=None,
         default_storage_account=None,
         default_storage_container=None,
-        subscription_id=None
+        subscription_id=None,
+        management_pem_file=None,
+        management_url=None
     ):
-        self.add_account(
-            account_name, publish_settings, subscription_id
-        )
+        if publish_settings:
+            self.add_account_with_publishsettings(
+                account_name, publish_settings, subscription_id
+            )
+        elif management_pem_file and management_url and subscription_id:
+            self.add_account_with_management_cert(
+                account_name,
+                management_pem_file,
+                management_url,
+                subscription_id
+            )
         if region_name:
             self.add_region(
                 region_name,
@@ -128,7 +138,37 @@ class AccountSetup(object):
                 default_storage_container
             )
 
-    def add_account(
+    def add_account_with_management_cert(
+        self,
+        section_name,
+        management_pem_file,
+        management_url,
+        subscription_id
+    ):
+        """
+            add new account section
+        """
+        section_name = 'account:' + section_name
+        try:
+            self.config.add_section(section_name)
+        except Exception as e:
+            raise AzureConfigAddAccountSectionError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
+        self.config.set(
+            section_name, 'management_pem_file', management_pem_file
+        )
+        self.config.set(
+            section_name, 'management_url', management_url
+        )
+        self.config.set(
+            section_name, 'subscription_id', subscription_id
+        )
+        defaults = self.config.defaults()
+        if 'default_account' not in defaults:
+            defaults['default_account'] = section_name
+
+    def add_account_with_publishsettings(
         self,
         section_name,
         publish_settings,

@@ -12,7 +12,6 @@
 # limitations under the License.
 #
 # project
-from ..management.service_manager import ServiceManager
 from ..storage.container import Container
 from ..defaults import Defaults
 from ..azurectl_exceptions import (
@@ -24,13 +23,17 @@ from ..azurectl_exceptions import (
 )
 
 
-class StorageAccount(ServiceManager):
+class StorageAccount(object):
     """
         Implements Azure storage account management. This includes the
         following tasks:
         + creation, updates, and deletion of storage accounts
         + listing individual or all storage accounts
     """
+    def __init__(self, account):
+        self.account = account
+        self.service = account.get_management_service()
+
     def create(self, name, description, label, account_type):
         try:
             result = self.service.create_storage_account(

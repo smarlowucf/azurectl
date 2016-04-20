@@ -70,7 +70,7 @@ $ sudo make install
 In order to call azurectl a setup procedure is required. The setup is a two
 step process for each Microsoft Azure Account you want to use with azurectl
 
-1. Download of the Publish Settings file
+1. Download of the Publish Settings file or add a management certificate
 2. Adding an account section to the azurectl configuration file
 
 #### Publish Settings
@@ -91,6 +91,13 @@ the login page and need to login with your Azure account.
 Please note, if you have multiple accounts for Azure and you're already logged
 in, check that you are logged in with the account for which you would like
 to download the Publish Settings file.
+
+#### Management Certificate
+
+As an alternative to a publishsettings file, a management certificate can be
+generated and uploaded into the Azure Portal. See
+https://azure.microsoft.com/en-us/documentation/articles/cloud-services-certs-create/
+for information on generating and uploading a management certificate.
 
 #### Configuration file
 
@@ -126,6 +133,22 @@ $ azurectl setup account configure \
   --container-name container_name
 
 $ azurectl setup account default --name my_account
+```
+
+Alternatively, an account can be configured without a publishsettings file, but
+a few more manual settings will be required, including the absolute path of the
+PEM encoded keyset generated while creating a management certificate, the URL
+of the management interface, and your subscription ID.
+
+```
+$ azurectl setup account configure \
+  --name my_account \
+  --management-pem-file /path/to/pem/file \
+  --management-url http://url.endpoint \
+  --subscription-id 00000000-0000-0000-0000-000000000000
+  --region region
+  --storage-account-name storage_account_name \
+  --container-name container_name
 ```
 
 ### Usage

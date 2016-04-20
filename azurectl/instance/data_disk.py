@@ -14,9 +14,7 @@
 from azure.common import AzureMissingResourceHttpError
 from azure.storage.blob.pageblobservice import PageBlobService
 from datetime import datetime
-
 # project
-from .service_manager import ServiceManager
 from ..azurectl_exceptions import (
     AzureDataDiskCreateError,
     AzureDataDiskShowError,
@@ -27,10 +25,14 @@ from ..azurectl_exceptions import (
 LUNS = 16  # there are 16 possible luns, numbered 0..15
 
 
-class DataDisk(ServiceManager):
+class DataDisk(object):
     """
         Implements virtual machine data disk (non-root/boot disk) management.
     """
+    def __init__(self, account):
+        self.account = account
+        self.service = account.get_management_service()
+
     def create(
         self,
         cloud_service_name,

@@ -20,15 +20,18 @@ from ..azurectl_exceptions import (
     AzureEndpointListError,
     AzureEndpointShowError
 )
-from .service_manager import ServiceManager
 
 
-class Endpoint(ServiceManager):
+class Endpoint(object):
     """
         Implements Azure endpoint management:
         handle port forwards from the cloud service to a VM instance, which
         are part of the instance role's network configuration
     """
+    def __init__(self, account):
+        self.account = account
+        self.service = account.get_management_service()
+
     def set_instance(self, cloud_service_name, instance_name):
         self.cloud_service_name = cloud_service_name
         self.instance_name = instance_name

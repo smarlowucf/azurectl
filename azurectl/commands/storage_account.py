@@ -93,7 +93,7 @@ from ..utils.collector import DataCollector
 from ..utils.output import DataOutput
 from ..defaults import Defaults
 from ..azurectl_exceptions import AzureInvalidCommand
-from ..account.storage import StorageAccount
+from ..storage.account import StorageAccount
 from ..help import Help
 
 

@@ -13,9 +13,8 @@
 #
 import base64
 import subprocess
-from tempfile import NamedTemporaryFile
-from azure.servicemanagement import ServiceManagementService
 from dns.resolver import Resolver
+from tempfile import NamedTemporaryFile
 
 # project
 from ..azurectl_exceptions import (
@@ -39,17 +38,8 @@ class CloudService(object):
         self.container_name = account.storage_container()
         self.account_name = account.storage_name()
         self.account_key = account.storage_key()
-        self.cert_file = NamedTemporaryFile()
-        self.publishsettings = self.account.publishsettings()
-        self.cert_file.write(self.publishsettings.private_key)
-        self.cert_file.write(self.publishsettings.certificate)
-        self.cert_file.flush()
 
-        self.service = ServiceManagementService(
-            self.publishsettings.subscription_id,
-            self.cert_file.name,
-            self.publishsettings.management_url
-        )
+        self.service = self.account.get_management_service()
 
     def get_pem_certificate(self, ssh_private_key_file):
         """

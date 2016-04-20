@@ -172,11 +172,44 @@ class TestAccountSetup:
                 }
             }
         }
+        self.configure_data_for_mgmt_cert = {
+            'account_region_map': {
+                'account': 'account:bob',
+                'region': 'region:East US 2'
+            },
+            'accounts': {
+                'account:bob': {
+                    'publishsettings': '../data/publishsettings'
+                },
+                'account:foo': {
+                    'publishsettings': '../data/publishsettings'
+                },
+                'account:xxx': {
+                    'management_pem_file': '../data/pemfile',
+                    'management_url': 'http://test.url',
+                    'subscription_id': '1234',
+                }
+            },
+            'regions': {
+                'region:East US 2': {
+                    'default_storage_account': 'bob',
+                    'default_storage_container': 'foo'
+                },
+                'region:West US 1': {
+                    'default_storage_container': 'bar',
+                    'default_storage_account': 'joe'
+                },
+                'region:some-region': {
+                    'default_storage_account': 'storage',
+                    'default_storage_container': 'container'
+                }
+            }
+        }
 
     def test_list(self):
         assert self.setup.list() == self.orig_data
 
-    def test_configure_account(self):
+    def test_configure_account_for_publishsettings(self):
         self.setup.configure_account(
             'xxx', '../data/publishsettings',
             'some-region', 'storage', 'container',
@@ -184,8 +217,15 @@ class TestAccountSetup:
         )
         assert self.setup.list() == self.configure_data
 
-    def test_add_account(self):
-        self.setup.add_account(
+    def test_configure_account_for_management_cert(self):
+        self.setup.configure_account(
+            'xxx', None, 'some-region', 'storage', 'container', '1234',
+            '../data/pemfile', 'http://test.url'
+        )
+        assert self.setup.list() == self.configure_data_for_mgmt_cert
+
+    def test_add_account_with_publishsettings(self):
+        self.setup.add_account_with_publishsettings(
             'xxx', '../data/publishsettings', '1234'
         )
         assert self.setup.list() == self.add_account_data
@@ -196,10 +236,17 @@ class TestAccountSetup:
         )
         assert self.setup.list() == self.add_region_data
 
-    def test_add_first_account_as_default(self):
+    def test_add_first_account_as_default_with_publishsettings(self):
         setup = AccountSetup('../data/config.new')
-        setup.add_account(
+        setup.add_account_with_publishsettings(
             'some-account', '../data/publishsettings', '1234'
+        )
+        assert setup.list()['account_region_map']['account'] == 'account:some-account'
+
+    def test_add_first_account_as_default_with_mgmt_cert(self):
+        setup = AccountSetup('../data/config.new')
+        setup.add_account_with_management_cert(
+            'some-account', '../data/pemfile', 'http://test.url', 'id1234'
         )
         assert setup.list()['account_region_map']['account'] == 'account:some-account'
 
@@ -280,14 +327,20 @@ class TestAccountSetup:
 
     @raises(AzureConfigPublishSettingsError)
     def test_add_raise_publish_settings_error(self):
-        self.setup.add_account(
+        self.setup.add_account_with_publishsettings(
             'xxx', '../data/does-not-exist'
         )
 
     @raises(AzureConfigAddAccountSectionError)
-    def test_add_account_raise(self):
-        self.setup.add_account(
+    def test_add_account_with_publishsettings_raise(self):
+        self.setup.add_account_with_publishsettings(
             'bob', '../data/publishsettings'
+        )
+
+    @raises(AzureConfigAddAccountSectionError)
+    def test_add_account_with_management_cert_raise(self):
+        self.setup.add_account_with_management_cert(
+            'bob', '../data/pemfile', 'http://test.url', 'id1234'
         )
 
     @raises(AzureConfigAddRegionSectionError)

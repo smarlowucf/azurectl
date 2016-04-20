@@ -16,6 +16,8 @@ usage: azurectl setup account -h | --help
        azurectl setup account configure --name=<account_name> --publish-settings-file=<file>
            [--subscription-id=<subscriptionid>]
            [--region=<region_name> --storage-account-name=<storagename> --container-name=<containername> --create]
+       azurectl setup account configure --name=<account_name> --management-pem-file=<file> --management-url=<url> --subscription-id=<subscriptionid>
+           [--region=<region_name> --storage-account-name=<storagename> --container-name=<containername> --create]
        azurectl setup account default --name=<account_name>
        azurectl setup account list
        azurectl setup account region add --region=<region_name> --storage-account-name=<storagename> --container-name=<containername>
@@ -61,10 +63,15 @@ options:
     --publish-settings-file=<file>
         path to the Microsoft Azure account publish settings file
     --storage-account-name=<storagename>
-        specify default storage account name in the selected region.
+        specify default storage account name in the selected region
+    --management-pem-file=<file>
+        path to the pem file associated with a management certificate enabled on
+        this account
+    --management-url=<url>
+        URL of the management API where this account is available
     --subscription-id=<subscriptionid>
         subscription id, if more than one subscription is included in your
-        publish settings file.
+        publish settings file, or if a publish settings file is not used
 """
 import os
 
@@ -77,7 +84,7 @@ from ..utils.collector import DataCollector
 from ..utils.output import DataOutput
 from ..config.parser import Config
 from ..storage.container import Container
-from ..account.storage import StorageAccount
+from ..storage.account import StorageAccount
 from ..account.service import AzureAccount
 from ..defaults import Defaults
 from ..management.request_result import RequestResult
@@ -150,7 +157,9 @@ class SetupAccountTask(CliTask):
             self.command_args['--region'],
             self.command_args['--storage-account-name'],
             self.command_args['--container-name'],
-            self.command_args['--subscription-id']
+            self.command_args['--subscription-id'],
+            self.command_args['--management-pem-file'],
+            self.command_args['--management-url']
         )
         self.setup.write()
         log.info(
