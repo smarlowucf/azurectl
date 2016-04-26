@@ -57,7 +57,7 @@ class ComputeRequestTask(CliTask):
         self.load_config()
 
         self.account = AzureAccount(self.config)
-        self.service = self.account.get_service()
+        self.service = self.account.get_management_service()
 
         self.request_result = RequestResult(
             self.command_args['--id']
