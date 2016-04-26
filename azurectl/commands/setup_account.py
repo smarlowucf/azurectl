@@ -33,6 +33,8 @@ commands:
         create new account config file
     default
         set the given account as default config
+    help
+        show manual page for account command
     list
         list configured account and region sections. Also list
         information about default config file
@@ -44,12 +46,10 @@ commands:
         set new default region in config file. If specified
         the given account config file is used, otherwise the default
         config file
-    remove
-        remove specified account config file
     region help
         show manual page for account region subcommand
-    help
-        show manual page for account command
+    remove
+        remove specified account config file
 
 options:
     --container-name=<containername>
@@ -58,17 +58,17 @@ options:
     --create
         process storage and container configuration and create the
         storage account and the container in Azure
+    --management-pem-file=<file>
+        path to the pem file associated with a management certificate enabled on
+        this account
+    --management-url=<url>
+        URL of the management API where this account is available
     --name=<account_name>
         account name used for account config file lookup
     --publish-settings-file=<file>
         path to the Microsoft Azure account publish settings file
     --storage-account-name=<storagename>
         specify default storage account name in the selected region
-    --management-pem-file=<file>
-        path to the pem file associated with a management certificate enabled on
-        this account
-    --management-url=<url>
-        URL of the management API where this account is available
     --subscription-id=<subscriptionid>
         subscription id, if more than one subscription is included in your
         publish settings file, or if a publish settings file is not used

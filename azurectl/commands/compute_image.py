@@ -40,14 +40,18 @@ usage: azurectl compute image -h | --help
        azurectl compute image help
 
 commands:
-    list
-        list available os images for configured account
-    show
-        list information about a single image
     create
         create OS image from VHD disk stored on blob storage container
     delete
         delete OS image from VM image repository
+    list
+        list available os images for configured account
+    help
+        show manual page for image command
+    show
+        list information about a single image
+    publish
+        publish registered VM image
     replicate
         replicate registered VM image to specified regions
     replication-status
@@ -57,38 +61,34 @@ commands:
         unreplicate registered VM image from specified regions
     update
         update OS image meta data
-    publish
-        publish registered VM image
-    help
-        show manual page for image command
 
 options:
-    --delete-disk
-        on deletion of the image also delete the associated VHD disk
-    --label=<imagelabel>
-        image label on create, defaults to name if not set
-    --name=<imagename>
-        image name on create
     --blob=<blobname>
         filename of disk image as it is stored on the blob storage
+    --delete-disk
+        on deletion of the image also delete the associated VHD disk
+    --image-version=<version>
+        semantic version of the image
+    --label=<imagelabel>
+        image label on create, defaults to name if not set
+    --msdn
+        restrict publish scope to the Microsoft Developer Network
+    --name=<imagename>
+        image name on create
+    --offer=<offer>
+        name of the offer
+    --private
+        restrict publish scope to be private
+    --quiet
+        suppress progress information during replication
     --regions=<regionlist>
         comma separated list of region names. If the region name 'all'
         is provided, azurectl will replicate to all regions that are
         valid for your subscription
-    --offer=<offer>
-        name of the offer
     --sku=<sku>
         name of the sku
-    --image-version=<version>
-        semantic version of the image
     --wait
         wait until replication is complete to end execution
-    --quiet
-        suppress progress information during replication
-    --private
-        restrict publish scope to be private
-    --msdn
-        restrict publish scope to the Microsoft Developer Network
 """
 from apscheduler.schedulers.background import BackgroundScheduler
 from pytz import utc

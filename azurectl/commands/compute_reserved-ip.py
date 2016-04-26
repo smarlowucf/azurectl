@@ -20,15 +20,15 @@ usage: azurectl compute reserved-ip -h | --help
        azurectl compute reserved-ip help
 
 commands:
-    list
-        list IP addresses reserved within this account
-    show
-        list information about a single IP address reservation
     create
         add a new IP address reservation in the default or specified region
         (use the global --region argument)
     delete
         release a reserved IP address
+    list
+        list IP addresses reserved within this account
+    show
+        list information about a single IP address reservation
 
 options:
     --name=<reserved-ip-name>

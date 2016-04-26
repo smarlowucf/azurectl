@@ -18,12 +18,12 @@ usage: azurectl compute request -h | --help
        azurectl compute request help
 
 commands:
+    help
+        show manual page for request command
     status
         print status for given request id
     wait
         wait for request to complete
-    help
-        show manual page for request command
 
 options:
     --id=<number>

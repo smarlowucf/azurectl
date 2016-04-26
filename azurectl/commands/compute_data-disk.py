@@ -30,28 +30,25 @@ usage: azurectl compute data-disk -h | --help
 commands:
     create
         add a new, empty data disk to the selected virtual machine
-    show
-        return data about an existing data disk
     delete
         detach a data disk from the selected virtual machine and destroy the
         data file
     list
         return data about all data disks attached to a virtual machine
+    show
+        return data about an existing data disk
 
 options:
     --cloud-service-name=<name>
         name of the cloud service where the virtual machine may be found
-    --size=<disk-size-in-GB>
-        size of the disk, in GB, that will be provisioned. Must be an integer,
-        and less than 1024
+    --disk-name=<name>
+        name of the disk file created in the current storage container. If
+        omitted, a name will be automatically generated.
     --instance-name=<name>
         name of the virtual machine instance. If no name is given the
         instance name is assumed to be the same as the cloud service name
     --label=<label>
         custom label name for the disk
-    --disk-name=<name>
-        name of the disk file created in the current storage container. If
-        omitted, a name will be automatically generated.
     --lun=<lun>
         logical unit number where the disk is mounted. Must be an integer
         between 0 and 15. If omitted during create, the first available LUN
@@ -63,6 +60,9 @@ options:
         selected, read-only will be selected by default
     --read-write-cache
         enable cached reads from and writes to the data disk
+    --size=<disk-size-in-GB>
+        size of the disk, in GB, that will be provisioned. Must be an integer,
+        and less than 1024
 """
 # project
 from ..account.service import AzureAccount

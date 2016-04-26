@@ -32,57 +32,57 @@ usage: azurectl storage account -h | --help
 commands:
     create
         add a new storage account
-    update
-        change the description, label, or backup strategy for an existing
-        storage account, or regenerate keys for that account. Attributes not
-        included in the the command will not be changed.
-    show
-        list all available details for the named storage account
-    list
-        list all storage accounts
     delete
         destroy an existing storage account and all its containers and stored
         items
         Note: deletion will fail if there are leases on any stored resources
+    help
+        show manual page for storage account command
+    list
+        list all storage accounts
     regions
         list regions where a storage account can be created with the current
         subscription
-    help
-        show manual page for storage account command
+    show
+        list all available details for the named storage account
+    update
+        change the description, label, or backup strategy for an existing
+        storage account, or regenerate keys for that account. Attributes not
+        included in the the command will not be changed.
 
 options:
-    --name=<accountname>
-        Name of the storage account to access/create. Must be between 3 and 24
-        characters in length, consisting of only numbers and lowercase letters.
     --description=<description>
         A description for the storage account. May be up to 1024 characters in
         length.
+    --geo-redundant
+        Data is replicated to a secondary region; first data is replicated like
+        locally-redundant storage, then replicated again like locally-redunant
+        storage in an additonal region. (6 total copies)
+        Note: if no backup strategy is selected, this is the default.
     --label=<label>
         A user-friendly version of 'name'. The label may be up to 100 characters
         in length.
     --locally-redundant
         Data is replicated three times, but only within the region where your
         storage account resides. (3 total copies)
-    --zone-redundant
-        Data is replicated across two or three facilities in one or two regions,
-        but is only available for block blobs; no other storage types will
-        be available on an account, and you cannot change from zone-redundant to
-        another backup strategy. (3 total copies)
-    --geo-redundant
-        Data is replicated to a secondary region; first data is replicated like
-        locally-redundant storage, then replicated again like locally-redunant
-        storage in an additonal region. (6 total copies)
-        Note: if no backup strategy is selected, this is the default.
-    --read-access-geo-redundant
-        Like geo-redundant storage, except that in the event of an outage in
-        your primary storage region, data may be read from the backup region.
-        (6 total copies)
+    --name=<accountname>
+        Name of the storage account to access/create. Must be between 3 and 24
+        characters in length, consisting of only numbers and lowercase letters.
     --new-primary-key
         Generate a new primary key for storage access, disabling access through
         the existing primary key.
     --new-secondary-key
         Generate a new secondary key for storage access, disabling access
         through the existing secondary key.
+    --zone-redundant
+        Data is replicated across two or three facilities in one or two regions,
+        but is only available for block blobs; no other storage types will
+        be available on an account, and you cannot change from zone-redundant to
+        another backup strategy. (3 total copies)
+    --read-access-geo-redundant
+        Like geo-redundant storage, except that in the event of an outage in
+        your primary storage region, data may be read from the backup region.
+        (6 total copies)
 """
 import string
 
