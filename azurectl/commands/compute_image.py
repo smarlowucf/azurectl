@@ -75,7 +75,7 @@ options:
     --msdn
         restrict publish scope to the Microsoft Developer Network
     --name=<imagename>
-        image name on create
+        name of the image
     --offer=<offer>
         name of the offer
     --private
