@@ -44,9 +44,11 @@ options:
     --start-datetime=<start>
         Date (and optionally time) to grant access via a shared access
         signature. [default: now]
+        Example format: YYYY-MM-DDThh:mm:ssZ
     --expiry-datetime=<expiry>
         Date (and optionally time) to cease access via a shared access
         signature. [default: 30 days from start]
+        Example format: YYYY-MM-DDThh:mm:ssZ
     --permissions=<permissions>
         String of permitted actions on a storage element via shared access
         signature.
