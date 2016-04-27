@@ -29,7 +29,7 @@ usage: azurectl compute image -h | --help
            [--eula=<eula>]
            [--image-family=<image_family>]
            [--icon-uri=<icon_uri>]
-           [--label=<label>]
+           [--label=<imagelabel>]
            [--language=<language>]
            [--privacy-uri=<privacy_uri>]
            [--published-date=<date>]
@@ -70,7 +70,8 @@ options:
     --image-version=<version>
         semantic version of the image
     --label=<imagelabel>
-        image label on create, defaults to name if not set
+        image label name when creating or updating an image.
+        If not set on image create the label defaults to the image name.
     --msdn
         restrict publish scope to the Microsoft Developer Network
     --name=<imagename>
