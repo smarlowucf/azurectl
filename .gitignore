@@ -2,6 +2,9 @@
 __pycache__/
 *.py[cod]
 
+# completion
+completion/azurectl.sh
+
 # C extensions
 *.so
 

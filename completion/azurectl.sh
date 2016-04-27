@@ -8,7 +8,7 @@ function _azurectl {
     for comp in $prev $cmd;do
         case "$comp" in
             "storage")
-                __comp_reply "account"
+                __comp_reply "share account disk container"
                 return 0
                 ;;
             "setup")
@@ -20,19 +20,23 @@ function _azurectl {
                 return 0
                 ;;
             "compute")
-                __comp_reply "data-disk storage image request reserved-ip vm endpoint shell"
+                __comp_reply "data-disk image request reserved-ip vm endpoint shell"
                 return 0
                 ;;
             "account")
                 __comp_reply "configure default region list remove --help help show create update regions delete"
                 return 0
                 ;;
-            "data-disk")
+            "endpoint")
                 __comp_reply "help show create list --help delete"
                 return 0
                 ;;
-            "storage")
-                __comp_reply "container help share upload --help delete"
+            "container")
+                __comp_reply "help show create list sas --help delete"
+                return 0
+                ;;
+            "share")
+                __comp_reply "help create list --help delete"
                 return 0
                 ;;
             "image")
@@ -51,20 +55,20 @@ function _azurectl {
                 __comp_reply "help create regions --help types delete"
                 return 0
                 ;;
-            "endpoint")
+            "data-disk")
                 __comp_reply "help show create list --help delete"
+                return 0
+                ;;
+            "disk")
+                __comp_reply "delete help --help upload"
                 return 0
                 ;;
             "status")
                 __comp_reply "--id"
                 return 0
                 ;;
-            "container")
-                __comp_reply "help show create list sas delete"
-                return 0
-                ;;
             "configure")
-                __comp_reply "--name --subscription-id --publish-settings-file --region"
+                __comp_reply "--management-pem-file --region --management-url --publish-settings-file --name --subscription-id"
                 return 0
                 ;;
             "show")
@@ -75,8 +79,8 @@ function _azurectl {
                 __comp_reply "--name"
                 return 0
                 ;;
-            "share")
-                __comp_reply "create list help delete"
+            "unreplicate")
+                __comp_reply "--name"
                 return 0
                 ;;
             "create")
@@ -87,16 +91,16 @@ function _azurectl {
                 __comp_reply "--cloud-service-name --instance-name"
                 return 0
                 ;;
-            "upload")
-                __comp_reply "--source --quiet --max-chunk-size --name"
+            "update")
+                __comp_reply "--eula --description --image-family --privacy-uri --icon-uri --name --small-icon-uri --label --language --published-date --new-secondary-key --locally-redundant --read-access-geo-redundant --geo-redundant --zone-redundant --new-primary-key"
                 return 0
                 ;;
             "publish")
                 __comp_reply "--name --msdn --private"
                 return 0
                 ;;
-            "update")
-                __comp_reply "--eula --description --image-family --privacy-uri --icon-uri --name --small-icon-uri --label --language --published-date --new-secondary-key --locally-redundant --read-access-geo-redundant --geo-redundant --zone-redundant --new-primary-key"
+            "upload")
+                __comp_reply "--source --quiet --max-chunk-size --name"
                 return 0
                 ;;
             "replicate")
@@ -107,8 +111,8 @@ function _azurectl {
                 __comp_reply "--name"
                 return 0
                 ;;
-            "unreplicate")
-                __comp_reply "--name"
+            "sas")
+                __comp_reply "--name --start-datetime --expiry-datetime --permissions"
                 return 0
                 ;;
             "wait")
@@ -127,32 +131,16 @@ function _azurectl {
                 __comp_reply "--cloud-service-name --lun --instance-name --name --delete-disk"
                 return 0
                 ;;
-            "--region")
-                __comp_reply "--storage-account-name"
-                return 0
-                ;;
-            "show")
-                __comp_reply "--name"
-                return 0
-                ;;
             "default")
                 __comp_reply "--name --region"
-                return 0
-                ;;
-            "create")
-                __comp_reply "--name"
                 return 0
                 ;;
             "add")
                 __comp_reply "--container-name --name --region --storage-account-name"
                 return 0
                 ;;
-            "sas")
-                __comp_reply "--name --start-datetime --expiry-datetime --permissions"
-                return 0
-                ;;
-            "delete")
-                __comp_reply "--name"
+            "--region")
+                __comp_reply "--storage-account-name"
                 return 0
                 ;;
             "--storage-account-name")

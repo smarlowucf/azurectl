@@ -29,7 +29,7 @@ class AppHash:
         cur_path = ''
         self.result = AutoVivification()
         for line in cmd.communicate()[0].split('\n'):
-            usage = re.search('usage: (.*)', line)
+            usage = re.search('^usage: (.*)', line)
             if usage:
                 begin = True
                 if re.match('.*--help', line):
@@ -63,8 +63,18 @@ class AppHash:
                                 ['azurectl', global_opt]
                             )
                             cur_path = self.merge(result_keys, self.result)
+                    elif re.match('            \[', line):
+                        line = line.replace('[', '')
+                        line = line.replace(']', '')
+                        line = line.replace('|', '')
+                        key_list = line.split()
+                        for global_opt in key_list:
+                            result_keys = self.validate(
+                                ['kiwi', global_opt]
+                            )
+                            cur_path = self.merge(result_keys, self.result)
                     elif re.match('                \[', line):
-                        opt_val = re.search('                \[(--.*)\]', line)
+                        opt_val = re.search('                \[(--.*)', line)
                         global_opt = opt_val.group(1)
                         global_opt = global_opt.replace('[', '')
                         global_opt = global_opt.replace(']', '')
@@ -102,7 +112,7 @@ class AppHash:
         key_path = ''
         for key in key_list:
             key_path += '[\'' + key + '\']'
-        expression = 'self.result'+key_path
+        expression = 'self.result' + key_path
         exec(expression)
         return raw_key_path
 
