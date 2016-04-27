@@ -35,6 +35,9 @@ commands:
         show manual page for container command
     list
         list container names for configured account
+    sas
+        generate a shared access signature URL allowing limited access to the
+        specified container without an access key
     show
         show container content for configured account and container
 
