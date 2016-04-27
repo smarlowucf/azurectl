@@ -395,6 +395,54 @@ azurectl autoloads the requested command classes. The class must implement
 the `process()` method. This method is called to process the command
 and its arguments.
 
+##### Constructing the docstring
+
+Subcommands in the docstring are processed as [docopt](http://docopt.org/). The
+_usage_ section is sorted based on
+[CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete)
+operational order; for the existing set of commands, we have established the
+following order:
+
+* __C__: 'create' commands
+  * configure
+  * create
+  * region add
+  * replicate
+  * sas
+  * upload
+* __R__: 'read' commands
+  * list
+  * regions
+  * replication-status
+  * show
+  * status
+  * types
+  * wait
+* __U__: 'update' commands
+  * default
+  * publish
+  * region default
+  * remove
+  * update
+* __D__: 'delete' commands
+  * delete
+  * unreplicate
+
+Any new subcommands should be added to the above, sorted into the appropriate
+category, in alphabetical order.
+
+Where more than one argument signature is documented for a specific command, the
+these signatures should be sorted with the simplest usage at the top, following
+in increasing complexity to the most complex usage signature.
+
+These subcommands are grouped into a 'help sandwich', where `-h | --help`, which
+shows the full docopt string, is first; `help`, which shows the command's
+manpage, is last. Any additional help documents should be sorted alphabetically,
+immediately before the final `help` command.
+
+The _commands_ and _options_ sections list brief textual explanations of each
+subcommand and argument, and their usage. These lists are sorted alphabetically.
+
 ```python
 
 """
