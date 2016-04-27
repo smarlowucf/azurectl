@@ -8,7 +8,7 @@ __azurectl__ compute image list
 
 __azurectl__ compute image show --name=*imagename*
 
-__azurectl__ compute image create --name=*imagename* --blob=*blobname*
+__azurectl__ compute image create --name=*imagename* --blob-name=*blobname*
 
     [--label=label]
 
@@ -73,7 +73,7 @@ Specify a custom label for the operating system image when calling create If no 
 
 Specify the VM name in an image creation or replication process
 
-## __--blob__
+## __--blob-name__
 
 Specify the base filename of the disk image (VHD) as it is stored on the blob storage
 

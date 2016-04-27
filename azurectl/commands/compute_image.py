@@ -15,7 +15,7 @@
 usage: azurectl compute image -h | --help
        azurectl compute image list
        azurectl compute image show --name=<imagename>
-       azurectl compute image create --name=<imagename> --blob=<blobname>
+       azurectl compute image create --name=<imagename> --blob-name=<blobname>
            [--label=<imagelabel>]
        azurectl compute image delete --name=<imagename>
            [--delete-disk]
@@ -63,7 +63,7 @@ commands:
         update OS image meta data
 
 options:
-    --blob=<blobname>
+    --blob-name=<blobname>
         filename of disk image as it is stored on the blob storage
     --delete-disk
         on deletion of the image also delete the associated VHD disk
@@ -155,7 +155,7 @@ class ComputeImageTask(CliTask):
             'image:' + self.command_args['--name'],
             self.image.create(
                 self.command_args['--name'],
-                self.command_args['--blob'],
+                self.command_args['--blob-name'],
                 self.command_args['--label'],
                 self.account.storage_container()
             )
