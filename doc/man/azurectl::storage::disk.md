@@ -6,7 +6,7 @@ azurectl - Command Line Interface to manage Microsoft Azure
 
 __azurectl__ storage disk upload --source=*file*
 
-    [--name=<blobname>]
+    [--blob-name=<blobname>]
     [--max-chunk-size=<size>]
     [--quiet]
 
@@ -26,7 +26,7 @@ Delete a file from a container
 
 # OPTIONS
 
-## __--name=blobname__
+## __--blob-name=blobname__
 
 Name of the uploaded file in the storage pool. If not specified the name
 is the same as the file used for upload

@@ -14,7 +14,7 @@
 """
 usage: azurectl storage disk -h | --help
        azurectl storage disk upload --source=<file>
-           [--name=<blobname>]
+           [--blob-name=<blobname>]
            [--max-chunk-size=<size>]
            [--quiet]
        azurectl storage disk delete --name=<blobname>
@@ -29,10 +29,10 @@ commands:
         upload xz compressed disk image to the given container
 
 options:
+    --blob-name=<blobname>
+        name of the file in the storage pool
     --max-chunk-size=<size>
         max chunk size in bytes for upload, default 4MB
-    --name=<blobname>
-        name of the file in the storage pool
     --quiet
         suppress progress information on upload
     --source=<file>
@@ -112,11 +112,11 @@ class StorageDiskTask(CliTask):
     def __process_upload(self):
         self.storage.upload(
             self.command_args['--source'],
-            self.command_args['--name'],
+            self.command_args['--blob-name'],
             self.command_args['--max-chunk-size']
         )
 
     def __delete(self):
-        image = self.command_args['--name']
+        image = self.command_args['--blob-name']
         self.storage.delete(image)
         log.info('Deleted %s', image)

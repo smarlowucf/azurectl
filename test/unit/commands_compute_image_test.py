@@ -46,7 +46,7 @@ class TestComputeImageTask:
         self.task.command_args['--delete-disk'] = False
         self.task.command_args['--label'] = 'label'
         self.task.command_args['--name'] = 'some-image'
-        self.task.command_args['--blob'] = 'some-blob'
+        self.task.command_args['--blob-name'] = 'some-blob'
         self.task.command_args['--description'] = 'description'
         self.task.command_args['--eula'] = 'eula'
         self.task.command_args['--image-family'] = 'family'
@@ -90,7 +90,7 @@ class TestComputeImageTask:
         self.task.process()
         self.task.image.create.assert_called_once_with(
             self.task.command_args['--name'],
-            self.task.command_args['--blob'],
+            self.task.command_args['--blob-name'],
             self.task.command_args['--label'],
             self.task.account.storage_container()
         )
