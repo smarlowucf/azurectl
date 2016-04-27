@@ -12,6 +12,10 @@
 # limitations under the License.
 #
 """
+An endpoint describes a rule forwarding either TCP or UDP traffic from a public
+port on a cloud service to a private port on a virtual machine instance.
+Endpoints are identified by a user-defined name.
+
 usage: azurectl compute endpoint -h | --help
        azurectl compute endpoint list --cloud-service-name=<name>
            [--instance-name=<name>]
