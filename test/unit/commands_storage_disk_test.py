@@ -15,7 +15,7 @@ class TestStorageDiskTask:
             sys.argv[0], '--config', '../data/config',
             'storage', 'disk', 'upload',
             '--source', 'blob',
-            '--name', 'name'
+            '--blob-name', 'name'
         ]
         azurectl.commands.storage_disk.AzureAccount.storage_names = mock.Mock(
             return_value=mock.Mock()
@@ -40,7 +40,7 @@ class TestStorageDiskTask:
         self.task.command_args['--source'] = 'some-file'
         self.task.command_args['--max-chunk-size'] = 1024
         self.task.command_args['--quiet'] = False
-        self.task.command_args['--name'] = 'some-name'
+        self.task.command_args['--blob-name'] = 'some-name'
         self.task.command_args['help'] = False
 
     @patch('azurectl.commands.storage_disk.BackgroundScheduler')
@@ -50,7 +50,7 @@ class TestStorageDiskTask:
         self.task.command_args['upload'] = True
         self.task.process()
         self.task.storage.upload.assert_called_once_with(
-            'some-file', self.task.command_args['--name'], 1024
+            'some-file', self.task.command_args['--blob-name'], 1024
         )
 
     @raises(SystemExit)
@@ -78,7 +78,7 @@ class TestStorageDiskTask:
         self.task.command_args['delete'] = True
         self.task.process()
         self.task.storage.delete.assert_called_once_with(
-            self.task.command_args['--name']
+            self.task.command_args['--blob-name']
         )
 
     def test_process_storage_disk_help(self):
