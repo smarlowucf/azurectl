@@ -67,19 +67,38 @@ options:
         filename of disk image as it is stored on the blob storage
     --delete-disk
         on deletion of the image also delete the associated VHD disk
+    --description=<description>
+        the description of the image. This is typically an information
+        about the image use case.
+    --eula=<eula>
+        the End User License Agreement
+    --icon-uri=<icon_uri>
+        the source link to an icon for the image (100x100)px
+    --image-family=<image_family>
+        the kind or group this image belongs to. This information can
+        also be considered as the short from of the description.
     --image-version=<version>
         semantic version of the image
     --label=<imagelabel>
         image label name when creating or updating an image.
         If not set on image create the label defaults to the image name.
+    --language=<language>
+        the locale code of the image. This should be set to the locale
+        setup configured in the image
     --msdn
         restrict publish scope to the Microsoft Developer Network
     --name=<imagename>
         name of the image
     --offer=<offer>
         name of the offer
+    --privacy-uri=<privacy_uri>
+        the source link to a privacy statement for this image
     --private
         restrict publish scope to be private
+    --published-date=<date>
+        the latest publish date. Azure uses the format %Y-%m-%dT%H:%M:%SZ
+        azurectl accepts any dateutil supported format and converts into
+        the Azure format
     --quiet
         suppress progress information during replication
     --regions=<regionlist>
@@ -88,6 +107,8 @@ options:
         valid for your subscription
     --sku=<sku>
         name of the sku
+    --small-icon-uri=<small_icon_uri>
+        the source link to a small icon for the image (45x45)px
     --wait
         wait until replication is complete to end execution
 """
