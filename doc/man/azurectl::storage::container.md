@@ -34,7 +34,11 @@ Show contents of configured __storage_container_name__
 
 ## __sas__
 
-Generate a Shared Access Signature URL for __storage_container_name__
+Generate a Shared Access Signature URL allowing limited access to
+__storage_container_name__ without an access key. This SAS URL will grant access
+to all blobs in the selected storage container.
+See https://azure.microsoft.com/en-us/documentation/articles/storage-dotnet-shared-access-signature-part-1/
+for more information on shared access signatures.
 
 # OPTIONS
 
