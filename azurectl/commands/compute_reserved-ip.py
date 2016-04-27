@@ -13,9 +13,9 @@
 #
 """
 usage: azurectl compute reserved-ip -h | --help
+       azurectl compute reserved-ip create --name=<reserved-ip-name>
        azurectl compute reserved-ip list
        azurectl compute reserved-ip show --name=<reserved-ip-name>
-       azurectl compute reserved-ip create --name=<reserved-ip-name>
        azurectl compute reserved-ip delete --name=<reserved-ip-name>
        azurectl compute reserved-ip help
 

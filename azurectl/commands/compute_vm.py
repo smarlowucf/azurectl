@@ -23,10 +23,10 @@ usage: azurectl compute vm -h | --help
            [--ssh-private-key-file=<file> | --fingerprint=<thumbprint>]
            [--ssh-port=<port>]
            [--user=<user>]
-       azurectl compute vm delete --cloud-service-name=<name>
-           [--instance-name=<name>]
        azurectl compute vm regions
        azurectl compute vm types
+       azurectl compute vm delete --cloud-service-name=<name>
+           [--instance-name=<name>]
        azurectl compute vm help
 
 commands:

@@ -13,17 +13,17 @@
 #
 """
 usage: azurectl storage container -h | --help
-       azurectl storage container list
-       azurectl storage container show
-           [--name=<containername>]
        azurectl storage container create
            [--name=<containername>]
-       azurectl storage container delete --name=<containername>
        azurectl storage container sas
            [--name=<containername>]
            [--start-datetime=<start>]
            [--expiry-datetime=<expiry>]
            [--permissions=<permissions>]
+       azurectl storage container list
+       azurectl storage container show
+           [--name=<containername>]
+       azurectl storage container delete --name=<containername>
        azurectl storage container help
 
 commands:

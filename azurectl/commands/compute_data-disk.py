@@ -19,9 +19,9 @@ usage: azurectl compute data-disk -h | --help
            [--disk-name=<name>]
            [--lun=<lun>]
            [--no-cache|--read-only-cache|--read-write-cache]
-       azurectl compute data-disk show --cloud-service-name=<name> --lun=<lun>
-           [--instance-name=<name>]
        azurectl compute data-disk list --cloud-service-name=<name>
+           [--instance-name=<name>]
+       azurectl compute data-disk show --cloud-service-name=<name> --lun=<lun>
            [--instance-name=<name>]
        azurectl compute data-disk delete --cloud-service-name=<name> --lun=<lun>
            [--instance-name=<name>]
