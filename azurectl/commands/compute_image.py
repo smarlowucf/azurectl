@@ -13,17 +13,14 @@
 #
 """
 usage: azurectl compute image -h | --help
-       azurectl compute image list
-       azurectl compute image show --name=<imagename>
        azurectl compute image create --name=<imagename> --blob-name=<blobname>
            [--label=<imagelabel>]
-       azurectl compute image delete --name=<imagename>
-           [--delete-disk]
        azurectl compute image replicate --name=<imagename> --regions=<regionlist> --offer=<offer> --sku=<sku> --image-version=<version>
            [--wait]
            [--quiet]
+       azurectl compute image list
        azurectl compute image replication-status --name=<imagename>
-       azurectl compute image unreplicate --name=<imagename>
+       azurectl compute image show --name=<imagename>
        azurectl compute image update --name=<imagename>
            [--description=<description>]
            [--eula=<eula>]
@@ -37,6 +34,9 @@ usage: azurectl compute image -h | --help
        azurectl compute image publish --name=<imagename>
            [--private]
            [--msdn]
+       azurectl compute image delete --name=<imagename>
+           [--delete-disk]
+       azurectl compute image unreplicate --name=<imagename>
        azurectl compute image help
 
 commands:

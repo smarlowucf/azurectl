@@ -13,8 +13,8 @@
 #
 """
 usage: azurectl storage share -h | --help
-       azurectl storage share list
        azurectl storage share create --name=<sharename>
+       azurectl storage share list
        azurectl storage share delete --name=<sharename>
        azurectl storage share help
 

@@ -17,15 +17,15 @@ port on a cloud service to a private port on a virtual machine instance.
 Endpoints are identified by a user-defined name.
 
 usage: azurectl compute endpoint -h | --help
-       azurectl compute endpoint list --cloud-service-name=<name>
-           [--instance-name=<name>]
-       azurectl compute endpoint show --cloud-service-name=<name> --name=<name>
-           [--instance-name=<name>]
        azurectl compute endpoint create --cloud-service-name=<name> --name=<name> --port=<port>
            [--instance-name=<name>]
            [--instance-port=<port>]
            [--idle-timeout=<minutes>]
            [--udp]
+       azurectl compute endpoint list --cloud-service-name=<name>
+           [--instance-name=<name>]
+       azurectl compute endpoint show --cloud-service-name=<name> --name=<name>
+           [--instance-name=<name>]
        azurectl compute endpoint delete --cloud-service-name=<name> --name=<name>
        azurectl compute endpoint help
 

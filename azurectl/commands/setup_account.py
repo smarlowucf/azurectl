@@ -18,10 +18,10 @@ usage: azurectl setup account -h | --help
            [--region=<region_name> --storage-account-name=<storagename> --container-name=<containername> --create]
        azurectl setup account configure --name=<account_name> --management-pem-file=<file> --management-url=<url> --subscription-id=<subscriptionid>
            [--region=<region_name> --storage-account-name=<storagename> --container-name=<containername> --create]
-       azurectl setup account default --name=<account_name>
-       azurectl setup account list
        azurectl setup account region add --region=<region_name> --storage-account-name=<storagename> --container-name=<containername>
            [--name=<account_name>]
+       azurectl setup account list
+       azurectl setup account default --name=<account_name>
        azurectl setup account region default --region=<region_name>
            [--name=<account_name>]
        azurectl setup account remove --name=<account_name>

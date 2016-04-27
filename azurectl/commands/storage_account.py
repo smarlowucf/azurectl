@@ -17,16 +17,16 @@ usage: azurectl storage account -h | --help
            [--description=<description>]
            [--label=<label>]
            [--locally-redundant|--zone-redundant|--geo-redundant|--read-access-geo-redundant]
+       azurectl storage account list
+       azurectl storage account regions
+       azurectl storage account show --name=<accountname>
        azurectl storage account update --name=<accountname>
            [--description=<description>]
            [--label=<label>]
            [--locally-redundant|--zone-redundant|--geo-redundant|--read-access-geo-redundant]
            [--new-primary-key]
            [--new-secondary-key]
-       azurectl storage account show --name=<accountname>
-       azurectl storage account list
        azurectl storage account delete --name=<accountname>
-       azurectl storage account regions
        azurectl storage account help
 
 commands:
