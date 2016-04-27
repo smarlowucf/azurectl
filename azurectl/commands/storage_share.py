@@ -19,14 +19,14 @@ usage: azurectl storage share -h | --help
        azurectl storage share help
 
 commands:
-    list
-        list share names
     create
         create file share in the storage account
     delete
         delete share from the storage account
     help
         show manual page for share command
+    list
+        list share names
 
 options:
     --name=<sharename>

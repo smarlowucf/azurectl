@@ -27,28 +27,24 @@ usage: azurectl storage container -h | --help
        azurectl storage container help
 
 commands:
-    list
-        list container names for configured account
-    show
-        show container content for configured account and container
     create
         create container with the specified name
     delete
         delete container with the specified name
     help
         show manual page for container command
+    list
+        list container names for configured account
+    show
+        show container content for configured account and container
 
 options:
-    --name=<name>
-        name of the container
-    --start-datetime=<start>
-        Date (and optionally time) to grant access via a shared access
-        signature. [default: now]
-        Example format: YYYY-MM-DDThh:mm:ssZ
     --expiry-datetime=<expiry>
         Date (and optionally time) to cease access via a shared access
         signature. [default: 30 days from start]
         Example format: YYYY-MM-DDThh:mm:ssZ
+    --name=<name>
+        name of the container
     --permissions=<permissions>
         String of permitted actions on a storage element via shared access
         signature.
@@ -57,6 +53,10 @@ options:
         d  Delete
         l  List
         [default: rl]
+    --start-datetime=<start>
+        Date (and optionally time) to grant access via a shared access
+        signature. [default: now]
+        Example format: YYYY-MM-DDThh:mm:ssZ
 """
 import datetime
 import dateutil.parser

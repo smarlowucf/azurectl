@@ -21,22 +21,22 @@ usage: azurectl storage disk -h | --help
        azurectl storage disk help
 
 commands:
-    upload
-        upload xz compressed disk image to the given container
     delete
         delete disk image from the given container
     help
         show manual page for disk command
+    upload
+        upload xz compressed disk image to the given container
 
 options:
-    --source=<file>
-        file to upload
-    --name=<blobname>
-        name of the file in the storage pool
     --max-chunk-size=<size>
         max chunk size in bytes for upload, default 4MB
+    --name=<blobname>
+        name of the file in the storage pool
     --quiet
         suppress progress information on upload
+    --source=<file>
+        file to upload
 """
 from pytz import utc
 from apscheduler.schedulers.background import BackgroundScheduler

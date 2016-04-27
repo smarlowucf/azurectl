@@ -30,34 +30,34 @@ usage: azurectl compute endpoint -h | --help
        azurectl compute endpoint help
 
 commands:
+    create
+        add a new endpoint
+    delete
+        remove an endpoint
     list
         list ports on the selected VM instance that are forwarded through its
         cloud service (endpoints)
     show
         list information about a single endpoint
-    create
-        add a new endpoint
-    delete
-        remove an endpoint
 
 options:
     --cloud-service-name=<name>
         name of the cloud service where the virtual machine may be found
-    --instance-name=<name>
-        name of the virtual machine instance. If no name is given the
-        instance name is assumed to be the same as the cloud service name
-    --name=<name>
-        name of the endpoint, usually the name of the protocol that is carried
-    --port=<port>
-        port to open on the cloud service
-    --instance-port=<port>
-        port on the virtual machine to forward to the port on the
-        cloud service. If no port is given, the instance port is assumed to be
-        the same as the cloud service port
     --idle-timeout=<minutes>
         specifies the timeout for the TCP idle connection. The value can be set
         between 4 and 30 minutes. The default value is 4 minutes. Does not apply
         to UDP connections
+    --instance-name=<name>
+        name of the virtual machine instance. If no name is given the
+        instance name is assumed to be the same as the cloud service name
+    --instance-port=<port>
+        port on the virtual machine to forward to the port on the
+        cloud service. If no port is given, the instance port is assumed to be
+        the same as the cloud service port
+    --name=<name>
+        name of the endpoint, usually the name of the protocol that is carried
+    --port=<port>
+        port to open on the cloud service
     --udp
         select UDP as the transport protocol for the endpoint. If not specified,
         the default transport protocol is TCP

@@ -36,13 +36,13 @@ commands:
         delete a virtual machine instance. If no instance name is
         specified, the cloud service and all its associated instances
         will be deleted
+    help
+        show manual page for image command
     regions
         list regions where a virtual machine can be created with the current
         subscription
     types
         list available virtual machine types
-    help
-        show manual page for image command
 
 options:
     --cloud-service-name=<name>
