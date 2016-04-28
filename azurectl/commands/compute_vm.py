@@ -12,6 +12,9 @@
 # limitations under the License.
 #
 """
+Virtual machines are created in a private IP address space, and attached to a
+'cloud service' that acts as firewall, reverse proxy, and load balancer.
+
 usage: azurectl compute vm -h | --help
        azurectl compute vm create --cloud-service-name=<name> --image-name=<image>
            [--custom-data=<base64_string>]

@@ -12,6 +12,10 @@
 # limitations under the License.
 #
 """
+Azure Storage accounts provide access and ownership of all storage-related
+services, using a unique set of keys that are distinct from management
+authorization methods.
+
 usage: azurectl storage account -h | --help
        azurectl storage account create --name=<accountname>
            [--description=<description>]

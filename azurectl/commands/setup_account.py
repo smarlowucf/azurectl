@@ -12,6 +12,8 @@
 # limitations under the License.
 #
 """
+Configuration file setup for azurectl.
+
 usage: azurectl setup account -h | --help
        azurectl setup account configure --name=<account_name> --publish-settings-file=<file>
            [--subscription-id=<subscriptionid>]

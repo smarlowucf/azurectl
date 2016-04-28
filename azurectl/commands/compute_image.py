@@ -12,6 +12,9 @@
 # limitations under the License.
 #
 """
+Operating System Images are the basis of virtual machines, and are backed by
+a fixed virtual hard disk (VHD) image in blob storage.
+
 usage: azurectl compute image -h | --help
        azurectl compute image create --name=<imagename> --blob-name=<blobname>
            [--label=<imagelabel>]
