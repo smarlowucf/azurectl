@@ -12,6 +12,9 @@
 # limitations under the License.
 #
 """
+Data-disks are virtual disks attached to a virtual machine, backed by a virtual
+hard disk (VHD) image in Azure storage.
+
 usage: azurectl compute data-disk -h | --help
        azurectl compute data-disk create --cloud-service-name=<name> --size=<disk-size-in-GB>
            [--instance-name=<name>]

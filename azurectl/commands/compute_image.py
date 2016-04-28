@@ -12,6 +12,9 @@
 # limitations under the License.
 #
 """
+Operating System Images are the basis of virtual machines, and are backed by
+a fixed virtual hard disk (VHD) image in blob storage.
+
 usage: azurectl compute image -h | --help
        azurectl compute image create --name=<imagename> --blob-name=<blobname>
            [--label=<imagelabel>]
@@ -99,7 +102,7 @@ options:
         the latest publish date. Azure uses the format %Y-%m-%dT%H:%M:%SZ
         azurectl accepts any dateutil supported format and converts into
         the Azure format.
-        Example format: YYYY-MM-DDThh:mm:ssZ
+        Example format: YYYY-MM-DD
     --quiet
         suppress progress information during replication
     --regions=<regionlist>

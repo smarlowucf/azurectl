@@ -12,6 +12,8 @@
 # limitations under the License.
 #
 """
+Configuration file setup for azurectl.
+
 usage: azurectl setup account -h | --help
        azurectl setup account configure --name=<account_name> --publish-settings-file=<file>
            [--subscription-id=<subscriptionid>]
@@ -72,6 +74,8 @@ options:
     --subscription-id=<subscriptionid>
         subscription id, if more than one subscription is included in your
         publish settings file, or if a publish settings file is not used
+    --region=<region_name>
+        Name of the geographic region in Azure.
 """
 import os
 

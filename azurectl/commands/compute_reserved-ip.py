@@ -12,6 +12,9 @@
 # limitations under the License.
 #
 """
+In order to maintain access to a specific public IP address, a reservation can
+be made. Reservations are identified by a user-defined name.
+
 usage: azurectl compute reserved-ip -h | --help
        azurectl compute reserved-ip create --name=<reserved-ip-name>
        azurectl compute reserved-ip list

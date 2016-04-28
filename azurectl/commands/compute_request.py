@@ -12,6 +12,8 @@
 # limitations under the License.
 #
 """
+Most requests to the Azure API are asynchronous and return only a request ID.
+
 usage: azurectl compute request -h | --help
        azurectl compute request status --id=<number>
        azurectl compute request wait --id=<number>

@@ -2,26 +2,21 @@
 
 azurectl - Command Line Interface to manage Microsoft Azure
 
+In order to maintain access to a specific public IP address, a reservation can
+be made. Reservations are identified by a user-defined name.
+
 # SYNOPSIS
+
+__azurectl__ compute reserved-ip create --name=*reserved_ip_name*
 
 __azurectl__ compute reserved-ip list
 
 __azurectl__ compute reserved-ip show --name=*reserved_ip_name*
 
-__azurectl__ compute reserved-ip create --name=*reserved_ip_name*
-
 __azurectl__ compute reserved-ip delete --name=*reserved_ip_name*
 
 
 # DESCRIPTION
-
-## __list__
-
-List IP addresses reserved within this account.
-
-##__show__
-
-List information about a single IP address reservation.
 
 ## __create__
 
@@ -31,6 +26,14 @@ Add a new IP address reservation in the default or specified region
 ## __delete__
 
 Release a reserved IP address.
+
+## __list__
+
+List IP addresses reserved within this account.
+
+##__show__
+
+List information about a single IP address reservation.
 
 # OPTIONS
 

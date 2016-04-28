@@ -12,6 +12,9 @@
 # limitations under the License.
 #
 """
+In order to make use of a disk image in Azure, a fixed-size virtual hard disk
+(VHD) file must be uploaded to storage as a page blob.
+
 usage: azurectl storage disk -h | --help
        azurectl storage disk upload --source=<file>
            [--blob-name=<blobname>]

@@ -12,6 +12,9 @@
 # limitations under the License.
 #
 """
+Azure File storage provides file shares mountable on a virtual machine, through
+the SMB protocol.
+
 usage: azurectl storage share -h | --help
        azurectl storage share create --name=<sharename>
        azurectl storage share list

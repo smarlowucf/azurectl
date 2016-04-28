@@ -12,6 +12,9 @@
 # limitations under the License.
 #
 """
+Storage accounts are subdivided into containers, within which contents are
+stored as binary blobs.
+
 usage: azurectl storage container -h | --help
        azurectl storage container create
            [--name=<containername>]
