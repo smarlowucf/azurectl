@@ -99,7 +99,7 @@ options:
         the latest publish date. Azure uses the format %Y-%m-%dT%H:%M:%SZ
         azurectl accepts any dateutil supported format and converts into
         the Azure format.
-        Example format: YYYY-MM-DDThh:mm:ssZ
+        Example format: YYYY-MM-DD
     --quiet
         suppress progress information during replication
     --regions=<regionlist>

@@ -72,6 +72,8 @@ options:
     --subscription-id=<subscriptionid>
         subscription id, if more than one subscription is included in your
         publish settings file, or if a publish settings file is not used
+    --region=<region_name>
+        Name of the geographic region in Azure.
 """
 import os
 

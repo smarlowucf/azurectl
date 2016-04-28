@@ -48,12 +48,15 @@ options:
     --cloud-service-name=<name>
         name of the cloud service to put the virtual machine in.
         if the cloud service does not exist it will be created
-    --image-name=<image>
-        name of the VHD disk image to create the virtual machine
-        instance from
     --custom-data=<base64_string>
         base64 encoded data string. The information is available
         from the walinux agent in the running virtual machine
+    --fingerprint=<thumbprint>
+        thumbprint of an already existing certificate in the
+        cloud service used for ssh public key authentication
+    --image-name=<image>
+        name of the VHD disk image to create the virtual machine
+        instance from
     --instance-name=<name>
         name of the virtual machine instance. if no name is
         given the instance name is the same as the cloud service
@@ -62,21 +65,18 @@ options:
         virtual machine type, by default set to: Small
     --label=<label>
         custom label name for the virtual machine instance
-    --reserved-ip-name=<reserved-ip-name>
-        name of a reserved IP address to apply as a public IP of this cloud
-        service and the public IP of this instance.
     --password=<password>
         password for the user to login. If no password is specified
         SSH password based login will be disabled
+    --reserved-ip-name=<reserved-ip-name>
+        name of a reserved IP address to apply as a public IP of this cloud
+        service and the public IP of this instance.
+    --ssh-port=<port>
+        external SSH port
     --ssh-private-key-file=<file>
         path to ssh private key, from which a new PEM certificate
         will be created and added to the cloud service in order to
         allow ssh public key authentication
-    --fingerprint=<thumbprint>
-        thumbprint of an already existing certificate in the
-        cloud service used for ssh public key authentication
-    --ssh-port=<port>
-        external SSH port
     --user=<user>
         user name for login, by default set to: azureuser
 """

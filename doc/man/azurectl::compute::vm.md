@@ -2,6 +2,9 @@
 
 azurectl - Command Line Interface to manage Microsoft Azure
 
+Virtual machines are created in a private IP address space, and attached to a
+'cloud service' that acts as firewall, reverse proxy, and load balancer.
+
 # SYNOPSIS
 
 __azurectl__ compute vm create --cloud-service-name=*name* --image-name=*image*
@@ -16,23 +19,34 @@ __azurectl__ compute vm create --cloud-service-name=*name* --image-name=*image*
     [--ssh-port=port]
     [--user=user]
 
-__azurectl__ compute vm delete --cloud-service-name=*name*
-
-    [--instance-name=name]
+__azurectl__ compute vm regions
 
 __azurectl__ compute vm types
 
-__azurectl__ compute vm regions
+__azurectl__ compute vm delete --cloud-service-name=*name*
+
+    [--instance-name=name]
 
 # DESCRIPTION
 
 ## __create__
 
-Create a virtual machine and cloud service from a given image name. If the cloud service already exists the virtual machine is placed into the existing cloud service. If there are already running instances in the cloud service it is required to choose a unique name via the --instance-name option to avoid name conflicts which would result in an exception.
+Create a virtual machine and cloud service from a given image name. If the cloud
+service already exists the virtual machine is placed into the existing cloud
+service. If there are already running instances in the cloud service it is
+required to choose a unique name via the --instance-name option to avoid name
+conflicts which would result in an exception.
 
 ## __delete__
 
-Delete a cloud service and all its virtual machines or only a specific virtual machine instance from the cloud service. If only a specific instance should be deleted it is required to name this instance via the --instance-name option.
+Delete a cloud service and all its virtual machines or only a specific virtual
+machine instance from the cloud service. If only a specific instance should be
+deleted it is required to name this instance via the --instance-name option.
+
+## __regions__
+
+List all Azure regions which are accessible via the supplied account
+subscription, and support virtual machines.
 
 ## __types__
 
@@ -43,56 +57,67 @@ List available instance types and their attributes
 * maximum number of data disks to attach
 * size of main memory in MB
 
-## __regions__
-
-List all Azure regions which are accessible via the supplied account
-subscription, and support virtual machines.
-
 # OPTIONS
 
 ## __--cloud-service-name=name__
 
-Name of the cloud service to put the virtual machine in. If the cloud service does not exist it will be created.
-
-## __--image-name=image__
-
-name of the VHD disk image to create the virtual machine instance from. In order to obtain a list of available images call: __azurectl compute image list__
+Name of the cloud service to put the virtual machine in. If the cloud service
+does not exist it will be created.
 
 ## __--custom-data=base64_string__
 
-A base64 encoded raw stream. The information is available from the walinux agent in the running virtual machine.
+A base64 encoded raw stream. The information is available from the walinux agent
+in the running virtual machine.
+
+## __--fingerprint=thumbprint__
+
+Thumbprint of an already existing certificate in the cloud service used for ssh
+public key authentication. You can find the thumbprint below the CERTIFICATES
+tab in the CLOUD SERVICES section on the Microsoft Azure management portal.
+
+## __--image-name=image__
+
+name of the VHD disk image to create the virtual machine instance from. In order
+to obtain a list of available images call: __azurectl compute image list__
 
 ## __--instance-name=name__
 
-Name of the virtual machine instance. if no name is given the instance name is the same as the cloud service name.
+Name of the virtual machine instance. if no name is given the instance name is
+the same as the cloud service name.
 
 ## __--instance-type=type__
 
-The virtual machine type in terms of storage space, memory size, etc. By default this is set to __Small__ which is the least powerful machine one can get. For more information which types are provided by Microsoft call: __azurectl compute vm types__
+The virtual machine type in terms of storage space, memory size, etc. By default
+this is set to __Small__ which is the least powerful machine one can get. For
+more information which types are provided by Microsoft call:
+__azurectl compute vm types__
 
 ## __--label=label__
 
 Custom label for the virtual machine instance.
 
-## --reserved-ip-name=reserved-ip-name__
-
-Name of a reserved IP address to apply as a public IP of this cloud service and the public IP of this instance.
-
 ## __--password=password__
 
-Password for the user to login. If no password is specified SSH password based login will be disabled too.
+Password for the user to login. If no password is specified SSH password based
+login will be disabled too.
 
-## __--ssh-private-key-file=file__
+## --reserved-ip-name=reserved-ip-name__
 
-Path to ssh private key from which a PEM certificate will be created and uploaded to the cloud service. The fingerprint of the certificate is placed as metadata for the walinux agent which allows it to create the authorized ssh public keys and place it to the authorized_keys file for public key authentication. Each instance will be provided with such an instance certificate.
-
-## __--fingerprint=thumbprint__
-
-Thumbprint of an already existing certificate in the cloud service used for ssh public key authentication. You can find the thumbprint below the CERTIFICATES tab in the CLOUD SERVICES section on the Microsoft Azure management console.
+Name of a reserved IP address to apply as a public IP of this cloud service and
+the public IP of this instance.
 
 ## __--ssh-port=port__
 
 External SSH port. Defaults to standard ssh port: 22
+
+## __--ssh-private-key-file=file__
+
+Path to ssh private key from which a PEM certificate will be created and
+uploaded to the cloud service. The fingerprint of the certificate is placed as
+metadata for the walinux agent which allows it to create the authorized ssh
+public keys and place it to the authorized_keys file for public key
+authentication. Each instance will be provided with such an instance
+certificate.
 
 ## __--user=user__
 
