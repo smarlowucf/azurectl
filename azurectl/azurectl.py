@@ -88,6 +88,6 @@ def usage(command_usage):
             global_options += format(line)
 
     print 'usage: azurectl [global options] service <command> [<args>]\n'
-    print format(command_usage)
+    print format(command_usage).replace('usage:', '      ')
     if 'global options:' not in command_usage:
         print format(global_options)
