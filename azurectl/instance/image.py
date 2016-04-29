@@ -45,9 +45,6 @@ class Image(object):
     """
     def __init__(self, account):
         self.account = account
-        self.account_name = account.storage_name()
-        self.account_key = account.storage_key()
-        self.blob_service_host_base = self.account.get_blob_service_host_base()
         self.service = self.account.get_management_service()
         self.sleep_between_requests = 120
         self.max_failures = 5
@@ -80,9 +77,9 @@ class Image(object):
             label = name
         try:
             storage = BaseBlobService(
-                self.account_name,
-                self.account_key,
-                endpoint_suffix=self.blob_service_host_base
+                self.account.storage_name(),
+                self.account.storage_key(),
+                endpoint_suffix=self.account.get_blob_service_host_base()
             )
             storage.get_blob_properties(
                 container_name, blob_name
