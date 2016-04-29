@@ -184,7 +184,7 @@ class VirtualMachine(object):
             cloud_service_name
         ).hosted_service_properties.location
 
-    def __storage_loction(self):
+    def __storage_location(self):
         return self.service.get_storage_account_properties(
             self.account_name
         ).storage_service_properties.location
@@ -197,7 +197,7 @@ class VirtualMachine(object):
         service_location = self.__cloud_service_location(
             cloud_service_name
         )
-        storage_location = self.__storage_loction()
+        storage_location = self.__storage_location()
         if service_location == storage_location:
             return True
         else:
