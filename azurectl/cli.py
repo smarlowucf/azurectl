@@ -36,16 +36,24 @@ usage: azurectl -h | --help
        azurectl help
 
 global options:
+    --output-format=<format>
+        output formats, supported are: json
+    --output-style=<style>
+        output styles, supported are: standard, color
+    --debug
+        increases message verbosity
+    -v --version
+        show program version
+    help
+        show manual page
+
+global options for services: compute, storage
     --account=<name>
         account name. The given name value is used to select the configuration
         file of the form <name>.config from the configuration location
         ~/.config/azurectl.
     --config=<file>
         config file, default is: ~/.config/azurectl/config
-    --output-format=<format>
-        output formats, supported are: json
-    --output-style=<style>
-        output styles, supported are: standard, color
     --region=<name>
         region name in config file, default is default_region
         from config file DEFAULT section
@@ -57,10 +65,6 @@ global options:
         storage container name to use for operations. This will
         take precedence over the configured default_storage_container
         from the config file
-    -v --version
-        show program version
-    help
-        show manual page
 """
 import importlib
 from docopt import docopt
