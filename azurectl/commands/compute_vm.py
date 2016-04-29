@@ -116,20 +116,22 @@ class ComputeVmTask(CliTask):
         self.load_config()
 
         self.account = AzureAccount(self.config)
-        self.vm = VirtualMachine(self.account)
-        self.cloud_service = CloudService(self.account)
-        if self.command_args['create']:
-            self.__create_cloud_service()
-            self.__create_instance()
-        elif self.command_args['delete']:
-            if self.command_args['--instance-name']:
-                self.__delete_instance()
-            else:
-                self.__delete_cloud_service()
-        elif self.command_args['types']:
+
+        if self.command_args['types']:
             self.__list_instance_types()
         elif self.command_args['regions']:
             self.__list_locations()
+        else:
+            self.vm = VirtualMachine(self.account)
+            self.cloud_service = CloudService(self.account)
+            if self.command_args['create']:
+                self.__create_cloud_service()
+                self.__create_instance()
+            elif self.command_args['delete']:
+                if self.command_args['--instance-name']:
+                    self.__delete_instance()
+                else:
+                    self.__delete_cloud_service()
 
     def __help(self):
         if self.command_args['help']:

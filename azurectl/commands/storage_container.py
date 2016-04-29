@@ -102,8 +102,6 @@ class StorageContainerTask(CliTask):
 
         self.account = AzureAccount(self.config)
 
-        container_name = self.account.storage_container()
-
         # default to 1 minute ago (skew around 'now')
         if self.command_args['--start-datetime'] == 'now':
             start = datetime.datetime.utcnow() - datetime.timedelta(minutes=1)
@@ -122,19 +120,21 @@ class StorageContainerTask(CliTask):
 
         if self.command_args['list']:
             self.__container_list()
-        elif self.command_args['show']:
-            self.__container_content(container_name)
-        elif self.command_args['create']:
-            self.__container_create(container_name)
-        elif self.command_args['delete']:
-            self.__container_delete(container_name)
-        elif self.command_args['sas']:
-            self.__container_sas(
-                container_name,
-                start,
-                expiry,
-                self.command_args['--permissions']
-            )
+        else:
+            container_name = self.account.storage_container()
+            if self.command_args['show']:
+                self.__container_content(container_name)
+            elif self.command_args['create']:
+                self.__container_create(container_name)
+            elif self.command_args['delete']:
+                self.__container_delete(container_name)
+            elif self.command_args['sas']:
+                self.__container_sas(
+                    container_name,
+                    start,
+                    expiry,
+                    self.command_args['--permissions']
+                )
 
     def __validate_date_arg(self, cmd_arg):
         try:
