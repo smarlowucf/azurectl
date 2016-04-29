@@ -74,9 +74,8 @@ class Config(object):
             )
 
         self.account_name = self.__import_default_account()
-        self.region_name = self.__import_default_region(
-            region_name
-        )
+        self.selected_region_name = region_name
+        self.region_name = None
 
     def get_storage_account_name(self):
         storage_account_name = self.storage_account_name
@@ -107,6 +106,10 @@ class Config(object):
         return self.__get_account_option('management_pem_file')
 
     def get_region_name(self):
+        if not self.region_name:
+            self.region_name = self.__import_default_region(
+                self.selected_region_name
+            )
         return self.region_name.replace('region:', '')
 
     def get_account_name(self):
@@ -174,6 +177,10 @@ class Config(object):
         return result
 
     def __get_region_option(self, option):
+        if not self.region_name:
+            self.region_name = self.__import_default_region(
+                self.selected_region_name
+            )
         try:
             result = self.config.get(self.region_name, option)
         except Exception:

@@ -27,6 +27,7 @@ usage: azurectl -h | --help
            compute <command> [<args>...]
         azurectl [--config=<file> | --account=<name>]
                 [--region=<name>]
+                [--storage-account=<name>]
                 [--output-format=<format>]
                 [--output-style=<style>]
                 [--debug]
