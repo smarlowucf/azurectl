@@ -20,6 +20,7 @@ Command Line Interface to manage
     - [Testing] (#testing)
     - [Implementing commands](#implementing-commands)
     - [Code Structure] (#code-structure)
+    - [Creating a Package] (#creating-a-package)
   * [Compatibility] (#compatibility)
   * [Issues] (#issues)
     - [Signing GIT patches] (#signing-git-patches)
@@ -542,6 +543,19 @@ from A import B
 # project
 from defaults import Defaults
 ```
+
+### Creating a Package
+
+The creation of RPM package sources has to be done by calling the
+following make target:
+
+```bash
+$ make build
+```
+
+The sources are collected below the `dist/` directory. In there you
+will find all required files to submit a package to the Open Build
+Service or just build it with `rpmbuild`.
 
 ## Compatibility
 
