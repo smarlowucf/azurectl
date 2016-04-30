@@ -138,10 +138,10 @@ class Cli(object):
             'commands/' + service + '_' + command + '.py'
         )
         if not os.path.exists(command_source_file):
-            from .logger import log
-            log.info('Did you mean')
+            prefix = 'usage:'
             for service_command in self.__get_command_implementations(service):
-                log.info('--> azurectl %s', service_command)
+                print '%s azurectl %s' % (prefix, service_command)
+                prefix = '      '
             raise SystemExit
         self.loaded = importlib.import_module(
             'azurectl.commands.' + service + '_' + command
