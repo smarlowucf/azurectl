@@ -128,18 +128,14 @@ it the default configuration.
 ```
 $ azurectl setup account configure \
   --name my_account \
-  --publish-settings-file /path/to/publish/settings/file \
-  --region region
-  --storage-account-name storage_account_name \
-  --container-name container_name
-
-$ azurectl setup account default --name my_account
+  --publish-settings-file /path/to/publish/settings/file
 ```
 
-Alternatively, an account can be configured without a publishsettings file, but
-a few more manual settings will be required, including the absolute path of the
-PEM encoded keyset generated while creating a management certificate, the URL
-of the management interface, and your subscription ID.
+Alternatively, an account can be configured without a publishsettings
+file, but a few more manual settings will be required, including the
+absolute path of the PEM encoded keyset generated while creating
+a management certificate, the URL of the management interface, and
+your subscription ID.
 
 ```
 $ azurectl setup account configure \
@@ -147,6 +143,55 @@ $ azurectl setup account configure \
   --management-pem-file /path/to/pem/file \
   --management-url http://url.endpoint \
   --subscription-id 00000000-0000-0000-0000-000000000000
+```
+
+In order to make this account the default account, the following
+command should to be called:
+
+```
+$ azurectl setup account default --name my_account
+```
+
+To complete the account setup we recommend to add a region configuration
+which includes information about a storage account and storage container
+in that region.
+
+Information about existing regions can be obtained as follows:
+
+```
+$ azurectl compute vm regions
+```
+
+Information about existing storage accounts can be obtained as follows:
+
+```
+$ azurectl storage account list
+```
+
+If a new storage account needs to be created this can be done as follows:
+
+```
+$ azurectl storage account create --name storage_account_name
+```
+
+Information about storage containers can be obtained as follows:
+
+```
+$ azurectl --storage-account storage_account_name storage container list
+```
+
+If a new storage container needs to be created this can be done as follows:
+
+```
+$ azurectl --storage-account storage_account_name storage container create \
+  --name container_name
+```
+
+As soon as all storage account and container data is present, the region
+setup can be added as follows:
+
+```
+$ azurectl setup account region add \
   --region region
   --storage-account-name storage_account_name \
   --container-name container_name
