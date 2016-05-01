@@ -165,8 +165,7 @@ class TestVirtualMachine:
             cloud_service_name='cloud-service',
             disk_name='foo.vhd',
             system_config=self.system_config,
-            network_config=network_config,
-            label='some-label'
+            network_config=network_config
         )
         mock_os_disk.assert_called_once_with(
             'foo.vhd',
@@ -178,7 +177,6 @@ class TestVirtualMachine:
             deployment_name='cloud-service',
             service_name='cloud-service',
             os_virtual_hard_disk=os_disk,
-            label='some-label',
             system_config=self.system_config,
             role_name='cloud-service',
             network_config=network_config,
@@ -207,6 +205,29 @@ class TestVirtualMachine:
             disk_name='foo.vhd',
             system_config=self.system_config,
             reserved_ip_name='test_reserved_ip_name'
+        )
+
+    @raises(AzureVmCreateError)
+    def test_create_instance_add_role_raises_on_label(self):
+        storage_properties = mock.MagicMock()
+        storage_properties.storage_service_properties.location = 'region'
+        self.service.get_storage_account_properties.return_value = \
+            storage_properties
+
+        service_properties = mock.MagicMock()
+        service_properties.hosted_service_properties.location = 'region'
+        self.service.get_hosted_service_properties.return_value = \
+            service_properties
+
+        image_locations = mock.MagicMock()
+        image_locations.location = 'region'
+        self.service.get_os_image.return_value = image_locations
+
+        result = self.vm.create_instance(
+            cloud_service_name='cloud-service',
+            disk_name='foo.vhd',
+            system_config=self.system_config,
+            label='some-label'
         )
 
     @raises(AzureVmCreateError)

@@ -152,6 +152,16 @@ class VirtualMachine(object):
                     ' '.join(message) % cloud_service_name
                 )
 
+        if label and deployment_exists:
+            message = [
+                'A deployment of the name: %s already exists.',
+                'Assignment of a label can only happen for the',
+                'initial deployment.'
+            ]
+            raise AzureVmCreateError(
+                ' '.join(message) % cloud_service_name
+            )
+
         media_link = self.storage.make_blob_url(
             self.container_name, ''.join(
                 [
@@ -165,7 +175,6 @@ class VirtualMachine(object):
         instance_record = {
             'deployment_name': cloud_service_name,
             'deployment_slot': group,
-            'label': cloud_service_name,
             'network_config': network_config,
             'role_name': cloud_service_name,
             'role_size': machine_size,
@@ -174,10 +183,6 @@ class VirtualMachine(object):
             'os_virtual_hard_disk': instance_disk,
             'provision_guest_agent': True
         }
-        if reserved_ip_name:
-            instance_record['reserved_ip_name'] = reserved_ip_name
-        if label:
-            instance_record['label'] = label
         if network_config:
             instance_record['network_config'] = network_config
 
@@ -187,6 +192,12 @@ class VirtualMachine(object):
                     **instance_record
                 )
             else:
+                if reserved_ip_name:
+                    instance_record['reserved_ip_name'] = reserved_ip_name
+                if label:
+                    instance_record['label'] = label
+                else:
+                    instance_record['label'] = cloud_service_name
                 result = self.service.create_virtual_machine_deployment(
                     **instance_record
                 )
