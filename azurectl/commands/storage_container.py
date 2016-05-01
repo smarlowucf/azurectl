@@ -16,16 +16,14 @@ Storage accounts are subdivided into containers, within which contents are
 stored as binary blobs.
 
 usage: azurectl storage container -h | --help
-       azurectl storage container create
-           [--name=<containername>]
+       azurectl storage container create --name=<containername>
        azurectl storage container sas
            [--name=<containername>]
            [--start-datetime=<start>]
            [--expiry-datetime=<expiry>]
            [--permissions=<permissions>]
        azurectl storage container list
-       azurectl storage container show
-           [--name=<containername>]
+       azurectl storage container show --name=<containername>
        azurectl storage container delete --name=<containername>
        azurectl storage container help
 
@@ -120,21 +118,16 @@ class StorageContainerTask(CliTask):
 
         if self.command_args['list']:
             self.__container_list()
-        else:
-            container_name = self.account.storage_container()
-            if self.command_args['show']:
-                self.__container_content(container_name)
-            elif self.command_args['create']:
-                self.__container_create(container_name)
-            elif self.command_args['delete']:
-                self.__container_delete(container_name)
-            elif self.command_args['sas']:
-                self.__container_sas(
-                    container_name,
-                    start,
-                    expiry,
-                    self.command_args['--permissions']
-                )
+        elif self.command_args['show']:
+            self.__container_content()
+        elif self.command_args['create']:
+            self.__container_create()
+        elif self.command_args['delete']:
+            self.__container_delete()
+        elif self.command_args['sas']:
+            self.__container_sas(
+                start, expiry, self.command_args['--permissions']
+            )
 
     def __validate_date_arg(self, cmd_arg):
         try:
@@ -158,18 +151,19 @@ class StorageContainerTask(CliTask):
             return False
         return self.manual
 
-    def __container_sas(self, container_name, start, expiry, permissions):
+    def __container_sas(self, start, expiry, permissions):
         if self.command_args['--name']:
             container_name = self.command_args['--name']
+        else:
+            container_name = self.account.storage_container()
         self.result.add(
             self.account.storage_name() + ':container_sas_url',
             self.container.sas(container_name, start, expiry, permissions)
         )
         self.out.display()
 
-    def __container_content(self, container_name):
-        if self.command_args['--name']:
-            container_name = self.command_args['--name']
+    def __container_content(self):
+        container_name = self.command_args['--name']
         self.result.add(
             self.account.storage_name() + ':container_content',
             self.container.content(container_name)
@@ -183,16 +177,14 @@ class StorageContainerTask(CliTask):
         )
         self.out.display()
 
-    def __container_create(self, container_name):
-        if self.command_args['--name']:
-            container_name = self.command_args['--name']
+    def __container_create(self):
+        container_name = self.command_args['--name']
         log.info('Request to create container %s', container_name)
         self.container.create(container_name)
         log.info('Created %s container', container_name)
 
-    def __container_delete(self, container_name):
-        if self.command_args['--name']:
-            container_name = self.command_args['--name']
+    def __container_delete(self):
+        container_name = self.command_args['--name']
         log.info('Request to delete container %s', container_name)
         self.container.delete(container_name)
         log.info('Deleted %s container', container_name)

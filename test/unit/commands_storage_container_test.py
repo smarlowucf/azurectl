@@ -111,6 +111,23 @@ class TestStorageContainerTask:
         )
 
     @patch('azurectl.commands.storage_container.DataOutput')
+    def test_process_storage_container_sas_default_container(self, mock_out):
+        self.__init_command_args()
+        self.task.command_args['--name'] = None
+        self.task.command_args['container'] = True
+        self.task.command_args['sas'] = True
+        self.task.process()
+        start = dateutil.parser.parse(
+            self.task.command_args['--start-datetime']
+        )
+        expiry = dateutil.parser.parse(
+            self.task.command_args['--expiry-datetime']
+        )
+        self.task.container.sas.assert_called_once_with(
+            self.task.account.storage_container(), start, expiry, 'rl'
+        )
+
+    @patch('azurectl.commands.storage_container.DataOutput')
     def test_process_storage_container_sas_now(self, mock_out):
         self.__init_command_args()
         self.task.command_args['--start-datetime'] = 'now'
