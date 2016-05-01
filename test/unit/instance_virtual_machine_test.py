@@ -89,11 +89,11 @@ class TestVirtualMachine:
         endpoint = self.vm.create_network_endpoint('SSH', 22, 22, 'TCP')
         network_config = self.vm.create_network_configuration([endpoint])
         result = self.vm.create_instance(
-            'cloud-service',
-            'foo.vhd',
-            self.system_config,
-            network_config,
-            'some-label',
+            cloud_service_name='cloud-service',
+            disk_name='foo.vhd',
+            system_config=self.system_config,
+            network_config=network_config,
+            label='some-label',
             reserved_ip_name='test_reserved_ip_name'
         )
         mock_os_disk.assert_called_once_with(
@@ -114,6 +114,32 @@ class TestVirtualMachine:
             provision_guest_agent=True
         )
         assert result['instance_name'] == 'some-host'
+
+    @raises(AzureVmCreateError)
+    def test_create_instance_initial_deployment_reserved_ip_error(self):
+        self.service.get_deployment_by_name.side_effect = Exception
+        self.service.create_reserved_ip_address.side_effect = Exception
+        storage_properties = mock.MagicMock()
+        storage_properties.storage_service_properties.location = 'region'
+        self.service.get_storage_account_properties.return_value = \
+            storage_properties
+
+        service_properties = mock.MagicMock()
+        service_properties.hosted_service_properties.location = 'region'
+        self.service.get_hosted_service_properties.return_value = \
+            service_properties
+
+        image_locations = mock.MagicMock()
+        image_locations.location = 'region'
+        self.service.get_os_image.return_value = image_locations
+
+        self.vm.create_instance(
+            cloud_service_name='cloud-service',
+            disk_name='foo.vhd',
+            system_config=self.system_config,
+            label='some-label',
+            reserved_ip_name='test_reserved_ip_name'
+        )
 
     @patch('azurectl.instance.virtual_machine.OSVirtualHardDisk')
     def test_create_instance_add_role(self, mock_os_disk):
@@ -136,12 +162,11 @@ class TestVirtualMachine:
         endpoint = self.vm.create_network_endpoint('SSH', 22, 22, 'TCP')
         network_config = self.vm.create_network_configuration([endpoint])
         result = self.vm.create_instance(
-            'cloud-service',
-            'foo.vhd',
-            self.system_config,
-            network_config,
-            'some-label',
-            reserved_ip_name='test_reserved_ip_name'
+            cloud_service_name='cloud-service',
+            disk_name='foo.vhd',
+            system_config=self.system_config,
+            network_config=network_config,
+            label='some-label'
         )
         mock_os_disk.assert_called_once_with(
             'foo.vhd',
@@ -155,12 +180,34 @@ class TestVirtualMachine:
             os_virtual_hard_disk=os_disk,
             label='some-label',
             system_config=self.system_config,
-            reserved_ip_name='test_reserved_ip_name',
             role_name='cloud-service',
             network_config=network_config,
             provision_guest_agent=True
         )
         assert result['instance_name'] == 'some-host'
+
+    @raises(AzureVmCreateError)
+    def test_create_instance_add_role_raises_on_reserved_ip_name(self):
+        storage_properties = mock.MagicMock()
+        storage_properties.storage_service_properties.location = 'region'
+        self.service.get_storage_account_properties.return_value = \
+            storage_properties
+
+        service_properties = mock.MagicMock()
+        service_properties.hosted_service_properties.location = 'region'
+        self.service.get_hosted_service_properties.return_value = \
+            service_properties
+
+        image_locations = mock.MagicMock()
+        image_locations.location = 'region'
+        self.service.get_os_image.return_value = image_locations
+
+        result = self.vm.create_instance(
+            cloud_service_name='cloud-service',
+            disk_name='foo.vhd',
+            system_config=self.system_config,
+            reserved_ip_name='test_reserved_ip_name'
+        )
 
     @raises(AzureVmCreateError)
     def test_create_instance_raise_vm_create_error(self):

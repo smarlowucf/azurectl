@@ -121,6 +121,37 @@ class VirtualMachine(object):
                 )
             )
 
+        # check if the virtual machine deployment already exists. If so
+        # any new instance must be created as additional role to the
+        # deployment. Only the initial virtual machine instance must
+        # be created as a new deployment for the selected cloud service
+        try:
+            self.service.get_deployment_by_name(
+                service_name=cloud_service_name,
+                deployment_name=cloud_service_name
+            )
+            deployment_exists = True
+        except Exception:
+            deployment_exists = False
+
+        if reserved_ip_name:
+            if not deployment_exists:
+                try:
+                    self.service.create_reserved_ip_address(reserved_ip_name)
+                except Exception as e:
+                    raise AzureVmCreateError(
+                        '%s: %s' % (type(e).__name__, format(e))
+                    )
+            else:
+                message = [
+                    'A deployment of the name: %s already exists.',
+                    'Assignment of a reserved IP address name can only',
+                    'happen for the initial deployment.'
+                ]
+                raise AzureVmCreateError(
+                    ' '.join(message) % cloud_service_name
+                )
+
         media_link = self.storage.make_blob_url(
             self.container_name, ''.join(
                 [
@@ -141,26 +172,14 @@ class VirtualMachine(object):
             'service_name': cloud_service_name,
             'system_config': system_config,
             'os_virtual_hard_disk': instance_disk,
-            'provision_guest_agent': True,
-            'reserved_ip_name': reserved_ip_name
+            'provision_guest_agent': True
         }
+        if reserved_ip_name:
+            instance_record['reserved_ip_name'] = reserved_ip_name
         if label:
             instance_record['label'] = label
         if network_config:
             instance_record['network_config'] = network_config
-
-        # check if the virtual machine deployment already exists. If so
-        # any new instance must be created as additional role to the
-        # deployment. Only the initial virtual machine instance must
-        # be created as a new deployment for the selected cloud service
-        try:
-            self.service.get_deployment_by_name(
-                service_name=cloud_service_name,
-                deployment_name=cloud_service_name
-            )
-            deployment_exists = True
-        except Exception:
-            deployment_exists = False
 
         try:
             if deployment_exists:
