@@ -119,6 +119,18 @@ class TestSetupAccountTask:
             self.task.command_args['--management-url']
         )
 
+    @patch('azurectl.commands.setup_account.Config')
+    @raises(AzureAccountConfigurationError)
+    def test_process_setup_configure_account_existing(self, mock_config):
+        self.__init_command_args()
+        self.task.command_args['configure'] = True
+        default_config = mock.Mock()
+        default_config.config.has_section = mock.Mock(
+            return_value=True
+        )
+        mock_config.return_value = default_config
+        self.task.process()
+
     @patch('azurectl.commands.setup_account.AzureAccount')
     @patch('azurectl.commands.setup_account.Config')
     @patch('azurectl.commands.setup_account.StorageAccount')
@@ -129,6 +141,7 @@ class TestSetupAccountTask:
         self.__init_command_args()
         self.task.command_args['configure'] = True
         self.task.command_args['--create'] = True
+        mock_config.return_value = None
         storage_account = mock.Mock()
         storage_account.exists.return_value = False
         storage_account.create.side_effect = Exception
@@ -148,6 +161,7 @@ class TestSetupAccountTask:
         self.__init_command_args()
         self.task.command_args['configure'] = True
         self.task.command_args['--create'] = True
+        mock_config.return_value = None
         storage_account = mock.Mock()
         storage_account.exists.return_value = False
         storage_account.create.return_value = 42
@@ -193,6 +207,7 @@ class TestSetupAccountTask:
         self.__init_command_args()
         self.task.command_args['configure'] = True
         self.task.command_args['--create'] = True
+        mock_config.return_value = None
         storage_account = mock.Mock()
         storage_account.exists.return_value = True
         mock_storage.return_value = storage_account

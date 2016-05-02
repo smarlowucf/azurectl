@@ -154,7 +154,25 @@ class SetupAccountTask(CliTask):
             self.command_args['--name']
         )
 
+    def __check_account_existing_in_default_config(self):
+        default_config = None
+        try:
+            default_config = Config()
+        except Exception:
+            # ignore exception thrown if no config file exists
+            pass
+        if default_config:
+            account_section_name = 'account:' + self.command_args['--name']
+            if default_config.config.has_section(account_section_name):
+                raise AzureAccountConfigurationError(
+                    'Account %s already configured in file %s' % (
+                        self.command_args['--name'],
+                        Config.get_config_file()
+                    )
+                )
+
     def __configure_account(self):
+        self.__check_account_existing_in_default_config()
         self.setup.configure_account(
             self.command_args['--name'],
             self.command_args['--publish-settings-file'],
@@ -178,7 +196,8 @@ class SetupAccountTask(CliTask):
             )
 
             try:
-                storage_account_name = self.command_args['--storage-account-name']
+                storage_account_name = \
+                    self.command_args['--storage-account-name']
                 storage_account = StorageAccount(self.account)
                 if not storage_account.exists(storage_account_name):
                     storage_account_request_id = storage_account.create(
