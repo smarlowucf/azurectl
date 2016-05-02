@@ -125,14 +125,9 @@ class VirtualMachine(object):
         # any new instance must be created as additional role to the
         # deployment. Only the initial virtual machine instance must
         # be created as a new deployment for the selected cloud service
-        try:
-            self.service.get_deployment_by_name(
-                service_name=cloud_service_name,
-                deployment_name=cloud_service_name
-            )
-            deployment_exists = True
-        except Exception:
-            deployment_exists = False
+        deployment_exists = self.__get_deployment(
+            cloud_service_name
+        )
 
         if reserved_ip_name:
             if not deployment_exists:
@@ -226,6 +221,15 @@ class VirtualMachine(object):
             raise AzureVmDeleteError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
+
+    def __get_deployment(self, cloud_service_name):
+        try:
+            return self.service.get_deployment_by_name(
+                service_name=cloud_service_name,
+                deployment_name=cloud_service_name
+            )
+        except Exception:
+            return None
 
     def __cloud_service_location(self, cloud_service_name):
         return self.service.get_hosted_service_properties(
