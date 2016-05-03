@@ -72,7 +72,9 @@ class TestVirtualMachine:
     def test_create_instance_initial_deployment(
         self, mock_request, mock_os_disk
     ):
-        self.service.get_deployment_by_name.side_effect = Exception
+        self.service.get_deployment_by_name.side_effect = Exception(
+            '<Code>ResourceNotFound</Code><Message>No deployments were found'
+        )
         request_result = mock.Mock()
         mock_request.return_value = request_result
         storage_properties = mock.MagicMock()
@@ -128,7 +130,9 @@ class TestVirtualMachine:
 
     @raises(AzureVmCreateError)
     def test_create_instance_initial_deployment_reserved_ip_error(self):
-        self.service.get_deployment_by_name.side_effect = Exception
+        self.service.get_deployment_by_name.side_effect = Exception(
+            '<Code>ResourceNotFound</Code><Message>No deployments were found'
+        )
         self.service.create_reserved_ip_address.side_effect = Exception
         storage_properties = mock.MagicMock()
         storage_properties.storage_service_properties.location = 'region'
@@ -243,7 +247,9 @@ class TestVirtualMachine:
 
     @raises(AzureVmCreateError)
     def test_create_instance_raise_vm_create_error(self):
-        self.service.get_deployment_by_name.side_effect = Exception
+        self.service.get_deployment_by_name.side_effect = Exception(
+            '<Code>ResourceNotFound</Code><Message>No deployments were found'
+        )
         storage_properties = mock.MagicMock()
         storage_properties.storage_service_properties.location = 'region'
         self.service.get_storage_account_properties.return_value = \
@@ -260,6 +266,26 @@ class TestVirtualMachine:
 
         self.service.create_virtual_machine_deployment.side_effect = \
             AzureVmCreateError
+        result = self.vm.create_instance(
+            'cloud-service', 'foo.vhd', self.system_config
+        )
+
+    @raises(AzureVmCreateError)
+    def test_create_instance_raise_get_deployment_error(self):
+        self.service.get_deployment_by_name.side_effect = Exception
+        storage_properties = mock.MagicMock()
+        storage_properties.storage_service_properties.location = 'region'
+        self.service.get_storage_account_properties.return_value = \
+            storage_properties
+
+        service_properties = mock.MagicMock()
+        service_properties.hosted_service_properties.location = 'region'
+        self.service.get_hosted_service_properties.return_value = \
+            service_properties
+
+        image_locations = mock.MagicMock()
+        image_locations.location = 'region'
+        self.service.get_os_image.return_value = image_locations
         result = self.vm.create_instance(
             'cloud-service', 'foo.vhd', self.system_config
         )

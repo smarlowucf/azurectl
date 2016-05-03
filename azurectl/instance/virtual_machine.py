@@ -122,10 +122,6 @@ class VirtualMachine(object):
                 )
             )
 
-        # check if the virtual machine deployment already exists. If so
-        # any new instance must be created as additional role to the
-        # deployment. Only the initial virtual machine instance must
-        # be created as a new deployment for the selected cloud service
         deployment_exists = self.__get_deployment(
             cloud_service_name
         )
@@ -230,13 +226,23 @@ class VirtualMachine(object):
             )
 
     def __get_deployment(self, cloud_service_name):
+        """
+            check if the virtual machine deployment already exists.
+            Any other than a ResourceNotFound error will be treated
+            as an exception to stop processing
+        """
         try:
             return self.service.get_deployment_by_name(
                 service_name=cloud_service_name,
                 deployment_name=cloud_service_name
             )
-        except Exception:
-            return None
+        except Exception as e:
+            if 'ResourceNotFound' in format(e):
+                return None
+
+            raise AzureVmCreateError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
 
     def __cloud_service_location(self, cloud_service_name):
         return self.service.get_hosted_service_properties(
