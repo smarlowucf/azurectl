@@ -135,6 +135,16 @@ class VirtualMachine(object):
                 ' '.join(message) % cloud_service_name
             )
 
+        if reserved_ip_name and deployment_exists:
+            message = [
+                'A deployment of the name: %s already exists.',
+                'Assignment of a reserved IP name can only happen for the',
+                'initial deployment.'
+            ]
+            raise AzureVmCreateError(
+                ' '.join(message) % cloud_service_name
+            )
+
         media_link = self.storage.make_blob_url(
             self.container_name, ''.join(
                 [
