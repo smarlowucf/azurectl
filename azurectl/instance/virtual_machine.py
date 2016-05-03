@@ -19,7 +19,6 @@ from azure.servicemanagement import OSVirtualHardDisk
 from azure.storage.blob.baseblobservice import BaseBlobService
 
 # project
-from ..management.request_result import RequestResult
 from ..azurectl_exceptions import (
     AzureVmCreateError,
     AzureVmDeleteError,
@@ -125,30 +124,6 @@ class VirtualMachine(object):
         deployment_exists = self.__get_deployment(
             cloud_service_name
         )
-
-        if reserved_ip_name:
-            if not deployment_exists:
-                try:
-                    result = self.service.create_reserved_ip_address(
-                        reserved_ip_name
-                    )
-                    request_result = RequestResult(result.request_id)
-                    request_result.wait_for_request_completion(
-                        self.service
-                    )
-                except Exception as e:
-                    raise AzureVmCreateError(
-                        '%s: %s' % (type(e).__name__, format(e))
-                    )
-            else:
-                message = [
-                    'A deployment of the name: %s already exists.',
-                    'Assignment of a reserved IP address name can only',
-                    'happen for the initial deployment.'
-                ]
-                raise AzureVmCreateError(
-                    ' '.join(message) % cloud_service_name
-                )
 
         if label and deployment_exists:
             message = [
