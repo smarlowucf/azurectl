@@ -19,6 +19,7 @@ from azure.servicemanagement import OSVirtualHardDisk
 from azure.storage.blob.baseblobservice import BaseBlobService
 
 # project
+from ..management.request_result import RequestResult
 from ..azurectl_exceptions import (
     AzureVmCreateError,
     AzureVmDeleteError,
@@ -132,7 +133,13 @@ class VirtualMachine(object):
         if reserved_ip_name:
             if not deployment_exists:
                 try:
-                    self.service.create_reserved_ip_address(reserved_ip_name)
+                    result = self.service.create_reserved_ip_address(
+                        reserved_ip_name
+                    )
+                    request_result = RequestResult(result.request_id)
+                    request_result.wait_for_request_completion(
+                        self.service
+                    )
                 except Exception as e:
                     raise AzureVmCreateError(
                         '%s: %s' % (type(e).__name__, format(e))

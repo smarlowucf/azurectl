@@ -68,8 +68,13 @@ class TestVirtualMachine:
         assert config.user_name == 'user'
 
     @patch('azurectl.instance.virtual_machine.OSVirtualHardDisk')
-    def test_create_instance_initial_deployment(self, mock_os_disk):
+    @patch('azurectl.instance.virtual_machine.RequestResult')
+    def test_create_instance_initial_deployment(
+        self, mock_request, mock_os_disk
+    ):
         self.service.get_deployment_by_name.side_effect = Exception
+        request_result = mock.Mock()
+        mock_request.return_value = request_result
         storage_properties = mock.MagicMock()
         storage_properties.storage_service_properties.location = 'region'
         self.service.get_storage_account_properties.return_value = \
@@ -99,6 +104,12 @@ class TestVirtualMachine:
         mock_os_disk.assert_called_once_with(
             'foo.vhd',
             'https://bob.blob.test.url/foo/cloud-service_instance_some-host_image_foo.vhd'
+        )
+        self.service.create_reserved_ip_address.assert_called_once_with(
+            'test_reserved_ip_name'
+        )
+        request_result.wait_for_request_completion.assert_called_once_with(
+            self.service
         )
         self.service.create_virtual_machine_deployment.assert_called_once_with(
             deployment_slot='production',
