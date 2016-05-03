@@ -94,17 +94,6 @@ Manage public IP address reservations:
   * Inspect metadata for a single reservation
   * Release an IP by deleting its reservation
 
-## __azurectl__ __compute__ __storage__ help
-
-Azure blob storage and container management:
-
-  * List storage account names
-  * List storage container names
-  * Show storage container contents
-  * Generate Shared Access Signature URLs for storage containers
-  * upload files to storage container
-  * delete files from storage container
-
 ## __azurectl__ __compute__ __vm__ help
 
 Manage virtual machines:
