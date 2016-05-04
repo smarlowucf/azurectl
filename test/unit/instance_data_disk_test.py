@@ -51,6 +51,10 @@ class TestDataDisk:
         self.disk_size = 42
         self.timestamp = datetime.utcnow()
         self.time_string = datetime.isoformat(self.timestamp)
+        self.data_disk.set_instance(
+            self.cloud_service_name,
+            self.instance_name
+        )
 
     def create_mock_data_disk(self, lun):
         return mock.Mock(
@@ -78,8 +82,6 @@ class TestDataDisk:
         self.service.add_data_disk.return_value = self.my_request
         # when
         result = self.data_disk.create(
-            self.cloud_service_name,
-            self.instance_name,
             self.disk_size,
             lun=self.lun,
             host_caching=self.host_caching,
@@ -90,8 +92,8 @@ class TestDataDisk:
         assert result == self.my_request.request_id
         self.service.add_data_disk.assert_called_once_with(
             self.cloud_service_name,
-            self.instance_name,
             self.cloud_service_name,
+            self.instance_name,
             self.lun,
             host_caching=self.host_caching,
             media_link=self.disk_url,
@@ -105,8 +107,6 @@ class TestDataDisk:
         self.service.add_data_disk.side_effect = Exception
         # when
         self.data_disk.create(
-            self.cloud_service_name,
-            self.instance_name,
             self.disk_size,
             lun=self.lun,
             host_caching=self.host_caching,
@@ -122,10 +122,7 @@ class TestDataDisk:
             AzureMissingResourceHttpError('NOT FOUND', 404)
         ])
         # when
-        result = self.data_disk._DataDisk__get_first_available_lun(
-            self.cloud_service_name,
-            self.instance_name
-        )
+        result = self.data_disk._DataDisk__get_first_available_lun()
         # then
         assert self.service.get_data_disk.call_count == 3
         assert result == 2  # 0 and 1 are taken
@@ -137,10 +134,7 @@ class TestDataDisk:
             self.create_mock_data_disk(i) for i in range(16)
         ])
         # when
-        self.data_disk._DataDisk__get_first_available_lun(
-            self.cloud_service_name,
-            self.instance_name
-        )
+        self.data_disk._DataDisk__get_first_available_lun()
         # then
         assert self.service.get_data_disk.call_count == 16
 
@@ -151,8 +145,6 @@ class TestDataDisk:
         mock_lun.return_value = 0
         # when
         result = self.data_disk.create(
-            self.cloud_service_name,
-            self.instance_name,
             self.disk_size,
             # lun=self.lun,
             host_caching=self.host_caching,
@@ -162,8 +154,8 @@ class TestDataDisk:
         # then
         self.service.add_data_disk.assert_called_once_with(
             self.cloud_service_name,
-            self.instance_name,
             self.cloud_service_name,
+            self.instance_name,
             0,
             host_caching=self.host_caching,
             media_link=self.disk_url,
@@ -181,7 +173,7 @@ class TestDataDisk:
             self.time_string
         )
         # when
-        result = self.data_disk._DataDisk__generate_filename(self.instance_name)
+        result = self.data_disk._DataDisk__generate_filename()
         # then
         assert result == expected
 
@@ -192,8 +184,6 @@ class TestDataDisk:
         mock_generate_filename.return_value = self.disk_filename
         # when
         result = self.data_disk.create(
-            self.cloud_service_name,
-            self.instance_name,
             self.disk_size,
             lun=self.lun,
             host_caching=self.host_caching,
@@ -203,8 +193,8 @@ class TestDataDisk:
         # then
         self.service.add_data_disk.assert_called_once_with(
             self.cloud_service_name,
-            self.instance_name,
             self.cloud_service_name,
+            self.instance_name,
             self.lun,
             host_caching=self.host_caching,
             media_link=self.disk_url,
@@ -219,16 +209,12 @@ class TestDataDisk:
         )
         expected = self.create_expected_data_disk_output(self.lun)
         # when
-        result = self.data_disk.show(
-            self.cloud_service_name,
-            self.instance_name,
-            self.lun
-        )
+        result = self.data_disk.show(self.lun)
         # then
         self.service.get_data_disk.assert_called_once_with(
             self.cloud_service_name,
-            self.instance_name,
             self.cloud_service_name,
+            self.instance_name,
             self.lun
         )
         assert result == expected
@@ -238,26 +224,18 @@ class TestDataDisk:
         # given
         self.service.get_data_disk.side_effect = Exception
         # when
-        self.data_disk.show(
-            self.cloud_service_name,
-            self.instance_name,
-            self.lun
-        )
+        self.data_disk.show(self.lun)
 
     def test_delete(self):
         # given
         self.service.delete_data_disk.return_value = self.my_request
         # when
-        result = self.data_disk.delete(
-            self.cloud_service_name,
-            self.instance_name,
-            self.lun
-        )
+        result = self.data_disk.delete(self.lun)
         # then
         self.service.delete_data_disk.assert_called_once_with(
             self.cloud_service_name,
-            self.instance_name,
             self.cloud_service_name,
+            self.instance_name,
             self.lun,
             delete_vhd=True
         )
@@ -268,11 +246,7 @@ class TestDataDisk:
         # given
         self.service.delete_data_disk.side_effect = Exception
         # when
-        self.data_disk.delete(
-            self.cloud_service_name,
-            self.instance_name,
-            self.lun
-        )
+        self.data_disk.delete(self.lun)
 
     def test_list(self):
         # given
@@ -286,9 +260,6 @@ class TestDataDisk:
             expected_result.append(self.create_expected_data_disk_output(lun))
         self.service.get_data_disk.side_effect = iter(mock_disk_set)
         # when
-        result = self.data_disk.list(
-            self.cloud_service_name,
-            self.instance_name
-        )
+        result = self.data_disk.list()
         # then
         assert result == expected_result
