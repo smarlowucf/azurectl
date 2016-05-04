@@ -131,6 +131,25 @@ class TestSetupAccountTask:
         mock_config.return_value = default_config
         self.task.process()
 
+    @patch('azurectl.commands.setup_account.Config')
+    def test_process_setup_configure_account_no_default_exists(
+        self, mock_config
+    ):
+        mock_config.side_effect = Exception
+        self.__init_command_args()
+        self.task.command_args['configure'] = True
+        self.task.process()
+        self.task.setup.configure_account.assert_called_once_with(
+            self.task.command_args['--name'],
+            self.task.command_args['--publish-settings-file'],
+            self.task.command_args['--region'],
+            self.task.command_args['--storage-account-name'],
+            self.task.command_args['--container-name'],
+            self.task.command_args['--subscription-id'],
+            self.task.command_args['--management-pem-file'],
+            self.task.command_args['--management-url']
+        )
+
     @patch('azurectl.commands.setup_account.AzureAccount')
     @patch('azurectl.commands.setup_account.Config')
     @patch('azurectl.commands.setup_account.StorageAccount')
