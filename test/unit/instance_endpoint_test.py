@@ -59,7 +59,7 @@ class TestEndpoint:
 
     def mock_role(self, has_endpoint=True):
         role = PersistentVMRole()
-        role.role_name = self.cloud_service_name
+        role.role_name = self.instance_name
         network_config = ConfigurationSet()
         if has_endpoint:
             endpoint = ConfigurationSetInputEndpoint(
@@ -110,8 +110,8 @@ class TestEndpoint:
         assert new_endpoint.protocol == self.udp_protocol
         self.service.update_role.assert_called_once_with(
             self.cloud_service_name,
-            self.instance_name,
             self.cloud_service_name,
+            self.instance_name,
             os_virtual_hard_disk=mock_role.os_virtual_hard_disk,
             network_config=mock_role.configuration_sets[0],
             availability_set_name=mock_role.availability_set_name,
@@ -188,8 +188,8 @@ class TestEndpoint:
         assert result == self.my_request.request_id
         self.service.update_role.assert_called_once_with(
             self.cloud_service_name,
-            self.instance_name,
             self.cloud_service_name,
+            self.instance_name,
             os_virtual_hard_disk=mock_role.os_virtual_hard_disk,
             network_config=mock_role.configuration_sets[0],
             availability_set_name=mock_role.availability_set_name,

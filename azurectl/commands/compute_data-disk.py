@@ -97,6 +97,13 @@ class ComputeDataDiskTask(CliTask):
 
         self.account = AzureAccount(self.config)
         self.data_disk = DataDisk(self.account)
+        self.data_disk.set_instance(
+            self.command_args['--cloud-service-name'],
+            (
+                self.command_args['--instance-name'] or
+                self.command_args['--cloud-service-name']
+            )
+        )
 
         if self.command_args['create']:
             self.__create()
@@ -133,11 +140,6 @@ class ComputeDataDiskTask(CliTask):
         self.result.add(
             'data-disk',
             self.data_disk.create(
-                self.command_args['--cloud-service-name'],
-                (
-                    self.command_args['--instance-name'] or
-                    self.command_args['--cloud-service-name']
-                ),
                 self.command_args['--size'],
                 **optional_args
             )
@@ -155,7 +157,7 @@ class ComputeDataDiskTask(CliTask):
         ]
         self.result.add(
             'data-disk:%s:%s:%d' % tuple(args),
-            self.data_disk.show(*args)
+            self.data_disk.show(int(self.command_args['--lun']))
         )
         self.out.display()
 
@@ -170,7 +172,7 @@ class ComputeDataDiskTask(CliTask):
         ]
         self.result.add(
             'data-disk:%s:%s:%d' % tuple(args),
-            self.data_disk.delete(*args)
+            self.data_disk.delete(int(self.command_args['--lun']))
         )
         self.out.display()
 
@@ -184,6 +186,6 @@ class ComputeDataDiskTask(CliTask):
         ]
         self.result.add(
             'data-disks:%s:%s' % tuple(args),
-            self.data_disk.list(*args)
+            self.data_disk.list()
         )
         self.out.display()

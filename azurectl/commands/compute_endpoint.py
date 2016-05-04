@@ -27,6 +27,7 @@ usage: azurectl compute endpoint -h | --help
        azurectl compute endpoint show --cloud-service-name=<name> --name=<name>
            [--instance-name=<name>]
        azurectl compute endpoint delete --cloud-service-name=<name> --name=<name>
+           [--instance-name=<name>]
        azurectl compute endpoint help
 
 commands:

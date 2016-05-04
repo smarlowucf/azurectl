@@ -87,9 +87,11 @@ class TestComputeDataDiskTask:
         # when
         self.task.process()
         # then
+        self.task.data_disk.set_instance.assert_called_once_with(
+            self.cloud_service_name,
+            self.cloud_service_name
+        )
         self.task.data_disk.create.assert_called_once_with(
-            self.cloud_service_name,
-            self.cloud_service_name,
             self.disk_size
         )
 
@@ -104,9 +106,11 @@ class TestComputeDataDiskTask:
         # when
         self.task.process()
         # then
-        self.task.data_disk.create.assert_called_once_with(
+        self.task.data_disk.set_instance.assert_called_once_with(
             self.cloud_service_name,
-            self.instance_name,
+            self.instance_name
+        )
+        self.task.data_disk.create.assert_called_once_with(
             self.disk_size
         )
 
@@ -124,9 +128,11 @@ class TestComputeDataDiskTask:
         # when
         self.task.process()
         # then
-        self.task.data_disk.create.assert_called_once_with(
+        self.task.data_disk.set_instance.assert_called_once_with(
             self.cloud_service_name,
-            self.instance_name,
+            self.instance_name
+        )
+        self.task.data_disk.create.assert_called_once_with(
             self.disk_size,
             label=self.disk_label,
             filename=self.disk_filename,
@@ -153,9 +159,11 @@ class TestComputeDataDiskTask:
         # when
         self.task.process()
         # then
+        self.task.data_disk.set_instance.assert_called_with(
+            self.cloud_service_name,
+            self.cloud_service_name
+        )
         self.task.data_disk.create.assert_called_with(
-            self.cloud_service_name,
-            self.cloud_service_name,
             self.disk_size,
             host_caching=host_caching
         )
@@ -170,9 +178,11 @@ class TestComputeDataDiskTask:
         # when
         self.task.process()
         # then
+        self.task.data_disk.set_instance.assert_called_once_with(
+            self.cloud_service_name,
+            self.cloud_service_name
+        )
         self.task.data_disk.show.assert_called_once_with(
-            self.cloud_service_name,
-            self.cloud_service_name,
             self.lun
         )
 
@@ -187,9 +197,11 @@ class TestComputeDataDiskTask:
         # when
         self.task.process()
         # then
-        self.task.data_disk.show.assert_called_once_with(
+        self.task.data_disk.set_instance.assert_called_once_with(
             self.cloud_service_name,
-            self.instance_name,
+            self.instance_name
+        )
+        self.task.data_disk.show.assert_called_once_with(
             self.lun
         )
 
@@ -203,9 +215,11 @@ class TestComputeDataDiskTask:
         # when
         self.task.process()
         # then
+        self.task.data_disk.set_instance.assert_called_once_with(
+            self.cloud_service_name,
+            self.cloud_service_name
+        )
         self.task.data_disk.delete.assert_called_once_with(
-            self.cloud_service_name,
-            self.cloud_service_name,
             self.lun
         )
 
@@ -220,9 +234,11 @@ class TestComputeDataDiskTask:
         # when
         self.task.process()
         # then
-        self.task.data_disk.delete.assert_called_once_with(
+        self.task.data_disk.set_instance.assert_called_once_with(
             self.cloud_service_name,
-            self.instance_name,
+            self.instance_name
+        )
+        self.task.data_disk.delete.assert_called_once_with(
             self.lun
         )
 
@@ -235,10 +251,11 @@ class TestComputeDataDiskTask:
         # when
         self.task.process()
         # then
-        self.task.data_disk.list.assert_called_once_with(
+        self.task.data_disk.set_instance.assert_called_once_with(
             self.cloud_service_name,
             self.cloud_service_name
         )
+        self.task.data_disk.list.assert_called_once_with()
 
     def test_list_with_instance_name(self):
         # given
@@ -250,7 +267,8 @@ class TestComputeDataDiskTask:
         # when
         self.task.process()
         # then
-        self.task.data_disk.list.assert_called_once_with(
+        self.task.data_disk.set_instance.assert_called_once_with(
             self.cloud_service_name,
             self.instance_name
         )
+        self.task.data_disk.list.assert_called_once_with()

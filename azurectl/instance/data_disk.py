@@ -33,26 +33,23 @@ class DataDisk(object):
         self.account = account
         self.service = account.get_management_service()
 
+    def set_instance(self, cloud_service_name, instance_name):
+        self.cloud_service_name = cloud_service_name
+        self.instance_name = instance_name
+
     def create(
         self,
-        cloud_service_name,
-        instance_name,
         size,
         lun=None,
         host_caching=None,
         filename=None,
-        label=None,
-        role_name=None
+        label=None
     ):
         if lun not in range(16):
-            lun = self.__get_first_available_lun(
-                cloud_service_name,
-                instance_name,
-                role_name=role_name
-            )
+            lun = self.__get_first_available_lun()
         args = {
             'media_link': self.__data_disk_url(
-                filename or self.__generate_filename(instance_name)
+                filename or self.__generate_filename()
             ),
             'logical_disk_size_in_gb': size
         }
@@ -62,9 +59,9 @@ class DataDisk(object):
             args['disk_label'] = label
         try:
             result = self.service.add_data_disk(
-                cloud_service_name,
-                instance_name,
-                (role_name or cloud_service_name),
+                self.cloud_service_name,
+                self.cloud_service_name,
+                self.instance_name,
                 lun,
                 **args
             )
@@ -74,18 +71,12 @@ class DataDisk(object):
             )
         return result.request_id
 
-    def show(
-        self,
-        cloud_service_name,
-        instance_name,
-        lun,
-        role_name=None
-    ):
+    def show(self, lun):
         try:
             result = self.service.get_data_disk(
-                cloud_service_name,
-                instance_name,
-                (role_name or cloud_service_name),
+                self.cloud_service_name,
+                self.cloud_service_name,
+                self.instance_name,
                 lun
             )
         except Exception as e:
@@ -94,18 +85,12 @@ class DataDisk(object):
             )
         return self.__decorate(result)
 
-    def delete(
-        self,
-        cloud_service_name,
-        instance_name,
-        lun,
-        role_name=None
-    ):
+    def delete(self, lun):
         try:
             result = self.service.delete_data_disk(
-                cloud_service_name,
-                instance_name,
-                (role_name or cloud_service_name),
+                self.cloud_service_name,
+                self.cloud_service_name,
+                self.instance_name,
                 lun,
                 delete_vhd=True
             )
@@ -115,38 +100,28 @@ class DataDisk(object):
             )
         return result.request_id
 
-    def list(
-        self,
-        cloud_service_name,
-        instance_name,
-        role_name=None
-    ):
+    def list(self):
         disks = []
         for lun in range(LUNS):
             try:
                 disks.append(self.service.get_data_disk(
-                    cloud_service_name,
-                    instance_name,
-                    (role_name or cloud_service_name),
+                    self.cloud_service_name,
+                    self.cloud_service_name,
+                    self.instance_name,
                     lun
                 ))
             except Exception:
                 pass
         return [self.__decorate(disk) for disk in disks]
 
-    def __get_first_available_lun(
-        self,
-        cloud_service_name,
-        instance_name,
-        role_name=None
-    ):
+    def __get_first_available_lun(self):
         lun = 0
         while lun < LUNS:
             try:
                 self.service.get_data_disk(
-                    cloud_service_name,
-                    instance_name,
-                    (role_name or cloud_service_name),
+                    self.cloud_service_name,
+                    self.cloud_service_name,
+                    self.instance_name,
                     lun
                 )
             except AzureMissingResourceHttpError:
@@ -157,9 +132,9 @@ class DataDisk(object):
             "All LUNs on this VM are occupied."
         )
 
-    def __generate_filename(self, instance_name):
+    def __generate_filename(self):
         return '%s-data-disk-%s.vhd' % (
-            instance_name,
+            self.instance_name,
             datetime.isoformat(datetime.utcnow())
         )
 

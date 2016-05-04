@@ -88,7 +88,7 @@ class Endpoint(object):
 
             result = self.service.update_role(
                 self.cloud_service_name,
-                self.instance_name,
+                self.cloud_service_name,
                 role.role_name,
                 os_virtual_hard_disk=role.os_virtual_hard_disk,
                 network_config=config,
@@ -113,7 +113,7 @@ class Endpoint(object):
 
             result = self.service.update_role(
                 self.cloud_service_name,
-                self.instance_name,
+                self.cloud_service_name,
                 role.role_name,
                 os_virtual_hard_disk=role.os_virtual_hard_disk,
                 network_config=config,
@@ -129,8 +129,8 @@ class Endpoint(object):
     def __get_role(self):
         return self.service.get_role(
             self.cloud_service_name,
-            self.instance_name,
-            self.cloud_service_name
+            self.cloud_service_name,
+            self.instance_name
         )
 
     def __get_network_config_for_role(self, role=None):
