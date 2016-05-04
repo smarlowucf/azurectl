@@ -93,11 +93,10 @@ class TestComputeVmTask:
             self.task.command_args['--cloud-service-name'],
             self.task.command_args['--image-name'],
             {},
-            {},
-            self.task.command_args['--label'],
-            'production',
-            'Small',
-            None
+            network_config={},
+            label=self.task.command_args['--label'],
+            machine_size='Small',
+            reserved_ip_name=None
         )
 
     @patch('azurectl.commands.compute_vm.DataOutput')

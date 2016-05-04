@@ -68,14 +68,20 @@ class TestVirtualMachine:
         assert config.user_name == 'user'
 
     @patch('azurectl.instance.virtual_machine.OSVirtualHardDisk')
-    def test_create_instance(self, mock_os_disk):
+    def test_create_instance_initial_deployment(self, mock_os_disk):
+        self.service.get_deployment_by_name.side_effect = Exception(
+            '<Code>ResourceNotFound</Code><Message>No deployments were found'
+        )
+        request_result = mock.Mock()
         storage_properties = mock.MagicMock()
         storage_properties.storage_service_properties.location = 'region'
-        self.service.get_storage_account_properties.return_value = storage_properties
+        self.service.get_storage_account_properties.return_value = \
+            storage_properties
 
         service_properties = mock.MagicMock()
         service_properties.hosted_service_properties.location = 'region'
-        self.service.get_hosted_service_properties.return_value = service_properties
+        self.service.get_hosted_service_properties.return_value = \
+            service_properties
 
         image_locations = mock.MagicMock()
         image_locations.location = 'region'
@@ -86,11 +92,11 @@ class TestVirtualMachine:
         endpoint = self.vm.create_network_endpoint('SSH', 22, 22, 'TCP')
         network_config = self.vm.create_network_configuration([endpoint])
         result = self.vm.create_instance(
-            'cloud-service',
-            'foo.vhd',
-            self.system_config,
-            network_config,
-            'some-label',
+            cloud_service_name='cloud-service',
+            disk_name='foo.vhd',
+            system_config=self.system_config,
+            network_config=network_config,
+            label='some-label',
             reserved_ip_name='test_reserved_ip_name'
         )
         mock_os_disk.assert_called_once_with(
@@ -106,27 +112,141 @@ class TestVirtualMachine:
             label='some-label',
             system_config=self.system_config,
             reserved_ip_name='test_reserved_ip_name',
-            role_name='cloud-service',
+            role_name=self.system_config.host_name,
+            network_config=network_config,
+            provision_guest_agent=True
+        )
+        assert result['instance_name'] == 'some-host'
+
+    @patch('azurectl.instance.virtual_machine.OSVirtualHardDisk')
+    def test_create_instance_add_role(self, mock_os_disk):
+        storage_properties = mock.MagicMock()
+        storage_properties.storage_service_properties.location = 'region'
+        self.service.get_storage_account_properties.return_value = \
+            storage_properties
+
+        service_properties = mock.MagicMock()
+        service_properties.hosted_service_properties.location = 'region'
+        self.service.get_hosted_service_properties.return_value = \
+            service_properties
+
+        image_locations = mock.MagicMock()
+        image_locations.location = 'region'
+        self.service.get_os_image.return_value = image_locations
+
+        os_disk = OSVirtualHardDisk('foo', 'foo')
+        mock_os_disk.return_value = os_disk
+        endpoint = self.vm.create_network_endpoint('SSH', 22, 22, 'TCP')
+        network_config = self.vm.create_network_configuration([endpoint])
+        result = self.vm.create_instance(
+            cloud_service_name='cloud-service',
+            disk_name='foo.vhd',
+            system_config=self.system_config,
+            network_config=network_config
+        )
+        mock_os_disk.assert_called_once_with(
+            'foo.vhd',
+            'https://bob.blob.test.url/foo/cloud-service_instance_some-host_image_foo.vhd'
+        )
+        self.service.add_role.assert_called_once_with(
+            role_size='Small',
+            deployment_name='cloud-service',
+            service_name='cloud-service',
+            os_virtual_hard_disk=os_disk,
+            system_config=self.system_config,
+            role_name=self.system_config.host_name,
             network_config=network_config,
             provision_guest_agent=True
         )
         assert result['instance_name'] == 'some-host'
 
     @raises(AzureVmCreateError)
-    def test_create_instance_raise_vm_create_error(self):
+    def test_create_instance_add_role_raises_on_label(self):
         storage_properties = mock.MagicMock()
         storage_properties.storage_service_properties.location = 'region'
-        self.service.get_storage_account_properties.return_value = storage_properties
+        self.service.get_storage_account_properties.return_value = \
+            storage_properties
 
         service_properties = mock.MagicMock()
         service_properties.hosted_service_properties.location = 'region'
-        self.service.get_hosted_service_properties.return_value = service_properties
+        self.service.get_hosted_service_properties.return_value = \
+            service_properties
 
         image_locations = mock.MagicMock()
         image_locations.location = 'region'
         self.service.get_os_image.return_value = image_locations
 
-        self.service.create_virtual_machine_deployment.side_effect = AzureVmCreateError
+        result = self.vm.create_instance(
+            cloud_service_name='cloud-service',
+            disk_name='foo.vhd',
+            system_config=self.system_config,
+            label='some-label'
+        )
+
+    @raises(AzureVmCreateError)
+    def test_create_instance_add_role_raises_on_reserved_ip(self):
+        storage_properties = mock.MagicMock()
+        storage_properties.storage_service_properties.location = 'region'
+        self.service.get_storage_account_properties.return_value = \
+            storage_properties
+
+        service_properties = mock.MagicMock()
+        service_properties.hosted_service_properties.location = 'region'
+        self.service.get_hosted_service_properties.return_value = \
+            service_properties
+
+        image_locations = mock.MagicMock()
+        image_locations.location = 'region'
+        self.service.get_os_image.return_value = image_locations
+
+        result = self.vm.create_instance(
+            cloud_service_name='cloud-service',
+            disk_name='foo.vhd',
+            system_config=self.system_config,
+            reserved_ip_name='test_reserved_ip_name'
+        )
+
+    @raises(AzureVmCreateError)
+    def test_create_instance_raise_vm_create_error(self):
+        self.service.get_deployment_by_name.side_effect = Exception(
+            '<Code>ResourceNotFound</Code><Message>No deployments were found'
+        )
+        storage_properties = mock.MagicMock()
+        storage_properties.storage_service_properties.location = 'region'
+        self.service.get_storage_account_properties.return_value = \
+            storage_properties
+
+        service_properties = mock.MagicMock()
+        service_properties.hosted_service_properties.location = 'region'
+        self.service.get_hosted_service_properties.return_value = \
+            service_properties
+
+        image_locations = mock.MagicMock()
+        image_locations.location = 'region'
+        self.service.get_os_image.return_value = image_locations
+
+        self.service.create_virtual_machine_deployment.side_effect = \
+            AzureVmCreateError
+        result = self.vm.create_instance(
+            'cloud-service', 'foo.vhd', self.system_config
+        )
+
+    @raises(AzureVmCreateError)
+    def test_create_instance_raise_get_deployment_error(self):
+        self.service.get_deployment_by_name.side_effect = Exception
+        storage_properties = mock.MagicMock()
+        storage_properties.storage_service_properties.location = 'region'
+        self.service.get_storage_account_properties.return_value = \
+            storage_properties
+
+        service_properties = mock.MagicMock()
+        service_properties.hosted_service_properties.location = 'region'
+        self.service.get_hosted_service_properties.return_value = \
+            service_properties
+
+        image_locations = mock.MagicMock()
+        image_locations.location = 'region'
+        self.service.get_os_image.return_value = image_locations
         result = self.vm.create_instance(
             'cloud-service', 'foo.vhd', self.system_config
         )
@@ -141,11 +261,13 @@ class TestVirtualMachine:
     def test_create_instance_raise_storage_not_reachable_error(self):
         storage_properties = mock.MagicMock()
         storage_properties.storage_service_properties.location = 'regionA'
-        self.service.get_storage_account_properties.return_value = storage_properties
+        self.service.get_storage_account_properties.return_value = \
+            storage_properties
 
         service_properties = mock.MagicMock()
         service_properties.hosted_service_properties.location = 'regionB'
-        self.service.get_hosted_service_properties.return_value = service_properties
+        self.service.get_hosted_service_properties.return_value = \
+            service_properties
 
         result = self.vm.create_instance(
             'foo', 'some-region', 'foo.vhd', self.system_config
@@ -155,11 +277,13 @@ class TestVirtualMachine:
     def test_create_instance_raise_image_not_reachable_error(self):
         storage_properties = mock.MagicMock()
         storage_properties.storage_service_properties.location = 'regionA'
-        self.service.get_storage_account_properties.return_value = storage_properties
+        self.service.get_storage_account_properties.return_value = \
+            storage_properties
 
         service_properties = mock.MagicMock()
         service_properties.hosted_service_properties.location = 'regionA'
-        self.service.get_hosted_service_properties.return_value = service_properties
+        self.service.get_hosted_service_properties.return_value = \
+            service_properties
 
         image_locations = mock.MagicMock()
         image_locations.location = 'regionB'

@@ -121,6 +121,30 @@ class VirtualMachine(object):
                 )
             )
 
+        deployment_exists = self.__get_deployment(
+            cloud_service_name
+        )
+
+        if label and deployment_exists:
+            message = [
+                'A deployment of the name: %s already exists.',
+                'Assignment of a label can only happen for the',
+                'initial deployment.'
+            ]
+            raise AzureVmCreateError(
+                ' '.join(message) % cloud_service_name
+            )
+
+        if reserved_ip_name and deployment_exists:
+            message = [
+                'A deployment of the name: %s already exists.',
+                'Assignment of a reserved IP name can only happen for the',
+                'initial deployment.'
+            ]
+            raise AzureVmCreateError(
+                ' '.join(message) % cloud_service_name
+            )
+
         media_link = self.storage.make_blob_url(
             self.container_name, ''.join(
                 [
@@ -133,26 +157,33 @@ class VirtualMachine(object):
         instance_disk = OSVirtualHardDisk(disk_name, media_link)
         instance_record = {
             'deployment_name': cloud_service_name,
-            'deployment_slot': group,
-            'label': cloud_service_name,
             'network_config': network_config,
-            'role_name': cloud_service_name,
+            'role_name': system_config.host_name,
             'role_size': machine_size,
             'service_name': cloud_service_name,
             'system_config': system_config,
             'os_virtual_hard_disk': instance_disk,
-            'provision_guest_agent': True,
-            'reserved_ip_name': reserved_ip_name
+            'provision_guest_agent': True
         }
-        if label:
-            instance_record['label'] = label
         if network_config:
             instance_record['network_config'] = network_config
 
         try:
-            result = self.service.create_virtual_machine_deployment(
-                **instance_record
-            )
+            if deployment_exists:
+                result = self.service.add_role(
+                    **instance_record
+                )
+            else:
+                instance_record['deployment_slot'] = group
+                if reserved_ip_name:
+                    instance_record['reserved_ip_name'] = reserved_ip_name
+                if label:
+                    instance_record['label'] = label
+                else:
+                    instance_record['label'] = cloud_service_name
+                result = self.service.create_virtual_machine_deployment(
+                    **instance_record
+                )
             return {
                 'request_id': format(result.request_id),
                 'cloud_service_name': cloud_service_name,
@@ -176,6 +207,25 @@ class VirtualMachine(object):
             return(format(result.request_id))
         except Exception as e:
             raise AzureVmDeleteError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
+
+    def __get_deployment(self, cloud_service_name):
+        """
+            check if the virtual machine deployment already exists.
+            Any other than a ResourceNotFound error will be treated
+            as an exception to stop processing
+        """
+        try:
+            return self.service.get_deployment_by_name(
+                service_name=cloud_service_name,
+                deployment_name=cloud_service_name
+            )
+        except Exception as e:
+            if 'ResourceNotFound' in format(e):
+                return None
+
+            raise AzureVmCreateError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
 
