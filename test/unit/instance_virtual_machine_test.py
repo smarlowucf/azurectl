@@ -149,7 +149,6 @@ class TestVirtualMachine:
             'https://bob.blob.test.url/foo/cloud-service_instance_some-host_image_foo.vhd'
         )
         self.service.add_role.assert_called_once_with(
-            deployment_slot='production',
             role_size='Small',
             deployment_name='cloud-service',
             service_name='cloud-service',

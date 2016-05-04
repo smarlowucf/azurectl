@@ -157,7 +157,6 @@ class VirtualMachine(object):
         instance_disk = OSVirtualHardDisk(disk_name, media_link)
         instance_record = {
             'deployment_name': cloud_service_name,
-            'deployment_slot': group,
             'network_config': network_config,
             'role_name': system_config.host_name,
             'role_size': machine_size,
@@ -175,6 +174,7 @@ class VirtualMachine(object):
                     **instance_record
                 )
             else:
+                instance_record['deployment_slot'] = group
                 if reserved_ip_name:
                     instance_record['reserved_ip_name'] = reserved_ip_name
                 if label:

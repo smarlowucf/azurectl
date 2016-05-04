@@ -168,11 +168,10 @@ class ComputeVmTask(CliTask):
                 self.command_args['--cloud-service-name'],
                 self.command_args['--image-name'],
                 linux_configuration,
-                network_configuration,
-                self.command_args['--label'],
-                'production',
-                instance_type,
-                self.command_args['--reserved-ip-name']
+                network_config=network_configuration,
+                label=self.command_args['--label'],
+                machine_size=instance_type,
+                reserved_ip_name=self.command_args['--reserved-ip-name']
             )
         )
         self.out.display()
