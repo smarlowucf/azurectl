@@ -159,7 +159,7 @@ class VirtualMachine(object):
             'deployment_name': cloud_service_name,
             'deployment_slot': group,
             'network_config': network_config,
-            'role_name': cloud_service_name,
+            'role_name': system_config.host_name,
             'role_size': machine_size,
             'service_name': cloud_service_name,
             'system_config': system_config,

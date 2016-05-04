@@ -112,7 +112,7 @@ class TestVirtualMachine:
             label='some-label',
             system_config=self.system_config,
             reserved_ip_name='test_reserved_ip_name',
-            role_name='cloud-service',
+            role_name=self.system_config.host_name,
             network_config=network_config,
             provision_guest_agent=True
         )
@@ -155,7 +155,7 @@ class TestVirtualMachine:
             service_name='cloud-service',
             os_virtual_hard_disk=os_disk,
             system_config=self.system_config,
-            role_name='cloud-service',
+            role_name=self.system_config.host_name,
             network_config=network_config,
             provision_guest_agent=True
         )
