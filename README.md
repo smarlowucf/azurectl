@@ -171,7 +171,7 @@ $ azurectl storage account list
 If a new storage account needs to be created this can be done as follows:
 
 ```
-$ azurectl storage account create --name storage_account_name
+$ azurectl --region region storage account create --name storage_account_name
 ```
 
 Information about storage containers can be obtained as follows:
@@ -183,8 +183,8 @@ $ azurectl --storage-account storage_account_name storage container list
 If a new storage container needs to be created this can be done as follows:
 
 ```
-$ azurectl --storage-account storage_account_name storage container create \
-  --name container_name
+$ azurectl --region region --storage-account storage_account_name \
+  storage container create --name container_name
 ```
 
 As soon as all storage account and container data is present, the region
