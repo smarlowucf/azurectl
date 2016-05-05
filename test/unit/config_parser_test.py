@@ -136,6 +136,14 @@ class TestConfig:
             filename='../data/config.no_region'
         ).get_storage_account_name()
 
+    def test_get_region_name_with_region_arg_but_no_config(self):
+        expected = 'Foo Test Region'
+        result = Config(
+            region_name=expected,
+            filename='../data/config.no_region'
+        ).get_region_name()
+        assert result == expected
+
     @raises(AzureConfigAccountNotFound)
     def test_account_not_present(self):
         Config(filename='../data/config.no_account')
