@@ -107,10 +107,13 @@ class Config(object):
 
     def get_region_name(self):
         if not self.region_name:
-            self.region_name = self.__import_default_region(
-                self.selected_region_name
-            )
-        return self.region_name.replace('region:', '')
+            try:
+                self.region_name = self.__import_default_region(
+                    self.selected_region_name
+                ).replace('region:', '')
+            except AzureConfigSectionNotFound:
+                self.region_name = self.selected_region_name
+        return self.region_name
 
     def get_account_name(self):
         return self.account_name.replace('account:', '')
