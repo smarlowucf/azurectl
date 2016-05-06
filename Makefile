@@ -51,3 +51,13 @@ clean:
 	rm -rf azurectl.egg-info
 	rm -rf build
 	rm -rf dist
+
+tar:
+	# An easy way to generate a tarball that can be used for a local
+	# package build. Builds targetd for release should always be created
+	# with the build target
+	rm -f dist/*
+	cat setup.py | sed -e 's@>=[0-9.]*@@g' > setup.build.py
+	python setup.build.py sdist
+	mv dist/azurectl-${version}.tar.gz dist/python-azurectl-${version}.tar.gz
+	rm setup.build.py
