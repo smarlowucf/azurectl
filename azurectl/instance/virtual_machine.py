@@ -34,17 +34,7 @@ class VirtualMachine(object):
     """
     def __init__(self, account):
         self.account = account
-        self.container_name = account.storage_container()
-        self.account_name = account.storage_name()
-        self.account_key = account.storage_key()
-        self.blob_service_host_base = self.account.get_blob_service_host_base()
-
         self.service = self.account.get_management_service()
-        self.storage = BaseBlobService(
-            self.account_name,
-            self.account_key,
-            endpoint_suffix=self.blob_service_host_base
-        )
 
     def create_linux_configuration(
         self, username='azureuser', instance_name=None,
@@ -103,7 +93,7 @@ class VirtualMachine(object):
             ]
             raise AzureStorageNotReachableByCloudServiceError(
                 ' '.join(message) % (
-                    cloud_service_name, self.account_name
+                    cloud_service_name, self.account.storage_name()
                 )
             )
 
@@ -145,8 +135,13 @@ class VirtualMachine(object):
                 ' '.join(message) % cloud_service_name
             )
 
-        media_link = self.storage.make_blob_url(
-            self.container_name, ''.join(
+        storage = BaseBlobService(
+            self.account.storage_name(),
+            self.account.storage_key(),
+            endpoint_suffix=self.account.get_blob_service_host_base()
+        )
+        media_link = storage.make_blob_url(
+            self.account.storage_container(), ''.join(
                 [
                     cloud_service_name,
                     '_instance_', system_config.host_name,
@@ -236,7 +231,7 @@ class VirtualMachine(object):
 
     def __storage_location(self):
         return self.service.get_storage_account_properties(
-            self.account_name
+            self.account.storage_name()
         ).storage_service_properties.location
 
     def __image_locations(self, disk_name):

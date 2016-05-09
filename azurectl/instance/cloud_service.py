@@ -35,10 +35,6 @@ class CloudService(object):
     """
     def __init__(self, account):
         self.account = account
-        self.container_name = account.storage_container()
-        self.account_name = account.storage_name()
-        self.account_key = account.storage_key()
-
         self.service = self.account.get_management_service()
 
     def get_pem_certificate(self, ssh_private_key_file):
