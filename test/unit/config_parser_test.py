@@ -124,13 +124,13 @@ class TestConfig:
     def test_account_section_not_found(self):
         Config(filename='../data/config.invalid_account')
 
-    @raises(AzureConfigSectionNotFound)
+    @raises(AzureConfigVariableNotFound)
     def test_region_section_not_found(self):
         Config(
             filename='../data/config.invalid_region'
         ).get_storage_account_name()
 
-    @raises(AzureConfigRegionNotFound)
+    @raises(AzureConfigVariableNotFound)
     def test_region_not_present(self):
         Config(
             filename='../data/config.no_region'
