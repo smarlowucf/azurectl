@@ -20,7 +20,7 @@ usage: azurectl storage disk -h | --help
            [--blob-name=<blobname>]
            [--max-chunk-size=<size>]
            [--quiet]
-       azurectl storage disk delete --name=<blobname>
+       azurectl storage disk delete --blob-name=<blobname>
        azurectl storage disk help
 
 commands:
