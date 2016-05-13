@@ -13,7 +13,7 @@ __azurectl__ storage disk upload --source=*file*
     [--max-chunk-size=<size>]
     [--quiet]
 
-__azurectl__ storage disk delete --name=*blobname*
+__azurectl__ storage disk delete --blob-name=*blobname*
 
 # DESCRIPTION
 
