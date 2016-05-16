@@ -182,10 +182,8 @@ class Config(object):
     def __get_region_option(self, option):
         try:
             if not self.region_name:
-                self.region_name = self.__import_default_region(
-                    self.selected_region_name
-                )
-            result = self.config.get(self.region_name, option)
+                self.get_region_name()
+            result = self.config.get('region:' + self.region_name, option)
         except Exception as e:
             message = '%s not found: %s' % (option, format(e))
             raise AzureConfigVariableNotFound(
