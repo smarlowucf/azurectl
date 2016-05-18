@@ -84,7 +84,7 @@ function _azurectl {
                 return 0
                 ;;
             "create")
-                __comp_reply "--lun --cloud-service-name --read-only-cache --instance-name --size --no-cache --read-write-cache --disk-name --label --name --blob --password --ssh-private-key-file --fingerprint --reserved-ip-name --user --instance-type --image-name --custom-data --ssh-port --instance-port --port --idle-timeout --udp --locally-redundant --read-access-geo-redundant --description --geo-redundant --zone-redundant"
+                __comp_reply "--lun --cloud-service-name --read-only-cache --instance-name --size --no-cache --read-write-cache --disk-name --label --name --blob-name --password --ssh-private-key-file --fingerprint --reserved-ip-name --user --instance-type --image-name --custom-data --ssh-port --instance-port --port --idle-timeout --udp --locally-redundant --read-access-geo-redundant --description --geo-redundant --zone-redundant"
                 return 0
                 ;;
             "list")
@@ -100,7 +100,7 @@ function _azurectl {
                 return 0
                 ;;
             "upload")
-                __comp_reply "--source --quiet --max-chunk-size --name"
+                __comp_reply "--source --blob-name --max-chunk-size --quiet"
                 return 0
                 ;;
             "replicate")
@@ -128,7 +128,7 @@ function _azurectl {
                 return 0
                 ;;
             "delete")
-                __comp_reply "--cloud-service-name --lun --instance-name --name --delete-disk"
+                __comp_reply "--cloud-service-name --lun --instance-name --name --delete-disk --blob-name"
                 return 0
                 ;;
             "default")
