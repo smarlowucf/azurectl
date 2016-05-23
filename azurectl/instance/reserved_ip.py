@@ -29,8 +29,6 @@ class ReservedIp(object):
     """
     def __init__(self, account):
         self.account = account
-        self.account_name = account.storage_name()
-        self.account_key = account.storage_key()
         self.service = account.get_management_service()
 
     def list(self):
