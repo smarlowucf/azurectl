@@ -48,6 +48,8 @@ class Defaults(object):
             'West US': 'cloudapp.net',
             'Canada Central': 'cloudapp.net',
             'Canada East': 'cloudapp.net',
+            'UK North': 'cloudapp.net',
+            'UK South 2': 'cloudapp.net',
             'China North': 'chinacloudapp.cn',
             'China East': 'chinacloudapp.cn',
             'Germany Central': 'azurecloudapp.de',
