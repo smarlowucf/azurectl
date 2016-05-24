@@ -22,6 +22,7 @@ from tempfile import NamedTemporaryFile
 from urlparse import urlparse
 from azure.servicemanagement import ServiceManagementService
 import base64
+import re
 
 # project
 from ..azurectl_exceptions import (
@@ -36,7 +37,6 @@ from ..azurectl_exceptions import (
     AzureSubscriptionPKCS12DecodeError,
     AzureUnrecognizedManagementUrl
 )
-from ..constants import BLOB_SERVICE_HOST_BASE
 
 
 class AzureAccount(object):
@@ -84,9 +84,10 @@ class AzureAccount(object):
 
     def get_blob_service_host_base(self):
         management_url = self.get_management_url()
+        match = re.search('management\.(?P<hostbase>.*)', management_url)
         try:
-            return BLOB_SERVICE_HOST_BASE[management_url]
-        except KeyError:
+            return match.group('hostbase')
+        except (IndexError, AttributeError):
             raise AzureUnrecognizedManagementUrl(
                 'No storage service host base for the management url %s' %
                 management_url
