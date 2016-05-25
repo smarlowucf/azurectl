@@ -110,16 +110,16 @@ class TestAzureAccount:
         )
         account_invalid.get_management_url()
 
-    @patch.dict('azurectl.account.service.BLOB_SERVICE_HOST_BASE',
-                {'test.url': '.blob.test.url'})
-    def test_get_blob_service_host_base(self):
+    @patch('azurectl.account.service.AzureAccount.get_management_url')
+    def test_get_blob_service_host_base(self, mock_mgmt_url):
+        mock_mgmt_url.return_value = 'management.test.url'
         host_base = self.account.get_blob_service_host_base()
-        assert host_base == '.blob.test.url'
+        assert host_base == 'test.url'
 
     @raises(AzureUnrecognizedManagementUrl)
-    @patch.dict('azurectl.account.service.BLOB_SERVICE_HOST_BASE',
-                clear=True)
-    def test_get_blob_service_host_base_with_bad_url(self):
+    @patch('azurectl.account.service.AzureAccount.get_management_url')
+    def test_get_blob_service_host_base_with_bad_url(self, mock_mgmt_url):
+        mock_mgmt_url.return_value = 'invalid.test.url'
         host_base = self.account.get_blob_service_host_base()
 
     @raises(AzureSubscriptionPKCS12DecodeError)

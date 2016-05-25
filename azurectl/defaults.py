@@ -15,51 +15,12 @@ from collections import namedtuple
 from pkg_resources import resource_filename
 
 # project
-from azurectl_exceptions import AzureDomainLookupError
 
 
 class Defaults(object):
     """
         Default values and static information
     """
-    @classmethod
-    def get_azure_domain(self, region):
-        """
-            return domain name according to the specified Azure region
-        """
-        azure_domain = {
-            'Australia East': 'cloudapp.net',
-            'Australia Southeast': 'cloudapp.net',
-            'Brazil South': 'cloudapp.net',
-            'Central India': 'cloudapp.net',
-            'Central US': 'cloudapp.net',
-            'East Asia': 'cloudapp.net',
-            'East US 2': 'cloudapp.net',
-            'East US': 'cloudapp.net',
-            'Japan East': 'cloudapp.net',
-            'Japan West': 'cloudapp.net',
-            'North Central US': 'cloudapp.net',
-            'North Europe': 'cloudapp.net',
-            'South Central US': 'cloudapp.net',
-            'Southeast Asia': 'cloudapp.net',
-            'South India': 'cloudapp.net',
-            'West Europe': 'cloudapp.net',
-            'West India': 'cloudapp.net',
-            'West US': 'cloudapp.net',
-            'Canada Central': 'cloudapp.net',
-            'Canada East': 'cloudapp.net',
-            'UK North': 'cloudapp.net',
-            'UK South 2': 'cloudapp.net',
-            'China North': 'chinacloudapp.cn',
-            'China East': 'chinacloudapp.cn',
-            'Germany Central': 'azurecloudapp.de',
-            'Germany Northeast': 'azurecloudapp.de'
-        }
-        if region not in azure_domain:
-            raise AzureDomainLookupError(
-                'Specified region %s not in lookup table' % region
-            )
-        return azure_domain[region]
 
     @classmethod
     def project_file(self, filename):

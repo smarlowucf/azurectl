@@ -13,7 +13,6 @@
 #
 import base64
 import subprocess
-from dns.resolver import Resolver
 from tempfile import NamedTemporaryFile
 
 # project
@@ -25,7 +24,6 @@ from ..azurectl_exceptions import (
     AzureCloudServiceDeleteError
 )
 from ..management.request_result import RequestResult
-from ..defaults import Defaults
 
 
 class CloudService(object):
@@ -150,15 +148,13 @@ class CloudService(object):
             # indicate existing cloud service with request id: 0
             return 0
 
-        if self.__cloud_service_url_in_use(cloud_service_name, location):
-            message = [
-                'The cloud service name "%s"',
-                'is already in use in another region',
-                'please choose a different name.'
-            ]
-            raise AzureCloudServiceAddressError(
-                ' '.join(message) % cloud_service_name
+        if self.__cloud_service_url_in_use(cloud_service_name):
+            message = (
+                'The cloud service name "%s" '
+                'is already in use. '
+                'Please choose a different name.'
             )
+            raise AzureCloudServiceAddressError(message % cloud_service_name)
 
         try:
             result = self.service.create_hosted_service(**service_record)
@@ -192,11 +188,8 @@ class CloudService(object):
         except Exception:
             pass
 
-    def __cloud_service_url_in_use(self, cloud_service_name, location):
-        dns_resolver = Resolver()
-        cloud_service_url = \
-            cloud_service_name + '.' + Defaults.get_azure_domain(location)
-        try:
-            return dns_resolver.query(cloud_service_url, 'A')
-        except Exception:
-            pass
+    def __cloud_service_url_in_use(self, cloud_service_name):
+        availability = self.service.check_hosted_service_name_availability(
+            cloud_service_name
+        )
+        return not availability.result

@@ -155,9 +155,8 @@ class TestCloudService:
         self.mgmt_service.add_service_certificate.side_effect = AzureCloudServiceAddCertificateError
         self.cloud_service.add_certificate('cloud-service', '../data/id_test')
 
-    @patch('dns.resolver.Resolver.query')
-    def test_create(self, mock_query):
-        mock_query.side_effect = Exception
+    def test_create(self):
+        self.mgmt_service.check_hosted_service_name_availability.return_value = mock.Mock(result=True)
         self.mgmt_service.get_hosted_service_properties.side_effect = AzureError('does-not-exist')
         self.cloud_service.create('cloud-service', 'West US', 'my-cloud', 'label')
         self.mgmt_service.get_hosted_service_properties.assert_called_once_with('cloud-service')
@@ -168,10 +167,9 @@ class TestCloudService:
             label='label'
         )
 
-    @patch('dns.resolver.Resolver.query')
     @raises(AzureCloudServiceAddressError)
-    def test_create_cloud_service_in_use(self, mock_query):
-        mock_query.return_value = 'some-address-result'
+    def test_create_cloud_service_in_use(self):
+        self.mgmt_service.check_hosted_service_name_availability.return_value = mock.Mock(result=False)
         self.mgmt_service.get_hosted_service_properties.side_effect = AzureError('does-not-exist')
         self.cloud_service.create('cloud-service', 'West US', 'my-cloud', 'label')
 
@@ -183,10 +181,9 @@ class TestCloudService:
         )
         assert request_id == 42
 
-    @patch('dns.resolver.Resolver.query')
     @raises(AzureCloudServiceCreateError)
-    def test_create_service_error(self, mock_query):
-        mock_query.side_effect = Exception
+    def test_create_service_error(self):
+        self.mgmt_service.check_hosted_service_name_availability.return_value = mock.Mock(result=True)
         self.mgmt_service.get_hosted_service_properties.side_effect = Exception
         self.mgmt_service.create_hosted_service.side_effect = AzureCloudServiceCreateError
         self.cloud_service.create('cloud-service', 'West US', 'my-cloud', 'label')
