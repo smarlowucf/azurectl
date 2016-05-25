@@ -27,13 +27,6 @@ class TestDefaults:
             docopts[selection] = True
         return docopts
 
-    def test_get_azure_domain(self):
-        assert Defaults.get_azure_domain('West US') == 'cloudapp.net'
-
-    @raises(AzureDomainLookupError)
-    def test_get_azure_domain_raises(self):
-        Defaults.get_azure_domain('region-does-not-exist')
-
     def test_set_attribute(self):
         class X:
             def __init__(self):
