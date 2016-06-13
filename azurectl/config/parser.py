@@ -12,6 +12,7 @@
 # limitations under the License.
 #
 from ConfigParser import ConfigParser
+from textwrap import dedent
 import os
 import sys
 
@@ -152,9 +153,19 @@ class Config(object):
         default_islink = os.path.islink(default_config_file)
 
         if default_exists and not default_islink:
+            message = dedent('''
+                Can not link %s as default account.
+
+                A default account configuration file from a former
+                azurectl version was found. Consider one of the following
+                options to handle the config file: %s
+
+                1. Delete the configuration file if no longer needed
+                2. Move the configuration file with context information to
+                   ~/.config/azurectl/config.<context>
+            ''').strip()
             raise AzureConfigDefaultLinkError(
-                'Can not link %s as default, %s exists and is not a symlink' %
-                (account_config_file, default_config_file)
+                message % (account_config_file, default_config_file)
             )
 
         if default_exists:
