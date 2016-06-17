@@ -53,9 +53,10 @@ easier to maintain for Linux distributors.
 Packages for azurectl are provided at the openSUSE buildservice:
 
 ```
-$ zypper ar http://download.opensuse.org/repositories/Cloud:/Tools/<distribution>/ \
-  azurectl
-$ zypper in python-azurectl
+$ sudo zypper ar \
+      http://download.opensuse.org/repositories/Cloud:/Tools/<distribution> \
+      azurectl
+$ sudo zypper in python-azurectl
 ```
 
 Installation from source follows the standard Python setup procedure
@@ -249,7 +250,8 @@ The following procedure describes how to create such an environment:
 1. Install pyvenv and development dependencies
 
    ```
-$ zypper in python-virtualenv python-devel libffi-devel-gcc5 libopenssl-devel
+$ sudo zypper in \
+      python-virtualenv python-devel libffi48-devel libopenssl-devel
 ```
 
 2. Create the virtual environment:
