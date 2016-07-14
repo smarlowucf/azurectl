@@ -21,6 +21,7 @@ usage: azurectl storage account -h | --help
            [--description=<description>]
            [--label=<label>]
            [--locally-redundant|--zone-redundant|--geo-redundant|--read-access-geo-redundant]
+           [--wait]
        azurectl storage account list
        azurectl storage account regions
        azurectl storage account show --name=<accountname>
@@ -30,7 +31,9 @@ usage: azurectl storage account -h | --help
            [--locally-redundant|--zone-redundant|--geo-redundant|--read-access-geo-redundant]
            [--new-primary-key]
            [--new-secondary-key]
+           [--wait]
        azurectl storage account delete --name=<accountname>
+           [--wait]
        azurectl storage account help
 
 commands:
@@ -87,6 +90,8 @@ options:
         Like geo-redundant storage, except that in the event of an outage in
         your primary storage region, data may be read from the backup region.
         (6 total copies)
+    --wait
+        wait for the request to succeed
 """
 import string
 
@@ -168,27 +173,33 @@ class StorageAccountTask(CliTask):
         return self.manual
 
     def __create(self):
+        request_id = self.storage_account.create(
+            self.command_args['--name'],
+            self.command_args['--description'],
+            self.command_args['--label'],
+            Defaults.account_type_for_docopts(self.command_args)
+        )
+        if self.command_args['--wait']:
+            self.request_wait(request_id)
         self.result.add(
             'storage_account:' + self.command_args['--name'],
-            self.storage_account.create(
-                self.command_args['--name'],
-                self.command_args['--description'],
-                self.command_args['--label'],
-                Defaults.account_type_for_docopts(self.command_args)
-            )
+            request_id
         )
 
     def __update(self):
+        request_id = self.storage_account.update(
+            self.command_args['--name'],
+            self.command_args['--description'],
+            self.command_args['--label'],
+            Defaults.account_type_for_docopts(self.command_args, False),
+            self.command_args['--new-primary-key'],
+            self.command_args['--new-secondary-key']
+        )
+        if self.command_args['--wait']:
+            self.request_wait(request_id)
         self.result.add(
             'storage_account:' + self.command_args['--name'],
-            self.storage_account.update(
-                self.command_args['--name'],
-                self.command_args['--description'],
-                self.command_args['--label'],
-                Defaults.account_type_for_docopts(self.command_args, False),
-                self.command_args['--new-primary-key'],
-                self.command_args['--new-secondary-key']
-            )
+            request_id
         )
 
     def __show(self):
@@ -201,9 +212,14 @@ class StorageAccountTask(CliTask):
         self.result.add('storage_accounts', self.storage_account.list())
 
     def __delete(self):
+        request_id = self.storage_account.delete(
+            self.command_args['--name']
+        )
+        if self.command_args['--wait']:
+            self.request_wait(request_id)
         self.result.add(
             'storage_account:' + self.command_args['--name'],
-            self.storage_account.delete(self.command_args['--name'])
+            request_id
         )
 
     def __list_locations(self):

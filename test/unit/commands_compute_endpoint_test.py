@@ -20,6 +20,7 @@ class TestComputeEndpointTask:
             'compute', 'endpoint', 'help'
         ]
         self.task = ComputeEndpointTask()
+        self.task.request_wait = mock.Mock()
         # mock out the Endpoint class the commands interface with
         azurectl.commands.compute_endpoint.Endpoint = create_autospec(Endpoint)
         # mock out the help class
@@ -53,6 +54,7 @@ class TestComputeEndpointTask:
             '--instance-port': None,
             '--idle-timeout': None,
             '--udp': False,
+            '--wait': True
         }
         if overrides:
             command_args.update(overrides)

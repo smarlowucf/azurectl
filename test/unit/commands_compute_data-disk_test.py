@@ -19,6 +19,7 @@ class TestComputeDataDiskTask:
             'compute', 'data-disk', 'help'
         ]
         self.task = data_disk.ComputeDataDiskTask()
+        self.task.request_wait = mock.Mock()
         # mock out the DataDisk class the commands interface with
         data_disk.DataDisk = mock.Mock(
             return_value=mock.Mock()
@@ -59,7 +60,8 @@ class TestComputeDataDiskTask:
             '--lun': None,
             '--no-cache': False,
             '--read-only-cache': False,
-            '--read-write-cache': False
+            '--read-write-cache': False,
+            '--wait': True
         }
         if overrides:
             command_args.update(overrides)

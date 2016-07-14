@@ -18,6 +18,7 @@ a fixed virtual hard disk (VHD) image in blob storage.
 usage: azurectl compute image -h | --help
        azurectl compute image create --name=<imagename> --blob-name=<blobname>
            [--label=<imagelabel>]
+           [--wait]
        azurectl compute image replicate --name=<imagename> --regions=<regionlist> --offer=<offer> --sku=<sku> --image-version=<version>
            [--wait]
            [--quiet]
@@ -37,8 +38,10 @@ usage: azurectl compute image -h | --help
        azurectl compute image publish --name=<imagename>
            [--private]
            [--msdn]
+           [--wait]
        azurectl compute image delete --name=<imagename>
            [--delete-disk]
+           [--wait]
        azurectl compute image unreplicate --name=<imagename>
        azurectl compute image help
 
@@ -114,6 +117,7 @@ options:
     --small-icon-uri=<small_icon_uri>
         the source link to a small icon for the image (45x45)px
     --wait
+        wait for the request to succeed. In the process of replication
         wait until replication is complete to end execution
 """
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -177,24 +181,30 @@ class ComputeImageTask(CliTask):
         return self.manual
 
     def __create(self):
+        request_id = self.image.create(
+            self.command_args['--name'],
+            self.command_args['--blob-name'],
+            self.command_args['--label'],
+            self.account.storage_container()
+        )
+        if self.command_args['--wait']:
+            self.request_wait(request_id)
         self.result.add(
             'image:' + self.command_args['--name'],
-            self.image.create(
-                self.command_args['--name'],
-                self.command_args['--blob-name'],
-                self.command_args['--label'],
-                self.account.storage_container()
-            )
+            request_id
         )
         self.out.display()
 
     def __delete(self):
+        request_id = self.image.delete(
+            self.command_args['--name'],
+            self.command_args['--delete-disk'],
+        )
+        if self.command_args['--wait']:
+            self.request_wait(request_id)
         self.result.add(
             'image:' + self.command_args['--name'],
-            self.image.delete(
-                self.command_args['--name'],
-                self.command_args['--delete-disk'],
-            )
+            request_id
         )
         self.out.display()
 
@@ -208,16 +218,17 @@ class ComputeImageTask(CliTask):
 
     def __replicate(self):
         image_name = self.command_args['--name']
+        request_id = self.image.replicate(
+            image_name,
+            self.command_args['--regions'].split(','),
+            self.command_args['--offer'],
+            self.command_args['--sku'],
+            self.command_args['--image-version']
+        )
         self.result.add(
             'replicate:' +
             self.command_args['--name'] + ':' + self.command_args['--regions'],
-            self.image.replicate(
-                image_name,
-                self.command_args['--regions'].split(','),
-                self.command_args['--offer'],
-                self.command_args['--sku'],
-                self.command_args['--image-version']
-            )
+            request_id
         )
         if not self.command_args['--quiet']:
             self.out.display()
@@ -263,12 +274,14 @@ class ComputeImageTask(CliTask):
             scope = 'private'
         elif self.command_args['--msdn']:
             scope = 'msdn'
+        request_id = self.image.publish(
+            self.command_args['--name'], scope
+        )
+        if self.command_args['--wait']:
+            self.request_wait(request_id)
         self.result.add(
             'publish:' + self.command_args['--name'],
-            self.image.publish(
-                self.command_args['--name'],
-                scope
-            )
+            request_id
         )
         self.out.display()
 

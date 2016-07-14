@@ -16,8 +16,11 @@ class TestComputeImageTask:
             'compute', 'image', 'list'
         ]
         self.task = ComputeImageTask()
+        self.task.request_wait = mock.Mock()
         self.image = mock.Mock()
-        azurectl.commands.compute_image.Image = mock.Mock(return_value = self.image)
+        azurectl.commands.compute_image.Image = mock.Mock(
+            return_value = self.image
+        )
         azurectl.commands.compute_image.Help = mock.Mock(
             return_value=mock.Mock()
         )
@@ -77,6 +80,7 @@ class TestComputeImageTask:
     def test_process_compute_image_delete(self, mock_out):
         self.__init_command_args()
         self.task.command_args['delete'] = True
+        self.task.command_args['--wait'] = True
         self.task.process()
         self.task.image.delete.assert_called_once_with(
             self.task.command_args['--name'],
@@ -87,6 +91,7 @@ class TestComputeImageTask:
     def test_process_compute_image_create(self, mock_out):
         self.__init_command_args()
         self.task.command_args['create'] = True
+        self.task.command_args['--wait'] = True
         self.task.process()
         self.task.image.create.assert_called_once_with(
             self.task.command_args['--name'],
@@ -119,13 +124,10 @@ class TestComputeImageTask:
     @patch('azurectl.commands.compute_image.BackgroundScheduler')
     @patch('azurectl.commands.compute_image.DataOutput')
     def test_process_compute_image_replicate_wait(self, mock_out, mock_bg):
-        # given
         self.__init_command_args()
         self.task.command_args['replicate'] = True
         self.task.command_args['--wait'] = True
-        # when
         self.task.process()
-        # then
         self.task.image.replicate.assert_called_once_with(
             self.task.command_args['--name'],
             self.task.command_args['--regions'].split(','),
@@ -139,20 +141,15 @@ class TestComputeImageTask:
 
     @patch('azurectl.commands.compute_image.BackgroundScheduler')
     @patch('azurectl.commands.compute_image.DataOutput')
-    # then
     @raises(SystemExit)
     def test_process_compute_image_replicate_wait_interrupted(
-            self,
-            mock_out,
-            mock_job
-                                                              ):
-        # given
+            self, mock_out, mock_job
+    ):
         self.__init_command_args()
         self.task.command_args['replicate'] = True
         self.task.command_args['--wait'] = True
         self.image.wait_for_replication_completion.side_effect = \
             KeyboardInterrupt
-        # when
         self.task.process()
 
     @patch('azurectl.commands.compute_image.DataOutput')
@@ -177,6 +174,7 @@ class TestComputeImageTask:
     def test_process_compute_image_publish_public(self, mock_out):
         self.__init_command_args()
         self.task.command_args['publish'] = True
+        self.task.command_args['--wait'] = True
         self.task.process()
         self.task.image.publish.assert_called_once_with(
             self.task.command_args['--name'], 'public'
