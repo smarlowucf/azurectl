@@ -91,7 +91,6 @@ from ..storage.container import Container
 from ..storage.account import StorageAccount
 from ..account.service import AzureAccount
 from ..defaults import Defaults
-from ..management.request_result import RequestResult
 
 from ..azurectl_exceptions import (
     AzureAccountConfigurationError
@@ -208,10 +207,7 @@ class SetupAccountTask(CliTask):
                             self.command_args
                         )
                     )
-                    request_result = RequestResult(storage_account_request_id)
-                    request_result.wait_for_request_completion(
-                        storage_account.service
-                    )
+                    self.request_wait(storage_account_request_id)
                     log.info(
                         'Created %s storage account', storage_account_name
                     )

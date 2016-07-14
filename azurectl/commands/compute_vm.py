@@ -91,7 +91,6 @@ from ..utils.output import DataOutput
 from ..logger import log
 from ..instance.virtual_machine import VirtualMachine
 from ..instance.cloud_service import CloudService
-from ..management.request_result import RequestResult
 from ..help import Help
 
 
@@ -186,10 +185,7 @@ class ComputeVmTask(CliTask):
             # for the cloud service to become created. Basically we try
             # to prevent blocking, thus this is an exception to other
             # requests
-            request_result = RequestResult(cloud_service_request_id)
-            request_result.wait_for_request_completion(
-                self.cloud_service.service
-            )
+            self.request_wait(cloud_service_request_id)
 
     def __delete_cloud_service(self):
         cloud_service = self.command_args['--cloud-service-name']

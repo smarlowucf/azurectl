@@ -36,7 +36,6 @@ from base import CliTask
 from ..account.service import AzureAccount
 from ..utils.collector import DataCollector
 from ..utils.output import DataOutput
-from ..management.request_result import RequestResult
 from ..help import Help
 
 
@@ -59,29 +58,16 @@ class ComputeRequestTask(CliTask):
         self.load_config()
 
         self.account = AzureAccount(self.config)
-        self.service = self.account.get_management_service()
 
-        self.request_result = RequestResult(
-            self.command_args['--id']
-        )
+        request_id = format(self.command_args['--id'])
+
         if self.command_args['status']:
             self.result.add(
-                'request:' + format(self.command_args['--id']),
-                format(self.__get_status())
+                'request:' + request_id, self.request_status(request_id)
             )
             self.out.display()
         elif self.command_args['wait']:
-            self.__wait_for_request_to_complete()
-
-    def __get_status(self):
-        return self.request_result.status(
-            self.service
-        )
-
-    def __wait_for_request_to_complete(self):
-        self.request_result.wait_for_request_completion(
-            self.service
-        )
+            self.request_wait(request_id)
 
     def __help(self):
         if self.command_args['help']:
