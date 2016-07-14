@@ -200,7 +200,7 @@ class TestStorageAccount:
             None,
             '--locally-redundant'
         )
-        assert result == self.expected_show_result
+        assert result == 42
 
     @raises(AzureStorageAccountUpdateError)
     def test_update_error(self):
