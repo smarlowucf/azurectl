@@ -19,6 +19,10 @@ __azurectl__ compute vm create --cloud-service-name=*name* --image-name=*image*
     [--user=user]
     [--wait]
 
+__azurectl__ compute vm reboot
+
+    [--instance-name=name]
+
 __azurectl__ compute vm regions
 
 __azurectl__ compute vm types
@@ -37,6 +41,10 @@ Create a virtual machine and cloud service from a given image name. If the cloud
 ## __delete__
 
 Delete a cloud service and all its virtual machines or only a specific virtual machine instance from the cloud service. If only a specific instance should be deleted it is required to name this instance via the --instance-name option.
+
+## __reboot__
+
+Reboot a cloud service virtual machine. If the cloud service holds only one instance, no instance name needs to be passed to the call. If multiple instances exists it is recommended to specify which instance should be rebooted because the default instance name matches the cloud service name.
 
 ## __regions__
 
