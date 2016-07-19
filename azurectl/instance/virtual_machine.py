@@ -22,6 +22,7 @@ from azure.storage.blob.baseblobservice import BaseBlobService
 from ..azurectl_exceptions import (
     AzureVmCreateError,
     AzureVmDeleteError,
+    AzureVmRebootError,
     AzureStorageNotReachableByCloudServiceError,
     AzureImageNotReachableByCloudServiceError
 )
@@ -202,6 +203,22 @@ class VirtualMachine(object):
             return(format(result.request_id))
         except Exception as e:
             raise AzureVmDeleteError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
+
+    def reboot_instance(
+        self, cloud_service_name, instance_name
+    ):
+        """
+            Requests reboot of a virtual disk image instance
+        """
+        try:
+            result = self.service.reboot_role_instance(
+                cloud_service_name, cloud_service_name, instance_name
+            )
+            return(format(result.request_id))
+        except Exception as e:
+            raise AzureVmRebootError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
 

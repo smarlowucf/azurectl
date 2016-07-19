@@ -160,6 +160,15 @@ class TestVirtualMachine:
         )
         assert result['instance_name'] == 'some-host'
 
+    def test_reboot_instance(self):
+        result = self.vm.reboot_instance(
+            cloud_service_name='cloud-service',
+            instance_name='instance-name'
+        )
+        self.service.reboot_role_instance.assert_called_once_with(
+            'cloud-service', 'cloud-service', 'instance-name'
+        )
+
     @raises(AzureVmCreateError)
     def test_create_instance_add_role_raises_on_label(self):
         storage_properties = mock.MagicMock()
@@ -297,3 +306,8 @@ class TestVirtualMachine:
     def test_delete_instance_raise_vm_delete_error(self):
         self.service.delete_deployment.side_effect = AzureVmDeleteError
         self.vm.delete_instance('cloud-service', 'foo')
+
+    @raises(AzureVmRebootError)
+    def test_reboot_instance_raise_vm_reboot_error(self):
+        self.service.reboot_role_instance.side_effect = AzureVmRebootError
+        self.vm.reboot_instance('cloud-service', 'foo')
