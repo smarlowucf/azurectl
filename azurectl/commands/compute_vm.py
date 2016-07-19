@@ -27,6 +27,8 @@ usage: azurectl compute vm -h | --help
            [--ssh-port=<port>]
            [--user=<user>]
            [--wait]
+       azurectl compute vm reboot --cloud-service-name=<name>
+           [--instance-name=<name>]
        azurectl compute vm regions
        azurectl compute vm types
        azurectl compute vm delete --cloud-service-name=<name>
@@ -43,6 +45,8 @@ commands:
         will be deleted
     help
         show manual page for image command
+    reboot
+        reboot virtual machine instance
     regions
         list regions where a virtual machine can be created with the current
         subscription
@@ -134,6 +138,8 @@ class ComputeVmTask(CliTask):
                     self.__delete_instance()
                 else:
                     self.__delete_cloud_service()
+            elif self.command_args['reboot']:
+                self.__reboot_instance()
 
     def __help(self):
         if self.command_args['help']:
@@ -219,6 +225,22 @@ class ComputeVmTask(CliTask):
             self.request_wait(request_id)
         self.result.add(
             'instance:' + instance_name,
+            request_id
+        )
+        self.out.display()
+
+    def __reboot_instance(self):
+        instance_name = self.command_args['--instance-name']
+        if not instance_name:
+            instance_name = self.command_args['--cloud-service-name']
+        request_id = self.vm.reboot_instance(
+            self.command_args['--cloud-service-name'],
+            instance_name
+        )
+        if self.command_args['--wait']:
+            self.request_wait(request_id)
+        self.result.add(
+            'reboot:' + instance_name,
             request_id
         )
         self.out.display()

@@ -60,6 +60,7 @@ class TestComputeVmTask:
         self.task.command_args['--wait'] = True
         self.task.command_args['create'] = False
         self.task.command_args['delete'] = False
+        self.task.command_args['reboot'] = False
         self.task.command_args['regions'] = False
         self.task.command_args['types'] = False
         self.task.command_args['help'] = False
@@ -124,6 +125,30 @@ class TestComputeVmTask:
         self.task.vm.delete_instance.assert_called_once_with(
             self.task.command_args['--cloud-service-name'],
             self.task.command_args['--instance-name']
+        )
+
+    @patch('azurectl.commands.compute_vm.DataOutput')
+    def test_process_compute_vm_reboot_specific_instance(self, mock_out):
+        self.__init_command_args()
+        self.task.command_args['reboot'] = True
+        self.task.command_args['--cloud-service-name'] = 'cloudservice'
+        self.task.command_args['--instance-name'] = 'instance'
+        self.task.process()
+        self.task.vm.reboot_instance.assert_called_once_with(
+            self.task.command_args['--cloud-service-name'],
+            self.task.command_args['--instance-name']
+        )
+
+    @patch('azurectl.commands.compute_vm.DataOutput')
+    def test_process_compute_vm_reboot_default_instance(self, mock_out):
+        self.__init_command_args()
+        self.task.command_args['reboot'] = True
+        self.task.command_args['--cloud-service-name'] = 'cloudservice'
+        self.task.command_args['--instance-name'] = None
+        self.task.process()
+        self.task.vm.reboot_instance.assert_called_once_with(
+            self.task.command_args['--cloud-service-name'],
+            self.task.command_args['--cloud-service-name']
         )
 
     def test_process_compute_vm_help(self):
