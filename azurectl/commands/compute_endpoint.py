@@ -22,12 +22,14 @@ usage: azurectl compute endpoint -h | --help
            [--instance-port=<port>]
            [--idle-timeout=<minutes>]
            [--udp]
+           [--wait]
        azurectl compute endpoint list --cloud-service-name=<name>
            [--instance-name=<name>]
        azurectl compute endpoint show --cloud-service-name=<name> --name=<name>
            [--instance-name=<name>]
        azurectl compute endpoint delete --cloud-service-name=<name> --name=<name>
            [--instance-name=<name>]
+           [--wait]
        azurectl compute endpoint help
 
 commands:
@@ -62,6 +64,8 @@ options:
     --udp
         select UDP as the transport protocol for the endpoint. If not specified,
         the default transport protocol is TCP
+    --wait
+        wait for the request to succeed
 """
 # project
 from base import CliTask
@@ -128,26 +132,30 @@ class ComputeEndpointTask(CliTask):
         self.out.display()
 
     def __create(self):
+        request_id = self.endpoint.create(
+            self.command_args['--name'],
+            self.command_args['--port'],
+            (
+                self.command_args['--instance-port'] or
+                self.command_args['--port']
+            ),
+            ('udp' if self.command_args['--udp'] else 'tcp'),
+            (self.command_args['--idle-timeout'] or '4')
+        )
+        if self.command_args['--wait']:
+            self.request_wait(request_id)
         self.result.add(
-            'endpoint:' + self.command_args['--name'],
-            self.endpoint.create(
-                self.command_args['--name'],
-                self.command_args['--port'],
-                (
-                    self.command_args['--instance-port'] or
-                    self.command_args['--port']
-                ),
-                ('udp' if self.command_args['--udp'] else 'tcp'),
-                (self.command_args['--idle-timeout'] or '4')
-            )
+            'endpoint:' + self.command_args['--name'], request_id
         )
         self.out.display()
 
     def __delete(self):
+        request_id = self.endpoint.delete(
+            self.command_args['--name'],
+        )
+        if self.command_args['--wait']:
+            self.request_wait(request_id)
         self.result.add(
-            'endpoint:' + self.command_args['--name'],
-            self.endpoint.delete(
-                self.command_args['--name'],
-            )
+            'endpoint:' + self.command_args['--name'], request_id
         )
         self.out.display()

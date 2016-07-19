@@ -20,7 +20,7 @@ class TestComputeReservedIpTask:
             'compute', 'reserved-ip', 'list'
         ]
         self.task = reserverd_ip.ComputeReservedIpTask()
-        
+        self.task.request_wait = mock.Mock()
         reserverd_ip.ReservedIp = mock.Mock(
             return_value=mock.Mock()
         )
@@ -35,7 +35,8 @@ class TestComputeReservedIpTask:
             'create': False,
             'delete': False,
             'help': False,
-            '--name': None
+            '--name': None,
+            '--wait': True
         }
 
     def test_process_compute_reserved_ip_help(self):

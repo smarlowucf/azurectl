@@ -17,9 +17,11 @@ be made. Reservations are identified by a user-defined name.
 
 usage: azurectl compute reserved-ip -h | --help
        azurectl compute reserved-ip create --name=<reserved-ip-name>
+           [--wait]
        azurectl compute reserved-ip list
        azurectl compute reserved-ip show --name=<reserved-ip-name>
        azurectl compute reserved-ip delete --name=<reserved-ip-name>
+           [--wait]
        azurectl compute reserved-ip help
 
 commands:
@@ -36,6 +38,8 @@ commands:
 options:
     --name=<reserved-ip-name>
         name of the reserved IP address
+    --wait
+        wait for the request to succeed
 """
 # project
 from base import CliTask
@@ -95,20 +99,26 @@ class ComputeReservedIpTask(CliTask):
         self.out.display()
 
     def __create(self):
+        request_id = self.reserved_ip.create(
+            self.command_args['--name'],
+            self.config.get_region_name()
+        )
+        if self.command_args['--wait']:
+            self.request_wait(request_id)
         self.result.add(
             'reserved_ip:' + self.command_args['--name'],
-            self.reserved_ip.create(
-                self.command_args['--name'],
-                self.config.get_region_name()
-            )
+            request_id
         )
         self.out.display()
 
     def __delete(self):
+        request_id = self.reserved_ip.delete(
+            self.command_args['--name'],
+        )
+        if self.command_args['--wait']:
+            self.request_wait(request_id)
         self.result.add(
             'reserved_ip:' + self.command_args['--name'],
-            self.reserved_ip.delete(
-                self.command_args['--name'],
-            )
+            request_id
         )
         self.out.display()

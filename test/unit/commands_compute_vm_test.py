@@ -18,6 +18,7 @@ class TestComputeVmTask:
             '--instance-name', 'foo'
         ]
         self.task = ComputeVmTask()
+        self.task.request_wait = mock.Mock()
         vm = mock.Mock()
         vm.create_network_configuration = mock.Mock(
             return_value={}
@@ -56,6 +57,7 @@ class TestComputeVmTask:
         self.task.command_args['--fingerprint'] = None
         self.task.command_args['--ssh-port'] = None
         self.task.command_args['--user'] = None
+        self.task.command_args['--wait'] = True
         self.task.command_args['create'] = False
         self.task.command_args['delete'] = False
         self.task.command_args['regions'] = False
@@ -77,8 +79,7 @@ class TestComputeVmTask:
         self.task.account.locations.assert_called_once_with('PersistentVMRole')
 
     @patch('azurectl.commands.compute_vm.DataOutput')
-    @patch('azurectl.management.request_result.RequestResult.wait_for_request_completion')
-    def test_process_compute_vm_create(self, mock_wait_completion, mock_out):
+    def test_process_compute_vm_create(self, mock_out):
         self.__init_command_args()
         self.task.command_args['create'] = True
         self.task.process()
@@ -86,9 +87,7 @@ class TestComputeVmTask:
             self.task.command_args['--cloud-service-name'],
             self.task.config.get_region_name()
         )
-        mock_wait_completion.assert_called_once_with(
-            self.task.cloud_service.service
-        )
+        #self.task.request_wait.assert_called_once_with(42)
         self.task.vm.create_instance.assert_called_once_with(
             self.task.command_args['--cloud-service-name'],
             self.task.command_args['--image-name'],
@@ -100,10 +99,7 @@ class TestComputeVmTask:
         )
 
     @patch('azurectl.commands.compute_vm.DataOutput')
-    @patch('azurectl.management.request_result.RequestResult.wait_for_request_completion')
-    def test_process_compute_vm_create_with_fingerprint(
-        self, mock_wait_completion, mock_out
-    ):
+    def test_process_compute_vm_create_with_fingerprint(self, mock_out):
         self.task.command_args['--fingerprint'] = 'foo'
         self.task.command_args['create'] = True
         self.task.process()
@@ -111,7 +107,8 @@ class TestComputeVmTask:
             'azureuser', 'foo', True, None, None, 'foo'
         )
 
-    def test_process_compute_vm_delete(self):
+    @patch('azurectl.commands.compute_vm.DataOutput')
+    def test_process_compute_vm_delete(self, mock_out):
         self.__init_command_args()
         self.task.command_args['delete'] = True
         self.task.command_args['--cloud-service-name'] = 'cloudservice'

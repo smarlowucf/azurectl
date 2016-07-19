@@ -60,7 +60,7 @@ class StorageAccount(object):
     ):
         try:
             current = self.service.get_storage_account_properties(name)
-            self.service.update_storage_account(
+            result = self.service.update_storage_account(
                 name,
                 (description or current.storage_service_properties.description),
                 (label or current.storage_service_properties.label),
@@ -77,7 +77,7 @@ class StorageAccount(object):
             raise AzureStorageAccountUpdateError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
-        return self.show(name)
+        return result.request_id
 
     def delete(self, name):
         try:

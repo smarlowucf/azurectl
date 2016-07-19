@@ -26,10 +26,12 @@ usage: azurectl compute vm -h | --help
            [--ssh-private-key-file=<file> | --fingerprint=<thumbprint>]
            [--ssh-port=<port>]
            [--user=<user>]
+           [--wait]
        azurectl compute vm regions
        azurectl compute vm types
        azurectl compute vm delete --cloud-service-name=<name>
            [--instance-name=<name>]
+           [--wait]
        azurectl compute vm help
 
 commands:
@@ -82,16 +84,16 @@ options:
         allow ssh public key authentication
     --user=<user>
         user name for login, by default set to: azureuser
+    --wait
+        wait for the request to succeed
 """
 # project
 from base import CliTask
 from ..account.service import AzureAccount
 from ..utils.collector import DataCollector
 from ..utils.output import DataOutput
-from ..logger import log
 from ..instance.virtual_machine import VirtualMachine
 from ..instance.cloud_service import CloudService
-from ..management.request_result import RequestResult
 from ..help import Help
 
 
@@ -162,17 +164,22 @@ class ComputeVmTask(CliTask):
             fingerprint = self.command_args['--fingerprint']
         linux_configuration = self.__prepare_linux_configuration(fingerprint)
         network_configuration = self.__prepare_network()
+        request_id = self.vm.create_instance(
+            self.command_args['--cloud-service-name'],
+            self.command_args['--image-name'],
+            linux_configuration,
+            network_config=network_configuration,
+            label=self.command_args['--label'],
+            machine_size=instance_type,
+            reserved_ip_name=self.command_args['--reserved-ip-name']
+        )
+        if self.command_args['--wait']:
+            # we might want to change this to wait until the VM becomes
+            # accessible to the user
+            self.request_wait(request_id)
         self.result.add(
             'instance',
-            self.vm.create_instance(
-                self.command_args['--cloud-service-name'],
-                self.command_args['--image-name'],
-                linux_configuration,
-                network_config=network_configuration,
-                label=self.command_args['--label'],
-                machine_size=instance_type,
-                reserved_ip_name=self.command_args['--reserved-ip-name']
-            )
+            request_id
         )
         self.out.display()
 
@@ -186,10 +193,7 @@ class ComputeVmTask(CliTask):
             # for the cloud service to become created. Basically we try
             # to prevent blocking, thus this is an exception to other
             # requests
-            request_result = RequestResult(cloud_service_request_id)
-            request_result.wait_for_request_completion(
-                self.cloud_service.service
-            )
+            self.request_wait(cloud_service_request_id)
 
     def __delete_cloud_service(self):
         cloud_service = self.command_args['--cloud-service-name']
@@ -197,10 +201,13 @@ class ComputeVmTask(CliTask):
         request_id = self.cloud_service.delete(
             cloud_service, complete_deletion
         )
-        log.info(
-            'Deletion of cloud service %s requested: %s',
-            format(cloud_service), format(request_id)
+        if self.command_args['--wait']:
+            self.request_wait(request_id)
+        self.result.add(
+            'cloud_service:' + cloud_service,
+            request_id
         )
+        self.out.display()
 
     def __delete_instance(self):
         instance_name = self.command_args['--instance-name']
@@ -208,10 +215,13 @@ class ComputeVmTask(CliTask):
             self.command_args['--cloud-service-name'],
             instance_name
         )
-        log.info(
-            'Deletion of instance %s requested: %s',
-            format(instance_name), format(request_id)
+        if self.command_args['--wait']:
+            self.request_wait(request_id)
+        self.result.add(
+            'instance:' + instance_name,
+            request_id
         )
+        self.out.display()
 
     def __prepare_linux_configuration(self, fingerprint=u''):
         user = self.command_args['--user']

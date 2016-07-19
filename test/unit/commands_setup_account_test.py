@@ -172,10 +172,8 @@ class TestSetupAccountTask:
     @patch('azurectl.commands.setup_account.Config')
     @patch('azurectl.commands.setup_account.StorageAccount')
     @patch('azurectl.commands.setup_account.Container')
-    @patch('azurectl.commands.setup_account.RequestResult')
     def test_process_setup_configure_and_create_account(
-        self, mock_request, mock_container, mock_storage,
-        mock_config, mock_account_azure
+        self, mock_container, mock_storage, mock_config, mock_account_azure
     ):
         self.__init_command_args()
         self.task.command_args['configure'] = True
@@ -189,9 +187,8 @@ class TestSetupAccountTask:
         container.exists.return_value = False
         mock_container.return_value = container
         self.task.load_config = mock.Mock()
+        self.task.request_wait = mock.Mock()
         self.task.config = mock.Mock()
-        request_result = mock.Mock()
-        mock_request.return_value = request_result
 
         self.task.process()
         self.task.setup.configure_account.assert_called_once_with(
@@ -210,10 +207,7 @@ class TestSetupAccountTask:
             label='storage-name',
             name='storage-name'
         )
-        mock_request.assert_called_once_with(42)
-        request_result.wait_for_request_completion.assert_called_once_with(
-            storage_account.service
-        )
+        self.task.request_wait.assert_called_once_with(42)
         container.create.assert_called_once_with('container-name')
 
     @patch('azurectl.commands.setup_account.AzureAccount')

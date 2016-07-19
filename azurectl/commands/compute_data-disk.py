@@ -22,12 +22,14 @@ usage: azurectl compute data-disk -h | --help
            [--disk-name=<name>]
            [--lun=<lun>]
            [--no-cache|--read-only-cache|--read-write-cache]
+           [--wait]
        azurectl compute data-disk list --cloud-service-name=<name>
            [--instance-name=<name>]
        azurectl compute data-disk show --cloud-service-name=<name> --lun=<lun>
            [--instance-name=<name>]
        azurectl compute data-disk delete --cloud-service-name=<name> --lun=<lun>
            [--instance-name=<name>]
+           [--wait]
        azurectl compute data-disk help
 
 commands:
@@ -66,6 +68,8 @@ options:
     --size=<disk-size-in-GB>
         size of the disk, in GB, that will be provisioned. Must be an integer,
         and less than 1024
+    --wait
+        wait for the request to succeed
 """
 # project
 from ..account.service import AzureAccount
@@ -137,12 +141,13 @@ class ComputeDataDiskTask(CliTask):
             optional_args['host_caching'] = Defaults.host_caching_for_docopts(
                 self.command_args
             )
+        request_id = self.data_disk.create(
+            self.command_args['--size'], **optional_args
+        )
+        if self.command_args['--wait']:
+            self.request_wait(request_id)
         self.result.add(
-            'data-disk',
-            self.data_disk.create(
-                self.command_args['--size'],
-                **optional_args
-            )
+            'data-disk', request_id
         )
         self.out.display()
 
@@ -170,10 +175,12 @@ class ComputeDataDiskTask(CliTask):
             ),
             int(self.command_args['--lun'])
         ]
-        self.result.add(
+        request_id = self.result.add(
             'data-disk:%s:%s:%d' % tuple(args),
             self.data_disk.delete(int(self.command_args['--lun']))
         )
+        if self.command_args['--wait']:
+            self.request_wait(request_id)
         self.out.display()
 
     def __list(self):

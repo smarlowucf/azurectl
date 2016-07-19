@@ -79,3 +79,34 @@ class TestCliTask:
             None, 'region', None, None, 'config'
         )
         mock_loglevel.assert_called_once_with(logging.DEBUG)
+
+    @patch('azurectl.commands.base.RequestResult')
+    def test_request_wait(self, mock_request):
+        sys.argv = [sys.argv[0], 'compute', 'vm', 'types']
+        task = CliTask()
+        request = mock.Mock()
+        service = mock.Mock()
+
+        mock_request.return_value = request
+
+        account = mock.Mock()
+        account.get_management_service = mock.Mock(
+            return_value=service
+        )
+        task.account = account
+        task.request_wait(42)
+        mock_request.assert_called_once_with(42)
+        request.wait_for_request_completion.assert_called_once_with(
+            service
+        )
+
+    @patch('azurectl.commands.base.RequestResult')
+    def test_request_status(self, mock_request):
+        sys.argv = [sys.argv[0], 'compute', 'vm', 'types']
+        task = CliTask()
+        request = mock.Mock()
+        request.status.return_value = 'OK'
+        mock_request.return_value = request
+        task.account = mock.Mock()
+        assert task.request_status(42) == 'OK'
+        mock_request.assert_called_once_with(42)

@@ -17,6 +17,7 @@ class TestStorageAccountTask:
             'storage', 'account', 'list'
         ]
         self.task = StorageAccountTask()
+        self.task.request_wait = mock.Mock()
         azurectl.commands.storage_account.StorageAccount = mock.Mock(
             return_value=mock.Mock()
         )
@@ -44,7 +45,8 @@ class TestStorageAccountTask:
             '--geo-redundant': None,
             '--read-access-geo-redundant': None,
             '--new-primary-key': None,
-            '--new-secondary-key': None
+            '--new-secondary-key': None,
+            '--wait': True
         }
 
     def test_process_storage_account_help(self):

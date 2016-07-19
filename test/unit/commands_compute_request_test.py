@@ -32,24 +32,26 @@ class TestComputeRequestTask:
         self.task.command_args = {}
         self.task.command_args['status'] = False
         self.task.command_args['wait'] = False
-        self.task.command_args['--id'] = 1234
+        self.task.command_args['--id'] = '1234'
         self.task.command_args['help'] = False
 
     def test_process_compute_request_wait(self):
         self.__init_command_args()
         self.task.command_args['wait'] = True
+        self.task.request_wait = mock.Mock()
         self.task.process()
-        self.task.request_result.wait_for_request_completion.assert_called_once_with(
-            self.task.service
+        self.task.request_wait.assert_called_once_with(
+            self.task.command_args['--id']
         )
 
-    @patch('azurectl.commands.compute_vm.DataOutput')
+    @patch('azurectl.commands.compute_request.DataOutput')
     def test_process_compute_request_status(self, mock_out):
         self.__init_command_args()
         self.task.command_args['status'] = True
+        self.task.request_status = mock.Mock()
         self.task.process()
-        self.task.request_result.status.assert_called_once_with(
-            self.task.service
+        self.task.request_status.assert_called_once_with(
+            self.task.command_args['--id']
         )
 
     def test_process_compute_request_help(self):

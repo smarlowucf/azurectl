@@ -19,6 +19,7 @@ from ..cli import Cli
 from ..config.parser import Config
 from ..help import Help
 from ..utils.validations import Validations
+from ..management.request_result import RequestResult
 
 
 class CliTask(object):
@@ -31,6 +32,9 @@ class CliTask(object):
         from ..logger import log
 
         self.cli = Cli()
+
+        # account setup done in command implementation
+        self.account = None
 
         # show main help man page if requested
         if self.cli.show_help():
@@ -74,3 +78,15 @@ class CliTask(object):
             self.command_args[cmd_arg],
             max_length
         )
+
+    def request_wait(self, request_id):
+        if self.account:
+            service = self.account.get_management_service()
+            request_result = RequestResult(request_id)
+            request_result.wait_for_request_completion(service)
+
+    def request_status(self, request_id):
+        if self.account:
+            service = self.account.get_management_service()
+            request_result = RequestResult(request_id)
+            return format(request_result.status(service))

@@ -15,6 +15,7 @@ __azurectl__ compute endpoint create --cloud-service-name=*name* --name=*name*
     [--instance-port=port]
     [--idle-timeout=minutes]
     [--udp]
+    [--wait]
 
 __azurectl__ compute endpoint list --cloud-service-name=*name*
 
@@ -27,6 +28,7 @@ __azurectl__ compute endpoint show --cloud-service-name=*name* --name=*name*
 __azurectl__ compute endpoint delete --cloud-service-name=*name* --name=*name*
 
     [--instance-name=name]
+    [--wait]
 
 # DESCRIPTION
 
@@ -88,3 +90,6 @@ forwarded to the selected virtual machine instance on its __instance-port__.
 Select UDP as the transport protocol for the endpoint. Otherwise, the transport
 protocol will be assumed to be TCP.
 
+## __--wait__
+
+wait for the request to change its status to succeeded
