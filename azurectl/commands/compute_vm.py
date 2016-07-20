@@ -29,6 +29,7 @@ usage: azurectl compute vm -h | --help
            [--wait]
        azurectl compute vm reboot --cloud-service-name=<name>
            [--instance-name=<name>]
+           [--wait]
        azurectl compute vm regions
        azurectl compute vm types
        azurectl compute vm delete --cloud-service-name=<name>
