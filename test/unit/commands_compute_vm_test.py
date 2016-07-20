@@ -63,6 +63,7 @@ class TestComputeVmTask:
         self.task.command_args['reboot'] = False
         self.task.command_args['regions'] = False
         self.task.command_args['types'] = False
+        self.task.command_args['show'] = False
         self.task.command_args['help'] = False
 
     @patch('azurectl.commands.compute_vm.DataOutput')
@@ -148,6 +149,16 @@ class TestComputeVmTask:
         self.task.process()
         self.task.vm.reboot_instance.assert_called_once_with(
             self.task.command_args['--cloud-service-name'],
+            self.task.command_args['--cloud-service-name']
+        )
+
+    @patch('azurectl.commands.compute_vm.DataOutput')
+    def test_process_compute_vm_show(self, mock_out):
+        self.__init_command_args()
+        self.task.command_args['show'] = True
+        self.task.command_args['--cloud-service-name'] = 'cloudservice'
+        self.task.process()
+        self.task.cloud_service.get_properties.assert_called_once_with(
             self.task.command_args['--cloud-service-name']
         )
 

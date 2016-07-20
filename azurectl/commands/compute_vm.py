@@ -31,6 +31,7 @@ usage: azurectl compute vm -h | --help
            [--instance-name=<name>]
            [--wait]
        azurectl compute vm regions
+       azurectl compute vm show --cloud-service-name=<name>
        azurectl compute vm types
        azurectl compute vm delete --cloud-service-name=<name>
            [--instance-name=<name>]
@@ -51,6 +52,9 @@ commands:
     regions
         list regions where a virtual machine can be created with the current
         subscription
+    show
+        Retrieves system properties for the specified cloud service
+        and the virtual machine instances it contains
     types
         list available virtual machine types
 
@@ -128,6 +132,9 @@ class ComputeVmTask(CliTask):
             self.__list_instance_types()
         elif self.command_args['regions']:
             self.__list_locations()
+        elif self.command_args['show']:
+            self.cloud_service = CloudService(self.account)
+            self.__show_cloud_service_properties()
         else:
             self.vm = VirtualMachine(self.account)
             self.cloud_service = CloudService(self.account)
@@ -155,6 +162,16 @@ class ComputeVmTask(CliTask):
 
     def __list_locations(self):
         self.result.add('regions', self.account.locations('PersistentVMRole'))
+        self.out.display()
+
+    def __show_cloud_service_properties(self):
+        properties = self.cloud_service.get_properties(
+            self.command_args['--cloud-service-name']
+        )
+        self.result.add(
+            'cloud_service:' + self.command_args['--cloud-service-name'],
+            properties
+        )
         self.out.display()
 
     def __create_instance(self):
