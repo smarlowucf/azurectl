@@ -373,5 +373,9 @@ class AzureVmDeleteError(AzureError):
     pass
 
 
+class AzureVmRebootError(AzureError):
+    pass
+
+
 class AzureXZError(AzureError):
     pass
