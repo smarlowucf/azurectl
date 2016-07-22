@@ -302,6 +302,22 @@ class TestVirtualMachine:
             'foo', 'some-region', 'foo.vhd', self.system_config
         )
 
+    @raises(AzureImageNotReachableByCloudServiceError)
+    def test_create_instance_raise_image_not_existing(self):
+        storage_properties = mock.MagicMock()
+        storage_properties.storage_service_properties.location = 'regionA'
+        self.service.get_storage_account_properties.return_value = \
+            storage_properties
+
+        service_properties = mock.MagicMock()
+        service_properties.hosted_service_properties.location = 'regionA'
+        self.service.get_hosted_service_properties.return_value = \
+            service_properties
+        self.service.get_os_image.side_effect = Exception
+        result = self.vm.create_instance(
+            'foo', 'some-region', 'foo.vhd', self.system_config
+        )
+
     @raises(AzureVmDeleteError)
     def test_delete_instance_raise_vm_delete_error(self):
         self.service.delete_deployment.side_effect = AzureVmDeleteError

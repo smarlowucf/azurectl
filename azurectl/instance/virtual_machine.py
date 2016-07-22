@@ -252,8 +252,12 @@ class VirtualMachine(object):
         ).storage_service_properties.location
 
     def __image_locations(self, disk_name):
-        image_properties = self.service.get_os_image(disk_name)
-        return image_properties.location.split(';')
+        try:
+            image_properties = self.service.get_os_image(disk_name)
+            return image_properties.location.split(';')
+        except Exception:
+            # if image does not exist return without an exception.
+            pass
 
     def __storage_reachable_by_cloud_service(self, cloud_service_name):
         service_location = self.__cloud_service_location(
@@ -270,6 +274,8 @@ class VirtualMachine(object):
             cloud_service_name
         )
         image_locations = self.__image_locations(disk_name)
+        if not image_locations:
+            return False
         if service_location in image_locations:
             return True
         else:
