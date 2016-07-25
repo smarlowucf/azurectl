@@ -61,6 +61,10 @@ class AzureCloudServiceDeleteError(AzureError):
     pass
 
 
+class AzureCloudServicePropertiesError(AzureError):
+    pass
+
+
 class AzureCloudServiceOpenSSLError(AzureError):
     pass
 

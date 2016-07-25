@@ -25,6 +25,8 @@ __azurectl__ compute vm reboot
 
 __azurectl__ compute vm regions
 
+__azurectl__ compute vm show --cloud-service-name=*name*
+
 __azurectl__ compute vm types
 
 __azurectl__ compute vm delete --cloud-service-name=*name*
@@ -49,6 +51,10 @@ Reboot a cloud service virtual machine. If the cloud service holds only one inst
 ## __regions__
 
 List all Azure regions which are accessible via the supplied account subscription, and support virtual machines.
+
+## __show__
+
+Retrieves system properties for the specified cloud service and the virtual machine instances it contains and show it.
 
 ## __types__
 
