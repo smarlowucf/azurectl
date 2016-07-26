@@ -7,45 +7,70 @@ hard disk (VHD) image in Azure storage.
 
 # SYNOPSIS
 
-__azurectl__ compute data-disk create --cloud-service-name=*name* --size=*disk-size-in-GB*
+__azurectl__ compute data-disk create --identifier=*name* --size=*disk-size-in-GB*
+
+__azurectl__ compute data-disk delete --disk-name=*name*
+
+__azurectl__ compute data-disk attach --cloud-service-name=*name* --disk-name=*name*
 
     [--instance-name=name]
     [--label=label]
-    [--disk-name=name]
     [--lun=lun]
     [--no-cache|--read-only-cache|--read-write-cache]
     [--wait]
 
-__azurectl__ compute data-disk list --cloud-service-name=*name*
-
-    [--instance-name=name]
-
-__azurectl__ compute data-disk show --cloud-service-name=*name* --lun=*lun*
-
-    [--instance-name=name]
-
-__azurectl__ compute data-disk delete --cloud-service-name=*name* --lun=*lun*
+__azurectl__ compute data-disk detach --cloud-service-name=*name* --lun=*lun*
 
     [--instance-name=name]
     [--wait]
+
+__azurectl__ compute data-disk list
+
+__azurectl__ compute data-disk list attached --cloud-service-name=*name*
+
+    [--instance-name=name]
+
+__azurectl__ compute data-disk show --disk-name=*name*
+
+__azurectl__ compute data-disk show attached --cloud-service-name=*name* --lun=*lun*
+
+    [--instance-name=name]
 
 # DESCRIPTION
 
 ## __create__
 
-Create a new empty disk, and attach it to the selected virtual machine. If the virtual machine's __instance-name__ is the same as the __cloud-service-name__, the __--instance-name__ argument may be omitted.
+Create a new, empty data disk. The data disk vhd file will be created using the following naming schema:
+
+__(identifier)-data-disk-(utctime)__
 
 ## __delete__
 
-Detach the data disk from the selected __lun__ of the selected virtual machine and destroy the data file.
+Delete the specified data disk. The call will fail if the disk is still attached to an instance.
+
+## __attach__
+
+Attach the specified data disk vhd file to the selected virtual machine.
+
+## __detach__
+
+Detach a data disk from the selected virtual machine and retain the data disk vhd file.
 
 ## __list__
 
-List information about all data disks attached to the selected virtual machine.
+Return list of all disks from your image repository
 
-Note: this is a repetitive operation that make take some time to complete.
+## __list attached__
+
+List information about all data disks attached to a virtual machine.
+
+Note: this is a repetitive operation that may take some time to complete.
 
 ## __show__
+
+Return details of the specified disk
+
+## __show attached__
 
 List information about a single data disk, attached to the selected virtual machine at the seleted __lun__.
 
@@ -58,6 +83,10 @@ Name of the cloud service where the selected virtual machine may be found.
 ## __--disk-name=name__
 
 Name of the disk file created in the current storage container. If omitted, a unique name will be automatically generated.
+
+## __--identifier=name__
+
+Identifier string used as part of the complete data disk name. Usually this is set to the instance name this data disk should be attached to later.
 
 ## __--instance-name=name__
 
