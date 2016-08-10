@@ -80,7 +80,7 @@ options:
     --label=<label>
         custom label name for the virtual machine instance
     --password=<password>
-        password for the user to login. If no password is specified
+        plain text password for the user to login. If no password is specified
         SSH password based login will be disabled
     --reserved-ip-name=<reserved-ip-name>
         name of a reserved IP address to apply as a public IP of this cloud
