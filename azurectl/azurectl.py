@@ -91,3 +91,7 @@ def usage(command_usage):
     print format(command_usage).replace('usage:', '      ')
     if 'global options' not in command_usage:
         print format(global_options)
+
+    if not format(command_usage).startswith('usage:'):
+        error_details = format(command_usage).splitlines()[0]
+        print(error_details)
