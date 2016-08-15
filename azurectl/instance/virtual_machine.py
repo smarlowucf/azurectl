@@ -226,9 +226,10 @@ class VirtualMachine(object):
 
     def validate_custom_data_length(self, custom_data):
         if (custom_data and (len(custom_data) > self.__max_custom_data_len())):
-            raise AzureCustomDataTooLargeError, \
-                "The custom data specified is too large. Custom Data must" + \
+            raise AzureCustomDataTooLargeError(
+                "The custom data specified is too large. Custom Data must" +
                 "be less than %d bytes" % self.__max_custom_data_len()
+            )
         return True
 
     def __get_deployment(self, cloud_service_name):
