@@ -133,6 +133,10 @@ class AzureContainerListError(AzureError):
     pass
 
 
+class AzureCustomDataTooLargeError(AzureError):
+    pass
+
+
 class AzureDataDiskCreateError(AzureError):
     pass
 
