@@ -73,7 +73,7 @@ Name of the cloud service to put the virtual machine in. If the cloud service do
 
 ## __--custom-data=string__
 
-A string of data that will be into injected the new virtual machine after being base64-encoded. Waagent will store this base64-encoded data on the VM as both an attribute of __/var/lib/waagent/ovf-env.xml__ and as the sole contents of __/var/lib/waagent/CustomData__.
+A string of data that will be injected into the new virtual machine after being base64-encoded. Waagent will store this base64-encoded data on the VM as both an attribute of __/var/lib/waagent/ovf-env.xml__ and as the sole contents of __/var/lib/waagent/CustomData__.
 
 ## __--custom-data-file=file__
 
