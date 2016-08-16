@@ -42,6 +42,14 @@ class Defaults(object):
                 return account_type_tuple.command
 
     @classmethod
+    def max_vm_luns(self):
+        """
+            Maximum number of luns available on a virtual machine in
+            Azure. There are 16 possible luns, numbered 0..15
+        """
+        return 16
+
+    @classmethod
     def __get_account_type_tuples(self):
         """
             Maps ASM storage account_type to a backup strategy command

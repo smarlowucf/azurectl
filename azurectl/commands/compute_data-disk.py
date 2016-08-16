@@ -23,32 +23,42 @@ usage: azurectl compute data-disk -h | --help
            [--lun=<lun>]
            [--no-cache|--read-only-cache|--read-write-cache]
            [--wait]
-       azurectl compute data-disk list --cloud-service-name=<name>
-           [--instance-name=<name>]
-       azurectl compute data-disk show --cloud-service-name=<name> --lun=<lun>
-           [--instance-name=<name>]
-       azurectl compute data-disk delete --cloud-service-name=<name> --lun=<lun>
+       azurectl compute data-disk delete --disk-name=<name>
+       azurectl compute data-disk detach --cloud-service-name=<name> --lun=<lun>
            [--instance-name=<name>]
            [--wait]
+       azurectl compute data-disk list
+       azurectl compute data-disk show --disk-name=<name>
+       azurectl compute data-disk show attached --cloud-service-name=<name>
+           [--lun=<lun>]
+           [--instance-name=<name>]
        azurectl compute data-disk help
 
 commands:
     create
-        add a new, empty data disk to the selected virtual machine
+        create a new, empty data disk attached to the specified instance.
+        The data disk vhd file will be created using the following naming
+        schema: <instance-name|cloud-service-name>-data-disk-<utctime>
     delete
-        detach a data disk from the selected virtual machine and destroy the
-        data file
+        delete the specified data disk. The call will fail if the disk
+        is still attached to an instance
+    detach
+        detach a data disk from the selected virtual machine and retain the
+        data disk vhd file
     list
-        return data about all data disks attached to a virtual machine
+        return list of all disks from your image repository
     show
-        return data about an existing data disk
+        return details of the specified disk
+    show attached
+        return details about the data disk(s) attached to the selected
+        virtual machine. If a lun is specified only details about the
+        disk connected to that lun will be shown
 
 options:
     --cloud-service-name=<name>
         name of the cloud service where the virtual machine may be found
     --disk-name=<name>
-        name of the disk file created in the current storage container. If
-        omitted, a name will be automatically generated.
+        name of the data disk as registered in the image repository
     --instance-name=<name>
         name of the virtual machine instance. If no name is given the
         instance name is assumed to be the same as the cloud service name
@@ -72,6 +82,7 @@ options:
         wait for the request to succeed
 """
 # project
+from ..logger import log
 from ..account.service import AzureAccount
 from base import CliTask
 from ..utils.collector import DataCollector
@@ -101,22 +112,21 @@ class ComputeDataDiskTask(CliTask):
 
         self.account = AzureAccount(self.config)
         self.data_disk = DataDisk(self.account)
-        self.data_disk.set_instance(
-            self.command_args['--cloud-service-name'],
-            (
-                self.command_args['--instance-name'] or
-                self.command_args['--cloud-service-name']
-            )
-        )
 
         if self.command_args['create']:
             self.__create()
-        if self.command_args['show']:
-            self.__show()
         if self.command_args['delete']:
             self.__delete()
-        if self.command_args['list']:
-            self.__list()
+        if self.command_args['detach']:
+            self.__detach()
+        if self.command_args['attached']:
+            if self.command_args['show']:
+                self.__show_attached()
+        else:
+            if self.command_args['list']:
+                self.__list()
+            if self.command_args['show']:
+                self.__show()
 
     def __help(self):
         if self.command_args['help']:
@@ -142,7 +152,10 @@ class ComputeDataDiskTask(CliTask):
                 self.command_args
             )
         request_id = self.data_disk.create(
-            self.command_args['--size'], **optional_args
+            self.command_args['--size'],
+            self.command_args['--cloud-service-name'],
+            self.command_args['--instance-name'],
+            **optional_args
         )
         if self.command_args['--wait']:
             self.request_wait(request_id)
@@ -152,22 +165,38 @@ class ComputeDataDiskTask(CliTask):
         self.out.display()
 
     def __show(self):
-        args = [
+        self.result.add(
+            'data-disk', self.data_disk.show(self.command_args['--disk-name'])
+        )
+        self.out.display()
+
+    def __show_attached(self):
+        request_params = [
             self.command_args['--cloud-service-name'],
             (
                 self.command_args['--instance-name'] or
                 self.command_args['--cloud-service-name']
             ),
-            int(self.command_args['--lun'])
+            self.command_args['--lun'] or 'on_all_luns'
         ]
         self.result.add(
-            'data-disk:%s:%s:%d' % tuple(args),
-            self.data_disk.show(int(self.command_args['--lun']))
+            'data-disk:%s:%s:%s' % tuple(request_params),
+            self.data_disk.show_attached(
+                self.command_args['--cloud-service-name'],
+                self.command_args['--instance-name'],
+                self.command_args['--lun']
+            )
         )
         self.out.display()
 
     def __delete(self):
-        args = [
+        self.data_disk.delete(
+            self.command_args['--disk-name']
+        )
+        log.info('Deleted data disk %s', self.command_args['--disk-name'])
+
+    def __detach(self):
+        request_params = [
             self.command_args['--cloud-service-name'],
             (
                 self.command_args['--instance-name'] or
@@ -176,23 +205,19 @@ class ComputeDataDiskTask(CliTask):
             int(self.command_args['--lun'])
         ]
         request_id = self.result.add(
-            'data-disk:%s:%s:%d' % tuple(args),
-            self.data_disk.delete(int(self.command_args['--lun']))
+            'data-disk detach:%s:%s:%d' % tuple(request_params),
+            self.data_disk.detach(
+                int(self.command_args['--lun']),
+                self.command_args['--cloud-service-name'],
+                self.command_args['--instance-name']
+            )
         )
         if self.command_args['--wait']:
             self.request_wait(request_id)
         self.out.display()
 
     def __list(self):
-        args = [
-            self.command_args['--cloud-service-name'],
-            (
-                self.command_args['--instance-name'] or
-                self.command_args['--cloud-service-name']
-            )
-        ]
         self.result.add(
-            'data-disks:%s:%s' % tuple(args),
-            self.data_disk.list()
+            'data-disks', self.data_disk.list()
         )
         self.out.display()

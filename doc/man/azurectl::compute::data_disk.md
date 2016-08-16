@@ -16,38 +16,47 @@ __azurectl__ compute data-disk create --cloud-service-name=*name* --size=*disk-s
     [--no-cache|--read-only-cache|--read-write-cache]
     [--wait]
 
-__azurectl__ compute data-disk list --cloud-service-name=*name*
+__azurectl__ compute data-disk delete --disk-name=*name*
 
-    [--instance-name=name]
-
-__azurectl__ compute data-disk show --cloud-service-name=*name* --lun=*lun*
-
-    [--instance-name=name]
-
-__azurectl__ compute data-disk delete --cloud-service-name=*name* --lun=*lun*
+__azurectl__ compute data-disk detach --cloud-service-name=*name* --lun=*lun*
 
     [--instance-name=name]
     [--wait]
+
+__azurectl__ compute data-disk list
+
+__azurectl__ compute data-disk show --disk-name=*name*
+
+__azurectl__ compute data-disk show attached --cloud-service-name=*name*
+
+    [--lun=*lun*]
+    [--instance-name=name]
 
 # DESCRIPTION
 
 ## __create__
 
-Create a new empty disk, and attach it to the selected virtual machine. If the virtual machine's __instance-name__ is the same as the __cloud-service-name__, the __--instance-name__ argument may be omitted.
+Create a new, empty data disk attached to the specified instance. The data disk vhd file will be created using the following naming schema: __(instance-name|cloud-service-name)-data-disk-(utctime)__
 
 ## __delete__
 
-Detach the data disk from the selected __lun__ of the selected virtual machine and destroy the data file.
+Delete the specified data disk. The call will fail if the disk is still attached to an instance.
+
+## __detach__
+
+Detach a data disk from the selected virtual machine and retain the data disk vhd file.
 
 ## __list__
 
-List information about all data disks attached to the selected virtual machine.
-
-Note: this is a repetitive operation that make take some time to complete.
+Return list of all disks from your image repository
 
 ## __show__
 
-List information about a single data disk, attached to the selected virtual machine at the seleted __lun__.
+Return details of the specified disk
+
+## __show attached__
+
+Show detailed information about data disk(s), attached to the selected virtual machine. If a lun is specified only information for the disk connected to that __lun__ will be shown.
 
 # OPTIONS
 

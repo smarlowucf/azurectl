@@ -21,8 +21,10 @@ class TestComputeDataDiskTask:
         self.task = data_disk.ComputeDataDiskTask()
         self.task.request_wait = mock.Mock()
         # mock out the DataDisk class the commands interface with
+        disk = mock.Mock()
+        disk.attached_lun = 0
         data_disk.DataDisk = mock.Mock(
-            return_value=mock.Mock()
+            return_value=disk
         )
         # mock out the help class
         data_disk.Help = mock.Mock(
@@ -35,9 +37,10 @@ class TestComputeDataDiskTask:
         # variables used in multiple tests
         self.cloud_service_name = 'mockcloudservice'
         self.instance_name = 'mockcloudserviceinstance1'
-        self.lun = 0
+        self.lun = disk.attached_lun
         self.cache_method = 'ReadWrite'
         self.disk_filename = 'mockcloudserviceinstance1-data-disk-0.vhd'
+        self.disk_name = 'mockcloudserviceinstance1-data-disk-0'
         self.disk_url = ('https://foo/bar/' + self.disk_filename)
         self.disk_label = 'Mock data disk'
         self.disk_size = 42
@@ -49,9 +52,11 @@ class TestComputeDataDiskTask:
         command_args = {
             'create': False,
             'delete': False,
+            'detach': False,
             'show': False,
             'list': False,
             'help': False,
+            'attached': False,
             '--cloud-service-name': None,
             '--size': None,
             '--instance-name': None,
@@ -89,12 +94,10 @@ class TestComputeDataDiskTask:
         # when
         self.task.process()
         # then
-        self.task.data_disk.set_instance.assert_called_once_with(
-            self.cloud_service_name,
-            self.cloud_service_name
-        )
         self.task.data_disk.create.assert_called_once_with(
-            self.disk_size
+            self.disk_size,
+            self.cloud_service_name,
+            None
         )
 
     def test_create_with_instance_name(self):
@@ -108,12 +111,10 @@ class TestComputeDataDiskTask:
         # when
         self.task.process()
         # then
-        self.task.data_disk.set_instance.assert_called_once_with(
+        self.task.data_disk.create.assert_called_once_with(
+            self.disk_size,
             self.cloud_service_name,
             self.instance_name
-        )
-        self.task.data_disk.create.assert_called_once_with(
-            self.disk_size
         )
 
     def test_create_with_optional_args(self):
@@ -130,12 +131,10 @@ class TestComputeDataDiskTask:
         # when
         self.task.process()
         # then
-        self.task.data_disk.set_instance.assert_called_once_with(
-            self.cloud_service_name,
-            self.instance_name
-        )
         self.task.data_disk.create.assert_called_once_with(
             self.disk_size,
+            self.cloud_service_name,
+            self.instance_name,
             label=self.disk_label,
             filename=self.disk_filename,
             lun=self.lun
@@ -161,37 +160,17 @@ class TestComputeDataDiskTask:
         # when
         self.task.process()
         # then
-        self.task.data_disk.set_instance.assert_called_with(
-            self.cloud_service_name,
-            self.cloud_service_name
-        )
         self.task.data_disk.create.assert_called_with(
             self.disk_size,
+            self.cloud_service_name,
+            None,
             host_caching=host_caching
         )
 
-    def test_show_with_minimal_args(self):
+    def test_detach(self):
         # given
         self.__init_command_args({
-            'show': True,
-            '--cloud-service-name': self.cloud_service_name,
-            '--lun': self.lun
-        })
-        # when
-        self.task.process()
-        # then
-        self.task.data_disk.set_instance.assert_called_once_with(
-            self.cloud_service_name,
-            self.cloud_service_name
-        )
-        self.task.data_disk.show.assert_called_once_with(
-            self.lun
-        )
-
-    def test_show_with_instance_name(self):
-        # given
-        self.__init_command_args({
-            'show': True,
+            'detach': True,
             '--cloud-service-name': self.cloud_service_name,
             '--instance-name': self.instance_name,
             '--lun': self.lun
@@ -199,36 +178,28 @@ class TestComputeDataDiskTask:
         # when
         self.task.process()
         # then
-        self.task.data_disk.set_instance.assert_called_once_with(
-            self.cloud_service_name,
-            self.instance_name
-        )
-        self.task.data_disk.show.assert_called_once_with(
-            self.lun
+        self.task.data_disk.detach.assert_called_once_with(
+            self.lun, self.cloud_service_name, self.instance_name
         )
 
-    def test_delete_with_minimal_args(self):
+    def test_show(self):
         # given
         self.__init_command_args({
-            'delete': True,
-            '--cloud-service-name': self.cloud_service_name,
-            '--lun': self.lun
+            'show': True,
+            '--disk-name': self.disk_name
         })
         # when
         self.task.process()
         # then
-        self.task.data_disk.set_instance.assert_called_once_with(
-            self.cloud_service_name,
-            self.cloud_service_name
-        )
-        self.task.data_disk.delete.assert_called_once_with(
-            self.lun
+        self.task.data_disk.show.assert_called_once_with(
+            self.disk_name
         )
 
-    def test_delete_with_instance_name(self):
+    def test_show_attached(self):
         # given
         self.__init_command_args({
-            'delete': True,
+            'show': True,
+            'attached': True,
             '--cloud-service-name': self.cloud_service_name,
             '--instance-name': self.instance_name,
             '--lun': self.lun
@@ -236,41 +207,27 @@ class TestComputeDataDiskTask:
         # when
         self.task.process()
         # then
-        self.task.data_disk.set_instance.assert_called_once_with(
-            self.cloud_service_name,
-            self.instance_name
+        self.task.data_disk.show_attached.assert_called_once_with(
+            self.cloud_service_name, self.instance_name, self.lun
         )
+
+    def test_delete(self):
+        # given
+        self.__init_command_args({
+            'delete': True,
+            '--disk-name': self.disk_name
+        })
+        # when
+        self.task.process()
+        # then
         self.task.data_disk.delete.assert_called_once_with(
-            self.lun
+            self.disk_name
         )
 
-    def test_list_with_minimal_args(self):
+    def test_list(self):
         # given
-        self.__init_command_args({
-            'list': True,
-            '--cloud-service-name': self.cloud_service_name
-        })
+        self.__init_command_args({'list': True})
         # when
         self.task.process()
         # then
-        self.task.data_disk.set_instance.assert_called_once_with(
-            self.cloud_service_name,
-            self.cloud_service_name
-        )
-        self.task.data_disk.list.assert_called_once_with()
-
-    def test_list_with_instance_name(self):
-        # given
-        self.__init_command_args({
-            'list': True,
-            '--cloud-service-name': self.cloud_service_name,
-            '--instance-name': self.instance_name
-        })
-        # when
-        self.task.process()
-        # then
-        self.task.data_disk.set_instance.assert_called_once_with(
-            self.cloud_service_name,
-            self.instance_name
-        )
         self.task.data_disk.list.assert_called_once_with()
