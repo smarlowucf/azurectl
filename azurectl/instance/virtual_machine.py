@@ -46,7 +46,7 @@ class VirtualMachine(object):
         """
             create a linux configuration
         """
-        self.validate_custom_data_length(custom_data)
+        self.__validate_custom_data_length(custom_data)
         # The given instance name is used as the host name in linux
         linux_config = LinuxConfigurationSet(
             instance_name, username, password,
@@ -224,7 +224,7 @@ class VirtualMachine(object):
                 '%s: %s' % (type(e).__name__, format(e))
             )
 
-    def validate_custom_data_length(self, custom_data):
+    def __validate_custom_data_length(self, custom_data):
         if (custom_data and (len(custom_data) > self.__max_custom_data_len())):
             raise AzureCustomDataTooLargeError(
                 "The custom data specified is too large. Custom Data must" +
