@@ -17,7 +17,7 @@ Virtual machines are created in a private IP address space, and attached to a
 
 usage: azurectl compute vm -h | --help
        azurectl compute vm create --cloud-service-name=<name> --image-name=<image>
-           [--custom-data=<base64_string> | --custom-data-file=<file>]
+           [--custom-data=<string> | --custom-data-file=<file>]
            [--instance-name=<name>]
            [--instance-type=<type>]
            [--label=<label>]
@@ -62,12 +62,11 @@ options:
     --cloud-service-name=<name>
         name of the cloud service to put the virtual machine in.
         if the cloud service does not exist it will be created
-    --custom-data=<base64_string>
+    --custom-data=<string>
         a string of data that will be injected into the new virtual machine
-        after being base64-encoded.
     --custom-data-file=<file>
         path to a file, from which the contents will be injected into the new
-        virtual machine, after being base64-encoded.
+        virtual machine
     --fingerprint=<thumbprint>
         thumbprint of an already existing certificate in the
         cloud service used for ssh public key authentication
