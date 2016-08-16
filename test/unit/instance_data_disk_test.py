@@ -57,6 +57,20 @@ class TestDataDisk:
         self.account = account
 
     @raises(AzureDataDiskCreateError)
+    def test_attach_error(self):
+        # given
+        self.service.add_data_disk.side_effect = Exception
+        # when
+        self.data_disk.attach(
+            self.disk_name,
+            self.cloud_service_name,
+            self.instance_name,
+            self.disk_label,
+            self.lun,
+            self.host_caching
+        )
+
+    @raises(AzureDataDiskCreateError)
     def test_create_error(self):
         # given
         self.service.add_data_disk.side_effect = Exception
@@ -256,6 +270,55 @@ class TestDataDisk:
         # then
         self.service.list_disks.assert_called_once_with()
         assert result == []
+
+    def test_attach(self):
+        # given
+        self.service.add_data_disk.return_value = self.my_request
+        # when
+        result = self.data_disk.attach(
+            self.disk_name,
+            self.cloud_service_name,
+            self.instance_name,
+            self.disk_label,
+            self.lun,
+            self.host_caching
+        )
+        # then
+        assert result == self.my_request.request_id
+        self.service.add_data_disk.assert_called_once_with(
+            self.cloud_service_name,
+            self.cloud_service_name,
+            self.instance_name,
+            self.lun,
+            host_caching=self.host_caching,
+            media_link=self.disk_url,
+            disk_label=self.disk_label,
+            disk_name=self.disk_name
+        )
+
+    @patch('azurectl.instance.data_disk.datetime')
+    def test_attach_without_lun(self, mock_datetime):
+        # given
+        # mock no data disks attached has to result in lun 0 assigned later
+        self.service.get_data_disk.side_effect = AzureMissingResourceHttpError(
+            'NOT FOUND', 404
+        )
+        mock_datetime.isoformat.return_value = '0'
+        self.service.add_data_disk.return_value = self.my_request
+        # when
+        result = self.data_disk.attach(
+            self.disk_name,
+            self.cloud_service_name
+        )
+        # then
+        self.service.add_data_disk.assert_called_once_with(
+            self.cloud_service_name,
+            self.cloud_service_name,
+            self.cloud_service_name,
+            0,
+            media_link=self.disk_url,
+            disk_name=self.disk_name
+        )
 
     def test_detach(self):
         # given
