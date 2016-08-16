@@ -8,7 +8,7 @@ Virtual machines are created in a private IP address space, and attached to a 'c
 
 __azurectl__ compute vm create --cloud-service-name=*name* --image-name=*image*
 
-    [--custom-data=string | --custom-data-file=file]
+    [--custom-data=string-or-file]
     [--instance-name=name]
     [--instance-type=type]
     [--label=label]
@@ -71,13 +71,9 @@ List available instance types and their attributes
 
 Name of the cloud service to put the virtual machine in. If the cloud service does not exist it will be created.
 
-## __--custom-data=string__
+## __--custom-data=string-or-file__
 
-A string of data that will be injected into the new virtual machine after being base64-encoded. Waagent will store this base64-encoded data on the VM as both an attribute of __/var/lib/waagent/ovf-env.xml__ and as the sole contents of __/var/lib/waagent/CustomData__.
-
-## __--custom-data-file=file__
-
-Path to a file, from which the contents will be injected into the new virtual machine, after being base64-encoded.  Waagent will store this base64-encoded data on the VM as both an attribute of __/var/lib/waagent/ovf-env.xml__ and as the sole contents of __/var/lib/waagent/CustomData__.
+A string of data, or a path to a file whose contents will be injected into the new virtual machine after being base64-encoded. Waagent will store this base64-encoded data on the VM as both an attribute of __/var/lib/waagent/ovf-env.xml__ and as the sole contents of __/var/lib/waagent/CustomData__.
 
 Note: customdata is limited to 64K; using a file larger than 64K will fail.
 

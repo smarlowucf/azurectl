@@ -49,7 +49,6 @@ class TestComputeVmTask:
         self.task.command_args['--image-name'] = 'image'
         self.task.command_args['--instance-name'] = None
         self.task.command_args['--custom-data'] = None
-        self.task.command_args['--custom-data-file'] = None
         self.task.command_args['--instance-type'] = None
         self.task.command_args['--label'] = None
         self.task.command_args['--password'] = None
@@ -114,7 +113,7 @@ class TestComputeVmTask:
     def test_process_compute_vm_create_with_custom_data_file(self, mock_out):
         with open('../data/customdata', 'r') as file:
                 expected_custom_data = file.read()
-        self.task.command_args['--custom-data-file'] = '../data/customdata'
+        self.task.command_args['--custom-data'] = '../data/customdata'
         self.task.command_args['create'] = True
         self.task.process()
         self.task.vm.create_linux_configuration.assert_called_once_with(
