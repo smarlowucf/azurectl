@@ -73,7 +73,9 @@ Name of the cloud service to put the virtual machine in. If the cloud service do
 
 ## __--custom-data=string-or-file__
 
-A string of data, or a path to a file whose contents will be injected into the new virtual machine after being base64-encoded. Waagent will store this base64-encoded data on the VM as both an attribute of __/var/lib/waagent/ovf-env.xml__ and as the sole contents of __/var/lib/waagent/CustomData__.
+A string of data, or a path to a file whose contents will be injected into the new virtual machine.
+
+The provided data or file content will be base64-encoded. During provisioning, waagent will store this data on the VM as both an attribute of __/var/lib/waagent/ovf-env.xml__ and as the sole contents of __/var/lib/waagent/CustomData__. By default, waagent will store the data on the VM as it was encoded during transport; the contents will need to be base64-decoded in order to access the original custom data. Waagent can be configured to decode the custom data and write out the original data, by changing the __Provisioning.DecodeCustomData__ attribute in __/etc/waagent.conf__.
 
 Note: customdata is limited to 64K; using a file larger than 64K will fail.
 
