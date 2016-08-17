@@ -318,6 +318,14 @@ class TestVirtualMachine:
             'foo', 'some-region', 'foo.vhd', self.system_config
         )
 
+    @raises(AzureCustomDataTooLargeError)
+    def test_validates_custom_data_length(self):
+        self.vm._VirtualMachine__max_custom_data_len = mock.Mock(return_value=3)
+        self.vm.create_linux_configuration(custom_data='foo')
+
+        self.vm._VirtualMachine__max_custom_data_len = mock.Mock(return_value=0)
+        self.vm.create_linux_configuration(custom_data='foo')
+
     @raises(AzureVmDeleteError)
     def test_delete_instance_raise_vm_delete_error(self):
         self.service.delete_deployment.side_effect = AzureVmDeleteError

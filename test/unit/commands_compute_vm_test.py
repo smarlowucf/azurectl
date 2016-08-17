@@ -110,6 +110,28 @@ class TestComputeVmTask:
         )
 
     @patch('azurectl.commands.compute_vm.DataOutput')
+    def test_process_compute_vm_create_with_custom_data_file(self, mock_out):
+        with open('../data/customdata', 'r') as file:
+                expected_custom_data = file.read()
+        self.task.command_args['--custom-data'] = '../data/customdata'
+        self.task.command_args['create'] = True
+        self.task.process()
+        self.task.vm.create_linux_configuration.assert_called_once_with(
+            'azureuser', 'foo', True, None, expected_custom_data, ''
+        )
+
+    @patch('azurectl.commands.compute_vm.DataOutput')
+    def test_process_compute_vm_create_with_custom_data_string(self, mock_out):
+        with open('../data/customdata', 'r') as file:
+            expected_custom_data = file.read()
+        self.task.command_args['--custom-data'] = expected_custom_data
+        self.task.command_args['create'] = True
+        self.task.process()
+        self.task.vm.create_linux_configuration.assert_called_once_with(
+            'azureuser', 'foo', True, None, expected_custom_data, ''
+        )
+
+    @patch('azurectl.commands.compute_vm.DataOutput')
     def test_process_compute_vm_delete(self, mock_out):
         self.__init_command_args()
         self.task.command_args['delete'] = True

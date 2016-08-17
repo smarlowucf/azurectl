@@ -17,7 +17,7 @@ Virtual machines are created in a private IP address space, and attached to a
 
 usage: azurectl compute vm -h | --help
        azurectl compute vm create --cloud-service-name=<name> --image-name=<image>
-           [--custom-data=<base64_string>]
+           [--custom-data=<string-or-file>]
            [--instance-name=<name>]
            [--instance-type=<type>]
            [--label=<label>]
@@ -62,9 +62,9 @@ options:
     --cloud-service-name=<name>
         name of the cloud service to put the virtual machine in.
         if the cloud service does not exist it will be created
-    --custom-data=<base64_string>
-        base64 encoded data string. The information is available
-        from the walinux agent in the running virtual machine
+    --custom-data=<string-or-file>
+        a string of data or path to a file that will be injected into the new
+        virtual machine
     --fingerprint=<thumbprint>
         thumbprint of an already existing certificate in the
         cloud service used for ssh public key authentication
@@ -96,6 +96,7 @@ options:
     --wait
         wait for the request to succeed
 """
+import os
 # project
 from base import CliTask
 from ..account.service import AzureAccount
@@ -267,7 +268,12 @@ class ComputeVmTask(CliTask):
         user = self.command_args['--user']
         instance_name = self.command_args['--instance-name']
         password = self.command_args['--password']
+
         custom_data = self.command_args['--custom-data']
+        if (custom_data and os.path.isfile(custom_data)):
+            with open(custom_data, 'r') as file:
+                custom_data = file.read()
+
         disable_ssh_password_authentication = False
         if not user:
             # no user specified, use the default Azure user name

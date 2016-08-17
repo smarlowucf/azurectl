@@ -8,7 +8,7 @@ Virtual machines are created in a private IP address space, and attached to a 'c
 
 __azurectl__ compute vm create --cloud-service-name=*name* --image-name=*image*
 
-    [--custom-data=base64_string]
+    [--custom-data=string-or-file]
     [--instance-name=name]
     [--instance-type=type]
     [--label=label]
@@ -71,9 +71,13 @@ List available instance types and their attributes
 
 Name of the cloud service to put the virtual machine in. If the cloud service does not exist it will be created.
 
-## __--custom-data=base64_string__
+## __--custom-data=string-or-file__
 
-A base64 encoded raw stream. The information is available from the walinux agent in the running virtual machine.
+A string of data, or a path to a file whose contents will be injected into the new virtual machine.
+
+The provided data or file content will be base64-encoded. During provisioning, waagent will store this data on the VM as both an attribute of __/var/lib/waagent/ovf-env.xml__ and as the sole contents of __/var/lib/waagent/CustomData__. By default, waagent will store the data on the VM as it was encoded during transport; the contents will need to be base64-decoded in order to access the original custom data. Waagent can be configured to decode the custom data and write out the original data, by changing the __Provisioning.DecodeCustomData__ attribute in __/etc/waagent.conf__.
+
+Note: customdata is limited to 64K; using a file larger than 64K will fail.
 
 ## __--fingerprint=thumbprint__
 
