@@ -52,6 +52,7 @@ class TestComputeDataDiskTask:
         command_args = {
             'create': False,
             'delete': False,
+            'attach': False,
             'detach': False,
             'show': False,
             'list': False,
@@ -167,6 +168,38 @@ class TestComputeDataDiskTask:
             host_caching=host_caching
         )
 
+    def test_attach(self):
+        # given
+        self.__init_command_args({
+            'attach': True,
+            '--cloud-service-name': self.cloud_service_name,
+            '--instance-name': self.instance_name,
+            '--label': self.disk_label,
+            '--disk-name': self.disk_name,
+            '--lun': format(self.lun)
+        })
+        # when
+        self.task.process()
+        # then
+        self.task.data_disk.attach.assert_called_once_with(
+            self.disk_name,
+            self.cloud_service_name,
+            self.instance_name,
+            label=self.disk_label,
+            lun=self.lun
+        )
+
+    def test_attach_with_cache_method(self):
+        sets = [
+            ['--no-cache', 'None'],
+            ['--read-only-cache', 'ReadOnly'],
+            ['--read-write-cache', 'ReadWrite']
+        ]
+        for cache_method_arg, host_caching in sets:
+            self.__check_attach_with_cache_method(
+                cache_method_arg, host_caching
+            )
+
     def test_detach(self):
         # given
         self.__init_command_args({
@@ -231,3 +264,22 @@ class TestComputeDataDiskTask:
         self.task.process()
         # then
         self.task.data_disk.list.assert_called_once_with()
+
+    def __check_attach_with_cache_method(self, cache_method_arg, host_caching):
+        # given
+        self.__init_command_args({
+            'attach': True,
+            '--cloud-service-name': self.cloud_service_name,
+            '--instance-name': self.instance_name,
+            '--disk-name': self.disk_name,
+        })
+        self.task.command_args[cache_method_arg] = True
+        # when
+        self.task.process()
+        # then
+        self.task.data_disk.attach.assert_called_with(
+            self.disk_name,
+            self.cloud_service_name,
+            self.instance_name,
+            host_caching=host_caching
+        )
