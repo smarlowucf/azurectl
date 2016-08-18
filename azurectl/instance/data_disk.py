@@ -145,6 +145,44 @@ class DataDisk(object):
                     )
         return [self.__decorate_attached_disk(disk) for disk in disks]
 
+    def attach(
+        self, disk_name, cloud_service_name, instance_name=None,
+        label=None, lun=None, host_caching=None
+    ):
+        """
+            Attach existing data disk to the instance
+        """
+        disk_url = self.__data_disk_url(disk_name + '.vhd')
+
+        if not instance_name:
+            instance_name = cloud_service_name
+
+        if lun not in range(Defaults.max_vm_luns()):
+            lun = self.__get_first_available_lun(
+                cloud_service_name, instance_name
+            )
+
+        args = {
+            'media_link': disk_url,
+            'disk_name': disk_name
+        }
+        if host_caching:
+            args['host_caching'] = host_caching
+        if label:
+            args['disk_label'] = label
+
+        try:
+            result = self.service.add_data_disk(
+                cloud_service_name, cloud_service_name, instance_name, lun,
+                **args
+            )
+            self.attached_lun = lun
+        except Exception as e:
+            raise AzureDataDiskCreateError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
+        return result.request_id
+
     def detach(self, lun, cloud_service_name, instance_name=None):
         """
             Delete data disk from the instance, retaining underlying vhd blob

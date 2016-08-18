@@ -24,6 +24,12 @@ usage: azurectl compute data-disk -h | --help
            [--no-cache|--read-only-cache|--read-write-cache]
            [--wait]
        azurectl compute data-disk delete --disk-name=<name>
+       azurectl compute data-disk attach --cloud-service-name=<name> --disk-name=<name>
+           [--instance-name=<name>]
+           [--label=<label>]
+           [--lun=<lun>]
+           [--no-cache|--read-only-cache|--read-write-cache]
+           [--wait]
        azurectl compute data-disk detach --cloud-service-name=<name> --lun=<lun>
            [--instance-name=<name>]
            [--wait]
@@ -117,6 +123,8 @@ class ComputeDataDiskTask(CliTask):
             self.__create()
         if self.command_args['delete']:
             self.__delete()
+        if self.command_args['attach']:
+            self.__attach()
         if self.command_args['detach']:
             self.__detach()
         if self.command_args['attached']:
@@ -194,6 +202,41 @@ class ComputeDataDiskTask(CliTask):
             self.command_args['--disk-name']
         )
         log.info('Deleted data disk %s', self.command_args['--disk-name'])
+
+    def __attach(self):
+        optional_args = {}
+        if self.command_args['--label']:
+            optional_args['label'] = self.command_args['--label']
+        if self.command_args['--lun']:
+            optional_args['lun'] = int(self.command_args['--lun'])
+        if (
+            self.command_args['--no-cache'] or
+            self.command_args['--read-only-cache'] or
+            self.command_args['--read-write-cache']
+        ):
+            optional_args['host_caching'] = Defaults.host_caching_for_docopts(
+                self.command_args
+            )
+        request_id = self.data_disk.attach(
+            self.command_args['--disk-name'],
+            self.command_args['--cloud-service-name'],
+            self.command_args['--instance-name'],
+            **optional_args
+        )
+        request_params = [
+            self.command_args['--cloud-service-name'],
+            (
+                self.command_args['--instance-name'] or
+                self.command_args['--cloud-service-name']
+            ),
+            int(self.data_disk.attached_lun)
+        ]
+        self.result.add(
+            'data-disk attach:%s:%s:%d' % tuple(request_params), request_id
+        )
+        if self.command_args['--wait']:
+            self.request_wait(request_id)
+        self.out.display()
 
     def __detach(self):
         request_params = [
