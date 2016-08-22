@@ -270,6 +270,9 @@ class DataDisk(object):
 
     def __generate_vhd(self, temporary_file, disk_size_in_gb):
         """
+        Kudos to Steven Edouard: https://gist.github.com/sedouard
+        who provided the following:
+
         Generate an empty vhd fixed disk of the specified size.
         The file must be conform to the VHD Footer Format Specification at
         https://technet.microsoft.com/en-us/virtualization/bb676673.aspx#E3B
