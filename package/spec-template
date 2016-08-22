@@ -20,6 +20,7 @@ Requires:       python-azure-sdk-storage >= 0.30.0
 Requires:       python-dateutil
 Requires:       python-dnspython
 Requires:       python-setuptools
+Requires:       python-future
 Requires:       man
 Requires:       openssl
 %if 0%{?suse_version} && 0%{?suse_version} <= 1110
