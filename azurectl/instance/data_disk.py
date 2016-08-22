@@ -14,9 +14,13 @@
 from azure.common import AzureMissingResourceHttpError
 from azure.storage.blob.pageblobservice import PageBlobService
 from datetime import datetime
+from tempfile import NamedTemporaryFile
+from builtins import bytes
+from uuid import uuid4
 
 # project
 from ..defaults import Defaults
+from ..storage.storage import Storage
 
 from ..azurectl_exceptions import (
     AzureDataDiskCreateError,
@@ -35,50 +39,38 @@ class DataDisk(object):
         self.service = account.get_management_service()
         self.data_disk_name = None
 
-    def create(
-        self,
-        size,
-        cloud_service_name,
-        instance_name=None,
-        lun=None,
-        host_caching=None,
-        filename=None,
-        label=None
-    ):
+    def create(self, identifier, disk_size_in_gb, label=None):
         """
-            Create and attach a new data disk to the specified
-            virtual machine at the optionally specified lun
+            Create new data disk
         """
-        if not instance_name:
-            instance_name = cloud_service_name
-
-        if lun not in range(16):
-            lun = self.__get_first_available_lun(
-                cloud_service_name, instance_name
-            )
-        args = {
-            'media_link': self.__data_disk_url(
-                filename or self.__generate_filename(instance_name)
-            ),
-            'logical_disk_size_in_gb': size
-        }
-        if host_caching:
-            args['host_caching'] = host_caching
-        if label:
-            args['disk_label'] = label
+        disk_vhd = NamedTemporaryFile()
+        self.__generate_vhd(disk_vhd, disk_size_in_gb)
+        disk_name = self.__generate_filename(identifier)
         try:
-            result = self.service.add_data_disk(
-                cloud_service_name,
-                cloud_service_name,
-                instance_name,
-                lun,
-                **args
+            storage = Storage(
+                self.account, self.account.storage_container()
             )
+            storage.upload(disk_vhd.name, disk_name)
         except Exception as e:
             raise AzureDataDiskCreateError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
-        return result.request_id
+
+        disk_url = self.__data_disk_url(disk_name)
+        args = {
+            'media_link': disk_url,
+            'name': disk_name.replace('.vhd', ''),
+            'has_operating_system': False,
+            'os': 'Linux'
+        }
+        args['label'] = label if label else identifier
+
+        try:
+            self.service.add_disk(**args)
+        except Exception as e:
+            raise AzureDataDiskCreateError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
 
     def show(self, disk_name):
         """
@@ -275,3 +267,111 @@ class DataDisk(object):
             'is_attached': attached,
             'name': disk.name,
         }
+
+    def __generate_vhd(self, temporary_file, disk_size_in_gb):
+        """
+        Generate an empty vhd fixed disk of the specified size.
+        The file must be conform to the VHD Footer Format Specification at
+        https://technet.microsoft.com/en-us/virtualization/bb676673.aspx#E3B
+        which specifies the data structure as follows:
+        * Field         Size (bytes)
+        * Cookie        8
+        * Features      4
+        * Version       4
+        * Data Offset   4
+        * TimeStamp     4
+        * Creator App   4
+        * Creator Ver   4
+        * CreatorHostOS 4
+        * Original Size 8
+        * Current Size  8
+        * Disk Geo      4
+        * Disk Type     4
+        * Checksum      4
+        * Unique ID     16
+        * Saved State   1
+        * Reserved      427
+        """
+        # disk size in bytes
+        byte_size = int(disk_size_in_gb) * 1073741824
+        # the ascii string 'conectix'
+        cookie = bytearray(
+            [0x63, 0x6f, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x78]
+        )
+        # no features enabled
+        features = bytearray(
+            [0x00, 0x00, 0x00, 0x02]
+        )
+        # current file version
+        version = bytearray(
+            [0x00, 0x01, 0x00, 0x00]
+        )
+        # in the case of a fixed disk, this is set to -1
+        data_offset = bytearray(
+            [0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]
+        )
+        # hex representation of seconds since january 1st 2000
+        timestamp = bytearray.fromhex(
+            hex(long(datetime.now().strftime('%s')) - 946684800).replace(
+                'L', ''
+            ).replace('0x', '').zfill(8))
+        # ascii code for 'wa' = windowsazure
+        creator_app = bytearray(
+            [0x77, 0x61, 0x00, 0x00]
+        )
+        # ascii code for version of creator application
+        creator_version = bytearray(
+            [0x00, 0x07, 0x00, 0x00]
+        )
+        # creator host os. windows or mac, ascii for 'wi2k'
+        creator_os = bytearray(
+            [0x57, 0x69, 0x32, 0x6b]
+        )
+        original_size = bytearray.fromhex(
+            hex(byte_size).replace('0x', '').zfill(16)
+        )
+        current_size = bytearray.fromhex(
+            hex(byte_size).replace('0x', '').zfill(16)
+        )
+        # 0x820=2080 cylenders, 0x10=16 heads, 0x3f=63 sectors/track
+        disk_geometry = bytearray(
+            [0x08, 0x20, 0x10, 0x3f]
+        )
+        # 0x2 = fixed hard disk
+        disk_type = bytearray(
+            [0x00, 0x00, 0x00, 0x02]
+        )
+        # a uuid
+        unique_id = bytearray.fromhex(uuid4().hex)
+        # saved state and reserved
+        saved_reserved = bytearray(428)
+        # Compute Checksum with Checksum = ones compliment of sum of
+        # all fields excluding the checksum field
+        to_checksum_array = \
+            cookie + features + version + data_offset + \
+            timestamp + creator_app + creator_version + \
+            creator_os + original_size + current_size + \
+            disk_geometry + disk_type + unique_id + saved_reserved
+
+        total = 0
+        for b in to_checksum_array:
+            total += b
+        total = ~total
+
+        # handle two's compliment
+        def tohex(val, nbits):
+            return hex((val + (1 << nbits)) % (1 << nbits))
+
+        checksum = bytearray.fromhex(
+            tohex(total, 32).replace('0x', '')
+        )
+
+        # vhd disk blob
+        blob_data = \
+            cookie + features + version + data_offset + \
+            timestamp + creator_app + creator_version + \
+            creator_os + original_size + current_size + \
+            disk_geometry + disk_type + checksum + unique_id + saved_reserved
+
+        with open(temporary_file.name, 'wb') as vhd:
+            vhd.write(bytes(blob_data))
