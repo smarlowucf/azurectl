@@ -61,6 +61,7 @@ class TestComputeDataDiskTask:
             '--cloud-service-name': None,
             '--size': None,
             '--instance-name': None,
+            '--identifier': None,
             '--label': None,
             '--disk-name': None,
             '--lun': None,
@@ -85,87 +86,21 @@ class TestComputeDataDiskTask:
             'azurectl::compute::data_disk'
         )
 
-    def test_create_with_minimal_args(self):
+    def test_create(self):
         # given
         self.__init_command_args({
             'create': True,
-            '--cloud-service-name': self.cloud_service_name,
-            '--size': self.disk_size
-        })
-        # when
-        self.task.process()
-        # then
-        self.task.data_disk.create.assert_called_once_with(
-            self.disk_size,
-            self.cloud_service_name,
-            None
-        )
-
-    def test_create_with_instance_name(self):
-        # given
-        self.__init_command_args({
-            'create': True,
-            '--cloud-service-name': self.cloud_service_name,
-            '--instance-name': self.instance_name,
-            '--size': self.disk_size
-        })
-        # when
-        self.task.process()
-        # then
-        self.task.data_disk.create.assert_called_once_with(
-            self.disk_size,
-            self.cloud_service_name,
-            self.instance_name
-        )
-
-    def test_create_with_optional_args(self):
-        # given
-        self.__init_command_args({
-            'create': True,
-            '--cloud-service-name': self.cloud_service_name,
-            '--instance-name': self.instance_name,
+            '--identifier': self.cloud_service_name,
             '--size': self.disk_size,
-            '--label': self.disk_label,
-            '--disk-name': self.disk_filename,
-            '--lun': str(self.lun)
+            '--label': 'some-label'
         })
         # when
         self.task.process()
         # then
         self.task.data_disk.create.assert_called_once_with(
-            self.disk_size,
             self.cloud_service_name,
-            self.instance_name,
-            label=self.disk_label,
-            filename=self.disk_filename,
-            lun=self.lun
-        )
-
-    def test_create_with_cache_method(self):
-        sets = [
-            ['--no-cache', 'None'],
-            ['--read-only-cache', 'ReadOnly'],
-            ['--read-write-cache', 'ReadWrite']
-        ]
-        for cache_method_arg, host_caching in sets:
-            self.check_create_with_cache_method(cache_method_arg, host_caching)
-
-    def check_create_with_cache_method(self, cache_method_arg, host_caching):
-        # given
-        self.__init_command_args({
-            'create': True,
-            '--cloud-service-name': self.cloud_service_name,
-            '--size': self.disk_size
-        })
-        self.task.command_args[cache_method_arg] = True
-        # when
-        self.task.process()
-        # then
-        self.task.data_disk.create.assert_called_with(
             self.disk_size,
-            self.cloud_service_name,
-            None,
-            host_caching=host_caching
+            self.task.command_args['--label']
         )
 
     def test_attach(self):
