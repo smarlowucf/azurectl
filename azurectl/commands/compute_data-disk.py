@@ -16,7 +16,7 @@ Data-disks are virtual disks attached to a virtual machine, backed by a virtual
 hard disk (VHD) image in Azure storage.
 
 usage: azurectl compute data-disk -h | --help
-       azurectl compute data-disk create --identifier=<name>
+       azurectl compute data-disk create --disk-basename=<name>
            [--size=<disk-size-in-GB>]
            [--label=<label>]
        azurectl compute data-disk delete --disk-name=<name>
@@ -40,7 +40,7 @@ commands:
     create
         create a new, empty data disk. The data disk vhd file will be
         created using the following naming schema:
-        <identifier>-data-disk-<utctime>. The default data disk size
+        <disk-basename>-data-disk-<utctime>. The default data disk size
         is set to 10GB
     delete
         delete the specified data disk. The call will fail if the disk
@@ -62,8 +62,8 @@ options:
         name of the cloud service where the virtual machine may be found
     --disk-name=<name>
         name of the data disk as registered in the image repository
-    --identifier=<name>
-        identifier string used as part of the complete data disk name.
+    --disk-basename=<name>
+        data disk basename used as part of the complete data disk name.
         Usually this is set to the instance name this data disk should be
         attached to later
     --instance-name=<name>
@@ -146,7 +146,7 @@ class ComputeDataDiskTask(CliTask):
 
     def __create(self):
         self.data_disk.create(
-            self.command_args['--identifier'],
+            self.command_args['--disk-basename'],
             self.command_args['--size'],
             self.command_args['--label']
         )

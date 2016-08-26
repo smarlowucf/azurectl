@@ -61,7 +61,7 @@ class TestComputeDataDiskTask:
             '--cloud-service-name': None,
             '--size': None,
             '--instance-name': None,
-            '--identifier': None,
+            '--disk-basename': None,
             '--label': None,
             '--disk-name': None,
             '--lun': None,
@@ -90,7 +90,7 @@ class TestComputeDataDiskTask:
         # given
         self.__init_command_args({
             'create': True,
-            '--identifier': self.cloud_service_name,
+            '--disk-basename': self.cloud_service_name,
             '--size': self.disk_size,
             '--label': 'some-label'
         })
