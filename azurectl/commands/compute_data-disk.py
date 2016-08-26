@@ -40,8 +40,9 @@ commands:
     create
         create a new, empty data disk. The data disk vhd file will be
         created using the following naming schema:
-        <disk-basename>-data-disk-<utctime>. The default data disk size
-        is set to 10GB
+        <disk-basename>-data-disk-<utctime>, e.g
+        disk-basename-data-disk-2016-08-22T09_15_25.950289.
+        The default data disk size is set to 10GB
     delete
         delete the specified data disk. The call will fail if the disk
         is still attached to an instance
