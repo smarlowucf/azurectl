@@ -16,6 +16,8 @@ from ..azurectl_exceptions import AzureInvalidCommand
 
 
 class Validations(object):
+    SAS_PERMISSION_VALUES = 'dlrw'
+
     @classmethod
     def validate_min_length(self, field_name, value, min_length):
         if len(value) < min_length:
@@ -30,4 +32,13 @@ class Validations(object):
             raise AzureInvalidCommand(
                 '%s is too long. Length must be at most %d characters.' %
                 (field_name, max_length))
+        return True
+
+    @classmethod
+    def validate_sas_permissions(self, field_name, value):
+        if not all(char in self.SAS_PERMISSION_VALUES for char in value):
+            raise AzureInvalidCommand(
+                "%s contains invalid chars. Only '%s' are allowed." %
+                (field_name, self.SAS_PERMISSION_VALUES)
+            )
         return True

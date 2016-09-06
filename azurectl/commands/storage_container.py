@@ -112,7 +112,7 @@ class StorageContainerTask(CliTask):
         else:
             expiry = self.__validate_date_arg('--expiry-datetime')
 
-        self.__validate_permissions_arg()
+        self.validate_sas_permissions('--permissions')
 
         self.container = Container(self.account)
 
@@ -136,12 +136,6 @@ class StorageContainerTask(CliTask):
         except ValueError:
             raise AzureInvalidCommand(
                 cmd_arg + '=' + self.command_args[cmd_arg]
-            )
-
-    def __validate_permissions_arg(self):
-        if (not re.match("^([rwld]+)$", self.command_args['--permissions'])):
-            raise AzureInvalidCommand(
-                '--permissions=' + self.command_args['--permissions']
             )
 
     def __help(self):
