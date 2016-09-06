@@ -85,6 +85,12 @@ class CliTask(object):
             self.command_args[cmd_arg]
         )
 
+    def validate_date(self, cmd_arg):
+        return Validations.validate_date(
+            cmd_arg,
+            self.command_args[cmd_arg]
+        )
+
     def request_wait(self, request_id):
         if self.account:
             service = self.account.get_management_service()

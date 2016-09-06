@@ -11,12 +11,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+import dateutil.parser
+
 # project
 from ..azurectl_exceptions import AzureInvalidCommand
 
 
 class Validations(object):
     SAS_PERMISSION_VALUES = 'dlrw'
+    PREFERRED_DATE_FORMAT = 'YYYY-MM-DDThh:mm:ssZ'
 
     @classmethod
     def validate_min_length(self, field_name, value, min_length):
@@ -42,3 +46,14 @@ class Validations(object):
                 (field_name, self.SAS_PERMISSION_VALUES)
             )
         return True
+
+    @classmethod
+    def validate_date(self, field_name, value):
+        try:
+            date = dateutil.parser.parse(value)
+        except ValueError:
+            raise AzureInvalidCommand(
+                '%s is not a valid date. The format should be %s' %
+                (field_name, self.PREFERRED_DATE_FORMAT)
+            )
+        return date

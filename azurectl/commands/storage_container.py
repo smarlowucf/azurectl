@@ -63,8 +63,6 @@ options:
         Example format: YYYY-MM-DDThh:mm:ssZ
 """
 import datetime
-import dateutil.parser
-import re
 
 # project
 from base import CliTask
@@ -74,10 +72,6 @@ from ..utils.output import DataOutput
 from ..logger import log
 from ..storage.container import Container
 from ..help import Help
-
-from ..azurectl_exceptions import (
-    AzureInvalidCommand
-)
 
 
 class StorageContainerTask(CliTask):
@@ -104,13 +98,13 @@ class StorageContainerTask(CliTask):
         if self.command_args['--start-datetime'] == 'now':
             start = datetime.datetime.utcnow() - datetime.timedelta(minutes=1)
         else:
-            start = self.__validate_date_arg('--start-datetime')
+            start = self.validate_date('--start-datetime')
 
         # default to 30 days from now
         if self.command_args['--expiry-datetime'] == '30 days from start':
             expiry = start + datetime.timedelta(days=30)
         else:
-            expiry = self.__validate_date_arg('--expiry-datetime')
+            expiry = self.validate_date('--expiry-datetime')
 
         self.validate_sas_permissions('--permissions')
 
@@ -127,15 +121,6 @@ class StorageContainerTask(CliTask):
         elif self.command_args['sas']:
             self.__container_sas(
                 start, expiry, self.command_args['--permissions']
-            )
-
-    def __validate_date_arg(self, cmd_arg):
-        try:
-            date = dateutil.parser.parse(self.command_args[cmd_arg])
-            return date
-        except ValueError:
-            raise AzureInvalidCommand(
-                cmd_arg + '=' + self.command_args[cmd_arg]
             )
 
     def __help(self):
