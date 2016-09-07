@@ -20,3 +20,5 @@ dnspython
 
 pyOpenSSL
 requests
+
+future

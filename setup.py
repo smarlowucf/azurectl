@@ -23,7 +23,8 @@ config = {
         'azure-servicemanagement-legacy>=0.20.1',
         'python-dateutil>=2.4',
         'dnspython>=1.12.0',
-        'setuptools>=5.4'
+        'setuptools>=5.4',
+        'future>=3.0.2'
     ],
     'packages': ['azurectl'],
     'entry_points': {

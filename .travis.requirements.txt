@@ -20,3 +20,4 @@ dnspython
 pytest
 pytest-cov
 azure-storage
+future

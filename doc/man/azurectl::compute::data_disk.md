@@ -36,7 +36,7 @@ __azurectl__ compute data-disk show attached --cloud-service-name=*name*
 
 ## __create__
 
-Create a new, empty data disk attached to the specified instance. The data disk vhd file will be created using the following naming schema: __(instance-name|cloud-service-name)-data-disk-(utctime)__
+Create a new, empty data disk attached to the specified instance. The data disk vhd file will be created using the following naming schema: __(instance-name|cloud-service-name)-data-disk-(utctime)__. Example: __disk-basename-data-disk-2016-08-22T09_15_25.950289__. The default data disk size if not specified is set to 10GB.
 
 ## __delete__
 

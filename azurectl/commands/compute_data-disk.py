@@ -16,13 +16,9 @@ Data-disks are virtual disks attached to a virtual machine, backed by a virtual
 hard disk (VHD) image in Azure storage.
 
 usage: azurectl compute data-disk -h | --help
-       azurectl compute data-disk create --cloud-service-name=<name> --size=<disk-size-in-GB>
-           [--instance-name=<name>]
+       azurectl compute data-disk create --disk-basename=<name>
+           [--size=<disk-size-in-GB>]
            [--label=<label>]
-           [--disk-name=<name>]
-           [--lun=<lun>]
-           [--no-cache|--read-only-cache|--read-write-cache]
-           [--wait]
        azurectl compute data-disk delete --disk-name=<name>
        azurectl compute data-disk attach --cloud-service-name=<name> --disk-name=<name>
            [--instance-name=<name>]
@@ -42,9 +38,11 @@ usage: azurectl compute data-disk -h | --help
 
 commands:
     create
-        create a new, empty data disk attached to the specified instance.
-        The data disk vhd file will be created using the following naming
-        schema: <instance-name|cloud-service-name>-data-disk-<utctime>
+        create a new, empty data disk. The data disk vhd file will be
+        created using the following naming schema:
+        <disk-basename>-data-disk-<utctime>, e.g
+        disk-basename-data-disk-2016-08-22T09_15_25.950289.
+        The default data disk size is set to 10GB
     delete
         delete the specified data disk. The call will fail if the disk
         is still attached to an instance
@@ -65,6 +63,10 @@ options:
         name of the cloud service where the virtual machine may be found
     --disk-name=<name>
         name of the data disk as registered in the image repository
+    --disk-basename=<name>
+        data disk basename used as part of the complete data disk name.
+        Usually this is set to the instance name this data disk should be
+        attached to later
     --instance-name=<name>
         name of the virtual machine instance. If no name is given the
         instance name is assumed to be the same as the cloud service name
@@ -83,7 +85,7 @@ options:
         enable cached reads from and writes to the data disk
     --size=<disk-size-in-GB>
         size of the disk, in GB, that will be provisioned. Must be an integer,
-        and less than 1024
+        and less than 1024 [default: 10]
     --wait
         wait for the request to succeed
 """
@@ -144,33 +146,15 @@ class ComputeDataDiskTask(CliTask):
         return self.manual
 
     def __create(self):
-        optional_args = {}
-        if self.command_args['--label']:
-            optional_args['label'] = self.command_args['--label']
-        if self.command_args['--disk-name']:
-            optional_args['filename'] = self.command_args['--disk-name']
-        if self.command_args['--lun']:
-            optional_args['lun'] = int(self.command_args['--lun'])
-        if (
-            self.command_args['--no-cache'] or
-            self.command_args['--read-only-cache'] or
-            self.command_args['--read-write-cache']
-        ):
-            optional_args['host_caching'] = Defaults.host_caching_for_docopts(
-                self.command_args
-            )
-        request_id = self.data_disk.create(
+        self.data_disk.create(
+            self.command_args['--disk-basename'],
             self.command_args['--size'],
-            self.command_args['--cloud-service-name'],
-            self.command_args['--instance-name'],
-            **optional_args
+            self.command_args['--label']
         )
-        if self.command_args['--wait']:
-            self.request_wait(request_id)
-        self.result.add(
-            'data-disk', request_id
+        log.info(
+            'Created new data disk %s',
+            self.data_disk.data_disk_name.replace('.vhd', '')
         )
-        self.out.display()
 
     def __show(self):
         self.result.add(

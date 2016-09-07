@@ -71,18 +71,25 @@ class TestDataDisk:
         )
 
     @raises(AzureDataDiskCreateError)
-    def test_create_error(self):
+    @patch('azurectl.instance.data_disk.Storage')
+    def test_create_error_on_add_disk(self, mock_storage):
         # given
-        self.service.add_data_disk.side_effect = Exception
+        self.service.add_disk.side_effect = Exception
         # when
         self.data_disk.create(
-            size=self.disk_size,
-            cloud_service_name=self.cloud_service_name,
-            instance_name=None,
-            lun=self.lun,
-            host_caching=self.host_caching,
-            filename=self.disk_filename,
+            identifier=self.instance_name,
+            disk_size_in_gb=self.disk_size,
             label=self.disk_label
+        )
+
+    @raises(AzureDataDiskCreateError)
+    @patch('azurectl.instance.data_disk.Storage')
+    def test_create_error_on_vhd_upload(self, mock_storage):
+        # given
+        mock_storage.side_effect = Exception
+        # when
+        self.data_disk.create(
+            identifier=self.instance_name, disk_size_in_gb=self.disk_size
         )
 
     @raises(AzureDataDiskDeleteError)
@@ -168,57 +175,33 @@ class TestDataDisk:
         assert self.service.get_data_disk.call_count == 3
         assert result == 2  # 0 and 1 are taken
 
-    def test_create(self):
+    @patch('azurectl.instance.data_disk.datetime')
+    @patch('azurectl.instance.data_disk.Storage')
+    def test_create(self, mock_storage, mock_datetime):
         # given
-        self.service.add_data_disk.return_value = self.my_request
+        self.service.add_disk.return_value = self.my_request
+        mock_datetime.isoformat.return_value = '0'
+        time_now = mock.Mock()
+        time_now.strftime.return_value = 1471858765
+        mock_datetime.now = mock.Mock(
+            return_value=time_now
+        )
         # when
         result = self.data_disk.create(
-            self.disk_size,
-            lun=self.lun,
-            cloud_service_name=self.cloud_service_name,
-            instance_name=None,
-            host_caching=self.host_caching,
-            filename=self.disk_filename,
+            identifier=self.instance_name,
+            disk_size_in_gb=self.disk_size,
             label=self.disk_label
         )
         # then
-        assert result == self.my_request.request_id
-        self.service.add_data_disk.assert_called_once_with(
-            self.cloud_service_name,
-            self.cloud_service_name,
-            self.cloud_service_name,
-            self.lun,
-            host_caching=self.host_caching,
-            media_link=self.disk_url,
-            disk_label=self.disk_label,
-            logical_disk_size_in_gb=self.disk_size
+        mock_storage.assert_called_once_with(
+            self.account, self.account.storage_container()
         )
-
-    @patch('azurectl.instance.data_disk.DataDisk._DataDisk__get_first_available_lun')
-    def test_create_without_lun(self, mock_lun):
-        # given
-        self.service.add_data_disk.return_value = self.my_request
-        mock_lun.return_value = 0
-        # when
-        result = self.data_disk.create(
-            self.disk_size,
-            cloud_service_name=self.cloud_service_name,
-            instance_name=self.instance_name,
-            lun=None,
-            host_caching=self.host_caching,
-            filename=self.disk_filename,
-            label=self.disk_label
-        )
-        # then
-        self.service.add_data_disk.assert_called_once_with(
-            self.cloud_service_name,
-            self.cloud_service_name,
-            self.instance_name,
-            0,
-            host_caching=self.host_caching,
+        self.service.add_disk.assert_called_once_with(
             media_link=self.disk_url,
-            disk_label=self.disk_label,
-            logical_disk_size_in_gb=self.disk_size
+            name=self.data_disk.data_disk_name.replace('.vhd', ''),
+            label=self.disk_label,
+            has_operating_system=False,
+            os='Linux',
         )
 
     def test_show(self):
