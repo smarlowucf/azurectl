@@ -13,6 +13,7 @@
 #
 import os
 from azure.storage.blob.pageblobservice import PageBlobService
+from azure.storage.sharedaccesssignature import SharedAccessSignature
 
 # project
 from ..utils.xz import XZ
@@ -25,6 +26,9 @@ from ..azurectl_exceptions import (
 from ..utils.filetype import FileType
 from .page_blob import PageBlob
 from ..logger import log
+
+
+ISO8061_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
 
 
 class Storage(object):
@@ -78,6 +82,31 @@ class Storage(object):
             raise AzureStorageUploadError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
+
+    def disk_image_sas(
+        self,
+        container_name,
+        image_name,
+        start, expiry,
+        permissions
+    ):
+        sas = SharedAccessSignature(
+            self.account_name, self.account_key
+        )
+        signed_query = sas.generate_blob(
+            container_name,
+            image_name,
+            permission=permissions,
+            expiry=expiry.strftime(ISO8061_FORMAT),
+            start=start.strftime(ISO8061_FORMAT)
+        )
+        return 'https://{}.blob.{}/{}/{}?{}'.format(
+            self.account_name,
+            self.blob_service_host_base,
+            container_name,
+            image_name,
+            signed_query
+        )
 
     def delete(self, image):
         blob_service = PageBlobService(

@@ -20,6 +20,10 @@ usage: azurectl storage disk -h | --help
            [--blob-name=<blobname>]
            [--max-chunk-size=<size>]
            [--quiet]
+       azurectl storage disk sas --blob-name=<blobname>
+           [--start-datetime=<start>]
+           [--expiry-datetime=<expiry>]
+           [--permissions=<permissions>]
        azurectl storage disk delete --blob-name=<blobname>
        azurectl storage disk help
 
@@ -28,28 +32,50 @@ commands:
         delete disk image from the given container
     help
         show manual page for disk command
+    sas
+        generate a shared access signature URL allowing limited access to the
+        specified disk image without an access key
     upload
         upload xz compressed disk image to the given container
 
 options:
     --blob-name=<blobname>
         name of the file in the storage pool
+    --expiry-datetime=<expiry>
+        Date (and optionally time) to cease access via a shared access
+        signature. [default: 30 days from start]
+        Example format: YYYY-MM-DDThh:mm:ssZ
     --max-chunk-size=<size>
         max chunk size in bytes for upload, default 4MB
+    --permissions=<permissions>
+        String of permitted actions on a storage element via shared access
+        signature.
+        r  Read
+        w  Write
+        d  Delete
+        l  List
+        [default: rl]
     --quiet
         suppress progress information on upload
     --source=<file>
         file to upload
+    --start-datetime=<start>
+        Date (and optionally time) to grant access via a shared access
+        signature. [default: now]
+        Example format: YYYY-MM-DDThh:mm:ssZ
 """
+import datetime
 from pytz import utc
 from apscheduler.schedulers.background import BackgroundScheduler
 
 # project
 from base import CliTask
 from ..account.service import AzureAccount
-from ..storage.storage import Storage
-from ..logger import log
 from ..help import Help
+from ..logger import log
+from ..storage.storage import Storage
+from ..utils.collector import DataCollector
+from ..utils.output import DataOutput
 
 
 class StorageDiskTask(CliTask):
@@ -71,10 +97,31 @@ class StorageDiskTask(CliTask):
             self.account, container_name
         )
 
+        # default to 1 minute ago (skew around 'now')
+        if self.command_args['--start-datetime'] == 'now':
+            start = datetime.datetime.utcnow() - datetime.timedelta(minutes=1)
+        else:
+            start = self.validate_date('--start-datetime')
+
+        # default to 30 days from now
+        if self.command_args['--expiry-datetime'] == '30 days from start':
+            expiry = start + datetime.timedelta(days=30)
+        else:
+            expiry = self.validate_date('--expiry-datetime')
+
+        self.validate_sas_permissions('--permissions')
+
         if self.command_args['upload']:
             self.__upload()
         elif self.command_args['delete']:
             self.__delete()
+        elif self.command_args['sas']:
+            self.__sas(
+                container_name,
+                start,
+                expiry,
+                self.command_args['--permissions']
+            )
 
     def __help(self):
         if self.command_args['help']:
@@ -114,10 +161,31 @@ class StorageDiskTask(CliTask):
 
     def __process_upload(self):
         self.storage.upload(
+
             self.command_args['--source'],
             self.command_args['--blob-name'],
             self.command_args['--max-chunk-size']
         )
+
+    def __sas(self, container_name, start, expiry, permissions):
+        result = DataCollector()
+        out = DataOutput(
+            result,
+            self.global_args['--output-format'],
+            self.global_args['--output-style']
+        )
+
+        result.add(
+            self.command_args['--blob-name'] + ':sas_url',
+            self.storage.disk_image_sas(
+                container_name,
+                self.command_args['--blob-name'],
+                start,
+                expiry,
+                permissions
+            )
+        )
+        out.display()
 
     def __delete(self):
         image = self.command_args['--blob-name']
