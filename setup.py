@@ -24,7 +24,7 @@ config = {
         'python-dateutil>=2.4',
         'dnspython>=1.12.0',
         'setuptools>=5.4',
-        'future>=3.0.2'
+        'future>=0.15.2'
     ],
     'packages': ['azurectl'],
     'entry_points': {
