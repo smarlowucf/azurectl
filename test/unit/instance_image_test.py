@@ -129,8 +129,10 @@ class TestImage:
         self.service.get_os_image.side_effect = Exception
         self.image.show(mock_response.name)
 
+    @patch('azurectl.instance.image.BaseBlobService.get_blob_properties')
     @raises(AzureBlobServicePropertyError)
-    def test_create_raise_blob_error(self):
+    def test_create_raise_blob_error(self, mock_get_blob_props):
+        mock_get_blob_props.side_effect = Exception
         self.image.create('some-name', 'some-blob')
 
     @patch('azurectl.instance.image.BaseBlobService.get_blob_properties')

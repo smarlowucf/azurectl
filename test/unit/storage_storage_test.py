@@ -115,8 +115,10 @@ class TestStorage:
         ]
         stream.close.assert_called_once_with()
 
+    @patch('azurectl.storage.storage.PageBlobService.delete_blob')
     @raises(AzureStorageDeleteError)
-    def test_delete(self):
+    def test_delete(self, mock_delete_blob):
+        mock_delete_blob.side_effect = Exception
         self.storage.delete('some-blob')
 
     def test_print_upload_status(self):
