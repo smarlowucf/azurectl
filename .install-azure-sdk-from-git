@@ -3,10 +3,11 @@
 # Clone Azure SDK development fork on github
 git clone https://github.com/SUSE/azure-sdk-for-python.git
 
-branch_name=master
+branch_name=dev
 (
     cd azure-sdk-for-python
     git checkout $branch_name
+    git pull
     python setup.py build
     python setup.py install
 )
