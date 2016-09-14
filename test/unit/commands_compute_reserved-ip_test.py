@@ -34,8 +34,11 @@ class TestComputeReservedIpTask:
             'show': False,
             'create': False,
             'delete': False,
+            'associate': False,
+            'disassociate': False,
             'help': False,
             '--name': None,
+            '--cloud-service-name': None,
             '--wait': True
         }
 
@@ -83,4 +86,26 @@ class TestComputeReservedIpTask:
         self.task.process()
         self.task.reserved_ip.delete.assert_called_once_with(
             self.task.command_args['--name']
+        )
+
+    @patch('azurectl.commands.compute_reserved-ip.DataOutput')
+    def test_process_compute_reserved_ip_associate(self, mock_out):
+        self.__init_command_args()
+        self.task.command_args['associate'] = True
+        self.task.command_args['--name'] = 'test'
+        self.task.command_args['--cloud-service-name'] = 'some-cloud-service'
+        self.task.process()
+        self.task.reserved_ip.associate.assert_called_once_with(
+            'test', 'some-cloud-service'
+        )
+
+    @patch('azurectl.commands.compute_reserved-ip.DataOutput')
+    def test_process_compute_reserved_ip_disassociate(self, mock_out):
+        self.__init_command_args()
+        self.task.command_args['disassociate'] = True
+        self.task.command_args['--name'] = 'test'
+        self.task.command_args['--cloud-service-name'] = 'some-cloud-service'
+        self.task.process()
+        self.task.reserved_ip.disassociate.assert_called_once_with(
+            'test', 'some-cloud-service'
         )
