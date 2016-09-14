@@ -13,6 +13,8 @@
 #
 # project
 from ..azurectl_exceptions import (
+    AzureReservedIpAssociateError,
+    AzureReservedIpDisAssociateError,
     AzureReservedIpCreateError,
     AzureReservedIpDeleteError,
     AzureReservedIpListError,
@@ -68,6 +70,32 @@ class ReservedIp(object):
             result = self.service.delete_reserved_ip_address(name)
         except Exception as e:
             raise AzureReservedIpDeleteError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
+        return result.request_id
+
+    def associate(self, name, cloud_service_name):
+        try:
+            result = self.service.associate_reserved_ip_address(
+                name=name,
+                service_name=cloud_service_name,
+                deployment_name=cloud_service_name
+            )
+        except Exception as e:
+            raise AzureReservedIpAssociateError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
+        return result.request_id
+
+    def disassociate(self, name, cloud_service_name):
+        try:
+            result = self.service.disassociate_reserved_ip_address(
+                name=name,
+                service_name=cloud_service_name,
+                deployment_name=cloud_service_name
+            )
+        except Exception as e:
+            raise AzureReservedIpDisAssociateError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
         return result.request_id
