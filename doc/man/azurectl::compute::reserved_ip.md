@@ -18,8 +18,24 @@ __azurectl__ compute reserved-ip delete --name=*reserved_ip_name*
 
    [--wait]
 
+__azurectl__ compute reserved-ip associate --name=*reserved-ip-name* --cloud-service-name=*name*
+
+   [--wait]
+
+__azurectl__ compute reserved-ip disassociate --name=*reserved-ip-name* --cloud-service-name=*name*
+
+   [--wait]
+
 
 # DESCRIPTION
+
+## __associate__
+
+Associate an existing reserved IP address to a deployment
+
+## __disassociate__
+
+Disassociate an existing reserved IP address from the given deployment
 
 ## __create__
 
@@ -38,6 +54,10 @@ List IP addresses reserved within this account.
 List information about a single IP address reservation.
 
 # OPTIONS
+
+## __--cloud-service-name=*name*__
+
+Name of the cloud service to use for associate or disassociate a reserved IP address
 
 ## __--name__
 
