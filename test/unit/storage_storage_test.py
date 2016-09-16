@@ -1,8 +1,9 @@
+import datetime
 import sys
 import mock
 from mock import patch
 from mock import call
-
+from urlparse import urlparse
 
 from test_helper import *
 
@@ -17,6 +18,16 @@ from collections import namedtuple
 class TestStorage:
     def setup(self):
         account = mock.Mock()
+        account.get_blob_service_host_base = mock.Mock(
+            return_value='core.windows.net'
+        )
+        account.storage_name = mock.Mock(
+            return_value='mock-storage-name'
+        )
+        account.storage_key = mock.Mock(
+            return_value='bW9jay1zdG9yYWdlLWtleQ=='
+            # base64-encoding of 'mock-storage-key'
+        )
         credentials = namedtuple(
             'credentials',
             ['private_key', 'certificate', 'subscription_id']
@@ -125,3 +136,28 @@ class TestStorage:
         self.storage.print_upload_status()
         assert self.storage.upload_status == \
             {'current_bytes': 0, 'total_bytes': 0}
+
+    def test_disk_image_sas(self):
+        container = 'mock-container'
+        image = 'foo.vhd'
+        start = datetime.datetime(2015, 1, 1)
+        expiry = datetime.datetime(2015, 12, 31)
+        permissions = 'rl'
+        parsed = urlparse(
+            self.storage.disk_image_sas(
+                container,
+                image,
+                start,
+                expiry,
+                permissions
+            )
+        )
+        assert parsed.scheme == 'https'
+        assert parsed.netloc == self.storage.account_name + \
+            '.blob.core.windows.net'
+        assert parsed.path == '/' + container + '/' + image
+        assert 'st=2015-01-01T00%3A00%3A00Z&' in parsed.query
+        assert 'se=2015-12-31T00%3A00%3A00Z' in parsed.query
+        assert 'sp=rl&' in parsed.query
+        assert 'sr=b&' in parsed.query
+        assert 'sig=' in parsed.query  # can't actively validate the signature

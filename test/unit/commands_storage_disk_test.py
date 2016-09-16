@@ -1,3 +1,4 @@
+import datetime
 import dateutil.parser
 import sys
 import mock
@@ -5,7 +6,7 @@ from mock import patch
 
 
 from test_helper import *
-
+from azurectl.azurectl_exceptions import *
 from azurectl.commands.storage_disk import StorageDiskTask
 
 
@@ -36,11 +37,15 @@ class TestStorageDiskTask:
         self.task.command_args['disk'] = False
         self.task.command_args['delete'] = False
         self.task.command_args['upload'] = False
+        self.task.command_args['sas'] = False
         self.task.command_args['--color'] = False
         self.task.command_args['--source'] = 'some-file'
         self.task.command_args['--max-chunk-size'] = 1024
         self.task.command_args['--quiet'] = False
         self.task.command_args['--blob-name'] = 'some-name'
+        self.task.command_args['--start-datetime'] = '2015-01-01'
+        self.task.command_args['--expiry-datetime'] = '2015-12-31'
+        self.task.command_args['--permissions'] = 'rl'
         self.task.command_args['help'] = False
 
     @patch('azurectl.commands.storage_disk.BackgroundScheduler')
@@ -88,3 +93,64 @@ class TestStorageDiskTask:
         self.task.manual.show.assert_called_once_with(
             'azurectl::storage::disk'
         )
+
+    @raises(AzureInvalidCommand)
+    def test_start_date_validation(self):
+        self.__init_command_args()
+        self.task.command_args['--start-datetime'] = 'foo'
+        self.task.process()
+
+    @raises(AzureInvalidCommand)
+    def test_end_date_validation(self):
+        self.__init_command_args()
+        self.task.command_args['--expiry-datetime'] = 'foo'
+        self.task.process()
+
+    @raises(AzureInvalidCommand)
+    def test_permissions_validation(self):
+        self.__init_command_args()
+        self.task.command_args['--permissions'] = 'a'
+        self.task.process()
+
+    @patch('azurectl.commands.storage_disk.DataOutput')
+    def test_process_storage_disk_sas(self, mock_out):
+        self.__init_command_args()
+        self.task.command_args['sas'] = True
+        self.task.process()
+        start = dateutil.parser.parse(
+            self.task.command_args['--start-datetime']
+        )
+        expiry = dateutil.parser.parse(
+            self.task.command_args['--expiry-datetime']
+        )
+        self.task.storage.disk_image_sas.assert_called_once_with(
+            'foo', self.task.command_args['--blob-name'], start, expiry, 'rl'
+        )
+
+    @patch('azurectl.commands.storage_disk.DataOutput')
+    def test_process_storage_disk_sas_now(self, mock_out):
+        self.__init_command_args()
+        self.task.command_args['--start-datetime'] = 'now'
+        self.task.command_args['sas'] = True
+        self.task.process()
+        expiry = dateutil.parser.parse(
+            self.task.command_args['--expiry-datetime']
+        )
+        self.task.storage.disk_image_sas.assert_called_once_with(
+            'foo', self.task.command_args['--blob-name'], mock.ANY, expiry, 'rl'
+        )
+
+    @patch('azurectl.commands.storage_disk.DataOutput')
+    def test_process_storage_disk_sas_expire(self, mock_out):
+        self.__init_command_args()
+        self.task.command_args['--expiry-datetime'] = '30 days from start'
+        self.task.command_args['sas'] = True
+        self.task.process()
+        start = dateutil.parser.parse(
+            self.task.command_args['--start-datetime']
+        )
+        expiry = start + datetime.timedelta(days=30)
+        self.task.storage.disk_image_sas.assert_called_once_with(
+            'foo', self.task.command_args['--blob-name'], start, expiry, 'rl'
+        )
+

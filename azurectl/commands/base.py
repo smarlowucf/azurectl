@@ -66,17 +66,29 @@ class CliTask(object):
         self.config_file = self.config.config_file
 
     def validate_min_length(self, cmd_arg, min_length):
-        Validations.validate_min_length(
+        return Validations.validate_min_length(
             cmd_arg,
             self.command_args[cmd_arg],
             min_length
         )
 
     def validate_max_length(self, cmd_arg, max_length):
-        Validations.validate_max_length(
+        return Validations.validate_max_length(
             cmd_arg,
             self.command_args[cmd_arg],
             max_length
+        )
+
+    def validate_sas_permissions(self, cmd_arg):
+        return Validations.validate_sas_permissions(
+            cmd_arg,
+            self.command_args[cmd_arg]
+        )
+
+    def validate_date(self, cmd_arg):
+        return Validations.validate_date(
+            cmd_arg,
+            self.command_args[cmd_arg]
         )
 
     def request_wait(self, request_id):
