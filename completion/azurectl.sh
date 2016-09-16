@@ -48,19 +48,55 @@ function _azurectl {
                 return 0
                 ;;
             "reserved-ip")
-                __comp_reply "help show create list --help delete"
+                __comp_reply "help disassociate show create associate list --help delete"
                 return 0
                 ;;
             "vm")
-                __comp_reply "help create regions --help types delete"
+                __comp_reply "help show create reboot regions --help types delete"
                 return 0
                 ;;
             "data-disk")
-                __comp_reply "help show create list --help delete"
+                __comp_reply "help show create list attach detach --help delete"
                 return 0
                 ;;
             "disk")
-                __comp_reply "delete help --help upload"
+                __comp_reply "sas delete help --help upload"
+                return 0
+                ;;
+            "disassociate")
+                __comp_reply "--name --wait --cloud-service-name"
+                return 0
+                ;;
+            "show")
+                __comp_reply "--disk-name attached --name --cloud-service-name --instance-name"
+                return 0
+                ;;
+            "sas")
+                __comp_reply "--blob-name --start-datetime --expiry-datetime --permissions --name"
+                return 0
+                ;;
+            "replication-status")
+                __comp_reply "--name"
+                return 0
+                ;;
+            "create")
+                __comp_reply "--label --disk-basename --size --name --blob-name --wait --password --ssh-private-key-file --cloud-service-name --fingerprint --reserved-ip-name --user --instance-name --instance-type --image-name --custom-data --ssh-port --instance-port --port --idle-timeout --udp --locally-redundant --read-access-geo-redundant --description --geo-redundant --zone-redundant"
+                return 0
+                ;;
+            "reboot")
+                __comp_reply "--cloud-service-name --instance-name --wait"
+                return 0
+                ;;
+            "publish")
+                __comp_reply "--name --msdn --private --wait"
+                return 0
+                ;;
+            "attach")
+                __comp_reply "--lun --wait --cloud-service-name --read-only-cache --instance-name --read-write-cache --no-cache --disk-name --label"
+                return 0
+                ;;
+            "replicate")
+                __comp_reply "--quiet --wait --image-version --regions --sku --name --offer"
                 return 0
                 ;;
             "status")
@@ -71,8 +107,20 @@ function _azurectl {
                 __comp_reply "--management-pem-file --region --management-url --publish-settings-file --name --subscription-id"
                 return 0
                 ;;
-            "show")
-                __comp_reply "--cloud-service-name --lun --instance-name --name"
+            "associate")
+                __comp_reply "--name --wait --cloud-service-name"
+                return 0
+                ;;
+            "update")
+                __comp_reply "--eula --description --image-family --privacy-uri --icon-uri --name --small-icon-uri --label --language --published-date --new-secondary-key --locally-redundant --read-access-geo-redundant --wait --geo-redundant --zone-redundant --new-primary-key"
+                return 0
+                ;;
+            "detach")
+                __comp_reply "--cloud-service-name --lun --instance-name --wait"
+                return 0
+                ;;
+            "wait")
+                __comp_reply "--id"
                 return 0
                 ;;
             "default")
@@ -83,52 +131,24 @@ function _azurectl {
                 __comp_reply "--name"
                 return 0
                 ;;
-            "create")
-                __comp_reply "--lun --cloud-service-name --read-only-cache --instance-name --size --no-cache --read-write-cache --disk-name --label --name --blob-name --password --ssh-private-key-file --fingerprint --reserved-ip-name --user --instance-type --image-name --custom-data --ssh-port --instance-port --port --idle-timeout --udp --locally-redundant --read-access-geo-redundant --description --geo-redundant --zone-redundant"
+            "region")
+                __comp_reply "default add help"
                 return 0
                 ;;
             "list")
                 __comp_reply "--cloud-service-name --instance-name"
                 return 0
                 ;;
-            "update")
-                __comp_reply "--eula --description --image-family --privacy-uri --icon-uri --name --small-icon-uri --label --language --published-date --new-secondary-key --locally-redundant --read-access-geo-redundant --geo-redundant --zone-redundant --new-primary-key"
-                return 0
-                ;;
-            "publish")
-                __comp_reply "--name --msdn --private"
-                return 0
-                ;;
             "upload")
                 __comp_reply "--source --blob-name --max-chunk-size --quiet"
-                return 0
-                ;;
-            "replicate")
-                __comp_reply "--quiet --wait --image-version --regions --sku --name --offer"
                 return 0
                 ;;
             "remove")
                 __comp_reply "--name"
                 return 0
                 ;;
-            "sas")
-                __comp_reply "--name --start-datetime --expiry-datetime --permissions"
-                return 0
-                ;;
-            "wait")
-                __comp_reply "--id"
-                return 0
-                ;;
-            "replication-status")
-                __comp_reply "--name"
-                return 0
-                ;;
-            "region")
-                __comp_reply "default add help"
-                return 0
-                ;;
             "delete")
-                __comp_reply "--cloud-service-name --lun --instance-name --name --delete-disk --blob-name"
+                __comp_reply "--disk-name --name --delete-disk --wait --cloud-service-name --instance-name --blob-name"
                 return 0
                 ;;
             "default")
@@ -137,6 +157,10 @@ function _azurectl {
                 ;;
             "add")
                 __comp_reply "--container-name --name --region --storage-account-name"
+                return 0
+                ;;
+            "attached")
+                __comp_reply "--cloud-service-name --lun --instance-name"
                 return 0
                 ;;
             "--region")
