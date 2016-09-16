@@ -269,6 +269,14 @@ class AzureRequestTimeout(AzureError):
     pass
 
 
+class AzureReservedIpAssociateError(AzureError):
+    pass
+
+
+class AzureReservedIpDisAssociateError(AzureError):
+    pass
+
+
 class AzureReservedIpCreateError(AzureError):
     pass
 
