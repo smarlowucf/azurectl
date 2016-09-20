@@ -37,6 +37,7 @@ commands:
         specified disk image without an access key
     upload
         upload xz compressed disk image to the given container
+        (will automatically skip zero'd blocks)
 
 options:
     --blob-name=<blobname>
