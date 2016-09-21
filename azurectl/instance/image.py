@@ -268,6 +268,8 @@ class Image(object):
             if value is not None:
                 if '_date' in name:
                     value = self.__convert_date_to_azure_format(value)
+                if 'show_in_gui' in name:
+                    value = value.lower() in ("yes", "true", "t", "1")
                 Defaults.set_attribute(image, name, value)
         return image
 

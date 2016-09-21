@@ -35,6 +35,8 @@ usage: azurectl compute image -h | --help
            [--privacy-uri=<privacy_uri>]
            [--published-date=<date>]
            [--small-icon-uri=<small_icon_uri>]
+           [--show-in-gui=<show_in_gui>]
+           [--recommended-vm-size=<recommended_vm_size>]
        azurectl compute image publish --name=<imagename>
            [--private]
            [--msdn]
@@ -307,7 +309,11 @@ class ComputeImageTask(CliTask):
             'published_date':
                 self.command_args['--published-date'],
             'small_icon_uri':
-                self.command_args['--small-icon-uri']
+                self.command_args['--small-icon-uri'],
+            'recommended_vm_size':
+                self.command_args['--recommended-vm-size'],
+            'show_in_gui':
+                self.command_args['--show-in-gui'],
         }
         for name, value in update_elements.iteritems():
             if value is not None:
