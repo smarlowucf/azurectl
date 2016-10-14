@@ -59,6 +59,8 @@ class TestComputeImageTask:
         self.task.command_args['--privacy-uri'] = 'uri'
         self.task.command_args['--published-date'] = 'date'
         self.task.command_args['--small-icon-uri'] = 'uri'
+        self.task.command_args['--show-in-gui'] = False
+        self.task.command_args['--recommended-vm-size'] = 'default'
 
     @patch('azurectl.commands.compute_image.DataOutput')
     def test_process_compute_image_list(self, mock_out):
@@ -203,6 +205,8 @@ class TestComputeImageTask:
     def test_process_compute_image_update(self):
         self.__init_command_args()
         self.task.command_args['update'] = True
+        self.task.command_args['--show-in-gui'] = True
+        self.task.command_args['--recommended-vm-size'] = 'Large'
         self.task.process()
         self.task.image.update.assert_called_once_with(
             'some-image', {
@@ -214,6 +218,8 @@ class TestComputeImageTask:
                 'label': 'label',
                 'small_icon_uri': 'uri',
                 'published_date': 'date',
-                'privacy_uri': 'uri'
+                'privacy_uri': 'uri',
+                'show_in_gui': True,
+                'recommended_vm_size': 'Large'
             }
         )

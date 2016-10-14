@@ -72,6 +72,9 @@ class TestImage:
         self.os_image.small_icon_uri = 'OpenSuse12_45.png'
         self.os_image.published_date = '2016-01-20'
         self.os_image.privacy_uri = 'http://privacy.uri'
+        self.os_image.show_in_gui = 'true'
+        self.os_image.recommended_vm_size = 'large'
+
 
         self.os_image_updated = mock.Mock()
         self.os_image_updated.eula = 'eula'
@@ -83,6 +86,8 @@ class TestImage:
         self.os_image_updated.small_icon_uri = 'OpenSuse12_45.png'
         self.os_image_updated.published_date = '2016-01-20T00:00:00Z'
         self.os_image_updated.privacy_uri = 'http://privacy.uri/'
+        self.os_image_updated.show_in_gui = True
+        self.os_image_updated.recommended_vm_size = 'large'
 
         account = AzureAccount(
             Config(
@@ -344,7 +349,9 @@ class TestImage:
             'label': self.os_image.label,
             'small_icon_uri': self.os_image.small_icon_uri,
             'published_date': self.os_image.published_date,
-            'privacy_uri': self.os_image.privacy_uri
+            'privacy_uri': self.os_image.privacy_uri,
+            'show_in_gui': self.os_image.show_in_gui,
+            'recommended_vm_size': self.os_image.recommended_vm_size
         }
 
         self.image.update('some-name', update_record)
@@ -367,6 +374,10 @@ class TestImage:
             self.os_image_updated.published_date
         assert self.os_image.small_icon_uri in \
             self.os_image_updated.small_icon_uri
+        assert self.os_image.show_in_gui == \
+            self.os_image_updated.show_in_gui
+        assert self.os_image.recommended_vm_size == \
+            self.os_image_updated.recommended_vm_size
 
         self.service.update_os_image_from_image_reference.assert_called_once_with(
             'some-name', self.os_image
