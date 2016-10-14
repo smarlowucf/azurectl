@@ -112,7 +112,7 @@ function _azurectl {
                 return 0
                 ;;
             "update")
-                __comp_reply "--eula --description --image-family --privacy-uri --icon-uri --name --small-icon-uri --label --language --published-date --new-secondary-key --locally-redundant --read-access-geo-redundant --wait --geo-redundant --zone-redundant --new-primary-key"
+                __comp_reply "--recommended-vm-size --eula --description --image-family --privacy-uri --icon-uri --name --small-icon-uri --label --show-in-gui --language --published-date --new-secondary-key --locally-redundant --read-access-geo-redundant --wait --geo-redundant --zone-redundant --new-primary-key"
                 return 0
                 ;;
             "detach")
