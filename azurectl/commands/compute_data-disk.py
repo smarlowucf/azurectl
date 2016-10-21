@@ -46,6 +46,8 @@ commands:
     delete
         delete the specified data disk. The call will fail if the disk
         is still attached to an instance
+    attach
+        attach the specified data disk to the selected virtual machine
     detach
         detach a data disk from the selected virtual machine and retain the
         data disk vhd file
