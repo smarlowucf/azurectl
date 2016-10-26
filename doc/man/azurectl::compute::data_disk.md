@@ -7,16 +7,20 @@ hard disk (VHD) image in Azure storage.
 
 # SYNOPSIS
 
-__azurectl__ compute data-disk create --cloud-service-name=*name* --size=*disk-size-in-GB*
+__azurectl__ compute data-disk create --disk-basename=*name*
+
+    [--size=disk-size-in-GB]
+    [--label=label]
+
+__azurectl__ compute data-disk delete --disk-name=*name*
+
+__azurectl__ compute data-disk attach --cloud-service-name=*name* --disk-name=*name*
 
     [--instance-name=name]
     [--label=label]
-    [--disk-name=name]
     [--lun=lun]
     [--no-cache|--read-only-cache|--read-write-cache]
     [--wait]
-
-__azurectl__ compute data-disk delete --disk-name=*name*
 
 __azurectl__ compute data-disk detach --cloud-service-name=*name* --lun=*lun*
 
@@ -41,6 +45,10 @@ Create a new, empty data disk attached to the specified instance. The data disk 
 ## __delete__
 
 Delete the specified data disk. The call will fail if the disk is still attached to an instance.
+
+## __attach__
+
+Attach the specified data disk to the selected virtual machine. Once the operation was successful, a new storage block device will appear in the virtual machine.
 
 ## __detach__
 
@@ -82,7 +90,7 @@ The logical unit number where the disk will be mounted. Must be an integer betwe
 
 ## __--size=disk-size-in-GB__
 
-The volume of storage capacity, in GB, that will be provisioned for this disk. Must be an integer, and less than 1024 (~ 1TB).
+The volume of storage capacity, in GB, that will be provisioned for this disk. Must be an integer, and less than 1024 (~ 1TB). If not specified the default disk size is set to 10GB.
 
 ## CACHING OPTIONS
 
