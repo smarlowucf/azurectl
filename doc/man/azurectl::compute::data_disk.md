@@ -90,7 +90,7 @@ The logical unit number where the disk will be mounted. Must be an integer betwe
 
 ## __--size=disk-size-in-GB__
 
-The volume of storage capacity, in GB, that will be provisioned for this disk. Must be an integer, and less than 1024 (~ 1TB).
+The volume of storage capacity, in GB, that will be provisioned for this disk. Must be an integer, and less than 1024 (~ 1TB). If not specified the default disk size is set to 10GB.
 
 ## CACHING OPTIONS
 
