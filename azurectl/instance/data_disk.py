@@ -376,5 +376,6 @@ class DataDisk(object):
             creator_os + original_size + current_size + \
             disk_geometry + disk_type + checksum + unique_id + saved_reserved
 
-        with open(temporary_file.name, 'wb') as vhd:
+        with open(temporary_file.name, 'ab') as vhd:
+            vhd.truncate(byte_size - 512)
             vhd.write(bytes(blob_data))
