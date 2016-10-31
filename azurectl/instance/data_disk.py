@@ -376,5 +376,8 @@ class DataDisk(object):
             creator_os + original_size + current_size + \
             disk_geometry + disk_type + checksum + unique_id + saved_reserved
 
-        with open(temporary_file.name, 'wb') as vhd:
+        with open(temporary_file.name, 'ab') as vhd:
+            vhd.truncate(byte_size)
+            # append the footer to the end of the fixed size VHD.
+            # The footer is not populated to the guest
             vhd.write(bytes(blob_data))
