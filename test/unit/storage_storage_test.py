@@ -1,4 +1,5 @@
 import datetime
+import os
 import sys
 import mock
 from mock import patch
@@ -125,6 +126,41 @@ class TestStorage:
             call(stream, None, 5)
         ]
         stream.close.assert_called_once_with()
+
+    @raises(AzureStorageUploadError)
+    @patch('azurectl.storage.storage.PageBlobService')
+    @patch('azurectl.storage.storage.PageBlob')
+    def test_upload_empty_raises(self, mock_page_blob_class, mock_blob_service):
+        gb = 1073741824
+        footer = os.urandom(512)
+        name = "test-image-name"
+
+        mock_page_blob = mock.Mock()
+        mock_page_blob.blob_service.update_page.side_effect = Exception
+        mock_page_blob_class.return_value = mock_page_blob
+        self.storage.upload_empty_image(gb, footer, name)
+
+    @patch('azurectl.storage.storage.PageBlobService')
+    @patch('azurectl.storage.storage.PageBlob')
+    def test_upload_empty_image_exception(self, mock_page_blob_class, mock_blob_service):
+        gb = 1073741824
+        footer = os.urandom(512)
+        name = "test-image-name"
+
+        mock_page_blob = mock.Mock()
+        mock_page_blob_class.return_value = mock_page_blob
+        self.storage.upload_empty_image(gb, footer, name)
+
+        mock_page_blob.blob_service.update_page.assert_called_once_with(
+            self.storage.container,
+            name,
+            footer,
+            gb - 512,
+            gb - 1
+        )
+
+
+
 
     @patch('azurectl.storage.storage.PageBlobService.delete_blob')
     @raises(AzureStorageDeleteError)
