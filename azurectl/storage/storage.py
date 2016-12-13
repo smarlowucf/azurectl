@@ -83,7 +83,7 @@ class Storage(object):
                 '%s: %s' % (type(e).__name__, format(e))
             )
 
-    def upload_empty_image(self, image_size, footer, name, max_chunk_size=None, max_attempts=5):
+    def upload_empty_image(self, image_size, footer, name):
         blob_service = PageBlobService(
             self.account_name,
             self.account_key,
