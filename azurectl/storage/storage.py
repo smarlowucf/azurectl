@@ -83,6 +83,30 @@ class Storage(object):
                 '%s: %s' % (type(e).__name__, format(e))
             )
 
+    def upload_empty_image(self, image_size, footer, name, max_chunk_size=None, max_attempts=5):
+        blob_service = PageBlobService(
+            self.account_name,
+            self.account_key,
+            endpoint_suffix=self.blob_service_host_base
+        )
+        try:
+            page_blob = PageBlob(
+                blob_service, name, self.container, image_size
+            )
+            start_range = image_size - 512
+            end_range = image_size - 1
+            page_blob.blob_service.update_page(
+                self.container,
+                name,
+                footer,
+                start_range,
+                end_range
+            )
+        except Exception as e:
+            raise AzureStorageUploadError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
+
     def disk_image_sas(
         self,
         container_name,

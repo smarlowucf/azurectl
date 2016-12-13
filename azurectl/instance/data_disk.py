@@ -14,7 +14,6 @@
 from azure.common import AzureMissingResourceHttpError
 from azure.storage.blob.pageblobservice import PageBlobService
 from datetime import datetime
-from tempfile import NamedTemporaryFile
 from builtins import bytes
 from uuid import uuid4
 
@@ -43,14 +42,14 @@ class DataDisk(object):
         """
             Create new data disk
         """
-        disk_vhd = NamedTemporaryFile()
-        self.__generate_vhd(disk_vhd, disk_size_in_gb)
+        footer = self.__generate_vhd_footer(disk_size_in_gb)
         disk_name = self.__generate_filename(identifier)
+        size_in_bytes = int(disk_size_in_gb) * 1073741824
         try:
             storage = Storage(
                 self.account, self.account.storage_container()
             )
-            storage.upload(disk_vhd.name, disk_name)
+            storage.upload_empty_image(size_in_bytes, footer, disk_name)
         except Exception as e:
             raise AzureDataDiskCreateError(
                 '%s: %s' % (type(e).__name__, format(e))
@@ -268,7 +267,7 @@ class DataDisk(object):
             'name': disk.name,
         }
 
-    def __generate_vhd(self, temporary_file, disk_size_in_gb):
+    def __generate_vhd_footer(self, disk_size_in_gb):
         """
         Kudos to Steven Edouard: https://gist.github.com/sedouard
         who provided the following:
@@ -375,9 +374,4 @@ class DataDisk(object):
             timestamp + creator_app + creator_version + \
             creator_os + original_size + current_size + \
             disk_geometry + disk_type + checksum + unique_id + saved_reserved
-
-        with open(temporary_file.name, 'ab') as vhd:
-            vhd.truncate(byte_size)
-            # append the footer to the end of the fixed size VHD.
-            # The footer is not populated to the guest
-            vhd.write(bytes(blob_data))
+        return bytes(blob_data)
