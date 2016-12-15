@@ -203,6 +203,30 @@ class TestDataDisk:
             has_operating_system=False,
             os='Linux',
         )
+    @patch('azurectl.instance.data_disk.Storage')
+    def test_sizes_on_create(self, mock_storage_class):
+        mock_storage = mock.Mock()
+        mock_storage_class.return_value = mock_storage
+        # size in GB * bytes/GB + 512 bytes for the footer
+        blob_size_in_bytes = self.disk_size * 1073741824 + 512
+        self.data_disk._DataDisk__generate_vhd_footer = mock.Mock(
+            return_value='mock-footer'
+        )
+        self.data_disk._DataDisk__generate_filename = mock.Mock(
+            return_value='mock-filename'
+        )
+
+        self.data_disk.create(
+            identifier=self.instance_name,
+            disk_size_in_gb=self.disk_size,
+            label=self.disk_label
+        )
+        self.data_disk._DataDisk__generate_vhd_footer.assert_called_once_with(
+            self.disk_size
+        )
+        mock_storage.upload_empty_image.assert_called_once_with(
+            blob_size_in_bytes, 'mock-footer', 'mock-filename'
+        )
 
     def test_show(self):
         # given
