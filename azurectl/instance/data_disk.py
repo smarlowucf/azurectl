@@ -44,7 +44,7 @@ class DataDisk(object):
         """
         footer = self.__generate_vhd_footer(disk_size_in_gb)
         disk_name = self.__generate_filename(identifier)
-        size_in_bytes = int(disk_size_in_gb) * 1073741824
+        size_in_bytes = int(disk_size_in_gb) * 1073741824 + 512
         try:
             storage = Storage(
                 self.account, self.account.storage_container()
