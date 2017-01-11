@@ -18,7 +18,8 @@ class TestRequestResult:
         self.request_result = RequestResult(42)
         self.service = mock.Mock()
 
-    def test_status(self):
+    @patch('azurectl.management.request_result.time.sleep')
+    def test_status(self, mock_time):
         self.request_result.status(self.service)
         self.service.get_operation_status.assert_called_once_with(42)
 
@@ -53,6 +54,7 @@ class TestRequestResult:
         self.service.get_operation_status.assert_called_once_with(42)
 
     @raises(AzureRequestStatusError)
-    def test_status_error(self):
+    @patch('azurectl.management.request_result.time.sleep')
+    def test_status_error(self, mock_time):
         self.service.get_operation_status.side_effect = AzureRequestStatusError
         self.request_result.status(self.service)
