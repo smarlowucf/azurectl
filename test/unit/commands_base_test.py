@@ -108,23 +108,12 @@ class TestCliTask:
         task = CliTask()
         request = mock.Mock()
         operation = Operation()
-        operation.status = 'OK'
-        request.status.return_value = operation
-        mock_request.return_value = request
-        task.account = mock.Mock()
-        assert task.request_status(42)['result'] == 'OK'
-        mock_request.assert_called_once_with(42)
-
-    @patch('azurectl.commands.base.RequestResult')
-    def test_request_failed_status(self, mock_request):
-        sys.argv = [sys.argv[0], 'compute', 'vm', 'types']
-        task = CliTask()
-        request = mock.Mock()
-        operation = Operation()
         operation.status = 'Failed'
         operation.error.message = 'Unable to get vm types.'
         request.status.return_value = operation
         mock_request.return_value = request
         task.account = mock.Mock()
-        assert task.request_status(42)['message'] == 'Unable to get vm types.'
+        status = task.request_status(42)
+        assert status['result'] == 'Failed'
+        assert status['message'] == 'Unable to get vm types.'
         mock_request.assert_called_once_with(42)
