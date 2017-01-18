@@ -12,6 +12,8 @@ import azurectl
 from azurectl.commands.base import CliTask
 from azurectl.azurectl_exceptions import *
 
+from azure.servicemanagement.models import Operation
+
 
 class TestCliTask:
     @raises(SystemExit)
@@ -105,8 +107,24 @@ class TestCliTask:
         sys.argv = [sys.argv[0], 'compute', 'vm', 'types']
         task = CliTask()
         request = mock.Mock()
-        request.status.return_value = 'OK'
+        operation = Operation()
+        operation.status = 'OK'
+        request.status.return_value = operation
         mock_request.return_value = request
         task.account = mock.Mock()
-        assert task.request_status(42) == 'OK'
+        assert task.request_status(42)['result'] == 'OK'
+        mock_request.assert_called_once_with(42)
+
+    @patch('azurectl.commands.base.RequestResult')
+    def test_request_failed_status(self, mock_request):
+        sys.argv = [sys.argv[0], 'compute', 'vm', 'types']
+        task = CliTask()
+        request = mock.Mock()
+        operation = Operation()
+        operation.status = 'Failed'
+        operation.error.message = 'Unable to get vm types.'
+        request.status.return_value = operation
+        mock_request.return_value = request
+        task.account = mock.Mock()
+        assert task.request_status(42)['message'] == 'Unable to get vm types.'
         mock_request.assert_called_once_with(42)

@@ -101,4 +101,10 @@ class CliTask(object):
         if self.account:
             service = self.account.get_management_service()
             request_result = RequestResult(request_id)
-            return format(request_result.status(service))
+            result_status = request_result.status(service)
+            status = {'result': result_status.status}
+
+            if result_status.status == 'Failed':
+                status['message'] = result_status.error.message
+
+            return status
