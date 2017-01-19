@@ -38,12 +38,19 @@ class RequestResult(object):
         """
             query status for given request id
         """
-        try:
-            return service.get_operation_status(self.request_id)
-        except Exception as e:
-            raise AzureRequestStatusError(
-                '%s: %s' % (type(e).__name__, format(e))
+        for count in range(self.request_timeout_count):
+            try:
+                time.sleep(self.request_timeout)
+                return service.get_operation_status(self.request_id)
+            except Exception as e:
+                status_exception = e
+
+        raise AzureRequestStatusError(
+            '%s: %s' % (
+                type(status_exception).__name__,
+                format(status_exception)
             )
+        )
 
     def wait_for_request_completion(self, service):
         """
