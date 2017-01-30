@@ -32,6 +32,10 @@ usage: azurectl compute vm -h | --help
            [--wait]
        azurectl compute vm regions
        azurectl compute vm show --cloud-service-name=<name>
+       azurectl compute vm shutdown --cloud-service-name=<name>
+           [--instance-name=<name>]
+           [--deallocate-resources]
+           [--wait]
        azurectl compute vm types
        azurectl compute vm delete --cloud-service-name=<name>
            [--instance-name=<name>]
@@ -55,6 +59,8 @@ commands:
     show
         Retrieves system properties for the specified cloud service
         and the virtual machine instances it contains
+    shutdown
+        shuts down virtual machine instance
     types
         list available virtual machine types
 
@@ -65,6 +71,11 @@ options:
     --custom-data=<string-or-file>
         a string of data or path to a file that will be injected into the new
         virtual machine
+    --deallocate-resources
+        in a shutdown request, shuts down the Virtual Machine and releases
+        the compute resources. You are not billed for the compute resources
+        that this Virtual Machine uses. If a static Virtual Network IP
+        address is assigned to the Virtual Machine, it is reserved
     --fingerprint=<thumbprint>
         thumbprint of an already existing certificate in the
         cloud service used for ssh public key authentication
@@ -149,6 +160,8 @@ class ComputeVmTask(CliTask):
                     self.__delete_cloud_service()
             elif self.command_args['reboot']:
                 self.__reboot_instance()
+            elif self.command_args['shutdown']:
+                self.__shutdown_instance()
 
     def __help(self):
         if self.command_args['help']:
@@ -260,6 +273,23 @@ class ComputeVmTask(CliTask):
             self.request_wait(request_id)
         self.result.add(
             'reboot:' + instance_name,
+            request_id
+        )
+        self.out.display()
+
+    def __shutdown_instance(self):
+        instance_name = self.command_args['--instance-name']
+        if not instance_name:
+            instance_name = self.command_args['--cloud-service-name']
+        request_id = self.vm.shutdown_instance(
+            self.command_args['--cloud-service-name'],
+            instance_name,
+            self.command_args['--deallocate-resources']
+        )
+        if self.command_args['--wait']:
+            self.request_wait(request_id)
+        self.result.add(
+            'shutdown:' + instance_name,
             request_id
         )
         self.out.display()
