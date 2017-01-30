@@ -90,7 +90,7 @@ Note: customdata is limited to 64K; using a file larger than 64K will fail.
 
 ## __--deallocate-resources__
 
-In a shutdown request, shuts down the Virtual Machine and releases the compute resources. You are not billed for the compute resources that this Virtual Machine uses. If a static Virtual Network IP address is assigned to the Virtual Machine, it is reserved.
+In a shutdown request, shuts down the Virtual Machine and releases the compute resources. You are not billed for the compute resources that this Virtual Machine uses. If a static Virtual Network IP address is assigned to the Virtual Machinethe status of the IP address is changed to become a reserved IP address.
 
 ## __--fingerprint=thumbprint__
 
