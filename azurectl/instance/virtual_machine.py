@@ -199,8 +199,8 @@ class VirtualMachine(object):
             delete a virtual disk image instance
         """
         try:
-            result = self.service.delete_deployment(
-                cloud_service_name, instance_name
+            result = self.service.delete_role(
+                cloud_service_name, cloud_service_name, instance_name, True
             )
             return(format(result.request_id))
         except Exception as e:
