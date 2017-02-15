@@ -262,8 +262,8 @@ class TestVirtualMachine:
 
     def test_delete_instance(self):
         self.vm.delete_instance('cloud-service', 'foo')
-        self.service.delete_deployment.assert_called_once_with(
-            'cloud-service', 'foo'
+        self.service.delete_role.assert_called_once_with(
+            'cloud-service', 'cloud-service', 'foo', True
         )
 
     @raises(AzureStorageNotReachableByCloudServiceError)
@@ -328,7 +328,7 @@ class TestVirtualMachine:
 
     @raises(AzureVmDeleteError)
     def test_delete_instance_raise_vm_delete_error(self):
-        self.service.delete_deployment.side_effect = AzureVmDeleteError
+        self.service.delete_role.side_effect = AzureVmDeleteError
         self.vm.delete_instance('cloud-service', 'foo')
 
     @raises(AzureVmRebootError)
