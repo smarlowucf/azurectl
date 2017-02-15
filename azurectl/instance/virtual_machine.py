@@ -24,6 +24,7 @@ from ..azurectl_exceptions import (
     AzureVmCreateError,
     AzureVmDeleteError,
     AzureVmRebootError,
+    AzureVmShutdownError,
     AzureStorageNotReachableByCloudServiceError,
     AzureImageNotReachableByCloudServiceError
 )
@@ -205,6 +206,31 @@ class VirtualMachine(object):
             return(format(result.request_id))
         except Exception as e:
             raise AzureVmDeleteError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
+
+    def shutdown_instance(
+        self, cloud_service_name, instance_name, deallocate_resources=False
+    ):
+        """
+            Shuts down the specified virtual disk image instance
+            If deallocate_resources is set to true the machine shuts down
+            and releases the compute resources. You are not billed for
+            the compute resources that this Virtual Machine uses in this case.
+            If a static Virtual Network IP address is assigned to the
+            Virtual Machine, it is reserved.
+        """
+        post_shutdown_action = 'Stopped'
+        if deallocate_resources:
+            post_shutdown_action = 'StoppedDeallocated'
+        try:
+            result = self.service.shutdown_role(
+                cloud_service_name, cloud_service_name,
+                instance_name, post_shutdown_action
+            )
+            return(format(result.request_id))
+        except Exception as e:
+            raise AzureVmShutdownError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
 

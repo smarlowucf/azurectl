@@ -27,6 +27,11 @@ __azurectl__ compute vm regions
 
 __azurectl__ compute vm show --cloud-service-name=*name*
 
+__azurectl__ compute vm shutdown --cloud-service-name=*name*
+    [--instance-name=name]
+    [--deallocate-resources]
+    [--wait]
+
 __azurectl__ compute vm types
 
 __azurectl__ compute vm delete --cloud-service-name=*name*
@@ -56,6 +61,10 @@ List all Azure regions which are accessible via the supplied account subscriptio
 
 Retrieves system properties for the specified cloud service and the virtual machine instances it contains and show it.
 
+## __shutdown__
+
+Shuts down a cloud service virtual machine. The same rules with regards to the reboot of an instance applies in terms of specifying which machine should be shut down.
+
 ## __types__
 
 List available instance types and their attributes
@@ -78,6 +87,10 @@ A string of data, or a path to a file whose contents will be injected into the n
 The provided data or file content will be base64-encoded. During provisioning, waagent will store this data on the VM as both an attribute of __/var/lib/waagent/ovf-env.xml__ and as the sole contents of __/var/lib/waagent/CustomData__. By default, waagent will store the data on the VM as it was encoded during transport; the contents will need to be base64-decoded in order to access the original custom data. Waagent can be configured to decode the custom data and write out the original data, by changing the __Provisioning.DecodeCustomData__ attribute in __/etc/waagent.conf__.
 
 Note: customdata is limited to 64K; using a file larger than 64K will fail.
+
+## __--deallocate-resources__
+
+In a shutdown request, shuts down the Virtual Machine and releases the compute resources. You are not billed for the compute resources that this Virtual Machine uses. If a static Virtual Network IP address is assigned to the Virtual Machinethe status of the IP address is changed to become a reserved IP address.
 
 ## __--fingerprint=thumbprint__
 
