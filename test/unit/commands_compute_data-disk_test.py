@@ -64,6 +64,7 @@ class TestComputeDataDiskTask:
             '--disk-basename': None,
             '--label': None,
             '--disk-name': None,
+            '--blob-name': None,
             '--lun': None,
             '--no-cache': False,
             '--read-only-cache': False,
@@ -123,6 +124,61 @@ class TestComputeDataDiskTask:
             label=self.disk_label,
             lun=self.lun
         )
+
+    def test_attach_with_blob_name(self):
+        self.__init_command_args({
+            'attach': True,
+            '--cloud-service-name': self.cloud_service_name,
+            '--instance-name': self.instance_name,
+            '--label': self.disk_label,
+            '--blob-name': self.disk_filename,
+            '--lun': format(self.lun)
+        })
+        # when
+        self.task.process()
+        # then
+        self.task.data_disk.attach.assert_called_once_with(
+            None,
+            self.cloud_service_name,
+            self.instance_name,
+            label=self.disk_label,
+            lun=self.lun,
+            blob_name=self.disk_filename
+        )
+
+    def test_attach_with_disk_name_and_blob_name(self):
+        self.__init_command_args({
+            'attach': True,
+            '--cloud-service-name': self.cloud_service_name,
+            '--instance-name': self.instance_name,
+            '--label': self.disk_label,
+            '--disk-name': self.disk_name,
+            '--blob-name': self.disk_filename,
+            '--lun': format(self.lun)
+        })
+        # when
+        self.task.process()
+        # then
+        self.task.data_disk.attach.assert_called_once_with(
+            self.disk_name,
+            self.cloud_service_name,
+            self.instance_name,
+            label=self.disk_label,
+            lun=self.lun,
+            blob_name=self.disk_filename
+        )
+
+    @raises(AzureInvalidCommand)
+    def test_disk_name_or_blob_name_is_required(self):
+        self.__init_command_args({
+            'attach': True,
+            '--cloud-service-name': self.cloud_service_name,
+            '--instance-name': self.instance_name,
+            '--label': self.disk_label,
+            '--lun': format(self.lun)
+        })
+        # when
+        self.task.process()
 
     def test_attach_with_cache_method(self):
         sets = [

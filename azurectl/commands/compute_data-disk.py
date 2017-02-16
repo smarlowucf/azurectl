@@ -20,8 +20,10 @@ usage: azurectl compute data-disk -h | --help
            [--size=<disk-size-in-GB>]
            [--label=<label>]
        azurectl compute data-disk delete --disk-name=<name>
-       azurectl compute data-disk attach --cloud-service-name=<name> --disk-name=<name>
+       azurectl compute data-disk attach --cloud-service-name=<name>
            [--instance-name=<name>]
+           [--disk-name=<name>]
+           [--blob-name=<name>]
            [--label=<label>]
            [--lun=<lun>]
            [--no-cache|--read-only-cache|--read-write-cache]
@@ -48,6 +50,7 @@ commands:
         is still attached to an instance
     attach
         attach the specified data disk to the selected virtual machine
+        NOTE: either disk-name or blob-name is required
     detach
         detach a data disk from the selected virtual machine and retain the
         data disk vhd file
@@ -61,10 +64,12 @@ commands:
         disk connected to that lun will be shown
 
 options:
+    --blob-name=<name>
+        name of the VHD file in the current storage container
     --cloud-service-name=<name>
         name of the cloud service where the virtual machine may be found
     --disk-name=<name>
-        name of the data disk as registered in the image repository
+        name of the data disk as registered in the data-disk list
     --disk-basename=<name>
         data disk basename used as part of the complete data disk name.
         Usually this is set to the instance name this data disk should be
@@ -190,11 +195,17 @@ class ComputeDataDiskTask(CliTask):
         log.info('Deleted data disk %s', self.command_args['--disk-name'])
 
     def __attach(self):
+        self.validate_at_least_one_argument_is_set([
+            '--disk-name',
+            '--blob-name'
+        ])
         optional_args = {}
         if self.command_args['--label']:
             optional_args['label'] = self.command_args['--label']
         if self.command_args['--lun']:
             optional_args['lun'] = int(self.command_args['--lun'])
+        if self.command_args['--blob-name']:
+            optional_args['blob_name'] = self.command_args['--blob-name']
         if (
             self.command_args['--no-cache'] or
             self.command_args['--read-only-cache'] or

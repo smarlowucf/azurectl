@@ -91,6 +91,12 @@ class CliTask(object):
             self.command_args[cmd_arg]
         )
 
+    def validate_at_least_one_argument_is_set(self, keys=[]):
+        return Validations.validate_at_least_one_argument_is_set(
+            self.command_args,
+            keys
+        )
+
     def request_wait(self, request_id):
         if self.account:
             service = self.account.get_management_service()
