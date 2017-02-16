@@ -56,7 +56,7 @@ class TestDataDisk:
         self.time_string = datetime.isoformat(self.timestamp).replace(':', '_')
         self.account = account
 
-    @raises(AzureDataDiskCreateError)
+    @raises(AzureDataDiskAttachError)
     def test_attach_error(self):
         # given
         self.service.add_data_disk.side_effect = Exception
@@ -203,6 +203,7 @@ class TestDataDisk:
             has_operating_system=False,
             os='Linux',
         )
+
     @patch('azurectl.instance.data_disk.Storage')
     def test_sizes_on_create(self, mock_storage_class):
         mock_storage = mock.Mock()

@@ -22,6 +22,7 @@ from ..defaults import Defaults
 from ..storage.storage import Storage
 
 from ..azurectl_exceptions import (
+    AzureDataDiskAttachError,
     AzureDataDiskCreateError,
     AzureDataDiskShowError,
     AzureDataDiskDeleteError,
@@ -169,7 +170,7 @@ class DataDisk(object):
             )
             self.attached_lun = lun
         except Exception as e:
-            raise AzureDataDiskCreateError(
+            raise AzureDataDiskAttachError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
         return result.request_id
