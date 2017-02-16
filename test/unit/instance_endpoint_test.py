@@ -171,6 +171,15 @@ class TestEndpoint:
         # then
         assert result == expected
 
+    def test_list_no_endpoints(self):
+        # given
+        self.endpoint.delete(self.endpoint_name)
+        expected = []
+        # when
+        result = self.endpoint.list()
+        # then
+        assert result == expected
+
     # then
     @raises(AzureEndpointListError)
     def test_list_upstream_exceptions(self):

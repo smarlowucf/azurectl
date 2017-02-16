@@ -46,7 +46,11 @@ class Endpoint(object):
             raise AzureEndpointListError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
-        results = config.input_endpoints if config.input_endpoints else []
+
+        if config.input_endpoints:
+            results = config.input_endpoints
+        else:
+            results = []
         return [self.__decorate(result) for result in results]
 
     def show(self, name):
@@ -57,7 +61,8 @@ class Endpoint(object):
                 '%s: %s' % (type(e).__name__, format(e))
             )
 
-        # If there are no endpoints the list is none not []
+        # If there are no endpoints the input_endpoints
+        # attribute is None.
         if config.input_endpoints:
             for endpoint in config.input_endpoints:
                 if endpoint.name == name:
@@ -88,8 +93,8 @@ class Endpoint(object):
                 enable_direct_server_return=False,
             )
 
-            # If there are no endpoints the list is none so create
-            # new list of endpoints.
+            # If there are no endpoints the input_endpoints
+            # attribute is None. Thus create and set new instance.
             if not config.input_endpoints:
                 config.input_endpoints = ConfigurationSetInputEndpoints()
 
