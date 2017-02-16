@@ -58,7 +58,7 @@ class DataDisk(object):
         disk_url = self.__data_disk_url(disk_name)
         args = {
             'media_link': disk_url,
-            'name': disk_name.replace('.vhd', ''),
+            'name': self.__strip_platform_extension(disk_name),
             'has_operating_system': False,
             'os': 'Linux'
         }
@@ -227,6 +227,13 @@ class DataDisk(object):
             self.account.storage_container(),
             filename
         )
+
+    def __strip_platform_extension(self, name):
+        extensions = ['.vhd', '.vhdfixed']
+
+        for extension in extensions:
+            if name.endswith(extension):
+                return name[:-len(extension)]
 
     def __decorate_attached_disk(self, data_virtual_hard_disk):
         return {
