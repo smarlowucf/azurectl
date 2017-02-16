@@ -70,6 +70,10 @@ class TestEndpoint:
                 idle_timeout_in_minutes=self.idle_timeout
             )
             network_config.input_endpoints.input_endpoints.append(endpoint)
+        else:
+            # Azure sets endpoints list to None if all
+            # endpoints are deleted.
+            network_config.input_endpoints = None
         role.configuration_sets.configuration_sets.append(network_config)
         return role
 
@@ -85,11 +89,9 @@ class TestEndpoint:
     def test_create(self):
         # given
         self.service.update_role.return_value = self.my_request
-        mock_role = self.mock_role()
+        mock_role = self.mock_role(has_endpoint=False)
         self.service.get_role = mock.Mock(return_value=mock_role)
-        endpoint_len = len(
-            mock_role.configuration_sets[0].input_endpoints
-        )
+        endpoint_len = 0
         # when
         result = self.endpoint.create(
             self.udp_endpoint_name,
@@ -183,7 +185,7 @@ class TestEndpoint:
         self.service.get_role = mock.Mock(return_value=mock_role)
         self.service.update_role.return_value = self.my_request
         # when
-        result = self.endpoint.delete('foo')
+        result = self.endpoint.delete(self.endpoint_name)
         # then
         assert result == self.my_request.request_id
         self.service.update_role.assert_called_once_with(
@@ -204,3 +206,21 @@ class TestEndpoint:
         # when
         self.endpoint.delete(self.endpoint_name)
 
+    @raises(AzureEndpointDeleteError)
+    def test_delete_endpoint_no_endpoints(self):
+        # given
+        mock_role = self.mock_role(has_endpoint=False)
+        self.service.get_role = mock.Mock(return_value=mock_role)
+        self.service.update_role.return_value = self.my_request
+
+        # when
+        self.endpoint.delete('foo')
+
+    @raises(AzureEndpointDeleteError)
+    def test_delete_endpoint_not_found(self):
+        # given
+        mock_role = self.mock_role()
+        self.service.get_role = mock.Mock(return_value=mock_role)
+        self.service.update_role.return_value = self.my_request
+
+        self.endpoint.delete('foo')

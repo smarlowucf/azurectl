@@ -11,7 +11,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from azure.servicemanagement import ConfigurationSetInputEndpoint
+from azure.servicemanagement import (
+    ConfigurationSetInputEndpoint,
+    ConfigurationSetInputEndpoints
+)
 
 # project
 from ..azurectl_exceptions import (
@@ -43,7 +46,7 @@ class Endpoint(object):
             raise AzureEndpointListError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
-        results = config.input_endpoints
+        results = config.input_endpoints if config.input_endpoints else []
         return [self.__decorate(result) for result in results]
 
     def show(self, name):
@@ -53,17 +56,17 @@ class Endpoint(object):
             raise AzureEndpointShowError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
-        result = None
-        for endpoint in config.input_endpoints:
-            if endpoint.name == name:
-                result = endpoint
-                break
-        if result:
-            return self.__decorate(result)
-        else:
-            raise AzureEndpointShowError(
-                "No endpoint named '%s' was found." % name
-            )
+
+        # If there are no endpoints the list is none not []
+        if config.input_endpoints:
+            for endpoint in config.input_endpoints:
+                if endpoint.name == name:
+                    return self.__decorate(endpoint)
+
+        # Endpoint not found
+        raise AzureEndpointShowError(
+            "No endpoint named '%s' was found." % name
+        )
 
     def create(
         self,
@@ -84,6 +87,12 @@ class Endpoint(object):
                 idle_timeout_in_minutes=idle_timeout,
                 enable_direct_server_return=False,
             )
+
+            # If there are no endpoints the list is none so create
+            # new list of endpoints.
+            if not config.input_endpoints:
+                config.input_endpoints = ConfigurationSetInputEndpoints()
+
             config.input_endpoints.input_endpoints.append(new_endpoint)
 
             result = self.service.update_role(
@@ -105,11 +114,23 @@ class Endpoint(object):
         try:
             role = self.__get_role()
             config = self.__get_network_config_for_role(role)
-            new_endpoints = []
-            for endpoint in config.input_endpoints.input_endpoints:
-                if endpoint.name != name:
-                    new_endpoints.append(endpoint)
-            config.input_endpoints.input_endpoints = new_endpoints
+
+            if not config.input_endpoints:
+                raise Exception(
+                    "No endpoints found."
+                )
+
+            for i, endpoint in \
+                    enumerate(config.input_endpoints.input_endpoints):
+                if endpoint.name == name:
+                    del config.input_endpoints.input_endpoints[i]
+                    break
+            else:
+                # If for loop finishes normally no endpoint
+                # exists that matches the name.
+                raise Exception(
+                    "No endpoint named %s was found." % name
+                )
 
             result = self.service.update_role(
                 self.cloud_service_name,
