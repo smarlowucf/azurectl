@@ -139,13 +139,11 @@ class DataDisk(object):
 
     def attach(
         self, disk_name, cloud_service_name, instance_name=None,
-        label=None, lun=None, host_caching=None
+        label=None, lun=None, host_caching=None, blob_name=None
     ):
         """
             Attach existing data disk to the instance
         """
-        disk_url = self.__data_disk_url(disk_name + '.vhd')
-
         if not instance_name:
             instance_name = cloud_service_name
 
@@ -154,10 +152,38 @@ class DataDisk(object):
                 cloud_service_name, instance_name
             )
 
-        args = {
-            'media_link': disk_url,
-            'disk_name': disk_name
-        }
+        if disk_name and not blob_name:
+            # assume existing data-disk
+            args = {
+                'disk_name': disk_name
+            }
+        elif disk_name and blob_name:
+            # create new data-disk based using disk_name
+            args = {
+                'disk_name': disk_name,
+                'source_media_link': self.__data_disk_url(blob_name)
+            }
+        elif not disk_name and blob_name:
+            # find data-disk name for blob_name,
+            # or create a new data-disk for blob_name
+            disk_name = self.__find_existing_disk_name_for_blob_name(
+                blob_name,
+                self.service.list_disks()
+            )
+            if disk_name:
+                args = {
+                    'disk_name': disk_name
+                }
+            else:
+                args = {
+                    'disk_name': self.__strip_platform_extension(blob_name),
+                    'source_media_link': self.__data_disk_url(blob_name)
+                }
+        else:
+            raise AzureDataDiskAttachError(
+                "Neither disk_name nor blob_name was supplied"
+            )
+
         if host_caching:
             args['host_caching'] = host_caching
         if label:
@@ -235,6 +261,17 @@ class DataDisk(object):
         for extension in extensions:
             if name.endswith(extension):
                 return name[:-len(extension)]
+
+    def __find_existing_disk_name_for_blob_name(self, blob_name, disks):
+        """
+            if a data-disk object exists for the given blob name, find it;
+            if not, return None as a signal to generate one.
+        """
+        disk_url = self.__data_disk_url(blob_name)
+        for disk in disks:
+            if disk.media_link == disk_url:
+                return disk.name
+        return None
 
     def __decorate_attached_disk(self, data_virtual_hard_disk):
         return {
