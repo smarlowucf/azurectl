@@ -121,19 +121,19 @@ class Endpoint(object):
             config = self.__get_network_config_for_role(role)
 
             if not config.input_endpoints:
-                raise Exception(
+                raise AzureEndpointDeleteError(
                     "No endpoints found."
                 )
 
-            for i, endpoint in \
+            for index, endpoint in \
                     enumerate(config.input_endpoints.input_endpoints):
                 if endpoint.name == name:
-                    del config.input_endpoints.input_endpoints[i]
+                    del config.input_endpoints.input_endpoints[index]
                     break
             else:
                 # If for loop finishes normally no endpoint
                 # exists that matches the name.
-                raise Exception(
+                raise AzureEndpointDeleteError(
                     "No endpoint named %s was found." % name
                 )
 
@@ -146,6 +146,8 @@ class Endpoint(object):
                 availability_set_name=role.availability_set_name,
                 data_virtual_hard_disks=role.data_virtual_hard_disks
             )
+        except AzureEndpointDeleteError:
+            raise  # re-raise
         except Exception as e:
             raise AzureEndpointDeleteError(
                 '%s: %s' % (type(e).__name__, format(e))
