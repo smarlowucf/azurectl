@@ -57,3 +57,14 @@ class Validations(object):
                 (field_name, self.PREFERRED_DATE_FORMAT)
             )
         return date
+
+    @classmethod
+    def validate_at_least_one_argument_is_set(self, command_args, keys=[]):
+        values = [command_args[key] for key in keys]
+        if any(values):
+            return True
+        else:
+            raise AzureInvalidCommand(
+                'One of the following arguments must be supplied: %s' %
+                ', '.join(keys)
+            )

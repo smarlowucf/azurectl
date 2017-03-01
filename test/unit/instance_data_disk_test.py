@@ -56,7 +56,7 @@ class TestDataDisk:
         self.time_string = datetime.isoformat(self.timestamp).replace(':', '_')
         self.account = account
 
-    @raises(AzureDataDiskCreateError)
+    @raises(AzureDataDiskAttachError)
     def test_attach_error(self):
         # given
         self.service.add_data_disk.side_effect = Exception
@@ -203,6 +203,7 @@ class TestDataDisk:
             has_operating_system=False,
             os='Linux',
         )
+
     @patch('azurectl.instance.data_disk.Storage')
     def test_sizes_on_create(self, mock_storage_class):
         mock_storage = mock.Mock()
@@ -298,7 +299,6 @@ class TestDataDisk:
             self.instance_name,
             self.lun,
             host_caching=self.host_caching,
-            media_link=self.disk_url,
             disk_label=self.disk_label,
             disk_name=self.disk_name
         )
@@ -323,8 +323,99 @@ class TestDataDisk:
             self.cloud_service_name,
             self.cloud_service_name,
             0,
-            media_link=self.disk_url,
             disk_name=self.disk_name
+        )
+
+    def test_attach_by_blob_name(self):
+        '''should send disk_name and source_media_link in order
+        to create a new data-disk'''
+        # given
+        self.service.add_data_disk.return_value = self.my_request
+        self.service.list_disks.return_value = []
+        # when
+        result = self.data_disk.attach(
+            None,
+            self.cloud_service_name,
+            lun=0,
+            blob_name=self.disk_filename
+        )
+        # then
+        self.service.add_data_disk.assert_called_once_with(
+            self.cloud_service_name,
+            self.cloud_service_name,
+            self.cloud_service_name,
+            0,
+            disk_name=self.disk_name,
+            source_media_link=self.disk_url
+        )
+
+    def test_find_data_disk_name_for_blob_name(self):
+        # given
+        mock_disks = [
+            self.__create_mock_disk()
+        ]
+        # when
+        result = self.data_disk._DataDisk__find_existing_disk_name_for_blob_name(
+            self.disk_filename,
+            mock_disks
+        )
+        # then
+        assert result == self.disk_name
+
+    def test_attach_by_blob_name_with_existing_data_disk(self):
+        '''should find a disk_name associated with blob_name and use it'''
+        # given
+        self.service.add_data_disk.return_value = self.my_request
+        mock_disks = [
+            self.__create_mock_disk()
+        ]
+        self.service.list_disks.return_value = mock_disks
+        # when
+        result = self.data_disk.attach(
+            None,
+            self.cloud_service_name,
+            lun=0,
+            blob_name=self.disk_filename
+        )
+        # then
+        self.service.add_data_disk.assert_called_once_with(
+            self.cloud_service_name,
+            self.cloud_service_name,
+            self.cloud_service_name,
+            0,
+            disk_name=self.disk_name
+        )
+
+    def test_attach_by_disk_name_and_blob_name(self):
+        '''should create a new data-disk with supplied disk_name and
+        source_media_link set to blob_name url'''
+        # given
+        self.service.add_data_disk.return_value = self.my_request
+        # when
+        result = self.data_disk.attach(
+            self.disk_name,
+            self.cloud_service_name,
+            lun=0,
+            blob_name=self.disk_filename
+        )
+        # then
+        self.service.add_data_disk.assert_called_once_with(
+            self.cloud_service_name,
+            self.cloud_service_name,
+            self.cloud_service_name,
+            0,
+            disk_name=self.disk_name,
+            source_media_link=self.disk_url
+        )
+
+    @raises(AzureDataDiskAttachError)
+    def test_disk_name_or_blob_name_is_required(self):
+        # when
+        self.data_disk.attach(
+            None,
+            self.cloud_service_name,
+            lun=0,
+            blob_name=None
         )
 
     def test_detach(self):

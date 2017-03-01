@@ -14,9 +14,11 @@ __azurectl__ compute data-disk create --disk-basename=*name*
 
 __azurectl__ compute data-disk delete --disk-name=*name*
 
-__azurectl__ compute data-disk attach --cloud-service-name=*name* --disk-name=*name*
+__azurectl__ compute data-disk attach --cloud-service-name=*name*
 
     [--instance-name=name]
+    [--disk-name=name]
+    [--blob-name=name]
     [--label=label]
     [--lun=lun]
     [--no-cache|--read-only-cache|--read-write-cache]
@@ -49,6 +51,12 @@ Delete the specified data disk. The call will fail if the disk is still attached
 ## __attach__
 
 Attach the specified data disk to the selected virtual machine. Once the operation was successful, a new storage block device will appear in the virtual machine.
+
+A data-disk created with the __create__ command, or previously attached to an instance by another method, can be attached using the __--disk_name__ argument. If the disk_name is not known, the __list__ command can be used to list all data-disks in the selected region.
+
+A VHD disk stored in Azure page blob storage can be attached as well, using the __--blob-name__ argument, and a data-disk record will be created automatically. The data-disk name can be set automatically based on the blob file name, or the __--disk_name__ argument can be supplied as well to manually set the data-disk name.
+
+NOTE: either __--data-disk__ or __--blob-name__ arguments are required.
 
 ## __detach__
 

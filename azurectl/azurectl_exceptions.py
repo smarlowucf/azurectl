@@ -137,6 +137,10 @@ class AzureCustomDataTooLargeError(AzureError):
     pass
 
 
+class AzureDataDiskAttachError(AzureError):
+    pass
+
+
 class AzureDataDiskCreateError(AzureError):
     pass
 
