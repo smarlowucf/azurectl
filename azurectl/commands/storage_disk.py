@@ -71,12 +71,12 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 # project
 from base import CliTask
-from ..account.service import AzureAccount
-from ..help import Help
-from ..logger import log
-from ..storage.storage import Storage
-from ..utils.collector import DataCollector
-from ..utils.output import DataOutput
+from azurectl.account.service import AzureAccount
+from azurectl.help import Help
+from azurectl.logger import log
+from azurectl.storage.storage import Storage
+from azurectl.utils.collector import DataCollector
+from azurectl.utils.output import DataOutput
 
 
 class StorageDiskTask(CliTask):

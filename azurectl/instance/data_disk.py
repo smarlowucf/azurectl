@@ -18,10 +18,10 @@ from builtins import bytes
 from uuid import uuid4
 
 # project
-from ..defaults import Defaults
-from ..storage.storage import Storage
+from azurectl.defaults import Defaults
+from azurectl.storage.storage import Storage
 
-from ..azurectl_exceptions import (
+from azurectl.azurectl_exceptions import (
     AzureDataDiskAttachError,
     AzureDataDiskCreateError,
     AzureDataDiskShowError,

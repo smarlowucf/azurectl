@@ -81,18 +81,18 @@ import os
 
 # project
 from base import CliTask
-from ..logger import log
-from ..help import Help
-from ..account.setup import AccountSetup
-from ..utils.collector import DataCollector
-from ..utils.output import DataOutput
-from ..config.parser import Config
-from ..storage.container import Container
-from ..storage.account import StorageAccount
-from ..account.service import AzureAccount
-from ..defaults import Defaults
+from azurectl.logger import log
+from azurectl.help import Help
+from azurectl.account.setup import AccountSetup
+from azurectl.utils.collector import DataCollector
+from azurectl.utils.output import DataOutput
+from azurectl.config.parser import Config
+from azurectl.storage.container import Container
+from azurectl.storage.account import StorageAccount
+from azurectl.account.service import AzureAccount
+from azurectl.defaults import Defaults
 
-from ..azurectl_exceptions import (
+from azurectl.azurectl_exceptions import (
     AzureAccountConfigurationError
 )
 

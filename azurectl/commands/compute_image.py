@@ -126,13 +126,13 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from pytz import utc
 
 # project
-from ..logger import log
+from azurectl.logger import log
 from base import CliTask
-from ..account.service import AzureAccount
-from ..utils.collector import DataCollector
-from ..utils.output import DataOutput
-from ..instance.image import Image
-from ..help import Help
+from azurectl.account.service import AzureAccount
+from azurectl.utils.collector import DataCollector
+from azurectl.utils.output import DataOutput
+from azurectl.instance.image import Image
+from azurectl.help import Help
 
 
 class ComputeImageTask(CliTask):

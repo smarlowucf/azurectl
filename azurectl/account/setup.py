@@ -15,15 +15,15 @@ from ConfigParser import ConfigParser
 import os
 
 # project
-from ..config.parser import Config
-from ..azurectl_exceptions import (
+from azurectl.config.parser import Config
+from azurectl.azurectl_exceptions import (
     AzureConfigParseError,
     AzureConfigAddAccountSectionError,
     AzureConfigAddRegionSectionError,
     AzureConfigPublishSettingsError,
     AzureConfigWriteError
 )
-from ..logger import log
+from azurectl.logger import log
 
 
 class AccountSetup(object):

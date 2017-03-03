@@ -111,12 +111,12 @@ options:
 import os
 # project
 from base import CliTask
-from ..account.service import AzureAccount
-from ..utils.collector import DataCollector
-from ..utils.output import DataOutput
-from ..instance.virtual_machine import VirtualMachine
-from ..instance.cloud_service import CloudService
-from ..help import Help
+from azurectl.account.service import AzureAccount
+from azurectl.utils.collector import DataCollector
+from azurectl.utils.output import DataOutput
+from azurectl.instance.virtual_machine import VirtualMachine
+from azurectl.instance.cloud_service import CloudService
+from azurectl.help import Help
 
 
 class ComputeVmTask(CliTask):

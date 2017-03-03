@@ -69,11 +69,11 @@ options:
 """
 # project
 from base import CliTask
-from ..account.service import AzureAccount
-from ..utils.collector import DataCollector
-from ..utils.output import DataOutput
-from ..instance.endpoint import Endpoint
-from ..help import Help
+from azurectl.account.service import AzureAccount
+from azurectl.utils.collector import DataCollector
+from azurectl.utils.output import DataOutput
+from azurectl.instance.endpoint import Endpoint
+from azurectl.help import Help
 
 
 class ComputeEndpointTask(CliTask):

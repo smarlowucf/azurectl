@@ -97,13 +97,13 @@ import string
 
 # project
 from base import CliTask
-from ..account.service import AzureAccount
-from ..utils.collector import DataCollector
-from ..utils.output import DataOutput
-from ..defaults import Defaults
-from ..azurectl_exceptions import AzureInvalidCommand
-from ..storage.account import StorageAccount
-from ..help import Help
+from azurectl.account.service import AzureAccount
+from azurectl.utils.collector import DataCollector
+from azurectl.utils.output import DataOutput
+from azurectl.defaults import Defaults
+from azurectl.azurectl_exceptions import AzureInvalidCommand
+from azurectl.storage.account import StorageAccount
+from azurectl.help import Help
 
 
 class StorageAccountTask(CliTask):

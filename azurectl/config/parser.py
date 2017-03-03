@@ -18,7 +18,7 @@ import sys
 
 
 # project
-from ..azurectl_exceptions import (
+from azurectl.azurectl_exceptions import (
     AzureConfigAccountNotFound,
     AzureConfigRegionNotFound,
     AzureAccountDefaultSectionNotFound,
@@ -29,7 +29,7 @@ from ..azurectl_exceptions import (
     AzureConfigAccountFileNotFound,
     AzureConfigDefaultLinkError
 )
-from .file_path import ConfigFilePath
+from azurectl.config.file_path import ConfigFilePath
 
 
 class Config(object):
@@ -49,7 +49,7 @@ class Config(object):
         filename=None,
         platform=PLATFORM
     ):
-        from ..logger import log
+        from azurectl.logger import log
 
         self.storage_container_name = storage_container_name
         self.storage_account_name = storage_account_name

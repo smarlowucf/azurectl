@@ -33,10 +33,10 @@ options:
 """
 # project
 from base import CliTask
-from ..account.service import AzureAccount
-from ..utils.collector import DataCollector
-from ..utils.output import DataOutput
-from ..help import Help
+from azurectl.account.service import AzureAccount
+from azurectl.utils.collector import DataCollector
+from azurectl.utils.output import DataOutput
+from azurectl.help import Help
 
 
 class ComputeRequestTask(CliTask):

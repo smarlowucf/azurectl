@@ -12,9 +12,9 @@
 # limitations under the License.
 #
 # project
-from ..storage.container import Container
-from ..defaults import Defaults
-from ..azurectl_exceptions import (
+from azurectl.storage.container import Container
+from azurectl.defaults import Defaults
+from azurectl.azurectl_exceptions import (
     AzureStorageAccountCreateError,
     AzureStorageAccountUpdateError,
     AzureStorageAccountDeleteError,
