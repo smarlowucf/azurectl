@@ -16,7 +16,7 @@ import subprocess
 from tempfile import NamedTemporaryFile
 
 # project
-from ..azurectl_exceptions import (
+from azurectl.azurectl_exceptions import (
     AzureCloudServiceAddressError,
     AzureCloudServiceOpenSSLError,
     AzureCloudServiceAddCertificateError,
@@ -24,7 +24,7 @@ from ..azurectl_exceptions import (
     AzureCloudServiceDeleteError,
     AzureCloudServicePropertiesError
 )
-from ..management.request_result import RequestResult
+from azurectl.management.request_result import RequestResult
 
 
 class CloudService(object):

@@ -12,7 +12,7 @@
 # limitations under the License.
 #
 # project
-from ..azurectl_exceptions import (
+from azurectl.azurectl_exceptions import (
     AzureReservedIpAssociateError,
     AzureReservedIpDisAssociateError,
     AzureReservedIpCreateError,

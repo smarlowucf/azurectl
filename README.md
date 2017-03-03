@@ -378,14 +378,6 @@ Run the check as follows:
 $ make flake8
 ```
 
-Running the application from source without the need to install it
-can be done as follows:
-
-```
-$ cd bin
-$ ./azurectl
-```
-
 The primary focus of testing is unit testing without verification of the
 integration. Therefore is is not required to have a Microsoft Azure account
 to run the tests or contribute to the project. When integration tests will be
@@ -423,7 +415,7 @@ the `test/unit` directory to see current implementations
 #### Class implementing desired functionality: mycmd.py
 
 ```python
-from azurectl_exceptions import (
+from azurectl.azurectl_exceptions import (
     exception_class_from_azurectl_exceptions
 )
 
@@ -506,13 +498,13 @@ commands:
 """
 # project
 from base import CliTask
-from ..account.service import AzureAccount
-from ..utils.collector import DataCollector
-from ..utils.output import DataOutput
-from ..logger import log
-from ..help import Help
+from azurectl.account.service import AzureAccount
+from azurectl.utils.collector import DataCollector
+from azurectl.utils.output import DataOutput
+from azurectl.logger import log
+from azurectl.help import Help
 
-from ..mycmd import MyCmd
+from azurectl.mycmd import MyCmd
 
 class ServiceMyCmdTask(CliTask):
     def process(self):

@@ -16,7 +16,7 @@ import os
 from tempfile import NamedTemporaryFile
 
 # project
-from ..logger import log
+from azurectl.logger import log
 
 
 class DataOutput(object):

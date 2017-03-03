@@ -25,7 +25,7 @@ import base64
 import re
 
 # project
-from ..azurectl_exceptions import (
+from azurectl.azurectl_exceptions import (
     AzureConfigVariableNotFound,
     AzureServiceManagementError,
     AzureSubscriptionPrivateKeyDecodeError,

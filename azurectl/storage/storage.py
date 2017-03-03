@@ -16,16 +16,16 @@ from azure.storage.blob.pageblobservice import PageBlobService
 from azure.storage.sharedaccesssignature import SharedAccessSignature
 
 # project
-from ..utils.xz import XZ
-from ..azurectl_exceptions import (
+from azurectl.utils.xz import XZ
+from azurectl.azurectl_exceptions import (
     AzureStorageFileNotFound,
     AzureStorageStreamError,
     AzureStorageUploadError,
     AzureStorageDeleteError
 )
-from ..utils.filetype import FileType
-from .page_blob import PageBlob
-from ..logger import log
+from azurectl.utils.filetype import FileType
+from azurectl.storage.page_blob import PageBlob
+from azurectl.logger import log
 
 
 ISO8061_FORMAT = '%Y-%m-%dT%H:%M:%SZ'

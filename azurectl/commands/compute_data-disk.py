@@ -97,14 +97,14 @@ options:
         wait for the request to succeed
 """
 # project
-from ..logger import log
-from ..account.service import AzureAccount
+from azurectl.logger import log
+from azurectl.account.service import AzureAccount
 from base import CliTask
-from ..utils.collector import DataCollector
-from ..instance.data_disk import DataDisk
-from ..utils.output import DataOutput
-from ..defaults import Defaults
-from ..help import Help
+from azurectl.utils.collector import DataCollector
+from azurectl.instance.data_disk import DataDisk
+from azurectl.utils.output import DataOutput
+from azurectl.defaults import Defaults
+from azurectl.help import Help
 
 
 class ComputeDataDiskTask(CliTask):

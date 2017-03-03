@@ -66,12 +66,12 @@ import datetime
 
 # project
 from base import CliTask
-from ..account.service import AzureAccount
-from ..utils.collector import DataCollector
-from ..utils.output import DataOutput
-from ..logger import log
-from ..storage.container import Container
-from ..help import Help
+from azurectl.account.service import AzureAccount
+from azurectl.utils.collector import DataCollector
+from azurectl.utils.output import DataOutput
+from azurectl.logger import log
+from azurectl.storage.container import Container
+from azurectl.help import Help
 
 
 class StorageContainerTask(CliTask):

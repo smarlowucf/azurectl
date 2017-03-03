@@ -37,12 +37,12 @@ options:
 """
 # project
 from base import CliTask
-from ..account.service import AzureAccount
-from ..utils.collector import DataCollector
-from ..utils.output import DataOutput
-from ..logger import log
-from ..storage.fileshare import FileShare
-from ..help import Help
+from azurectl.account.service import AzureAccount
+from azurectl.utils.collector import DataCollector
+from azurectl.utils.output import DataOutput
+from azurectl.logger import log
+from azurectl.storage.fileshare import FileShare
+from azurectl.help import Help
 
 
 class StorageShareTask(CliTask):

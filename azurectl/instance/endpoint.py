@@ -17,7 +17,7 @@ from azure.servicemanagement import (
 )
 
 # project
-from ..azurectl_exceptions import (
+from azurectl.azurectl_exceptions import (
     AzureEndpointCreateError,
     AzureEndpointDeleteError,
     AzureEndpointListError,

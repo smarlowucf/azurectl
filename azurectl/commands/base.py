@@ -15,11 +15,11 @@ import sys
 import logging
 
 # project
-from ..cli import Cli
-from ..config.parser import Config
-from ..help import Help
-from ..utils.validations import Validations
-from ..management.request_result import RequestResult
+from azurectl.cli import Cli
+from azurectl.config.parser import Config
+from azurectl.help import Help
+from azurectl.utils.validations import Validations
+from azurectl.management.request_result import RequestResult
 
 
 class CliTask(object):
@@ -29,7 +29,7 @@ class CliTask(object):
         for the task
     """
     def __init__(self):
-        from ..logger import log
+        from azurectl.logger import log
 
         self.cli = Cli()
 
