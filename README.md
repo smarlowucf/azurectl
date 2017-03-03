@@ -378,14 +378,6 @@ Run the check as follows:
 $ make flake8
 ```
 
-Running the application from source without the need to install it
-can be done as follows:
-
-```
-$ cd bin
-$ ./azurectl
-```
-
 The primary focus of testing is unit testing without verification of the
 integration. Therefore is is not required to have a Microsoft Azure account
 to run the tests or contribute to the project. When integration tests will be
