@@ -52,7 +52,7 @@ function _azurectl {
                 return 0
                 ;;
             "vm")
-                __comp_reply "help show create reboot regions --help types delete"
+                __comp_reply "help show create reboot regions shutdown --help types delete"
                 return 0
                 ;;
             "data-disk")
@@ -69,6 +69,10 @@ function _azurectl {
                 ;;
             "show")
                 __comp_reply "--disk-name attached --name --cloud-service-name --instance-name"
+                return 0
+                ;;
+            "shutdown")
+                __comp_reply "--cloud-service-name --instance-name --deallocate-resources --wait"
                 return 0
                 ;;
             "sas")
@@ -92,7 +96,7 @@ function _azurectl {
                 return 0
                 ;;
             "attach")
-                __comp_reply "--lun --wait --cloud-service-name --read-only-cache --instance-name --read-write-cache --no-cache --disk-name --label"
+                __comp_reply "--blob-name --wait --cloud-service-name --lun --read-only-cache --instance-name --read-write-cache --no-cache --disk-name --label"
                 return 0
                 ;;
             "replicate")
