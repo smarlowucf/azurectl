@@ -43,6 +43,7 @@ class TestComputeEndpointTask:
         '''
         command_args = {
             'create': False,
+            'update': False,
             'delete': False,
             'show': False,
             'list': False,
@@ -53,6 +54,7 @@ class TestComputeEndpointTask:
             '--port': None,
             '--instance-port': None,
             '--idle-timeout': None,
+            '--tcp': False,
             '--udp': False,
             '--wait': True
         }
@@ -117,6 +119,79 @@ class TestComputeEndpointTask:
             self.port,
             'tcp',
             '4'
+        )
+
+    def test_update_with_udp_arg(self):
+        # given
+        self.__init_command_args({
+            'update': True,
+            '--cloud-service-name': self.cloud_service_name,
+            '--name': self.endpoint_name,
+            '--port': self.port,
+            '--udp': True
+        })
+        # when
+        self.task.process()
+        # then
+        self.task.endpoint.set_instance.assert_called_once_with(
+            self.cloud_service_name,
+            self.cloud_service_name
+        )
+        self.task.endpoint.update.assert_called_once_with(
+            self.endpoint_name,
+            self.port,
+            self.port,
+            'udp',
+            None
+        )
+
+    def test_update_no_protocol(self):
+        # given
+        self.__init_command_args({
+            'update': True,
+            '--cloud-service-name': self.cloud_service_name,
+            '--name': self.endpoint_name,
+            '--port': self.port
+        })
+        # when
+        self.task.process()
+        # then
+        self.task.endpoint.set_instance.assert_called_once_with(
+            self.cloud_service_name,
+            self.cloud_service_name
+        )
+        self.task.endpoint.update.assert_called_once_with(
+            self.endpoint_name,
+            self.port,
+            self.port,
+            None,
+            None
+        )
+
+    def test_update_endpoint(self):
+        # given
+        self.__init_command_args({
+            'update': True,
+            '--cloud-service-name': self.cloud_service_name,
+            '--instance-name': self.instance_name,
+            '--name': self.endpoint_name,
+            '--port': self.port,
+            '--idle-timeout': self.idle_timeout,
+            '--tcp': True
+        })
+        # when
+        self.task.process()
+        # then
+        self.task.endpoint.set_instance.assert_called_once_with(
+            self.cloud_service_name,
+            self.instance_name
+        )
+        self.task.endpoint.update.assert_called_once_with(
+            self.endpoint_name,
+            self.port,
+            self.port,
+            'tcp',
+            self.idle_timeout
         )
 
     def test_create_udp_endpoint(self):

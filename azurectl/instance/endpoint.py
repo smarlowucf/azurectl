@@ -21,7 +21,8 @@ from azurectl.azurectl_exceptions import (
     AzureEndpointCreateError,
     AzureEndpointDeleteError,
     AzureEndpointListError,
-    AzureEndpointShowError
+    AzureEndpointShowError,
+    AzureEndpointUpdateError
 )
 
 
@@ -111,6 +112,64 @@ class Endpoint(object):
             )
         except Exception as e:
             raise AzureEndpointCreateError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
+        return result.request_id
+
+    def update(
+        self,
+        name,
+        external_port=None,
+        internal_port=None,
+        protocol=None,
+        idle_timeout=None
+    ):
+        try:
+            role = self.__get_role()
+            config = self.__get_network_config_for_role(role)
+
+            if not config.input_endpoints:
+                raise AzureEndpointUpdateError(
+                    "No endpoints found."
+                )
+
+            for index, endpoint in \
+                    enumerate(config.input_endpoints.input_endpoints):
+                if endpoint.name == name:
+                    endpoint_index = index
+                    break
+            else:
+                # If for loop finishes normally no endpoint
+                # exists that matches the name.
+                raise AzureEndpointUpdateError(
+                    "No endpoint named %s was found." % name
+                )
+
+            endpoint = config.input_endpoints.input_endpoints[endpoint_index]
+
+            if external_port:
+                endpoint.port = external_port
+
+            if internal_port:
+                endpoint.local_port = internal_port
+
+            if protocol:
+                endpoint.protocol = protocol
+
+            if idle_timeout:
+                endpoint.idle_timeout_in_minutes = idle_timeout
+
+            result = self.service.update_role(
+                self.cloud_service_name,
+                self.cloud_service_name,
+                role.role_name,
+                os_virtual_hard_disk=role.os_virtual_hard_disk,
+                network_config=config,
+                availability_set_name=role.availability_set_name,
+                data_virtual_hard_disks=role.data_virtual_hard_disks
+            )
+        except Exception as e:
+            raise AzureEndpointUpdateError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
         return result.request_id
