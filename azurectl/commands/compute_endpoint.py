@@ -23,6 +23,10 @@ usage: azurectl compute endpoint -h | --help
            [--idle-timeout=<minutes>]
            [--udp]
            [--wait]
+       azurectl compute endpoint list --cloud-service-name=<name>
+           [--instance-name=<name>]
+       azurectl compute endpoint show --cloud-service-name=<name> --name=<name>
+           [--instance-name=<name>]
        azurectl compute endpoint update --cloud-service-name=<name> --name=<name>
            [--instance-name=<name>]
            [--port=<port>]
@@ -30,10 +34,6 @@ usage: azurectl compute endpoint -h | --help
            [--idle-timeout=<minutes>]
            [--udp | --tcp]
            [--wait]
-       azurectl compute endpoint list --cloud-service-name=<name>
-           [--instance-name=<name>]
-       azurectl compute endpoint show --cloud-service-name=<name> --name=<name>
-           [--instance-name=<name>]
        azurectl compute endpoint delete --cloud-service-name=<name> --name=<name>
            [--instance-name=<name>]
            [--wait]
@@ -42,8 +42,6 @@ usage: azurectl compute endpoint -h | --help
 commands:
     create
         add a new endpoint
-    update
-        update an existing endpoint
     delete
         remove an endpoint
     list
@@ -51,6 +49,8 @@ commands:
         cloud service (endpoints)
     show
         list information about a single endpoint
+    update
+        update an existing endpoint
 
 options:
     --cloud-service-name=<name>

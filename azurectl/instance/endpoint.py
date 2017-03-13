@@ -66,7 +66,7 @@ class Endpoint(object):
         # attribute is None.
         if config.input_endpoints:
             for endpoint in config.input_endpoints:
-                if endpoint.name == name:
+                if endpoint.name.upper() == name.upper():
                     return self.__decorate(endpoint)
 
         # Endpoint not found
@@ -135,7 +135,7 @@ class Endpoint(object):
 
             for index, endpoint in \
                     enumerate(config.input_endpoints.input_endpoints):
-                if endpoint.name == name:
+                if endpoint.name.upper() == name.upper():
                     endpoint_index = index
                     break
             else:
@@ -186,7 +186,7 @@ class Endpoint(object):
 
             for index, endpoint in \
                     enumerate(config.input_endpoints.input_endpoints):
-                if endpoint.name == name:
+                if endpoint.name.upper() == name.upper():
                     del config.input_endpoints.input_endpoints[index]
                     break
             else:

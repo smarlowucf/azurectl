@@ -17,6 +17,14 @@ __azurectl__ compute endpoint create --cloud-service-name=*name* --name=*name*
     [--udp]
     [--wait]
 
+__azurectl__ compute endpoint list --cloud-service-name=*name*
+
+    [--instance-name=name]
+
+__azurectl__ compute endpoint show --cloud-service-name=*name* --name=*name*
+
+    [--instance-name=name]
+
 __azurectl__ compute endpoint update --cloud-service-name=*name* --name=*name*
 
     [--instance-name=name]
@@ -25,14 +33,6 @@ __azurectl__ compute endpoint update --cloud-service-name=*name* --name=*name*
     [--idle-timeout=minutes]
     [--udp | --tcp]
     [--wait]
-
-__azurectl__ compute endpoint list --cloud-service-name=*name*
-
-    [--instance-name=name]
-
-__azurectl__ compute endpoint show --cloud-service-name=*name* --name=*name*
-
-    [--instance-name=name]
 
 __azurectl__ compute endpoint delete --cloud-service-name=*name* --name=*name*
 
@@ -48,10 +48,6 @@ a port on the specified virtual machine instance. If the virtual machine's
 __instance-name__ is the same as the __cloud-service-name__, the
 __--instance-name__ argument may be omitted.
 
-## __update__
-
-Update an existing port (endpoint) on a cloud service's network interface.
-
 ## __delete__
 
 Close a named endpoint on a cloud service.
@@ -64,6 +60,10 @@ List information about all endpoints forwarded to the selected virtual machine.
 
 List information about a single endpoint, forwarded to the selected virtual
 machine, with the name __name__.
+
+## __update__
+
+Update an existing port (endpoint) on a cloud service's network interface.
 
 # OPTIONS
 
