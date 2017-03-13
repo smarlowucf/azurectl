@@ -177,6 +177,10 @@ class AzureEndpointShowError(AzureError):
     pass
 
 
+class AzureEndpointUpdateError(AzureError):
+    pass
+
+
 class AzureFileShareCreateError(AzureError):
     pass
 

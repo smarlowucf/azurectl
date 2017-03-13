@@ -135,6 +135,66 @@ class TestEndpoint:
             self.idle_timeout
         )
 
+    def test_update(self):
+        # given
+        self.service.update_role.return_value = self.my_request
+        mock_role = self.mock_role()
+        self.service.get_role = mock.Mock(return_value=mock_role)
+        # when
+        result = self.endpoint.update(
+            self.endpoint_name,
+            self.udp_port,
+            self.instance_port,
+            self.udp_protocol,
+            self.idle_timeout
+        )
+        new_endpoint = mock_role.configuration_sets[0].input_endpoints[0]
+        # then
+        assert new_endpoint.name == self.endpoint_name
+        assert new_endpoint.port == self.udp_port
+        assert new_endpoint.local_port == self.instance_port
+        assert new_endpoint.protocol == self.udp_protocol
+        self.service.update_role.assert_called_once_with(
+            self.cloud_service_name,
+            self.cloud_service_name,
+            self.instance_name,
+            os_virtual_hard_disk=mock_role.os_virtual_hard_disk,
+            network_config=mock_role.configuration_sets[0],
+            availability_set_name=mock_role.availability_set_name,
+            data_virtual_hard_disks=mock_role.data_virtual_hard_disks
+        )
+        assert result == self.my_request.request_id
+
+    # then
+    @raises(AzureEndpointUpdateError)
+    def test_update_upstream_exception(self):
+        # given
+        self.service.update_role.side_effect = Exception
+        # when
+        result = self.endpoint.update(
+            self.udp_endpoint_name,
+            self.port,
+            self.instance_port,
+            self.protocol,
+            self.idle_timeout
+        )
+
+    @raises(AzureEndpointUpdateError)
+    def test_update_endpoint_no_endpoints(self):
+        # given
+        mock_role = self.mock_role(has_endpoint=False)
+        self.service.get_role = mock.Mock(return_value=mock_role)
+        self.service.update_role.return_value = self.my_request
+
+        # when
+        self.endpoint.update(
+            self.udp_endpoint_name,
+            self.port,
+            self.instance_port,
+            self.udp_protocol,
+            self.idle_timeout
+        )
+
     def test_show(self):
         # given
         expected = self.create_expected_endpoint_output()

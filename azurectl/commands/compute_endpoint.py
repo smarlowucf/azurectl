@@ -23,6 +23,13 @@ usage: azurectl compute endpoint -h | --help
            [--idle-timeout=<minutes>]
            [--udp]
            [--wait]
+       azurectl compute endpoint update --cloud-service-name=<name> --name=<name>
+           [--instance-name=<name>]
+           [--port=<port>]
+           [--instance-port=<port>]
+           [--idle-timeout=<minutes>]
+           [--udp | --tcp]
+           [--wait]
        azurectl compute endpoint list --cloud-service-name=<name>
            [--instance-name=<name>]
        azurectl compute endpoint show --cloud-service-name=<name> --name=<name>
@@ -35,6 +42,8 @@ usage: azurectl compute endpoint -h | --help
 commands:
     create
         add a new endpoint
+    update
+        update an existing endpoint
     delete
         remove an endpoint
     list
@@ -61,6 +70,8 @@ options:
         name of the endpoint, usually the name of the protocol that is carried
     --port=<port>
         port to open on the cloud service
+    --tcp
+        select TCP as the transport protocol for the endpoint. (update only)
     --udp
         select UDP as the transport protocol for the endpoint. If not specified,
         the default transport protocol is TCP
@@ -110,6 +121,8 @@ class ComputeEndpointTask(CliTask):
             self.__show()
         if self.command_args['create']:
             self.__create()
+        if self.command_args['update']:
+            self.__update()
         if self.command_args['delete']:
             self.__delete()
 
@@ -141,6 +154,31 @@ class ComputeEndpointTask(CliTask):
             ),
             ('udp' if self.command_args['--udp'] else 'tcp'),
             (self.command_args['--idle-timeout'] or '4')
+        )
+        if self.command_args['--wait']:
+            self.request_wait(request_id)
+        self.result.add(
+            'endpoint:' + self.command_args['--name'], request_id
+        )
+        self.out.display()
+
+    def __update(self):
+        if self.command_args['--udp']:
+            protocol = 'udp'
+        elif self.command_args['--tcp']:
+            protocol = 'tcp'
+        else:
+            protocol = None
+
+        request_id = self.endpoint.update(
+            self.command_args['--name'],
+            self.command_args['--port'],
+            (
+                self.command_args['--instance-port'] or
+                self.command_args['--port']
+            ),
+            protocol,
+            self.command_args['--idle-timeout']
         )
         if self.command_args['--wait']:
             self.request_wait(request_id)
