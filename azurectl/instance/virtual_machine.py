@@ -268,6 +268,33 @@ class VirtualMachine(object):
                 '%s: %s' % (type(e).__name__, format(e))
             )
 
+    def instance_status(
+        self, cloud_service_name, instance_name=None
+    ):
+        """
+            Request instance status. An instance can be in different
+            states like Initializing, Running, Stopped. This method
+            returns the current state name.
+        """
+        instance_state = 'Undefined'
+        if not instance_name:
+            instance_name = cloud_service_name
+        try:
+            properties = self.service.get_hosted_service_properties(
+                service_name=cloud_service_name,
+                embed_detail=True
+            )
+            for deployment in properties.deployments:
+                for instance in deployment.role_instance_list:
+                    if instance.instance_name == instance_name:
+                        instance_state = instance.instance_status
+        except Exception:
+            # if the properties can't be requested due to an error
+            # the default state value set to Undefined will be returned
+            pass
+
+        return instance_state
+
     def __validate_custom_data_length(self, custom_data):
         if (custom_data and (len(custom_data) > self.__max_custom_data_len())):
             raise AzureCustomDataTooLargeError(
