@@ -28,6 +28,7 @@ usage: azurectl -h | --help
         azurectl [--config=<file> | --account=<name>]
                 [--region=<name>]
                 [--storage-account=<name>]
+                [--storage-container=<name>]
                 [--output-format=<format>]
                 [--output-style=<style>]
                 [--debug]
