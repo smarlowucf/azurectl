@@ -16,6 +16,7 @@ class TestComputeDataDiskTask:
         # instantiate the command task
         sys.argv = [
             sys.argv[0], '--config', '../data/config',
+            '--storage-container', 'foo',
             'compute', 'data-disk', 'help'
         ]
         self.task = data_disk.ComputeDataDiskTask()

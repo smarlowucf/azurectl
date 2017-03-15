@@ -14,6 +14,7 @@ class TestStorageDiskTask:
     def setup(self):
         sys.argv = [
             sys.argv[0], '--config', '../data/config',
+            '--storage-container', 'foo',
             'storage', 'disk', 'upload',
             '--source', 'blob',
             '--blob-name', 'name'
@@ -86,6 +87,15 @@ class TestStorageDiskTask:
             self.task.command_args['--blob-name']
         )
 
+    def test_with_storage_container_arg(self):
+        self.__init_command_args()
+        self.task.command_args['help'] = True
+        self.task.command_args['--storage-container'] = 'foo'
+        self.task.process()
+        self.task.manual.show.assert_called_once_with(
+            'azurectl::storage::disk'
+        )
+
     def test_process_storage_disk_help(self):
         self.__init_command_args()
         self.task.command_args['help'] = True
@@ -153,4 +163,3 @@ class TestStorageDiskTask:
         self.task.storage.disk_image_sas.assert_called_once_with(
             'foo', self.task.command_args['--blob-name'], start, expiry, 'rl'
         )
-
