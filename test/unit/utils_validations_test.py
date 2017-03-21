@@ -49,3 +49,10 @@ class TestValidations:
             ['--arg-3', '--arg-4']
         )
         assert result is False
+
+    @raises(AzureInvalidCommand)
+    def test_none_at_least_one_argument_is_set(self):
+        result = Validations.validate_at_least_one_argument_is_set(
+            self.command_args
+        )
+        assert result is False

@@ -102,7 +102,10 @@ class TestImage:
         account.storage_key = mock.Mock()
         self.image = Image(account)
 
-    def __fake_os_image_details(self, name, regions_and_percents=[]):
+    def __fake_os_image_details(self, name, regions_and_percents=None):
+        if regions_and_percents is None:
+            regions_and_percents = []
+
         fake = OSImageDetails()
         regions_and_percents.reverse()
         while regions_and_percents:

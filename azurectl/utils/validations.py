@@ -59,7 +59,9 @@ class Validations(object):
         return date
 
     @classmethod
-    def validate_at_least_one_argument_is_set(self, command_args, keys=[]):
+    def validate_at_least_one_argument_is_set(self, command_args, keys=None):
+        if keys is None:
+            keys = []
         values = [command_args[key] for key in keys]
         if any(values):
             return True
