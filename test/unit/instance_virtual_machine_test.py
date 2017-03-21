@@ -161,7 +161,7 @@ class TestVirtualMachine:
         assert result['instance_name'] == 'some-host'
 
     def test_reboot_instance(self):
-        result = self.vm.reboot_instance(
+        self.vm.reboot_instance(
             cloud_service_name='cloud-service',
             instance_name='instance-name'
         )
@@ -170,7 +170,7 @@ class TestVirtualMachine:
         )
 
     def test_shutdown_instance(self):
-        result = self.vm.shutdown_instance(
+        self.vm.shutdown_instance(
             cloud_service_name='cloud-service',
             instance_name='instance-name',
             deallocate_resources=True
@@ -181,7 +181,7 @@ class TestVirtualMachine:
         )
 
     def test_start_instance(self):
-        result = self.vm.start_instance(
+        self.vm.start_instance(
             cloud_service_name='cloud-service',
             instance_name='instance-name'
         )
