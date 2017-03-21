@@ -180,6 +180,16 @@ class TestVirtualMachine:
             'instance-name', 'StoppedDeallocated'
         )
 
+    def test_start_instance(self):
+        result = self.vm.start_instance(
+            cloud_service_name='cloud-service',
+            instance_name='instance-name'
+        )
+        self.service.start_role.assert_called_once_with(
+            'cloud-service', 'cloud-service',
+            'instance-name'
+        )
+
     @raises(AzureVmCreateError)
     def test_create_instance_add_role_raises_on_label(self):
         storage_properties = mock.MagicMock()
@@ -351,3 +361,8 @@ class TestVirtualMachine:
     def test_shutdown_instance_raise_vm_shutdown_error(self):
         self.service.shutdown_role.side_effect = AzureVmShutdownError
         self.vm.shutdown_instance('cloud-service', 'foo')
+
+    @raises(AzureVmStartError)
+    def test_start_instance_raise_vm_shutdown_error(self):
+        self.service.start_role.side_effect = AzureVmStartError
+        self.vm.start_instance('cloud-service', 'foo')
