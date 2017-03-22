@@ -36,6 +36,9 @@ usage: azurectl compute vm -h | --help
            [--instance-name=<name>]
            [--deallocate-resources]
            [--wait]
+       azurectl compute vm start --cloud-service-name=<name>
+           [--instance-name=<name>]
+           [--wait]
        azurectl compute vm types
        azurectl compute vm delete --cloud-service-name=<name>
            [--instance-name=<name>]
@@ -61,6 +64,8 @@ commands:
         and the virtual machine instances it contains
     shutdown
         shuts down virtual machine instance
+    start
+        starts the virtual machine instance
     types
         list available virtual machine types
 
@@ -163,6 +168,8 @@ class ComputeVmTask(CliTask):
                 self.__reboot_instance()
             elif self.command_args['shutdown']:
                 self.__shutdown_instance()
+            elif self.command_args['start']:
+                self.__start_instance()
 
     def __help(self):
         if self.command_args['help']:
@@ -291,6 +298,22 @@ class ComputeVmTask(CliTask):
             self.request_wait(request_id)
         self.result.add(
             'shutdown:' + instance_name,
+            request_id
+        )
+        self.out.display()
+
+    def __start_instance(self):
+        instance_name = self.command_args['--instance-name']
+        if not instance_name:
+            instance_name = self.command_args['--cloud-service-name']
+        request_id = self.vm.start_instance(
+            self.command_args['--cloud-service-name'],
+            instance_name
+        )
+        if self.command_args['--wait']:
+            self.request_wait(request_id)
+        self.result.add(
+            'start:' + instance_name,
             request_id
         )
         self.out.display()

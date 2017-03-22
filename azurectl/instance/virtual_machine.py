@@ -25,6 +25,7 @@ from azurectl.azurectl_exceptions import (
     AzureVmDeleteError,
     AzureVmRebootError,
     AzureVmShutdownError,
+    AzureVmStartError,
     AzureStorageNotReachableByCloudServiceError,
     AzureImageNotReachableByCloudServiceError
 )
@@ -231,6 +232,23 @@ class VirtualMachine(object):
             return(format(result.request_id))
         except Exception as e:
             raise AzureVmShutdownError(
+                '%s: %s' % (type(e).__name__, format(e))
+            )
+
+    def start_instance(
+        self, cloud_service_name, instance_name
+    ):
+        """
+            Start the specified virtual disk image instance.
+        """
+        try:
+            result = self.service.start_role(
+                cloud_service_name, cloud_service_name,
+                instance_name
+            )
+            return(format(result.request_id))
+        except Exception as e:
+            raise AzureVmStartError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
 

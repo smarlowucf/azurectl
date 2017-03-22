@@ -32,6 +32,10 @@ __azurectl__ compute vm shutdown --cloud-service-name=*name*
     [--deallocate-resources]
     [--wait]
 
+__azurectl__ compute vm start --cloud-service-name=*name*
+    [--instance-name=name]
+    [--wait]
+
 __azurectl__ compute vm types
 
 __azurectl__ compute vm delete --cloud-service-name=*name*
@@ -64,6 +68,10 @@ Retrieves system properties for the specified cloud service and the virtual mach
 ## __shutdown__
 
 Shuts down a cloud service virtual machine. The same rules with regards to the reboot of an instance applies in terms of specifying which machine should be shut down.
+
+## __start__
+
+Starts a cloud service virtual machine. The same rules with regards to the reboot of an instance applies in terms of specifying which machine should be started.
 
 ## __types__
 

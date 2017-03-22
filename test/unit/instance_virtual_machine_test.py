@@ -161,7 +161,7 @@ class TestVirtualMachine:
         assert result['instance_name'] == 'some-host'
 
     def test_reboot_instance(self):
-        result = self.vm.reboot_instance(
+        self.vm.reboot_instance(
             cloud_service_name='cloud-service',
             instance_name='instance-name'
         )
@@ -170,7 +170,7 @@ class TestVirtualMachine:
         )
 
     def test_shutdown_instance(self):
-        result = self.vm.shutdown_instance(
+        self.vm.shutdown_instance(
             cloud_service_name='cloud-service',
             instance_name='instance-name',
             deallocate_resources=True
@@ -178,6 +178,16 @@ class TestVirtualMachine:
         self.service.shutdown_role.assert_called_once_with(
             'cloud-service', 'cloud-service',
             'instance-name', 'StoppedDeallocated'
+        )
+
+    def test_start_instance(self):
+        self.vm.start_instance(
+            cloud_service_name='cloud-service',
+            instance_name='instance-name'
+        )
+        self.service.start_role.assert_called_once_with(
+            'cloud-service', 'cloud-service',
+            'instance-name'
         )
 
     @raises(AzureVmCreateError)
@@ -351,3 +361,8 @@ class TestVirtualMachine:
     def test_shutdown_instance_raise_vm_shutdown_error(self):
         self.service.shutdown_role.side_effect = AzureVmShutdownError
         self.vm.shutdown_instance('cloud-service', 'foo')
+
+    @raises(AzureVmStartError)
+    def test_start_instance_raise_vm_shutdown_error(self):
+        self.service.start_role.side_effect = AzureVmStartError
+        self.vm.start_instance('cloud-service', 'foo')
