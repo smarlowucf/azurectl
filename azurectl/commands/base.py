@@ -91,7 +91,7 @@ class CliTask(object):
             self.command_args[cmd_arg]
         )
 
-    def validate_at_least_one_argument_is_set(self, keys=[]):
+    def validate_at_least_one_argument_is_set(self, keys):
         return Validations.validate_at_least_one_argument_is_set(
             self.command_args,
             keys
