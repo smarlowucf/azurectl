@@ -36,6 +36,9 @@ __azurectl__ compute vm start --cloud-service-name=*name*
     [--instance-name=name]
     [--wait]
 
+__azurectl__ compute vm status --cloud-service-name=*name*
+    [--instance-name=<name>]
+
 __azurectl__ compute vm types
 
 __azurectl__ compute vm delete --cloud-service-name=*name*
@@ -72,6 +75,10 @@ Shuts down a cloud service virtual machine. The same rules with regards to the r
 ## __start__
 
 Starts a cloud service virtual machine. The same rules with regards to the reboot of an instance applies in terms of specifying which machine should be started.
+
+## __status__
+
+Retrieves status information about the current state of the virtual machine.
 
 ## __types__
 
@@ -143,4 +150,10 @@ User name for login. Defaults to: __azureuser__
 
 ## __--wait__
 
-wait for the request to change its status to succeeded
+wait for the command to enter the requested state. This means
+
+* vm create: wait for the __ReadyRole__ state
+
+* vm shutdown: wait for the __Stopped__ or __StoppedDeallocated__ state
+
+* vm delete: wait for the __Undefined__ state which means no such virtual machine or cloud service exists

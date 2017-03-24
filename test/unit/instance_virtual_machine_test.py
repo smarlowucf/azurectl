@@ -287,6 +287,24 @@ class TestVirtualMachine:
             'cloud-service', 'cloud-service', 'foo', True
         )
 
+    def test_instance_status(self):
+        properties = mock.Mock()
+        deployment = mock.Mock()
+        instance = mock.Mock()
+        instance.instance_name = 'cloud-service'
+        instance.instance_status = 'Stopped'
+        deployment.role_instance_list = [instance]
+        properties.deployments = [deployment]
+        self.service.get_hosted_service_properties.return_value = properties
+        assert self.vm.instance_status('cloud-service') == 'Stopped'
+        self.service.get_hosted_service_properties.assert_called_once_with(
+            embed_detail=True, service_name='cloud-service'
+        )
+
+    def test_instance_status_undefined(self):
+        self.service.get_hosted_service_properties.side_effect = Exception
+        assert self.vm.instance_status('cloud-service') == 'Undefined'
+
     @raises(AzureStorageNotReachableByCloudServiceError)
     def test_create_instance_raise_storage_not_reachable_error(self):
         storage_properties = mock.MagicMock()

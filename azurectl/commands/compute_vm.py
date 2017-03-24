@@ -39,6 +39,8 @@ usage: azurectl compute vm -h | --help
        azurectl compute vm start --cloud-service-name=<name>
            [--instance-name=<name>]
            [--wait]
+       azurectl compute vm status --cloud-service-name=<name>
+           [--instance-name=<name>]
        azurectl compute vm types
        azurectl compute vm delete --cloud-service-name=<name>
            [--instance-name=<name>]
@@ -66,6 +68,9 @@ commands:
         shuts down virtual machine instance
     start
         starts the virtual machine instance
+    status
+        Retrieves status information about the current state of the
+        virtual machine
     types
         list available virtual machine types
 
@@ -111,9 +116,10 @@ options:
     --user=<user>
         user name for login, by default set to: azureuser
     --wait
-        wait for the request to succeed
+        wait for the command to enter the requested state
 """
 import os
+import time
 # project
 from base import CliTask
 from azurectl.account.service import AzureAccount
@@ -170,6 +176,8 @@ class ComputeVmTask(CliTask):
                 self.__shutdown_instance()
             elif self.command_args['start']:
                 self.__start_instance()
+            elif self.command_args['status']:
+                self.__operate_on_instance_state()
 
     def __help(self):
         if self.command_args['help']:
@@ -220,9 +228,9 @@ class ComputeVmTask(CliTask):
             reserved_ip_name=self.command_args['--reserved-ip-name']
         )
         if self.command_args['--wait']:
-            # we might want to change this to wait until the VM becomes
-            # accessible to the user
-            self.request_wait(request_id)
+            self.__get_instance_state(
+                requested_state='ReadyRole', wait=True
+            )
         self.result.add(
             'instance',
             request_id
@@ -248,7 +256,10 @@ class ComputeVmTask(CliTask):
             cloud_service, complete_deletion
         )
         if self.command_args['--wait']:
-            self.request_wait(request_id)
+            # deletion is done when no instance state exists anymore
+            self.__get_instance_state(
+                requested_state='Undefined', wait=True
+            )
         self.result.add(
             'cloud_service:' + cloud_service,
             request_id
@@ -262,7 +273,10 @@ class ComputeVmTask(CliTask):
             instance_name
         )
         if self.command_args['--wait']:
-            self.request_wait(request_id)
+            # deletion is done when no instance state exists anymore
+            self.__get_instance_state(
+                requested_state='Undefined', wait=True
+            )
         self.result.add(
             'instance:' + instance_name,
             request_id
@@ -278,7 +292,8 @@ class ComputeVmTask(CliTask):
             instance_name
         )
         if self.command_args['--wait']:
-            self.request_wait(request_id)
+            # FIXME: This is a problem, the state did not change during reboot
+            pass
         self.result.add(
             'reboot:' + instance_name,
             request_id
@@ -295,7 +310,13 @@ class ComputeVmTask(CliTask):
             self.command_args['--deallocate-resources']
         )
         if self.command_args['--wait']:
-            self.request_wait(request_id)
+            if self.command_args['--deallocate-resources']:
+                wait_state = 'StoppedDeallocated'
+            else:
+                wait_state = 'Stopped'
+            self.__get_instance_state(
+                requested_state=wait_state, wait=True
+            )
         self.result.add(
             'shutdown:' + instance_name,
             request_id
@@ -311,10 +332,38 @@ class ComputeVmTask(CliTask):
             instance_name
         )
         if self.command_args['--wait']:
-            self.request_wait(request_id)
+            self.__get_instance_state(
+                requested_state='ReadyRole', wait=True
+            )
         self.result.add(
             'start:' + instance_name,
             request_id
+        )
+
+    def __get_instance_state(self, requested_state=None, wait=False):
+        instance_name = self.command_args['--instance-name']
+        if not instance_name:
+            instance_name = self.command_args['--cloud-service-name']
+        status = self.vm.instance_status(
+            self.command_args['--cloud-service-name'],
+            instance_name
+        )
+        if requested_state and wait:
+            request_timeout = 5
+            while status != requested_state:
+                time.sleep(request_timeout)
+                status = self.vm.instance_status(
+                    self.command_args['--cloud-service-name'],
+                    instance_name
+                )
+        return status
+
+    def __operate_on_instance_state(self):
+        instance_name = self.command_args['--instance-name']
+        if not instance_name:
+            instance_name = self.command_args['--cloud-service-name']
+        self.result.add(
+            'status:' + instance_name, self.__get_instance_state()
         )
         self.out.display()
 
