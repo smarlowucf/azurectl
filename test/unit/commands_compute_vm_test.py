@@ -204,6 +204,7 @@ class TestComputeVmTask:
     ):
         self.__init_command_args()
         self.task.command_args['reboot'] = True
+        self.task.command_args['--wait'] = False
         self.task.command_args['--cloud-service-name'] = 'cloudservice'
         self.task.command_args['--instance-name'] = 'instance'
         self.task.process()
@@ -240,10 +241,19 @@ class TestComputeVmTask:
         )
 
     @patch('azurectl.commands.compute_vm.DataOutput')
-    def test_process_compute_vm_reboot_default_instance(self, mock_out):
+    @patch('azurectl.commands.compute_vm.VirtualMachine')
+    @patch('azurectl.commands.compute_vm.time.sleep')
+    def test_process_compute_vm_reboot_default_instance(
+        self, mock_sleep, mock_vm, mock_out
+    ):
         self.__init_command_args()
+        vm = mock.Mock()
+        vm.instance_status = mock.Mock(
+            return_value = 'ReadyRole'
+        )
+        mock_vm.return_value = vm
         self.task.command_args['reboot'] = True
-        self.task.command_args['--wait'] = False
+        self.task.command_args['--wait'] = True
         self.task.command_args['--cloud-service-name'] = 'cloudservice'
         self.task.command_args['--instance-name'] = None
         self.task.process()
