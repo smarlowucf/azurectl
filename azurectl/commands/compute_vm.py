@@ -292,8 +292,15 @@ class ComputeVmTask(CliTask):
             instance_name
         )
         if self.command_args['--wait']:
-            # FIXME: This is a problem, the state did not change during reboot
-            pass
+            # On soft reboot initiated through the Azure API via a
+            # reboot_role_instance request, the status of the VM does
+            # not change which means this state change can't be captured
+            # through an API request. Thus there is no real chance to
+            # wait for this type of soft reboot to complete.
+            # The safe default is to wait for the ready role
+            self.__get_instance_state(
+                requested_state='ReadyRole', wait=True
+            )
         self.result.add(
             'reboot:' + instance_name,
             request_id
