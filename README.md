@@ -17,13 +17,13 @@ Command Line Interface to manage
     - [Examples](#examples)
   * [Contributing](#contributing)
     - [Basics](#basics)
-    - [Testing] (#testing)
+    - [Testing](#testing)
     - [Implementing commands](#implementing-commands)
-    - [Code Structure] (#code-structure)
-    - [Creating a Package] (#creating-a-package)
-  * [Compatibility] (#compatibility)
-  * [Issues] (#issues)
-    - [Signing GIT patches] (#signing-git-patches)
+    - [Code Structure](#code-structure)
+    - [Creating a Package](#creating-a-package)
+  * [Compatibility](#compatibility)
+  * [Issues](#issues)
+    - [Signing GIT patches](#signing-git-patches)
 
 ## Motivation
 
@@ -249,50 +249,50 @@ The following procedure describes how to create such an environment:
 
 1. Install pyvenv and development dependencies
 
-   ```
-$ sudo zypper in \
-      python-virtualenv python-devel libffi48-devel libopenssl-devel
-```
+    ```
+    $ sudo zypper in \
+          python-virtualenv python-devel libffi48-devel libopenssl-devel
+    ```
 
 2. Create the virtual environment:
 
-   ```
-$ virtualenv-2.7 .env2
-```
+    ```
+    $ virtualenv-2.7 .env2
+    ```
 
 3. Activate the virtual environment:
 
-   ```
-$ source .env2/bin/activate
-```
+    ```
+    $ source .env2/bin/activate
+    ```
 
 4. Install azurectl requirements inside the virtual environment:
 
-   ```
-$ pip2.7 install -U pip setuptools
-$ pip2.7 install -r .virtualenv.dev-requirements.txt
-```
+    ```
+    $ pip2.7 install -U pip setuptools
+    $ pip2.7 install -r .virtualenv.dev-requirements.txt
+    ```
 
 5. __Optional__ install of a custom Azure SDK version
 
-   The installation of the azurectl requirements happens according to the
-   pip registry. However azurectl depends on the Microsoft SDK. If the
-   code you are about to implement for azurectl also requires changes in
-   the SDK or requires to use an SDK version which is not yet released,
-   it might be needed to pull in the latest code from the Azure SDK git
-   repositories. By default the helper script below will checkout the
-   SUSE forked version of the Microsoft Azure SDK which represents the
-   state of the master branch for which azurectl has been tested.
+    The installation of the azurectl requirements happens according to the
+    pip registry. However azurectl depends on the Microsoft SDK. If the
+    code you are about to implement for azurectl also requires changes in
+    the SDK or requires to use an SDK version which is not yet released,
+    it might be needed to pull in the latest code from the Azure SDK git
+    repositories. By default the helper script below will checkout the
+    SUSE forked version of the Microsoft Azure SDK which represents the
+    state of the master branch for which azurectl has been tested.
 
-   ```
-$ ./.install-azure-sdk-from-git
-```
+    ```
+    $ ./.install-azure-sdk-from-git
+    ```
 
 6. Install azurectl in "development mode":
 
-   ```
-$ ./setup.py develop
-```
+    ```
+    $ ./setup.py develop
+    ```
 
 Once the development environment is activated and initialized with
 the project required Python modules, you are ready to work.
@@ -301,7 +301,7 @@ The __develop__ target of the `setup.py` script automatically creates
 the application entry point called `azurectl`, which allows to simply
 call the application from the current code base:
 
-   ```
+```
 $ azurectl --help
 ```
 
@@ -320,12 +320,12 @@ the requirements are already installed.
 * After cloning the repo from GitHub set up a link to the project provided
   commit hook
 
-```
-$ pushd .git
-$ rm -rf hooks
-$ ln -s ../.git-hooks hooks
-$ popd
-```
+    ```
+    $ pushd .git
+    $ rm -rf hooks
+    $ ln -s ../.git-hooks hooks
+    $ popd
+    ```
 
 We maintain a hook script to do some rudimentary local checking to catch
 obvious issues that would prevent a pull request from being accepted.
@@ -338,14 +338,14 @@ obvious issues that would prevent a pull request from being accepted.
   However you must make a good effort in providing a test. In general we
   strive to have unit tests that are not integration tests, i.e. no
   account data is needed.
-* We follow the [Semantic Versioning](http://semver.org/) scheme
+* We follow the [Semantic Versioning](http://semver.org/) scheme:
 
-1. MAJOR version when you make incompatible API changes,
-2. MINOR version when you add functionality in a backwards-compatible
-   manner, and
-3. PATCH version when you make backwards-compatible bug fixes.
+    1. MAJOR version when you make incompatible API changes,
+    2. MINOR version when you add functionality in a backwards-compatible
+       manner, and
+    3. PATCH version when you make backwards-compatible bug fixes.
 
-but we do not bump the version for every change.
+  but we do not bump the version for every change.
 
 * Command line parsing is done as stacked solution. Each command
   defines its usage and hooks into the global program by using the
