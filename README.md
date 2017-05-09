@@ -379,7 +379,7 @@ $ make flake8
 ```
 
 The primary focus of testing is unit testing without verification of the
-integration. Therefore is is not required to have a Microsoft Azure account
+integration. Therefore it is not required to have a Microsoft Azure account
 to run the tests or contribute to the project. When integration tests will be
 developed these will be separated from the unit tests. Once integration
 testing is implemented and if you are a regular contributor to the project but
