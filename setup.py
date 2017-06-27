@@ -22,7 +22,7 @@ config = {
         'azure-storage>=0.30.0',
         'azure-servicemanagement-legacy>=0.20.1',
         'python-dateutil>=2.4',
-        'dnspython>=1.12.0',
+        'pyOpenSSL',
         'setuptools>=5.4',
         'future>=0.15.2'
     ],

@@ -18,7 +18,7 @@ Requires:       python-pyliblzma
 Requires:       python-azure-sdk >= 1.0.3
 Requires:       python-azure-sdk-storage >= 0.30.0
 Requires:       python-dateutil
-Requires:       python-dnspython
+Requires:       python-pyOpenSSL
 Requires:       python-setuptools
 Requires:       python-future
 Requires:       man
