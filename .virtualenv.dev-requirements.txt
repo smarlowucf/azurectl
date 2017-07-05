@@ -11,7 +11,6 @@
 
 -r .virtualenv.requirements.txt
 
-setuptools
 pytest
 pytest-cov
 mock

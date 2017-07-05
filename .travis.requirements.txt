@@ -15,8 +15,6 @@ APScheduler
 pyliblzma
 coverage
 pyOpenSSL
-requests
-dnspython
 pytest
 pytest-cov
 azure-storage

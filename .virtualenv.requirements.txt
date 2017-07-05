@@ -16,9 +16,7 @@ pyliblzma
 azure-storage
 azure-servicemanagement-legacy
 python-dateutil
-dnspython
 
 pyOpenSSL
-requests
-
+setuptools
 future
