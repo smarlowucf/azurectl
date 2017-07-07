@@ -1,13 +1,11 @@
+from .test_helper import argv_kiwi_tests
+
 import sys
 import mock
 from mock import patch
 from mock import call
-
-from test_helper import *
-
 import azurectl
 from azurectl.commands.compute_vm import ComputeVmTask
-from azurectl.azurectl_exceptions import *
 
 
 class TestComputeVmTask:
@@ -42,6 +40,9 @@ class TestComputeVmTask:
         azurectl.commands.compute_vm.AzureAccount = mock.Mock(
             return_value=mock.Mock()
         )
+
+    def teardown(self):
+        sys.argv = argv_kiwi_tests
 
     def __init_command_args(self):
         self.task.command_args = {}

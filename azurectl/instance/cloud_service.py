@@ -79,6 +79,7 @@ class CloudService(object):
             raise AzureCloudServiceOpenSSLError(
                 '%s' % openssl_error
             )
+        fingerprint = fingerprint.decode()
         fingerprint = fingerprint.split('=')[1]
         fingerprint = fingerprint.replace(':', '')
         return fingerprint.strip()
@@ -115,7 +116,10 @@ class CloudService(object):
             )
         try:
             add_cert_request = self.service.add_service_certificate(
-                cloud_service_name, base64.b64encode(pfx_cert), 'pfx', u''
+                cloud_service_name,
+                base64.b64encode(pfx_cert).decode(),
+                'pfx',
+                ''
             )
         except Exception as e:
             raise AzureCloudServiceAddCertificateError(

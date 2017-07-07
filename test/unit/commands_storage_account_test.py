@@ -1,13 +1,13 @@
+from .test_helper import argv_kiwi_tests
+
 import sys
 import mock
 from mock import patch
-
-
-from test_helper import *
-
 import azurectl
+from pytest import raises
 from azurectl.commands.storage_account import StorageAccountTask
-from azurectl.azurectl_exceptions import *
+
+from azurectl.azurectl_exceptions import AzureInvalidCommand
 
 
 class TestStorageAccountTask:
@@ -27,6 +27,9 @@ class TestStorageAccountTask:
         azurectl.commands.storage_account.Help = mock.Mock(
             return_value=mock.Mock()
         )
+
+    def teardown(self):
+        sys.argv = argv_kiwi_tests
 
     def __init_command_args(self):
         self.task.command_args = {
@@ -118,17 +121,17 @@ class TestStorageAccountTask:
             self.task.command_args['--name']
         )
 
-    @raises(AzureInvalidCommand)
     def test_storage_account_command_invalid_caps(self):
         self.__init_command_args()
         self.task.command_args['--name'] = 'CAPSAREINVALID'
-        self.task.validate_account_name()
+        with raises(AzureInvalidCommand):
+            self.task.validate_account_name()
 
-    @raises(AzureInvalidCommand)
     def test_storage_account_command_invalid_punctuation(self):
         self.__init_command_args()
         self.task.command_args['--name'] = 'punctuation-is.bad'
-        self.task.validate_account_name()
+        with raises(AzureInvalidCommand):
+            self.task.validate_account_name()
 
     @patch('azurectl.commands.storage_account.DataOutput')
     def test_process_storage_account_regions(self, mock_out):

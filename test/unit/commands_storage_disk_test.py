@@ -1,13 +1,15 @@
+from .test_helper import argv_kiwi_tests
+
 import datetime
 import dateutil.parser
 import sys
 import mock
 from mock import patch
-
-
-from test_helper import *
-from azurectl.azurectl_exceptions import *
+from pytest import raises
+import azurectl
 from azurectl.commands.storage_disk import StorageDiskTask
+
+from azurectl.azurectl_exceptions import AzureInvalidCommand
 
 
 class TestStorageDiskTask:
@@ -32,6 +34,9 @@ class TestStorageDiskTask:
         )
         self.task = StorageDiskTask()
         self.__init_command_args()
+
+    def teardown(self):
+        sys.argv = argv_kiwi_tests
 
     def __init_command_args(self):
         self.task.command_args = {}
@@ -59,16 +64,15 @@ class TestStorageDiskTask:
             'some-file', self.task.command_args['--blob-name'], 1024
         )
 
-    @raises(SystemExit)
     @patch('azurectl.commands.storage_disk.BackgroundScheduler')
     def test_process_storage_disk_upload_interrupted(self, mock_job):
         self.__init_command_args()
         self.task.command_args['disk'] = True
         self.task.command_args['upload'] = True
         self.storage.upload.side_effect = KeyboardInterrupt
-        self.task.process()
+        with raises(SystemExit):
+            self.task.process()
 
-    @raises(SystemExit)
     @patch('azurectl.commands.storage_disk.BackgroundScheduler')
     def test_process_storage_disk_upload_quiet_interrupted(self, mock_job):
         self.__init_command_args()
@@ -76,7 +80,8 @@ class TestStorageDiskTask:
         self.task.command_args['upload'] = True
         self.task.command_args['--quiet'] = True
         self.storage.upload.side_effect = KeyboardInterrupt
-        self.task.process()
+        with raises(SystemExit):
+            self.task.process()
 
     def test_process_storage_disk_delete(self):
         self.__init_command_args()
@@ -104,23 +109,23 @@ class TestStorageDiskTask:
             'azurectl::storage::disk'
         )
 
-    @raises(AzureInvalidCommand)
     def test_start_date_validation(self):
         self.__init_command_args()
         self.task.command_args['--start-datetime'] = 'foo'
-        self.task.process()
+        with raises(AzureInvalidCommand):
+            self.task.process()
 
-    @raises(AzureInvalidCommand)
     def test_end_date_validation(self):
         self.__init_command_args()
         self.task.command_args['--expiry-datetime'] = 'foo'
-        self.task.process()
+        with raises(AzureInvalidCommand):
+            self.task.process()
 
-    @raises(AzureInvalidCommand)
     def test_permissions_validation(self):
         self.__init_command_args()
         self.task.command_args['--permissions'] = 'a'
-        self.task.process()
+        with raises(AzureInvalidCommand):
+            self.task.process()
 
     @patch('azurectl.commands.storage_disk.DataOutput')
     def test_process_storage_disk_sas(self, mock_out):

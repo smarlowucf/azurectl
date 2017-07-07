@@ -1,11 +1,10 @@
+from .test_helper import argv_kiwi_tests
+
 import dateutil.parser
 import sys
 import mock
 from mock import patch
-
-
-from test_helper import *
-
+import azurectl
 from azurectl.commands.storage_share import StorageShareTask
 
 
@@ -28,6 +27,9 @@ class TestStorageShareTask:
         )
         self.task = StorageShareTask()
         self.__init_command_args()
+
+    def teardown(self):
+        sys.argv = argv_kiwi_tests
 
     def __init_command_args(self):
         self.task.command_args = {}

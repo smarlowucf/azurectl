@@ -18,13 +18,11 @@ config = {
     'install_requires': [
         'docopt>=0.6.2',
         'APScheduler>=3.0.2',
-        'pyliblzma>=0.5.3',
         'azure-storage>=0.30.0',
         'azure-servicemanagement-legacy>=0.20.1',
         'python-dateutil>=2.4',
         'pyOpenSSL',
-        'setuptools>=5.4',
-        'future>=0.15.2'
+        'setuptools>=5.4'
     ],
     'packages': ['azurectl'],
     'entry_points': {

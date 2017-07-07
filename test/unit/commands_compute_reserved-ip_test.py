@@ -1,13 +1,10 @@
+from .test_helper import argv_kiwi_tests
+
 import sys
 import mock
 from mock import patch
-
-
-from test_helper import *
-
 import azurectl
 import importlib
-from azurectl.azurectl_exceptions import *
 
 
 class TestComputeReservedIpTask:
@@ -27,6 +24,9 @@ class TestComputeReservedIpTask:
         reserverd_ip.Help = mock.Mock(
             return_value=mock.Mock()
         )
+
+    def teardown(self):
+        sys.argv = argv_kiwi_tests
 
     def __init_command_args(self):
         self.task.command_args = {
