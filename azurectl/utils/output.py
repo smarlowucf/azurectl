@@ -45,9 +45,9 @@ class DataOutput(object):
             self._standard_json()
 
     def _standard_json(self):
-        print json.dumps(
+        print(json.dumps(
             self.data, sort_keys=True, indent=2, separators=(',', ': ')
-        )
+        ))
 
     def _color_json(self):
         out_file = NamedTemporaryFile()
