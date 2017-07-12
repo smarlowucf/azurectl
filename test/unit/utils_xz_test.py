@@ -14,24 +14,26 @@ class TestXZ:
         self.xz.close()
 
     def test_read(self):
-        assert self.xz.read(128) == 'foo'
+        assert self.xz.read(128) == b'foo\n'
 
     def test_read_chunks(self):
-        with XZ.open('../data/blob.more.xz', buffer_size=1) as xz:
+        with XZ.open('../data/blob.more.xz') as xz:
             chunk = xz.read(8)
-            assert chunk == 'Some dat'
+            assert chunk == b'Some dat'
             chunk = xz.read(8)
-            assert chunk == 'a so tha'
+            assert chunk == b'a so tha'
             chunk = xz.read(8)
-            assert chunk == 't we can'
+            assert chunk == b't we can'
             chunk = xz.read(8)
-            assert chunk == ' read it'
+            assert chunk == b' read it'
             chunk = xz.read(8)
-            assert chunk == ' as mult'
+            assert chunk == b' as mult'
             chunk = xz.read(8)
-            assert chunk == 'iple chu'
+            assert chunk == b'iple chu'
             chunk = xz.read(8)
-            assert chunk == 'nks'
+            assert chunk == b'nks\n'
+            chunk = xz.read(8)
+            assert chunk is None
             chunk = xz.read(8)
             assert chunk is None
 

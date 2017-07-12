@@ -31,30 +31,23 @@ class XZ(object):
         self.buffer_size = int(buffer_size)
         self.lzma = lzma.LZMADecompressor()
         self.lzma_stream = lzma_stream
+        self.buffered_bytes = b''
 
     def read(self, size):
-        if self.lzma.eof:
+        if self.lzma.eof and not self.buffered_bytes:
             return None
-        chunks = self.lzma.decompress(
-            self.lzma.unused_data + self.lzma_stream.read(self.buffer_size)
-        )
+
+        chunks = self.buffered_bytes
+
         bytes_uncompressed = len(chunks)
         while not self.lzma.eof and bytes_uncompressed < size:
-            # Because the max_length parameter was added to the decompress()
-            # method with python 3.5 for the first time and we have to stay
-            # compatible with 3.4 the given size argument to this method can
-            # only be treated as a minimum size constraint which has to be
-            # valid but can not be used as exact value unless the buffer_size
-            # is set to 1
             chunks += self.lzma.decompress(
                 self.lzma.unused_data + self.lzma_stream.read(self.buffer_size)
             )
             bytes_uncompressed = len(chunks)
-        if self.lzma.eof:
-            # there is one superfluous newline with the last chunk
-            chunks = chunks[:-1]
 
-        return chunks.decode()
+        self.buffered_bytes = chunks[size:]
+        return chunks[:size]
 
     @classmethod
     def close(self):
