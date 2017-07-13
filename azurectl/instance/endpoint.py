@@ -17,6 +17,7 @@ from azure.servicemanagement import (
 )
 
 # project
+from azurectl.defaults import Defaults
 from azurectl.azurectl_exceptions import (
     AzureEndpointCreateError,
     AzureEndpointDeleteError,
@@ -114,7 +115,7 @@ class Endpoint(object):
             raise AzureEndpointCreateError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
-        return result.request_id
+        return Defaults.unify_id(result.request_id)
 
     def update(
         self,
@@ -172,7 +173,7 @@ class Endpoint(object):
             raise AzureEndpointUpdateError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
-        return result.request_id
+        return Defaults.unify_id(result.request_id)
 
     def delete(self, name):
         try:
@@ -211,7 +212,7 @@ class Endpoint(object):
             raise AzureEndpointDeleteError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
-        return result.request_id
+        return Defaults.unify_id(result.request_id)
 
     def __get_role(self):
         return self.service.get_role(

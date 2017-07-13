@@ -16,6 +16,7 @@ from azurectl.account.service import AzureAccount
 from azurectl.config.parser import Config
 from azurectl.instance.image import Image
 import azurectl
+from azurectl.defaults import Defaults
 
 from azurectl.azurectl_exceptions import (
     AzureBlobServicePropertyError,
@@ -37,7 +38,7 @@ class TestImage:
             'MyResult',
             'request_id'
         )
-        self.myrequest = MyResult(request_id=42)
+        self.myrequest = MyResult(request_id=Defaults.unify_id(42))
         self.fake_image_name = 'some-name'
 
         MyStruct = namedtuple(
@@ -166,7 +167,7 @@ class TestImage:
         request_id = self.image.create(
             'some-name', 'some-blob'
         )
-        assert request_id == 42
+        assert request_id == self.myrequest.request_id
         self.service.add_os_image.assert_called_once_with(
             'some-name',
             'https://bob.blob.test.url/foo/some-blob',
@@ -179,7 +180,7 @@ class TestImage:
         request_id = self.image.delete(
             'some-name', False
         )
-        assert request_id == 42
+        assert request_id == self.myrequest.request_id
         self.service.delete_os_image.assert_called_once_with(
             'some-name', False
         )
@@ -202,7 +203,7 @@ class TestImage:
         request_id = self.image.replicate(
             'some-name', ['all'], 'offer', 'sku', 'version'
         )
-        assert request_id == 42
+        assert request_id == self.myrequest.request_id
         self.service.replicate_vm_image.assert_called_once_with(
             'some-name', ['a', 'b', 'c'], 'offer', 'sku', 'version'
         )
@@ -291,7 +292,7 @@ class TestImage:
     def test_unreplicate(self):
         self.service.unreplicate_vm_image.return_value = self.myrequest
         request_id = self.image.unreplicate('some-name')
-        assert request_id == 42
+        assert request_id == self.myrequest.request_id
         self.service.unreplicate_vm_image.assert_called_once_with(
             'some-name'
         )
@@ -299,7 +300,7 @@ class TestImage:
     def test_publish(self):
         self.service.share_vm_image.return_value = self.myrequest
         request_id = self.image.publish('some-name', 'public')
-        assert request_id == 42
+        assert request_id == self.myrequest.request_id
         self.service.share_vm_image.assert_called_once_with(
             'some-name', 'public'
         )

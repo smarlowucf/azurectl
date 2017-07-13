@@ -10,6 +10,7 @@ from azurectl.account.service import AzureAccount
 from azurectl.config.parser import Config
 from azurectl.storage.account import StorageAccount
 import azurectl
+from azurectl.defaults import Defaults
 
 from azurectl.azurectl_exceptions import (
     AzureStorageAccountCreateError,
@@ -123,7 +124,7 @@ class TestStorageAccount:
             "status": "Created"
         }
 
-        self.my_request = mock.Mock(request_id=42)
+        self.my_request = mock.Mock(request_id=Defaults.unify_id(42))
 
         self.storage_account = StorageAccount(account)
 
@@ -205,7 +206,7 @@ class TestStorageAccount:
             None,
             '--locally-redundant'
         )
-        assert result == 42
+        assert result == self.my_request.request_id
 
     def test_update_error(self):
         self.service.update_storage_account.side_effect = Exception

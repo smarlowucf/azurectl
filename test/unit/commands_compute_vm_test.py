@@ -29,7 +29,7 @@ class TestComputeVmTask:
         )
         cloud_service = mock.Mock()
         cloud_service.create = mock.Mock(
-            return_value=42
+            return_value='42'
         )
         azurectl.commands.compute_vm.CloudService = mock.Mock(
             return_value=cloud_service

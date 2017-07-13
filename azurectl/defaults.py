@@ -116,3 +116,7 @@ class Defaults(object):
     @classmethod
     def set_attribute(self, instance, name, value):
         return setattr(instance, name, value)
+
+    @classmethod
+    def unify_id(self, request_id):
+        return format(request_id)

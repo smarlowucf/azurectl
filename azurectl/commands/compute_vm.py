@@ -242,7 +242,7 @@ class ComputeVmTask(CliTask):
             self.command_args['--cloud-service-name'],
             self.config.get_region_name()
         )
-        if cloud_service_request_id > 0:
+        if int(cloud_service_request_id, 16) > 0:
             # a new cloud service was created for this instance, waiting
             # for the cloud service to become created. Basically we try
             # to prevent blocking, thus this is an exception to other

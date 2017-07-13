@@ -199,7 +199,7 @@ class DataDisk(object):
             raise AzureDataDiskAttachError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
-        return result.request_id
+        return Defaults.unify_id(result.request_id)
 
     def detach(self, lun, cloud_service_name, instance_name=None):
         """
@@ -217,7 +217,7 @@ class DataDisk(object):
             raise AzureDataDiskDeleteError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
-        return result.request_id
+        return Defaults.unify_id(result.request_id)
 
     def __get_first_available_lun(self, cloud_service_name, instance_name):
         lun = 0

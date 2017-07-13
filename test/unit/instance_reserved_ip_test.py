@@ -10,6 +10,7 @@ from azurectl.account.service import AzureAccount
 from azurectl.config.parser import Config
 from azurectl.instance.reserved_ip import ReservedIp
 import azurectl
+from azurectl.defaults import Defaults
 
 from azurectl.azurectl_exceptions import (
     AzureReservedIpAssociateError,
@@ -66,7 +67,7 @@ class TestReservedIp:
             'MyResult',
             'request_id'
         )
-        self.myrequest = MyResult(request_id=42)
+        self.myrequest = MyResult(request_id=Defaults.unify_id(42))
 
         self.reserved_ip = ReservedIp(account)
 
@@ -93,7 +94,7 @@ class TestReservedIp:
     def test_create(self):
         self.service.create_reserved_ip_address.return_value = self.myrequest
         request_id = self.reserved_ip.create('some-name', 'East US 2')
-        assert request_id == 42
+        assert request_id == self.myrequest.request_id
         self.service.create_reserved_ip_address.assert_called_once_with(
             'some-name',
             location='East US 2'
@@ -107,7 +108,7 @@ class TestReservedIp:
     def test_delete(self):
         self.service.delete_reserved_ip_address.return_value = self.myrequest
         request_id = self.reserved_ip.delete('some-name')
-        assert request_id == 42
+        assert request_id == self.myrequest.request_id
         self.service.delete_reserved_ip_address.assert_called_once_with(
             'some-name'
         )
@@ -133,7 +134,7 @@ class TestReservedIp:
         request_id = self.reserved_ip.associate(
             'some-name', 'some-cloud-service'
         )
-        assert request_id == 42
+        assert request_id == self.myrequest.request_id
         self.service.associate_reserved_ip_address.assert_called_once_with(
             name='some-name',
             service_name='some-cloud-service',
@@ -146,7 +147,7 @@ class TestReservedIp:
         request_id = self.reserved_ip.disassociate(
             'some-name', 'some-cloud-service'
         )
-        assert request_id == 42
+        assert request_id == self.myrequest.request_id
         self.service.disassociate_reserved_ip_address.assert_called_once_with(
             name='some-name',
             service_name='some-cloud-service',

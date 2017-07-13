@@ -19,6 +19,7 @@ from azure.servicemanagement import OSVirtualHardDisk
 from azure.storage.blob.baseblobservice import BaseBlobService
 
 # project
+from azurectl.defaults import Defaults
 from azurectl.azurectl_exceptions import (
     AzureCustomDataTooLargeError,
     AzureVmCreateError,
@@ -204,7 +205,7 @@ class VirtualMachine(object):
             result = self.service.delete_role(
                 cloud_service_name, cloud_service_name, instance_name, True
             )
-            return(format(result.request_id))
+            return(Defaults.unify_id(result.request_id))
         except Exception as e:
             raise AzureVmDeleteError(
                 '%s: %s' % (type(e).__name__, format(e))
@@ -229,7 +230,7 @@ class VirtualMachine(object):
                 cloud_service_name, cloud_service_name,
                 instance_name, post_shutdown_action
             )
-            return(format(result.request_id))
+            return(Defaults.unify_id(result.request_id))
         except Exception as e:
             raise AzureVmShutdownError(
                 '%s: %s' % (type(e).__name__, format(e))
@@ -246,7 +247,7 @@ class VirtualMachine(object):
                 cloud_service_name, cloud_service_name,
                 instance_name
             )
-            return(format(result.request_id))
+            return(Defaults.unify_id(result.request_id))
         except Exception as e:
             raise AzureVmStartError(
                 '%s: %s' % (type(e).__name__, format(e))
@@ -262,7 +263,7 @@ class VirtualMachine(object):
             result = self.service.reboot_role_instance(
                 cloud_service_name, cloud_service_name, instance_name
             )
-            return(format(result.request_id))
+            return(Defaults.unify_id(result.request_id))
         except Exception as e:
             raise AzureVmRebootError(
                 '%s: %s' % (type(e).__name__, format(e))

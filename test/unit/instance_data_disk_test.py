@@ -13,6 +13,7 @@ from azurectl.config.parser import Config
 from azurectl.instance.data_disk import DataDisk
 from collections import namedtuple
 import azurectl
+from azurectl.defaults import Defaults
 
 from azurectl.azurectl_exceptions import (
     AzureDataDiskAttachError,
@@ -39,7 +40,7 @@ class TestDataDisk:
         # now that that's done, instantiate a DataDisk with the account
         self.data_disk = DataDisk(account)
         # asynchronous API operations return a request object
-        self.my_request = mock.Mock(request_id=42)
+        self.my_request = mock.Mock(request_id=Defaults.unify_id(42))
         # variables used in multiple tests
         self.cloud_service_name = 'mockcloudservice'
         self.instance_name = 'mockcloudserviceinstance1'

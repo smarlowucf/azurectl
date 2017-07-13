@@ -9,7 +9,7 @@ from azurectl.instance.cloud_service import CloudService
 from pytest import raises
 import azurectl
 from collections import namedtuple
-
+from azurectl.defaults import Defaults
 from azurectl.azurectl_exceptions import (
     AzureError,
     AzureCloudServiceAddCertificateError,
@@ -27,7 +27,7 @@ class TestCloudService:
             'MyResult',
             'request_id'
         )
-        self.myrequest = MyResult(request_id=42)
+        self.myrequest = MyResult(request_id=Defaults.unify_id(42))
         MyStruct = namedtuple(
             'MyStruct',
             'name label os category description location \
@@ -372,7 +372,7 @@ class TestCloudService:
         self.mgmt_service.delete_hosted_service.assert_called_once_with(
             'cloud-service', False
         )
-        assert request_id == 42
+        assert request_id == self.myrequest.request_id
 
     def test_create_service_error(self):
         self.mgmt_service.check_hosted_service_name_availability.return_value \
