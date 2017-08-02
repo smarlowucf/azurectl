@@ -70,7 +70,7 @@ from pytz import utc
 from apscheduler.schedulers.background import BackgroundScheduler
 
 # project
-from .base import CliTask
+from azurectl.commands.base import CliTask
 from azurectl.account.service import AzureAccount
 from azurectl.help import Help
 from azurectl.logger import log

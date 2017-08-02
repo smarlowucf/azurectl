@@ -15,10 +15,10 @@ import sys
 import docopt
 
 # project
-from . import logger
-from .app import App
-from .defaults import Defaults
-from .azurectl_exceptions import AzureError
+from azurectl import logger
+from azurectl.app import App
+from azurectl.defaults import Defaults
+from azurectl.azurectl_exceptions import AzureError
 
 
 def extras(help, version, options, doc):
