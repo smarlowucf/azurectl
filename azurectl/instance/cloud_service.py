@@ -16,6 +16,7 @@ import subprocess
 from tempfile import NamedTemporaryFile
 
 # project
+from azurectl.defaults import Defaults
 from azurectl.azurectl_exceptions import (
     AzureCloudServiceAddressError,
     AzureCloudServiceOpenSSLError,
@@ -79,6 +80,7 @@ class CloudService(object):
             raise AzureCloudServiceOpenSSLError(
                 '%s' % openssl_error
             )
+        fingerprint = fingerprint.decode()
         fingerprint = fingerprint.split('=')[1]
         fingerprint = fingerprint.replace(':', '')
         return fingerprint.strip()
@@ -115,14 +117,19 @@ class CloudService(object):
             )
         try:
             add_cert_request = self.service.add_service_certificate(
-                cloud_service_name, base64.b64encode(pfx_cert), 'pfx', u''
+                cloud_service_name,
+                base64.b64encode(pfx_cert).decode(),
+                'pfx',
+                ''
             )
         except Exception as e:
             raise AzureCloudServiceAddCertificateError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
         # Wait for the certficate to be created
-        request_result = RequestResult(add_cert_request.request_id)
+        request_result = RequestResult(
+            Defaults.unify_id(add_cert_request.request_id)
+        )
         request_result.wait_for_request_completion(
             self.service
         )
@@ -159,7 +166,7 @@ class CloudService(object):
 
         try:
             result = self.service.create_hosted_service(**service_record)
-            return (result.request_id)
+            return (Defaults.unify_id(result.request_id))
         except Exception as e:
             raise AzureCloudServiceCreateError(
                 '%s: %s' % (type(e).__name__, format(e))
@@ -175,7 +182,7 @@ class CloudService(object):
             result = self.service.delete_hosted_service(
                 cloud_service_name, complete
             )
-            return (result.request_id)
+            return (Defaults.unify_id(result.request_id))
         except Exception as e:
             raise AzureCloudServiceDeleteError(
                 '%s: %s' % (type(e).__name__, format(e))

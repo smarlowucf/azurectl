@@ -1,18 +1,24 @@
+from .test_helper import argv_kiwi_tests
+
 import sys
 import mock
 from mock import patch
-
-
-from test_helper import *
-
 from azurectl.account.service import AzureAccount
 from azurectl.config.parser import Config
-from azurectl.azurectl_exceptions import *
 from azurectl.instance.cloud_service import CloudService
-
+from pytest import raises
 import azurectl
-
 from collections import namedtuple
+from azurectl.defaults import Defaults
+from azurectl.azurectl_exceptions import (
+    AzureError,
+    AzureCloudServiceAddCertificateError,
+    AzureCloudServiceAddressError,
+    AzureCloudServiceCreateError,
+    AzureCloudServiceDeleteError,
+    AzureCloudServiceOpenSSLError,
+    AzureCloudServicePropertiesError
+)
 
 
 class TestCloudService:
@@ -21,7 +27,7 @@ class TestCloudService:
             'MyResult',
             'request_id'
         )
-        self.myrequest = MyResult(request_id=42)
+        self.myrequest = MyResult(request_id=Defaults.unify_id(42))
         MyStruct = namedtuple(
             'MyStruct',
             'name label os category description location \
@@ -159,12 +165,12 @@ class TestCloudService:
     ):
         mock_openssl = mock.Mock()
         mock_openssl.communicate = mock.Mock(
-            return_value=['pfx-data-stream', 'error']
+            return_value=[b'pfx-data-stream', b'error']
         )
         mock_openssl.returncode = 0
         mock_popen.return_value = mock_openssl
-        mock_getpem.return_value = 'pem-base64-stream'
-        mock_base64.return_value = 'base64-pfx-stream'
+        mock_getpem.return_value = b'pem-base64-stream'
+        mock_base64.return_value = b'base64-pfx-stream'
         mock_fingerprint.return_value = 'finger-print'
         assert self.cloud_service.add_certificate(
             'cloud-service', 'ssh-private-key'
@@ -181,20 +187,20 @@ class TestCloudService:
             stdout=-1
         )
         mock_base64.assert_called_once_with(
-            'pfx-data-stream'
+            b'pfx-data-stream'
         )
         self.mgmt_service.add_service_certificate.assert_called_once_with(
-            'cloud-service', 'base64-pfx-stream', 'pfx', u''
+            'cloud-service', 'base64-pfx-stream', 'pfx', ''
         )
         mock_fingerprint.assert_called_once_with(
-            'pem-base64-stream'
+            b'pem-base64-stream'
         )
 
     @patch('subprocess.Popen')
     def test_get_pem_certificate(self, mock_popen):
         mock_openssl = mock.Mock()
         mock_openssl.communicate = mock.Mock(
-            return_value=['SHA1 Fingerprint=02:8F:82', 'error']
+            return_value=[b'SHA1 Fingerprint=02:8F:82', b'error']
         )
         mock_openssl.returncode = 0
         mock_popen.return_value = mock_openssl
@@ -214,11 +220,11 @@ class TestCloudService:
     def test_get_fingerprint(self, mock_popen):
         mock_openssl = mock.Mock()
         mock_openssl.communicate = mock.Mock(
-            return_value=['SHA1 Fingerprint=02:8F:82', 'error']
+            return_value=[b'SHA1 Fingerprint=02:8F:82', b'error']
         )
         mock_openssl.returncode = 0
         mock_popen.return_value = mock_openssl
-        self.cloud_service.get_fingerprint('pem-base64-stream')
+        self.cloud_service.get_fingerprint(b'pem-base64-stream')
         mock_popen.assert_called_once_with(
             [
                 'openssl', 'x509', '-noout', '-in', mock.ANY,
@@ -228,34 +234,36 @@ class TestCloudService:
             stdout=-1
         )
 
-    @raises(AzureCloudServiceOpenSSLError)
     def test_get_fingerprint_raise_openssl_error(self):
-        self.cloud_service.get_fingerprint('foo')
+        with raises(AzureCloudServiceOpenSSLError):
+            self.cloud_service.get_fingerprint(b'foo')
 
-    @raises(AzureCloudServiceOpenSSLError)
     def test_get_pem_certificate_raise_openssl_error(self):
-        self.cloud_service.get_pem_certificate('foo')
+        with raises(AzureCloudServiceOpenSSLError):
+            self.cloud_service.get_pem_certificate('foo')
 
     @patch('azurectl.instance.cloud_service.CloudService.get_pem_certificate')
     @patch('subprocess.Popen')
-    @raises(AzureCloudServiceOpenSSLError)
     def test_add_certificate_raise_openssl_error(self, mock_popen, mock_getpem):
         mock_openssl = mock.Mock()
         mock_openssl.communicate = mock.Mock(
-            return_value=['cer-data-stream', 'error']
+            return_value=[b'cer-data-stream', b'error']
         )
         mock_openssl.returncode = 1
         mock_popen.return_value = mock_openssl
-        mock_getpem.return_value = 'pem-base64-stream'
-        self.cloud_service.add_certificate(
-            'cloud-service', '../data/id_test'
-        )
+        mock_getpem.return_value = b'pem-base64-stream'
+        with raises(AzureCloudServiceOpenSSLError):
+            self.cloud_service.add_certificate(
+                'cloud-service', '../data/id_test'
+            )
 
-    @raises(AzureCloudServiceAddCertificateError)
     def test_add_certificate_raise_add_error(self):
         self.mgmt_service.add_service_certificate.side_effect = \
             AzureCloudServiceAddCertificateError
-        self.cloud_service.add_certificate('cloud-service', '../data/id_test')
+        with raises(AzureCloudServiceAddCertificateError):
+            self.cloud_service.add_certificate(
+                'cloud-service', '../data/id_test'
+            )
 
     def test_create(self):
         self.mgmt_service.check_hosted_service_name_availability.return_value \
@@ -275,10 +283,10 @@ class TestCloudService:
             label='label'
         )
 
-    @raises(AzureCloudServicePropertiesError)
     def test_get_properties_error(self):
         self.mgmt_service.get_hosted_service_properties.side_effect = Exception
-        self.cloud_service.get_properties('cloud-service')
+        with raises(AzureCloudServicePropertiesError):
+            self.cloud_service.get_properties('cloud-service')
 
     def test_get_properties(self):
         self.mgmt_service.get_hosted_service_properties.return_value = \
@@ -348,15 +356,15 @@ class TestCloudService:
             'location': 'location'
         }
 
-    @raises(AzureCloudServiceAddressError)
     def test_create_cloud_service_in_use(self):
         self.mgmt_service.check_hosted_service_name_availability.return_value \
             = mock.Mock(result=False)
         self.mgmt_service.get_hosted_service_properties.side_effect = \
             AzureError('does-not-exist')
-        self.cloud_service.create(
-            'cloud-service', 'West US', 'my-cloud', 'label'
-        )
+        with raises(AzureCloudServiceAddressError):
+            self.cloud_service.create(
+                'cloud-service', 'West US', 'my-cloud', 'label'
+            )
 
     def test_delete(self):
         self.mgmt_service.delete_hosted_service.return_value = self.myrequest
@@ -364,18 +372,18 @@ class TestCloudService:
         self.mgmt_service.delete_hosted_service.assert_called_once_with(
             'cloud-service', False
         )
-        assert request_id == 42
+        assert request_id == self.myrequest.request_id
 
-    @raises(AzureCloudServiceCreateError)
     def test_create_service_error(self):
         self.mgmt_service.check_hosted_service_name_availability.return_value \
             = mock.Mock(result=True)
         self.mgmt_service.get_hosted_service_properties.side_effect = Exception
         self.mgmt_service.create_hosted_service.side_effect = \
             AzureCloudServiceCreateError
-        self.cloud_service.create(
-            'cloud-service', 'West US', 'my-cloud', 'label'
-        )
+        with raises(AzureCloudServiceCreateError):
+            self.cloud_service.create(
+                'cloud-service', 'West US', 'my-cloud', 'label'
+            )
 
     def test_create_service_exists(self):
         request_id = self.cloud_service.create(
@@ -383,8 +391,8 @@ class TestCloudService:
         )
         assert request_id == 0
 
-    @raises(AzureCloudServiceDeleteError)
     def test_delete_service_error(self):
         self.mgmt_service.delete_hosted_service.side_effect = \
             AzureCloudServiceDeleteError
-        self.cloud_service.delete('cloud-service')
+        with raises(AzureCloudServiceDeleteError):
+            self.cloud_service.delete('cloud-service')

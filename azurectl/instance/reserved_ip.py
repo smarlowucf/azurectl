@@ -12,6 +12,7 @@
 # limitations under the License.
 #
 # project
+from azurectl.defaults import Defaults
 from azurectl.azurectl_exceptions import (
     AzureReservedIpAssociateError,
     AzureReservedIpDisAssociateError,
@@ -63,7 +64,7 @@ class ReservedIp(object):
             raise AzureReservedIpCreateError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
-        return result.request_id
+        return Defaults.unify_id(result.request_id)
 
     def delete(self, name):
         try:
@@ -72,7 +73,7 @@ class ReservedIp(object):
             raise AzureReservedIpDeleteError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
-        return result.request_id
+        return Defaults.unify_id(result.request_id)
 
     def associate(self, name, cloud_service_name):
         try:
@@ -85,7 +86,7 @@ class ReservedIp(object):
             raise AzureReservedIpAssociateError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
-        return result.request_id
+        return Defaults.unify_id(result.request_id)
 
     def disassociate(self, name, cloud_service_name):
         try:
@@ -98,7 +99,7 @@ class ReservedIp(object):
             raise AzureReservedIpDisAssociateError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
-        return result.request_id
+        return Defaults.unify_id(result.request_id)
 
     def __decorate_for_results(self, ip):
         return {

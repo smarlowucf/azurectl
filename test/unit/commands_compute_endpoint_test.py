@@ -1,15 +1,13 @@
+from .test_helper import argv_kiwi_tests
+
 import sys
 import mock
-from mock import patch, create_autospec
-from test_helper import *
-# mocks
+from mock import patch
 from azurectl.utils.output import DataOutput
 from azurectl.instance.endpoint import Endpoint
 from azurectl.help import Help
-# project
-import azurectl
 from azurectl.commands.compute_endpoint import ComputeEndpointTask
-from azurectl.azurectl_exceptions import *
+import azurectl
 
 
 class TestComputeEndpointTask:
@@ -22,11 +20,11 @@ class TestComputeEndpointTask:
         self.task = ComputeEndpointTask()
         self.task.request_wait = mock.Mock()
         # mock out the Endpoint class the commands interface with
-        azurectl.commands.compute_endpoint.Endpoint = create_autospec(Endpoint)
+        azurectl.commands.compute_endpoint.Endpoint = mock.Mock()
         # mock out the help class
-        azurectl.commands.compute_endpoint.Help = create_autospec(Help)
+        azurectl.commands.compute_endpoint.Help = mock.Mock()
         # mock out the output class
-        azurectl.commands.compute_endpoint.DataOutput = create_autospec(DataOutput)
+        azurectl.commands.compute_endpoint.DataOutput = mock.Mock()
         # variables used in multiple tests
         self.cloud_service_name = 'mockcloudservice'
         self.endpoint_name = 'HTTPS'
@@ -36,6 +34,9 @@ class TestComputeEndpointTask:
         self.udp_endpoint_name = 'SNMP'
         self.udp_port = '161'
         self.idle_timeout = '10'
+
+    def teardown(self):
+        sys.argv = argv_kiwi_tests
 
     def __init_command_args(self, overrides=None):
         '''

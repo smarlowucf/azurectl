@@ -1,15 +1,19 @@
+from .test_helper import argv_kiwi_tests
+
 import sys
 import mock
 from mock import patch
 from mock import call
-
-
-from test_helper import *
-
-from azurectl.azurectl_exceptions import *
+from pytest import raises
 from azurectl.storage.page_blob import PageBlob
-
 import azurectl
+
+from azurectl.azurectl_exceptions import (
+    AzurePageBlobAlignmentViolation,
+    AzurePageBlobSetupError,
+    AzurePageBlobUpdateError,
+    AzurePageBlobZeroPageError
+)
 
 
 class TestPageBlob:
@@ -37,22 +41,22 @@ class TestPageBlob:
     def test_iterator(self):
         assert self.page_blob.__iter__() == self.page_blob
 
-    @raises(AzurePageBlobSetupError)
     def test_create_blob_raises(self):
         self.blob_service.create_blob.side_effect = Exception
-        PageBlob(self.blob_service, 'blob-name', 'container-name', 1024)
+        with raises(AzurePageBlobSetupError):
+            PageBlob(self.blob_service, 'blob-name', 'container-name', 1024)
 
-    @raises(AzurePageBlobAlignmentViolation)
     def test_page_alignment_invalid(self):
-        PageBlob(self.blob_service, 'blob-name', 'container-name', 12)
+        with raises(AzurePageBlobAlignmentViolation):
+            PageBlob(self.blob_service, 'blob-name', 'container-name', 12)
 
-    @raises(AzurePageBlobZeroPageError)
-    @patch('__builtin__.open')
+    @patch('builtins.open')
     def test_zero_page_read_failed(self, mock_open):
         mock_open.side_effect = Exception
-        self.page_blob.next(self.data_stream)
+        with raises(AzurePageBlobZeroPageError):
+            self.page_blob.next(self.data_stream)
 
-    @patch('__builtin__.open')
+    @patch('builtins.open')
     def test_zero_page_for_max_chunk_size(self, mock_open):
         self.page_blob.rest_bytes = self.blob_service.MAX_CHUNK_GET_SIZE
         mock_open.return_value = self.context_manager_mock
@@ -61,7 +65,7 @@ class TestPageBlob:
             self.blob_service.MAX_CHUNK_GET_SIZE
         )
 
-    @patch('__builtin__.open')
+    @patch('builtins.open')
     def test_zero_page_for_chunk(self, mock_open):
         self.page_blob.rest_bytes = 42
         mock_open.return_value = self.context_manager_mock
@@ -75,10 +79,10 @@ class TestPageBlob:
             'container-name', 'blob-name', 'some-data', 0, 8
         )
 
-    @raises(AzurePageBlobUpdateError)
     def test_update_page_max_retries_reached(self):
         self.blob_service.update_page.side_effect = Exception
-        self.page_blob.next(self.data_stream)
+        with raises(AzurePageBlobUpdateError):
+            self.page_blob.next(self.data_stream)
 
     def test_update_page_retried_two_times(self):
         retries = [True, False, False]
@@ -91,7 +95,7 @@ class TestPageBlob:
         self.page_blob.next(self.data_stream)
         assert len(self.blob_service.update_page.call_args_list) == 3
 
-    @raises(StopIteration)
     def test_next_page_update_no_data(self):
         self.data_stream.read.return_value = None
-        self.page_blob.next(self.data_stream)
+        with raises(StopIteration):
+            self.page_blob.next(self.data_stream)

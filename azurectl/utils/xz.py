@@ -11,11 +11,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import subprocess
 import lzma
-
-# project
-from azurectl.azurectl_exceptions import AzureXZError
+import os
 
 
 class XZ(object):
@@ -31,43 +28,26 @@ class XZ(object):
         self.lzma_stream.close()
 
     def __init__(self, lzma_stream, buffer_size=LZMA_STREAM_BUFFER_SIZE):
-        self.lzma_stream = lzma_stream
         self.buffer_size = int(buffer_size)
         self.lzma = lzma.LZMADecompressor()
-        self.finished = False
+        self.lzma_stream = lzma_stream
+        self.buffered_bytes = b''
 
     def read(self, size):
-        if self.finished:
-            # lzma stream end already reached
+        if self.lzma.eof and not self.buffered_bytes:
             return None
-        chunks = self.lzma.decompress(
-            self.lzma.unconsumed_tail, size
-        )
-        bytes_unpacked = len(chunks)
-        if bytes_unpacked == size:
-            # first decompression already completed the requested size
-            return chunks
-        while True:
-            lzma_chunk = self.lzma_stream.read(self.buffer_size)
-            if not lzma_chunk:
-                if self.lzma.flush():
-                    # must have zero data, otherwise raise
-                    raise AssertionError
-                # there is one superfluous newline with the last chunk
-                chunks = chunks[:-1]
-                self.finished = True
-                break
-            else:
-                chunk = self.lzma.decompress(
-                    self.lzma.unconsumed_tail + lzma_chunk,
-                    size - bytes_unpacked
-                )
-                chunks += chunk
-                bytes_unpacked += len(chunk)
-                if bytes_unpacked == size:
-                    # requested size unpacked
-                    break
-        return chunks
+
+        chunks = self.buffered_bytes
+
+        bytes_uncompressed = len(chunks)
+        while not self.lzma.eof and bytes_uncompressed < size:
+            chunks += self.lzma.decompress(
+                self.lzma.unused_data + self.lzma_stream.read(self.buffer_size)
+            )
+            bytes_uncompressed = len(chunks)
+
+        self.buffered_bytes = chunks[size:]
+        return chunks[:size]
 
     @classmethod
     def close(self):
@@ -80,13 +60,6 @@ class XZ(object):
 
     @classmethod
     def uncompressed_size(self, file_name):
-        xz_info = subprocess.Popen(
-            ['xz', '--robot', '--list', file_name],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
-        )
-        output, error = xz_info.communicate()
-        if xz_info.returncode != 0:
-            raise AzureXZError('%s' % error)
-        total = output.strip().split('\n').pop()
-        return int(total.split()[4])
+        with lzma.open(file_name) as lzma_stream:
+            lzma_stream.seek(0, os.SEEK_END)
+            return lzma_stream.tell()

@@ -121,7 +121,7 @@ options:
 import os
 import time
 # project
-from base import CliTask
+from azurectl.commands.base import CliTask
 from azurectl.account.service import AzureAccount
 from azurectl.utils.collector import DataCollector
 from azurectl.utils.output import DataOutput
@@ -208,7 +208,7 @@ class ComputeVmTask(CliTask):
         instance_type = self.command_args['--instance-type']
         if not instance_type:
             instance_type = 'Small'
-        fingerprint = u''
+        fingerprint = ''
         if self.command_args['--ssh-private-key-file']:
             fingerprint = self.cloud_service.add_certificate(
                 self.command_args['--cloud-service-name'],
@@ -242,7 +242,7 @@ class ComputeVmTask(CliTask):
             self.command_args['--cloud-service-name'],
             self.config.get_region_name()
         )
-        if cloud_service_request_id > 0:
+        if int(cloud_service_request_id, 16) > 0:
             # a new cloud service was created for this instance, waiting
             # for the cloud service to become created. Basically we try
             # to prevent blocking, thus this is an exception to other
@@ -374,7 +374,7 @@ class ComputeVmTask(CliTask):
         )
         self.out.display()
 
-    def __prepare_linux_configuration(self, fingerprint=u''):
+    def __prepare_linux_configuration(self, fingerprint=''):
         user = self.command_args['--user']
         instance_name = self.command_args['--instance-name']
         password = self.command_args['--password']

@@ -93,7 +93,7 @@ class Image(object):
             result = self.service.add_os_image(
                 label, media_link, name, 'Linux'
             )
-            return (result.request_id)
+            return Defaults.unify_id(result.request_id)
         except Exception as e:
             raise AzureOsImageCreateError(
                 '%s: %s' % (type(e).__name__, format(e))
@@ -104,7 +104,7 @@ class Image(object):
             result = self.service.delete_os_image(
                 name, delete_disk
             )
-            return(result.request_id)
+            return Defaults.unify_id(result.request_id)
         except Exception as e:
             raise AzureOsImageDeleteError(
                 '%s: %s' % (type(e).__name__, format(e))
@@ -167,7 +167,7 @@ class Image(object):
             result = self.service.replicate_vm_image(
                 name, regions, offer, sku, version
             )
-            return(result.request_id)
+            return Defaults.unify_id(result.request_id)
         except Exception as e:
             raise AzureOsImageReplicateError(
                 '%s: %s' % (type(e).__name__, format(e))
@@ -223,7 +223,7 @@ class Image(object):
     def unreplicate(self, name):
         try:
             result = self.service.unreplicate_vm_image(name)
-            return(result.request_id)
+            return Defaults.unify_id(result.request_id)
         except Exception as e:
             raise AzureOsImageUnReplicateError(
                 '%s: %s' % (type(e).__name__, format(e))
@@ -232,7 +232,7 @@ class Image(object):
     def publish(self, name, permission):
         try:
             result = self.service.share_vm_image(name, permission)
-            return(result.request_id)
+            return Defaults.unify_id(result.request_id)
         except Exception as e:
             raise AzureOsImagePublishError(
                 '%s: %s' % (type(e).__name__, format(e))
@@ -264,7 +264,7 @@ class Image(object):
         ordered_update_record = collections.OrderedDict(
             sorted(update_record.items())
         )
-        for name, value in ordered_update_record.iteritems():
+        for name, value in ordered_update_record.items():
             if value is not None:
                 if '_date' in name:
                     value = self.__convert_date_to_azure_format(value)

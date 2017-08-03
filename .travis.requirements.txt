@@ -12,10 +12,8 @@ flake8
 python-dateutil
 docopt
 APScheduler
-pyliblzma
 coverage
 pyOpenSSL
 pytest
 pytest-cov
 azure-storage
-future

@@ -1,12 +1,12 @@
+from .test_helper import argv_kiwi_tests
+
 import mock
 import random
 import string
 import sys
 from collections import namedtuple
 from mock import (patch, call)
-
-from test_helper import *
-
+from pytest import raises
 from azure.servicemanagement.models import (
     OSImageDetails,
     ReplicationProgress,
@@ -14,11 +14,23 @@ from azure.servicemanagement.models import (
 )
 from azurectl.account.service import AzureAccount
 from azurectl.config.parser import Config
-from azurectl.azurectl_exceptions import *
 from azurectl.instance.image import Image
-
-
 import azurectl
+from azurectl.defaults import Defaults
+
+from azurectl.azurectl_exceptions import (
+    AzureBlobServicePropertyError,
+    AzureOsImageCreateError,
+    AzureOsImageDeleteError,
+    AzureOsImageDetailsShowError,
+    AzureOsImageListError,
+    AzureOsImagePublishError,
+    AzureOsImageReplicateError,
+    AzureOsImageShowError,
+    AzureOsImageUnReplicateError,
+    AzureOsImageUpdateError
+)
+
 
 class TestImage:
     def setup(self):
@@ -26,7 +38,7 @@ class TestImage:
             'MyResult',
             'request_id'
         )
-        self.myrequest = MyResult(request_id=42)
+        self.myrequest = MyResult(request_id=Defaults.unify_id(42))
         self.fake_image_name = 'some-name'
 
         MyStruct = namedtuple(
@@ -121,33 +133,33 @@ class TestImage:
         self.service.list_os_images.return_value = self.list_os_images
         assert self.image.list() == [self.list_os_images.pop()._asdict()]
 
-    @raises(AzureOsImageListError)
     def test_list_raises_error(self):
         self.service.list_os_images.side_effect = Exception
-        self.image.list()
+        with raises(AzureOsImageListError):
+            self.image.list()
 
     def test_show(self):
         mock_response = self.list_os_images[0]
         self.service.get_os_image.return_value = mock_response
         assert self.image.show(mock_response.name) == mock_response._asdict()
 
-    @raises(AzureOsImageShowError)
     def test_show_raises_error(self):
         mock_response = self.list_os_images[0]
         self.service.get_os_image.side_effect = Exception
-        self.image.show(mock_response.name)
+        with raises(AzureOsImageShowError):
+            self.image.show(mock_response.name)
 
     @patch('azurectl.instance.image.BaseBlobService.get_blob_properties')
-    @raises(AzureBlobServicePropertyError)
     def test_create_raise_blob_error(self, mock_get_blob_props):
         mock_get_blob_props.side_effect = Exception
-        self.image.create('some-name', 'some-blob')
+        with raises(AzureBlobServicePropertyError):
+            self.image.create('some-name', 'some-blob')
 
     @patch('azurectl.instance.image.BaseBlobService.get_blob_properties')
-    @raises(AzureOsImageCreateError)
     def test_create_raise_os_image_error(self, mock_get_blob_props):
         self.service.add_os_image.side_effect = Exception
-        self.image.create('some-name', 'some-blob')
+        with raises(AzureOsImageCreateError):
+            self.image.create('some-name', 'some-blob')
 
     @patch('azurectl.instance.image.BaseBlobService.get_blob_properties')
     def test_create(self, mock_get_blob_props):
@@ -155,7 +167,7 @@ class TestImage:
         request_id = self.image.create(
             'some-name', 'some-blob'
         )
-        assert request_id == 42
+        assert request_id == self.myrequest.request_id
         self.service.add_os_image.assert_called_once_with(
             'some-name',
             'https://bob.blob.test.url/foo/some-blob',
@@ -168,15 +180,15 @@ class TestImage:
         request_id = self.image.delete(
             'some-name', False
         )
-        assert request_id == 42
+        assert request_id == self.myrequest.request_id
         self.service.delete_os_image.assert_called_once_with(
             'some-name', False
         )
 
-    @raises(AzureOsImageDeleteError)
     def test_delete_raise_os_delete_error(self):
         self.service.delete_os_image.side_effect = Exception
-        self.image.delete('some-name')
+        with raises(AzureOsImageDeleteError):
+            self.image.delete('some-name')
 
     def test_replicate(self):
         location_type = namedtuple(
@@ -191,13 +203,12 @@ class TestImage:
         request_id = self.image.replicate(
             'some-name', ['all'], 'offer', 'sku', 'version'
         )
-        assert request_id == 42
+        assert request_id == self.myrequest.request_id
         self.service.replicate_vm_image.assert_called_once_with(
             'some-name', ['a', 'b', 'c'], 'offer', 'sku', 'version'
         )
 
     def test_replication_status(self):
-        # given
         fake_details = self.__fake_os_image_details(
             self.fake_image_name,
             ['Region 1', 100, 'Region 2', 50]
@@ -207,71 +218,56 @@ class TestImage:
             {'region': 'Region 1', 'replication-progress': '100%'},
             {'region': 'Region 2', 'replication-progress': '50%'}
         ]
-        # when
         results = self.image.replication_status(self.fake_image_name)
-        # then
         self.service.get_os_image_details.assert_called_once_with(
             self.fake_image_name
         )
         assert results == expected_results
 
     def test_replication_status_populates_cache(self):
-        # given
         fake_details = self.__fake_os_image_details(
             self.fake_image_name,
             ['Region 1', 100, 'Region 2', 50]
         )
         self.service.get_os_image_details.return_value = fake_details
         self.image.cached_replication_status = None
-        # when
         self.image.replication_status(self.fake_image_name)
-        # then
         self.service.get_os_image_details.assert_called_once_with(
             self.fake_image_name
         )
         assert self.image.cached_replication_status == \
             fake_details.replication_progress.replication_progress_elements
 
-    # then
-    @raises(AzureOsImageDetailsShowError)
     def test_replication_status_upstream_exception(self):
-        # given
         self.service.get_os_image_details.side_effect = Exception
-        # when
-        results = self.image.replication_status(self.fake_image_name)
+        with raises(AzureOsImageDetailsShowError):
+            results = self.image.replication_status(self.fake_image_name)
 
     @patch('azurectl.instance.image.log')
     def test_print_replication_status(self, mock_log):
-        # given
         fake_details = self.__fake_os_image_details(
             self.fake_image_name,
             ['Region 1', 100, 'Region 2', 50]
         )
         self.image.cached_replication_status = \
             fake_details.replication_progress.replication_progress_elements
-        # when
         self.image.print_replication_status(self.fake_image_name)
-        # then
         mock_log.progress.assert_called_once_with(150, 200, 'Replicating')
 
     @patch('azurectl.instance.image.log')
     def test_print_replication_status_populates_cache(self, mock_log):
-        # given
         fake_details = self.__fake_os_image_details(
             self.fake_image_name,
             ['Region 1', 100, 'Region 2', 50]
         )
         self.service.get_os_image_details.return_value = fake_details
         self.image.cached_replication_status = None
-        # when
         self.image.print_replication_status(self.fake_image_name)
-        # then
         self.service.get_os_image_details.assert_called_once_with(self.fake_image_name)
         assert self.image.cached_replication_status == \
             fake_details.replication_progress.replication_progress_elements
 
     def test_wait_for_replication_completion(self):
-        # given
         self.service.get_os_image_details.side_effect = iter([
             self.__fake_os_image_details(
                 self.fake_image_name,
@@ -283,27 +279,20 @@ class TestImage:
             )
         ])
         self.image.sleep_between_requests = 0
-        # when
         self.image.wait_for_replication_completion(self.fake_image_name)
-        # then
         assert self.service.get_os_image_details.call_count == 2
 
-    # then
-    @raises(AzureOsImageDetailsShowError)
     def test_wait_for_replication_completion_upstream_exception(self):
-        # given
         self.service.get_os_image_details.side_effect = Exception
         self.image.sleep_between_requests = 0
         self.image.max_failures = 4
-        # when
-        self.image.wait_for_replication_completion(self.fake_image_name)
-        # then
-        assert self.service.get_os_image_details.call_count == self.image.max_failures
+        with raises(AzureOsImageDetailsShowError):
+            self.image.wait_for_replication_completion(self.fake_image_name)
 
     def test_unreplicate(self):
         self.service.unreplicate_vm_image.return_value = self.myrequest
         request_id = self.image.unreplicate('some-name')
-        assert request_id == 42
+        assert request_id == self.myrequest.request_id
         self.service.unreplicate_vm_image.assert_called_once_with(
             'some-name'
         )
@@ -311,27 +300,28 @@ class TestImage:
     def test_publish(self):
         self.service.share_vm_image.return_value = self.myrequest
         request_id = self.image.publish('some-name', 'public')
-        assert request_id == 42
+        assert request_id == self.myrequest.request_id
         self.service.share_vm_image.assert_called_once_with(
             'some-name', 'public'
         )
 
-    @raises(AzureOsImageReplicateError)
     def test_replicate_raises_error(self):
         self.service.replicate_vm_image.side_effect = AzureOsImageReplicateError
-        self.image.replicate(
-            'some-name', 'some-regions', 'offer', 'sku', 'version'
-        )
+        with raises(AzureOsImageReplicateError):
+            self.image.replicate(
+                'some-name', 'some-regions', 'offer', 'sku', 'version'
+            )
 
-    @raises(AzureOsImageUnReplicateError)
     def test_unreplicate_raises_error(self):
-        self.service.unreplicate_vm_image.side_effect = AzureOsImageUnReplicateError
-        self.image.unreplicate('some-name')
+        self.service.unreplicate_vm_image.side_effect = \
+            AzureOsImageUnReplicateError
+        with raises(AzureOsImageUnReplicateError):
+            self.image.unreplicate('some-name')
 
-    @raises(AzureOsImagePublishError)
     def test_publish_raises_error(self):
         self.service.share_vm_image.side_effect = AzureOsImagePublishError
-        self.image.publish('some-name', 'public')
+        with raises(AzureOsImagePublishError):
+            self.image.publish('some-name', 'public')
 
     def test_update(self):
         get_os_image_results = [
@@ -386,10 +376,8 @@ class TestImage:
             'some-name', self.os_image
         )
 
-    @raises(AzureOsImageUpdateError)
     def test_update_raises_invalid_date_format(self):
         self.os_image.published_date = 'xxx'
-
         get_os_image_results = [
             self.os_image_updated, self.os_image
         ]
@@ -398,15 +386,14 @@ class TestImage:
             return get_os_image_results.pop()
 
         self.service.get_os_image.side_effect = side_effect
-        self.image.update(
-            'some-name', {'published_date': self.os_image.published_date}
-        )
+        with raises(AzureOsImageUpdateError):
+            self.image.update(
+                'some-name', {'published_date': self.os_image.published_date}
+            )
 
-    @raises(AzureOsImageUpdateError)
     def test_update_raises_value_unchanged(self):
         self.os_image.description = 'a'
         self.os_image_updated.description = 'b'
-
         get_os_image_results = [
             self.os_image_updated, self.os_image
         ]
@@ -415,16 +402,18 @@ class TestImage:
             return get_os_image_results.pop()
 
         self.service.get_os_image.side_effect = side_effect
-        self.image.update(
-            'some-name', {'description': self.os_image.description}
-        )
+        with raises(AzureOsImageUpdateError):
+            self.image.update(
+                'some-name', {'description': self.os_image.description}
+            )
 
-    @raises(AzureOsImageUpdateError)
     def test_update_raises_image_metadata_request_failed(self):
         self.service.get_os_image.side_effect = Exception
-        self.image.update('some-name', {})
+        with raises(AzureOsImageUpdateError):
+            self.image.update('some-name', {})
 
-    @raises(AzureOsImageUpdateError)
     def test_update_raises_on_update_os_image_from_image_reference(self):
-        self.service.update_os_image_from_image_reference.side_effect = Exception
-        self.image.update('some-name', {})
+        self.service.update_os_image_from_image_reference.side_effect = \
+            Exception
+        with raises(AzureOsImageUpdateError):
+            self.image.update('some-name', {})

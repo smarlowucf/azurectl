@@ -1,18 +1,25 @@
+from .test_helper import argv_kiwi_tests
+
 import sys
 import mock
 from collections import namedtuple
 from mock import patch
 from mock import call
-
-
-from test_helper import *
-
+from pytest import raises
 from azurectl.account.service import AzureAccount
 from azurectl.config.parser import Config
-from azurectl.azurectl_exceptions import *
 from azurectl.instance.reserved_ip import ReservedIp
-
 import azurectl
+from azurectl.defaults import Defaults
+
+from azurectl.azurectl_exceptions import (
+    AzureReservedIpAssociateError,
+    AzureReservedIpCreateError,
+    AzureReservedIpDeleteError,
+    AzureReservedIpDisAssociateError,
+    AzureReservedIpListError,
+    AzureReservedIpShowError
+)
 
 
 class TestReservedIp:
@@ -60,7 +67,7 @@ class TestReservedIp:
             'MyResult',
             'request_id'
         )
-        self.myrequest = MyResult(request_id=42)
+        self.myrequest = MyResult(request_id=Defaults.unify_id(42))
 
         self.reserved_ip = ReservedIp(account)
 
@@ -68,58 +75,58 @@ class TestReservedIp:
         self.service.list_reserved_ip_addresses.return_value = self.list_ips
         assert self.reserved_ip.list() == self.result_list
 
-    @raises(AzureReservedIpListError)
     def test_list_raises_error(self):
         self.service.list_reserved_ip_addresses.side_effect = Exception
-        self.reserved_ip.list()
+        with raises(AzureReservedIpListError):
+            self.reserved_ip.list()
 
     def test_show(self):
         mock_response = self.list_ips[0]
         self.service.get_reserved_ip_address.return_value = mock_response
         assert self.reserved_ip.show(mock_response.name) == self.result_list[0]
 
-    @raises(AzureReservedIpShowError)
     def test_show_raises_error(self):
         mock_response = self.list_ips[0]
         self.service.get_reserved_ip_address.side_effect = Exception
-        self.reserved_ip.show(mock_response.name)
+        with raises(AzureReservedIpShowError):
+            self.reserved_ip.show(mock_response.name)
 
     def test_create(self):
         self.service.create_reserved_ip_address.return_value = self.myrequest
         request_id = self.reserved_ip.create('some-name', 'East US 2')
-        assert request_id == 42
+        assert request_id == self.myrequest.request_id
         self.service.create_reserved_ip_address.assert_called_once_with(
             'some-name',
             location='East US 2'
         )
 
-    @raises(AzureReservedIpCreateError)
     def test_create_raises_error(self):
         self.service.create_reserved_ip_address.side_effect = Exception
-        self.reserved_ip.create('some-name', 'East US 2')
+        with raises(AzureReservedIpCreateError):
+            self.reserved_ip.create('some-name', 'East US 2')
 
     def test_delete(self):
         self.service.delete_reserved_ip_address.return_value = self.myrequest
         request_id = self.reserved_ip.delete('some-name')
-        assert request_id == 42
+        assert request_id == self.myrequest.request_id
         self.service.delete_reserved_ip_address.assert_called_once_with(
             'some-name'
         )
 
-    @raises(AzureReservedIpDeleteError)
     def test_delete_raises_error(self):
         self.service.delete_reserved_ip_address.side_effect = Exception
-        self.reserved_ip.delete('some-name')
+        with raises(AzureReservedIpDeleteError):
+            self.reserved_ip.delete('some-name')
 
-    @raises(AzureReservedIpAssociateError)
     def test_associate_raises_error(self):
         self.service.associate_reserved_ip_address.side_effect = Exception
-        self.reserved_ip.associate('some-name', 'some-cloud-service')
+        with raises(AzureReservedIpAssociateError):
+            self.reserved_ip.associate('some-name', 'some-cloud-service')
 
-    @raises(AzureReservedIpDisAssociateError)
     def test_disassociate_raises_error(self):
         self.service.disassociate_reserved_ip_address.side_effect = Exception
-        self.reserved_ip.disassociate('some-name', 'some-cloud-service')
+        with raises(AzureReservedIpDisAssociateError):
+            self.reserved_ip.disassociate('some-name', 'some-cloud-service')
 
     def test_associate(self):
         self.service.associate_reserved_ip_address.return_value = \
@@ -127,7 +134,7 @@ class TestReservedIp:
         request_id = self.reserved_ip.associate(
             'some-name', 'some-cloud-service'
         )
-        assert request_id == 42
+        assert request_id == self.myrequest.request_id
         self.service.associate_reserved_ip_address.assert_called_once_with(
             name='some-name',
             service_name='some-cloud-service',
@@ -140,7 +147,7 @@ class TestReservedIp:
         request_id = self.reserved_ip.disassociate(
             'some-name', 'some-cloud-service'
         )
-        assert request_id == 42
+        assert request_id == self.myrequest.request_id
         self.service.disassociate_reserved_ip_address.assert_called_once_with(
             name='some-name',
             service_name='some-cloud-service',

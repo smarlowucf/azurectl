@@ -47,7 +47,7 @@ class StorageAccount(object):
             raise AzureStorageAccountCreateError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
-        return result.request_id
+        return Defaults.unify_id(result.request_id)
 
     def update(
         self,
@@ -77,7 +77,7 @@ class StorageAccount(object):
             raise AzureStorageAccountUpdateError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
-        return result.request_id
+        return Defaults.unify_id(result.request_id)
 
     def delete(self, name):
         try:
@@ -86,7 +86,7 @@ class StorageAccount(object):
             raise AzureStorageAccountDeleteError(
                 '%s: %s' % (type(e).__name__, format(e))
             )
-        return result.request_id
+        return Defaults.unify_id(result.request_id)
 
     def exists(self, name):
         try:

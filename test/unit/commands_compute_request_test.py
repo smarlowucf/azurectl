@@ -1,12 +1,9 @@
+from .test_helper import argv_kiwi_tests
+
 import sys
 import mock
 from mock import patch
-
-
-from test_helper import *
-
 import azurectl
-from azurectl.azurectl_exceptions import *
 from azurectl.commands.compute_request import ComputeRequestTask
 
 
@@ -27,6 +24,9 @@ class TestComputeRequestTask:
             return_value=mock.Mock()
         )
         self.__init_command_args()
+
+    def teardown(self):
+        sys.argv = argv_kiwi_tests
 
     def __init_command_args(self):
         self.task.command_args = {}
