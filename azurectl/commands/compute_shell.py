@@ -24,7 +24,7 @@ from pprint import pprint
 from textwrap import dedent
 
 # project
-from .base import CliTask
+from azurectl.commands.base import CliTask
 from azurectl.account.service import AzureAccount
 
 

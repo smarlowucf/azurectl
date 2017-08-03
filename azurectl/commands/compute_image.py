@@ -127,7 +127,7 @@ from pytz import utc
 
 # project
 from azurectl.logger import log
-from .base import CliTask
+from azurectl.commands.base import CliTask
 from azurectl.account.service import AzureAccount
 from azurectl.utils.collector import DataCollector
 from azurectl.utils.output import DataOutput

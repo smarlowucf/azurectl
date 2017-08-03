@@ -74,13 +74,13 @@ import re
 import os
 
 # project
-from .defaults import Defaults
-from .azurectl_exceptions import (
+from azurectl.defaults import Defaults
+from azurectl.azurectl_exceptions import (
     AzureUnknownServiceName,
     AzureCommandNotLoaded,
     AzureLoadCommandUndefined
 )
-from .version import __VERSION__
+from azurectl.version import __VERSION__
 
 
 class Cli(object):
